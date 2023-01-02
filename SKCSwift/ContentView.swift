@@ -8,7 +8,7 @@
 import SwiftUI
 
 let card = "90307498"
-let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card).jpg")
+let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/original/\(card).jpg")
 
 struct CardInfo: View {
     @State private var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
@@ -19,9 +19,17 @@ struct CardInfo: View {
                 .font(.title2)
                 .multilineTextAlignment(.leading)
                 .bold()
-            AsyncImage(url: imageUrl)
-                .frame(width: 350, height: 350)
-                .cornerRadius(50.0)
+            
+            
+            
+            AsyncImage(url: imageUrl) { image in
+                let width = UIScreen.main.bounds.width - 20
+                image.resizable()
+                    .frame(width: width, height: width)
+                    .cornerRadius(50.0)
+            } placeholder: {
+                Text("Loading...")
+            }
             
             CardStats(monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation)
         }
