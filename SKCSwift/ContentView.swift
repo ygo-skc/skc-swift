@@ -23,25 +23,7 @@ struct CardInfo: View {
                 .frame(width: 350, height: 350)
                 .cornerRadius(50.0)
             
-            VStack(alignment: .leading) {
-                Text(cardData.monsterType!)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.leading)
-                    .bold()
-                    .padding(.bottom, 1.0)
-                Text(cardData.cardEffect)
-                    .font(.body)
-                    .fontWeight(.regular)
-                    .multilineTextAlignment(.leading)
-                    .bold()
-            }.padding(.horizontal, 12.0).frame(
-                minWidth: 0,
-                maxWidth: .infinity,
-                minHeight: 0,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
+            CardStats(monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation)
         }
         .onAppear {
             getCardData(cardId: card, {result in
@@ -52,6 +34,61 @@ struct CardInfo: View {
                     print(error)
                 }
             })
+        }
+    }
+}
+
+struct CardStats: View {
+    var monsterType: String?
+    var cardEffect: String
+    var monsterAssociation: MonsterAssociation?
+    
+    var body: some View {
+        VStack {
+            VStack(alignment: .leading) {
+                if (monsterAssociation != nil){
+                    MonsterAssociationView(level: monsterAssociation!.level!)
+                }
+                
+                if (monsterType != nil) {
+                    Text(monsterType!)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.leading)
+                        .bold()
+                        .padding(.bottom, 1.0)
+                }
+                Text(cardEffect)
+                    .font(.footnote)
+                    .fontWeight(.light)
+                    .multilineTextAlignment(.leading)
+                    .bold()
+            }.padding(.horizontal, 12.0).frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
+        }
+    }
+}
+
+struct MonsterAssociationView: View {
+    var level: Int
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            AsyncImage(url: URL(string: "https://thesupremekingscastle.com/assets/Light.svg"))
+                .frame(width: 50, height: 50)
+                .cornerRadius(50.0)
+            AsyncImage(url: URL(string: "https://thesupremekingscastle.com/assets/Light.svg"))
+                .frame(width: 50, height: 50)
+                .cornerRadius(50.0)
+            Text("X\(level)")
+                .fontWeight(.bold)
+            Spacer()
         }
     }
 }
