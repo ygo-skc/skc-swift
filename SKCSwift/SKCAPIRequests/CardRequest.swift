@@ -16,10 +16,9 @@ func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -
             print("Error occurred while calling SKC API \(error!.localizedDescription)")
         } else if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 404 {
             print("Card \(cardId) not found in database.")
-            
         }else {
             do {
-                cardData = try JSONDecoder().decode(Card.self, from: data!)
+                let cardData = try JSONDecoder().decode(Card.self, from: data!)
                 completion(.success(cardData))
             } catch {
                 print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")

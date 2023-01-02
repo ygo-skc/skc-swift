@@ -9,24 +9,14 @@ import SwiftUI
 
 let card = "90307498"
 let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card).jpg")
-var cardData = Card(cardID: "", cardName: "Elemental HERO Neos Kluger", cardColor: "", cardAttribute: "", cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"Must be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.", monsterType: "Warrior/Fusion/Effect")
 
 struct CardInfo: View {
-    init () {
-        getCardData(cardId: card, {result in
-            switch result {
-            case .success(let data):
-                print(data)
-            case .failure(let error):
-                print(error)
-            }
-        })
-    }
+    @State private var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
     
     var body: some View {
         VStack {
             Text(cardData.cardName)
-                .font(.title)
+                .font(.title2)
                 .multilineTextAlignment(.leading)
                 .bold()
             AsyncImage(url: imageUrl)
@@ -52,7 +42,16 @@ struct CardInfo: View {
                 maxHeight: .infinity,
                 alignment: .topLeading
             )
-            
+        }
+        .onAppear {
+            getCardData(cardId: card, {result in
+                switch result {
+                case .success(let card):
+                    self.cardData = card
+                case .failure(let error):
+                    print(error)
+                }
+            })
         }
     }
 }

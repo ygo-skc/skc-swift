@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1F32564F296358E9001AACF1 /* CardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32564E296358E9001AACF1 /* CardRequest.swift */; };
-		1F32565229635936001AACF1 /* SKCCardInfoOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565129635936001AACF1 /* SKCCardInfoOutput.swift */; };
+		1F32565229635936001AACF1 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565129635936001AACF1 /* Card.swift */; };
 		1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565329635AAC001AACF1 /* RequestHelper.swift */; };
+		1F32565729636BD5001AACF1 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565629636BD5001AACF1 /* CardViewModel.swift */; };
 		1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */; };
 		1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E82961FF0000238EE1 /* ContentView.swift */; };
 		1F8211EB2961FF0100238EE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F8211EA2961FF0100238EE1 /* Assets.xcassets */; };
@@ -38,8 +39,9 @@
 
 /* Begin PBXFileReference section */
 		1F32564E296358E9001AACF1 /* CardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardRequest.swift; sourceTree = "<group>"; };
-		1F32565129635936001AACF1 /* SKCCardInfoOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCCardInfoOutput.swift; sourceTree = "<group>"; };
+		1F32565129635936001AACF1 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		1F32565329635AAC001AACF1 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
+		1F32565629636BD5001AACF1 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftApp.swift; sourceTree = "<group>"; };
 		1F8211E82961FF0000238EE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -89,9 +91,17 @@
 		1F3256502963590D001AACF1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1F32565129635936001AACF1 /* SKCCardInfoOutput.swift */,
+				1F32565129635936001AACF1 /* Card.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		1F32565529636BA2001AACF1 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				1F32565629636BD5001AACF1 /* CardViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		1F8211DA2961FF0000238EE1 = {
@@ -117,6 +127,7 @@
 		1F8211E52961FF0000238EE1 /* SKCSwift */ = {
 			isa = PBXGroup;
 			children = (
+				1F32565529636BA2001AACF1 /* ViewModels */,
 				1F3256502963590D001AACF1 /* Models */,
 				1F32564D296358AB001AACF1 /* SKCAPIRequests */,
 				1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */,
@@ -283,8 +294,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F32564F296358E9001AACF1 /* CardRequest.swift in Sources */,
+				1F32565729636BD5001AACF1 /* CardViewModel.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
-				1F32565229635936001AACF1 /* SKCCardInfoOutput.swift in Sources */,
+				1F32565229635936001AACF1 /* Card.swift in Sources */,
 				1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */,
 				1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */,
 			);
