@@ -13,8 +13,6 @@ struct MonsterAssociationViewModel: View {
     let iconSize = 30.0
     let iconRadius = 30.0
     
-    @Environment(\.colorScheme) var colorScheme
-    
     var body: some View {
         HStack {
             Spacer()
@@ -27,7 +25,7 @@ struct MonsterAssociationViewModel: View {
                     .cornerRadius(iconRadius)
                 Text("x\(level)")
                     .fontWeight(.semibold)
-            }.padding(.vertical, 5.0).padding(.horizontal, 15).background(colorScheme == .light ? Color.white.opacity(0.85): Color.black.opacity(0.5)).cornerRadius(50.0)
+            }.padding(.vertical, 5.0).padding(.horizontal, 15).background(Color("TranslucentBackground")).cornerRadius(50.0)
             Spacer()
         }
     }

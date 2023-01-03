@@ -13,12 +13,12 @@ let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/origi
 struct CardInfo: View {
     @State private var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
     @State private var showView = false
+    let screenWidth = UIScreen.main.bounds.width - 10
     
     var body: some View {
         ScrollView {
             VStack {
-                let screenWidth = UIScreen.main.bounds.width - 20
-                RoundedRectImage(width: screenWidth, height: screenWidth, imageUrl: imageUrl)
+                RoundedRectImage(width: screenWidth - 10, height: screenWidth, imageUrl: imageUrl)
                 CardStatsViewModel(cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation, cardId: cardData.cardID)
             }
             .onAppear {
@@ -31,7 +31,7 @@ struct CardInfo: View {
                     }
                 })
             }
-        }
+        }.frame(width: screenWidth)
         
         ZStack {
             Button {

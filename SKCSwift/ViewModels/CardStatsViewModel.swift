@@ -14,11 +14,6 @@ struct CardStatsViewModel: View {
     var monsterAssociation: MonsterAssociation?
     var cardId: String
     
-    let darkBackground = Color(red: 0.221, green: 0.133, blue: 0.37)
-    let lightBackground = Color(red: 0.494, green: 0.342, blue: 0.762)
-    
-    @Environment(\.colorScheme) var colorScheme
-    
     var body: some View {
         VStack {
             VStack  {
@@ -54,10 +49,10 @@ struct CardStatsViewModel: View {
                                 .fontWeight(.light)
                         }.padding(.top, 1)
                     }.padding(5)
-                }.background(colorScheme == .light ? Color.white.opacity(0.85): Color.black.opacity(0.5)).cornerRadius(10)
+                }.background(Color("TranslucentBackground")).cornerRadius(10)
             }.padding(.horizontal, 5.0)
                 .padding(.vertical, 10.0)
-        }.background(colorScheme == .light ? lightBackground : darkBackground).cornerRadius(10).frame(
+        }.background(Color("Fusion")).cornerRadius(10).frame(
             minWidth: 0,
             maxWidth: .infinity,
             minHeight: 0,
