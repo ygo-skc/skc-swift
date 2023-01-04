@@ -13,6 +13,7 @@ struct CardStatsViewModel: View {
     var cardEffect: String
     var monsterAssociation: MonsterAssociation?
     var cardId: String
+    var cardAttribute: String
     
     var body: some View {
         VStack {
@@ -23,8 +24,9 @@ struct CardStatsViewModel: View {
                     .foregroundColor(Color.white.opacity(0.9))
                     .bold()
                 
-                if (monsterAssociation != nil){
-                    MonsterAssociationViewModel(level: monsterAssociation!.level!)
+                let attribute = Attribute(rawValue: cardAttribute)
+                if (monsterAssociation != nil && attribute != nil){
+                    MonsterAssociationViewModel(level: monsterAssociation!.level!, attribute: attribute!)
                 }
                 
                 VStack {
@@ -64,6 +66,13 @@ struct CardStatsViewModel: View {
 
 struct CardStatsViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        CardStatsViewModel(cardName: "Elemental HERO Neos Kluger", monsterType: "Spellcaster/Fusion/Effect", cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.", cardId: "90307498")
+        let cardName = "Elemental HERO Neos Kluger"
+        let monsterType = "Spellcaster/Fusion/Effect"
+        let cardEffect = "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn."
+        let cardId = "90307498"
+        let cardAttribute = "Light"
+        let monsterAssociation = MonsterAssociation(level: 10)
+        
+        CardStatsViewModel(cardName: cardName, monsterType: monsterType, cardEffect: cardEffect, monsterAssociation: monsterAssociation, cardId: cardId, cardAttribute: cardAttribute)
     }
 }

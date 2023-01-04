@@ -7,9 +7,9 @@
 
 import Foundation
 
-let BASE_URL: StaticString = "https://skc-ygo-api.com"
+let SKC_API_BASE_URL: StaticString = "https://skc-ygo-api.com"
 
-func basicSKCRequest(url: URL) -> URLRequest {
+func baseSKCAPIRequest(url: URL) -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")

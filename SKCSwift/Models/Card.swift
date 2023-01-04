@@ -7,6 +7,10 @@
 
 import Foundation
 
+enum Attribute: String {
+    case dark = "Dark", light = "Light", earth = "Earth", wind = "Wind", water = "Water", fire = "Fire"
+}
+
 struct MonsterAssociation: Codable {
     var level: Int?
 }
@@ -21,4 +25,6 @@ struct Card: Codable {
     var monsterAssociation: MonsterAssociation?
     var monsterAttack: Int?
     var monsterDefense: Int?
+    var restrictedIn: BanListsForCard?
+    var foundIn: [Product]?
 }

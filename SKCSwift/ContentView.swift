@@ -21,7 +21,7 @@ struct CardInfo: View {
             VStack {
                 RoundedRectImage(width: screenWidth - 10, height: screenWidth, imageUrl: imageUrl)
                 if (isDataLoaded) {
-                    CardStatsViewModel(cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation, cardId: cardData.cardID)
+                    CardStatsViewModel(cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation, cardId: cardData.cardID, cardAttribute: cardData.cardAttribute)
                 } else {
                     RectPlaceholderViewModel(width: screenWidth, height: 200, radius: 10)
                 }

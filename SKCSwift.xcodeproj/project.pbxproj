@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F32564F296358E9001AACF1 /* CardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32564E296358E9001AACF1 /* CardRequest.swift */; };
 		1F32565229635936001AACF1 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565129635936001AACF1 /* Card.swift */; };
 		1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565329635AAC001AACF1 /* RequestHelper.swift */; };
 		1F3256592963E116001AACF1 /* MonsterAssociationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */; };
@@ -21,6 +20,9 @@
 		1F8211F82961FF0100238EE1 /* SKCSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211F72961FF0100238EE1 /* SKCSwiftTests.swift */; };
 		1F8212022961FF0100238EE1 /* SKCSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */; };
 		1F8212042961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */; };
+		1FB939042965029B00BF0CBA /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939032965029B00BF0CBA /* Product.swift */; };
+		1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* SKCAPI.swift */; };
+		1FB939082965043500BF0CBA /* BanList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939072965043500BF0CBA /* BanList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,7 +43,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1F32564E296358E9001AACF1 /* CardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardRequest.swift; sourceTree = "<group>"; };
 		1F32565129635936001AACF1 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		1F32565329635AAC001AACF1 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
 		1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonsterAssociationViewModel.swift; sourceTree = "<group>"; };
@@ -58,6 +59,9 @@
 		1F8211FD2961FF0100238EE1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITests.swift; sourceTree = "<group>"; };
 		1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		1FB939032965029B00BF0CBA /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		1FB93905296503AE00BF0CBA /* SKCAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCAPI.swift; sourceTree = "<group>"; };
+		1FB939072965043500BF0CBA /* BanList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BanList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,19 +89,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1F32564D296358AB001AACF1 /* SKCAPIRequests */ = {
+		1F32564D296358AB001AACF1 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				1F32564E296358E9001AACF1 /* CardRequest.swift */,
 				1F32565329635AAC001AACF1 /* RequestHelper.swift */,
+				1FB93905296503AE00BF0CBA /* SKCAPI.swift */,
 			);
-			path = SKCAPIRequests;
+			path = Requests;
 			sourceTree = "<group>";
 		};
 		1F3256502963590D001AACF1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				1F32565129635936001AACF1 /* Card.swift */,
+				1FB939032965029B00BF0CBA /* Product.swift */,
+				1FB939072965043500BF0CBA /* BanList.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -138,7 +144,7 @@
 			children = (
 				1F32565529636BA2001AACF1 /* ViewModels */,
 				1F3256502963590D001AACF1 /* Models */,
-				1F32564D296358AB001AACF1 /* SKCAPIRequests */,
+				1F32564D296358AB001AACF1 /* Requests */,
 				1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */,
 				1F8211E82961FF0000238EE1 /* ContentView.swift */,
 				1F8211EA2961FF0100238EE1 /* Assets.xcassets */,
@@ -304,11 +310,13 @@
 			files = (
 				1F7655302964CB2D00512EF1 /* RectPlaceholderViewModel.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */,
-				1F32564F296358E9001AACF1 /* CardRequest.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
+				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
 				1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */,
 				1F32565229635936001AACF1 /* Card.swift in Sources */,
 				1F3256592963E116001AACF1 /* MonsterAssociationViewModel.swift in Sources */,
+				1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */,
+				1FB939042965029B00BF0CBA /* Product.swift in Sources */,
 				1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */,
 				1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */,
 			);
