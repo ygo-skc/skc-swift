@@ -33,14 +33,14 @@ struct CardStatsViewModel: View {
                     VStack(alignment: .leading) {
                         if (monsterType != nil) {
                             Text(monsterType!)
-                                .font(.subheadline)
+                                .font(.headline)
                                 .fontWeight(.medium)
                                 .multilineTextAlignment(.leading)
                                 .bold()
                                 .padding(.bottom, 1.0)
                         }
                         Text(cardEffect)
-                            .font(.footnote)
+                            .font(.body)
                             .fontWeight(.light)
                             .multilineTextAlignment(.leading)
                             .bold()

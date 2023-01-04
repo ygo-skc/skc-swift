@@ -10,16 +10,58 @@ import SwiftUI
 let card = "90307498"
 let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/original/90307498.jpg")!
 
-struct CardInfo: View {
+struct ContentView: View {
+    var body: some View {
+        TabView {
+            HomeView().tabItem{
+                Image(systemName: "house.fill")
+            }
+            CardView().tabItem{
+                Image(systemName: "camera.macro.circle.fill")
+            }
+            Text("This will be search!!").tabItem{
+                Image(systemName: "magnifyingglass.circle.fill")
+            }
+        }
+    }
+}
+
+struct HomeView: View {
+    let screenWidth = UIScreen.main.bounds.width - 10
+    var body: some View {
+        
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text("Home").fontWeight(.heavy)
+                    .font(.largeTitle)
+                Text("Content").fontWeight(.bold)
+                    .font(.title3)
+                Text("The SKC Database has 1,000 cards, 36 ban lists and 200 products.").fontWeight(.regular)
+                    .font(.headline)
+            }.frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
+            .onAppear {
+            }
+        }.frame(width: screenWidth)
+    }
+}
+
+struct CardView: View {
     @State private var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
     @State private var showView = false
     @State private var isDataLoaded = false
     let screenWidth = UIScreen.main.bounds.width - 10
+    let imageSize = UIScreen.main.bounds.width - 30
     
     var body: some View {
         ScrollView {
             VStack {
-                RoundedRectImage(width: screenWidth - 10, height: screenWidth, imageUrl: imageUrl)
+                RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
                 if (isDataLoaded) {
                     CardStatsViewModel(cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation, cardId: cardData.cardID, cardAttribute: cardData.cardAttribute)
                 } else {
@@ -37,24 +79,24 @@ struct CardInfo: View {
                     }
                 })
             }
+            ZStack {
+                Button {
+                    showView.toggle()
+                } label: {
+                    Text("Suggestions")
+                        .font(.title3)
+                }
+                .sheet(isPresented: $showView) {
+                    Text("Yo")
+                }
+            }
         }.frame(width: screenWidth)
-        
-        ZStack {
-            Button {
-                showView.toggle()
-            } label: {
-                Text("Suggestions")
-                    .font(.title3)
-            }
-            .sheet(isPresented: $showView) {
-                Text("Yo")
-            }
-        }
     }
 }
 
+
 struct CardInfo_Previews: PreviewProvider {
     static var previews: some View {
-        CardInfo()
+        ContentView()
     }
 }
