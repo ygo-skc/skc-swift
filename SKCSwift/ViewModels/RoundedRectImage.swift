@@ -18,9 +18,7 @@ struct RoundedRectImage: View {
                 .frame(width: width, height: height)
                 .cornerRadius(50.0)
         } placeholder: {
-            Rectangle()
-                .foregroundColor(.gray.opacity(0.70))
-                .cornerRadius(50.0)
+            RectPlaceholderViewModel(width: .infinity, height: .infinity, radius: 50.0)
         }.frame(width: width, height: height)
     }
 }

@@ -13,6 +13,7 @@
 		1F3256592963E116001AACF1 /* MonsterAssociationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */; };
 		1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565A2963E195001AACF1 /* CardStatsViewModel.swift */; };
 		1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */; };
+		1F7655302964CB2D00512EF1 /* RectPlaceholderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76552F2964CB2D00512EF1 /* RectPlaceholderViewModel.swift */; };
 		1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */; };
 		1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E82961FF0000238EE1 /* ContentView.swift */; };
 		1F8211EB2961FF0100238EE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F8211EA2961FF0100238EE1 /* Assets.xcassets */; };
@@ -46,6 +47,7 @@
 		1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonsterAssociationViewModel.swift; sourceTree = "<group>"; };
 		1F32565A2963E195001AACF1 /* CardStatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStatsViewModel.swift; sourceTree = "<group>"; };
 		1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectImage.swift; sourceTree = "<group>"; };
+		1F76552F2964CB2D00512EF1 /* RectPlaceholderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectPlaceholderViewModel.swift; sourceTree = "<group>"; };
 		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftApp.swift; sourceTree = "<group>"; };
 		1F8211E82961FF0000238EE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -106,6 +108,7 @@
 				1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */,
 				1F32565A2963E195001AACF1 /* CardStatsViewModel.swift */,
 				1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */,
+				1F76552F2964CB2D00512EF1 /* RectPlaceholderViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -299,6 +302,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F7655302964CB2D00512EF1 /* RectPlaceholderViewModel.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */,
 				1F32564F296358E9001AACF1 /* CardRequest.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,

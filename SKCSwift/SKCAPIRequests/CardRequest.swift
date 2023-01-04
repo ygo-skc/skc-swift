@@ -7,6 +7,14 @@
 
 import Foundation
 
+func fetchCardInfoURL(cardId: String) -> URL {
+    guard let url = URL(string: "\(BASE_URL)/api/v1/card/\(cardId)?allInfo=true") else {
+        fatalError("URL is incorrect")
+    }
+    
+    return url
+}
+
 func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void)->  Void {
     let url = fetchCardInfoURL(cardId: cardId)
     let request = basicSKCRequest(url: url)

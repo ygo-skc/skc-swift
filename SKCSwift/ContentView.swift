@@ -13,19 +13,25 @@ let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/origi
 struct CardInfo: View {
     @State private var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
     @State private var showView = false
+    @State private var isDataLoaded = false
     let screenWidth = UIScreen.main.bounds.width - 10
     
     var body: some View {
         ScrollView {
             VStack {
                 RoundedRectImage(width: screenWidth - 10, height: screenWidth, imageUrl: imageUrl)
-                CardStatsViewModel(cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation, cardId: cardData.cardID)
+                if (isDataLoaded) {
+                    CardStatsViewModel(cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation, cardId: cardData.cardID)
+                } else {
+                    RectPlaceholderViewModel(width: screenWidth, height: 200, radius: 10)
+                }
             }
             .onAppear {
                 getCardData(cardId: card, {result in
                     switch result {
                     case .success(let card):
                         self.cardData = card
+                        self.isDataLoaded = true
                     case .failure(let error):
                         print(error)
                     }

@@ -9,15 +9,6 @@ import Foundation
 
 let BASE_URL: StaticString = "https://skc-ygo-api.com"
 
-func fetchCardInfoURL(cardId: String) -> URL {
-    guard let url = URL(string: "\(BASE_URL)/api/v1/card/\(cardId)?allInfo=true") else {
-        fatalError("URL is incorrect")
-    }
-    
-    return url
-}
-
-
 func basicSKCRequest(url: URL) -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = "GET"
