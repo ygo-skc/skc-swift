@@ -13,6 +13,9 @@ enum Attribute: String {
 
 struct MonsterAssociation: Codable {
     var level: Int?
+    var rank: Int?
+    var linkRating: Int?
+    var linkArrows: [String]?
 }
 
 struct Card: Codable {

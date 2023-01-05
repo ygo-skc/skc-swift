@@ -26,7 +26,7 @@ struct CardStatsViewModel: View {
                 
                 let attribute = Attribute(rawValue: cardAttribute)
                 if (monsterAssociation != nil && attribute != nil){
-                    MonsterAssociationViewModel(level: monsterAssociation!.level!, attribute: attribute!)
+                    MonsterAssociationViewModel(monsterAssociation: monsterAssociation!, attribute: attribute!)
                 }
                 
                 VStack {

@@ -7,24 +7,8 @@
 
 import Foundation
 
-func fetchCardInfoURL(cardId: String) -> URL {
-    var components = URLComponents()
-    components.scheme = "https"
-    components.host = SKC_API_BASE_URL.description
-    components.path = "/api/v1/card/\(cardId)"
-    components.queryItems = [
-        URLQueryItem(name: "allInfo", value: "true")
-    ]
-    
-    guard let url = components.url else {
-        fatalError("URL is incorrect")
-    }
-    
-    return url
-}
-
 func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void)->  Void {
-    let url = fetchCardInfoURL(cardId: cardId)
+    let url = cardInfoURL(cardId: cardId)
     let request = baseSKCAPIRequest(url: url)
     
     URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
@@ -41,23 +25,6 @@ func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -
             }
         }
     }).resume()
-}
-
-func searchCardURL(cardName: String) -> URL {
-    var components = URLComponents()
-    components.scheme = "https"
-    components.host = SKC_API_BASE_URL.description
-    components.path = "/api/v1/card/search"
-    components.queryItems = [
-        URLQueryItem(name: "limit", value: "10"),
-        URLQueryItem(name: "cName", value: cardName)
-    ]
-    
-    guard let url = components.url else {
-        fatalError("URL is incorrect")
-    }
-    
-    return url
 }
 
 func searchCard(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void)->  Void {
