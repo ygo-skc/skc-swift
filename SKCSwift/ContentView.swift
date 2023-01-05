@@ -19,10 +19,41 @@ struct ContentView: View {
             CardView().tabItem{
                 Image(systemName: "camera.macro.circle.fill")
             }
-            Text("This will be search!!").tabItem{
+            SearchCard().tabItem{
                 Image(systemName: "magnifyingglass.circle.fill")
             }
         }
+    }
+}
+
+struct SearchCard: View {
+    @State var xxx = ["yoo", "wassup"]
+    @State var searchResults: [Card] = []
+    @State var searchText = ""
+    
+    var body: some View {
+        NavigationStack {
+            List(searchResults, id: \.cardID) { card in
+                VStack {
+                    Text(card.cardName)
+                    if (card.monsterType != nil) {
+                        Text(card.monsterType!)
+                    }
+                }
+            }.searchable(text: $searchText)
+                .onChange(of: searchText) { value in
+                    searchCard(searchTerm: value, {result in
+                        switch result {
+                        case .success(let card):
+                            self.searchResults = card
+                        case .failure(let error):
+                            print(error)
+                        }
+                    })
+                }
+        }
+        
+        Text("This will be search!!")
     }
 }
 
@@ -79,17 +110,17 @@ struct CardView: View {
                     }
                 })
             }
-            ZStack {
-                Button {
-                    showView.toggle()
-                } label: {
-                    Text("Suggestions")
-                        .font(.title3)
-                }
-                .sheet(isPresented: $showView) {
-                    Text("Yo")
-                }
+            
+            Button {
+                showView.toggle()
+            } label: {
+                Text("Suggestions")
+                    .font(.title3)
             }
+            .sheet(isPresented: $showView) {
+                Text("Yo")
+            }
+            
         }.frame(width: screenWidth)
     }
 }
