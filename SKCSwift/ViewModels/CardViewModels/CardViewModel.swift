@@ -34,7 +34,6 @@ struct CardViewModel: View {
                 }
             }
             .onAppear {
-                
                 getCardData(cardId: cardId, {result in
                     switch result {
                     case .success(let card):

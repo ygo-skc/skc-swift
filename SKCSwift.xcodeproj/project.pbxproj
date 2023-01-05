@@ -14,6 +14,8 @@
 		1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */; };
 		1F3C10A8296739F500EE4EBE /* SKCUrls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A7296739F500EE4EBE /* SKCUrls.swift */; };
 		1F3C10AA29673E1200EE4EBE /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A929673E1200EE4EBE /* CardViewModel.swift */; };
+		1F6687E02967904400C8555D /* CardSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687DF2967904400C8555D /* CardSearchViewModel.swift */; };
+		1F6687E2296798E700C8555D /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E1296798E700C8555D /* HomeViewModel.swift */; };
 		1F7655302964CB2D00512EF1 /* RectPlaceholderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76552F2964CB2D00512EF1 /* RectPlaceholderViewModel.swift */; };
 		1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */; };
 		1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E82961FF0000238EE1 /* ContentView.swift */; };
@@ -52,6 +54,8 @@
 		1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectImage.swift; sourceTree = "<group>"; };
 		1F3C10A7296739F500EE4EBE /* SKCUrls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCUrls.swift; sourceTree = "<group>"; };
 		1F3C10A929673E1200EE4EBE /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
+		1F6687DF2967904400C8555D /* CardSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchViewModel.swift; sourceTree = "<group>"; };
+		1F6687E1296798E700C8555D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		1F76552F2964CB2D00512EF1 /* RectPlaceholderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectPlaceholderViewModel.swift; sourceTree = "<group>"; };
 		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftApp.swift; sourceTree = "<group>"; };
@@ -118,6 +122,7 @@
 			children = (
 				1F3C10AC29673F1900EE4EBE /* UtilityViewModels */,
 				1F3C10AB29673ED000EE4EBE /* CardViewModels */,
+				1F6687E1296798E700C8555D /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -137,6 +142,7 @@
 			children = (
 				1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */,
 				1F76552F2964CB2D00512EF1 /* RectPlaceholderViewModel.swift */,
+				1F6687DF2967904400C8555D /* CardSearchViewModel.swift */,
 			);
 			path = UtilityViewModels;
 			sourceTree = "<group>";
@@ -342,6 +348,8 @@
 				1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */,
 				1FB939042965029B00BF0CBA /* Product.swift in Sources */,
 				1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */,
+				1F6687E02967904400C8555D /* CardSearchViewModel.swift in Sources */,
+				1F6687E2296798E700C8555D /* HomeViewModel.swift in Sources */,
 				1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
