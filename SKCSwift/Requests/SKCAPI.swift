@@ -8,7 +8,15 @@
 import Foundation
 
 func fetchCardInfoURL(cardId: String) -> URL {
-    guard let url = URL(string: "\(SKC_API_BASE_URL)/api/v1/card/\(cardId)?allInfo=true") else {
+    var components = URLComponents()
+    components.scheme = "https"
+    components.host = SKC_API_BASE_URL.description
+    components.path = "/api/v1/card/\(cardId)"
+    components.queryItems = [
+        URLQueryItem(name: "allInfo", value: "true")
+    ]
+    
+    guard let url = components.url else {
         fatalError("URL is incorrect")
     }
     
@@ -36,7 +44,16 @@ func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -
 }
 
 func searchCardURL(cardName: String) -> URL {
-    guard let url = URL(string: "\(SKC_API_BASE_URL)/api/v1/card/search?limit=10&cName=\(cardName)") else {
+    var components = URLComponents()
+    components.scheme = "https"
+    components.host = SKC_API_BASE_URL.description
+    components.path = "/api/v1/card/search"
+    components.queryItems = [
+        URLQueryItem(name: "limit", value: "10"),
+        URLQueryItem(name: "cName", value: cardName)
+    ]
+    
+    guard let url = components.url else {
         fatalError("URL is incorrect")
     }
     

@@ -27,7 +27,6 @@ struct ContentView: View {
 }
 
 struct SearchCard: View {
-    @State var xxx = ["yoo", "wassup"]
     @State var searchResults: [Card] = []
     @State var searchText = ""
     
@@ -40,9 +39,9 @@ struct SearchCard: View {
                         Text(card.monsterType!)
                     }
                 }
-            }.searchable(text: $searchText)
+            }.listStyle(.plain).searchable(text: $searchText)
                 .onChange(of: searchText) { value in
-                    searchCard(searchTerm: value, {result in
+                    searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
                         switch result {
                         case .success(let card):
                             self.searchResults = card
@@ -50,10 +49,8 @@ struct SearchCard: View {
                             print(error)
                         }
                     })
-                }
+                }.navigationTitle("Search")
         }
-        
-        Text("This will be search!!")
     }
 }
 
