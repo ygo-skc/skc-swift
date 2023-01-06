@@ -13,10 +13,10 @@ struct ContentView: View {
     var body: some View {
         TabView {
             HomeViewModel().tabItem{
-                Image(systemName: "house.fill")
+                Image(systemName: "house")
             }
             CardSearchViewModel().tabItem{
-                Image(systemName: "magnifyingglass.circle.fill")
+                Image(systemName: "magnifyingglass")
             }
         }
     }

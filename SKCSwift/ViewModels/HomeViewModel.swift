@@ -24,13 +24,13 @@ struct HomeViewModel: View {
             }
             .padding(.horizontal)
             .navigationTitle("Home")
-                .frame(
-                    minWidth: 0,
-                    maxWidth: .infinity,
-                    minHeight: 0,
-                    maxHeight: .infinity,
-                    alignment: .topLeading
-                )
+            .frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
         }
     }
 }

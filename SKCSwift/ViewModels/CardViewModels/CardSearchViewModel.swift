@@ -10,23 +10,48 @@ import SwiftUI
 struct CardSearchViewModel: View {
     @State var searchResults: [Card] = []
     @State var searchText = ""
+    @State var isFetching = false
     
     var body: some View {
         NavigationStack {
+            if (searchResults.isEmpty && !searchText.isEmpty && !isFetching) {
+                Text("Nothing found in database")
+                    .font(.title)
+            } else if (searchText.isEmpty) {
+                VStack(alignment: .leading) {
+                    Text("Suggestions")
+                        .font(.title)
+                }.padding(.horizontal)
+                    .frame(
+                        minWidth: 0,
+                        maxWidth: .infinity,
+                        minHeight: 0,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                    )
+            }
+            
             List(searchResults, id: \.cardID) { card in
                 NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
                     CardSearchResultsViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                 })
             }.listStyle(.plain).searchable(text: self.$searchText, prompt: "Search cards...")
                 .onChange(of: searchText) { value in
-                    searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
-                        switch result {
-                        case .success(let card):
-                            self.searchResults = card
-                        case .failure(let error):
-                            print(error)
-                        }
-                    })
+                    if (value == "") {
+                        searchResults = []
+                    } else {
+                        isFetching = true
+                        searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
+                            switch result {
+                            case .success(let card):
+                                self.searchResults = card
+                            case .failure(let error):
+                                print(error)
+                            }
+                            
+                            isFetching = false
+                        })
+                    }
                 }.navigationTitle("Search")
             
         }

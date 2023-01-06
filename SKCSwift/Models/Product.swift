@@ -17,7 +17,6 @@ struct Product: Codable {
     var productContent: [ProductContent]
 }
 
-
 struct ProductContent: Codable {
     var productPosition: String
     var rarities: [String]
