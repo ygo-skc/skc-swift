@@ -10,14 +10,14 @@ import SwiftUI
 struct RankAssociationViewModel: View {
     var rank: Int
     
-    let iconSize = 30.0
+    private static let ICON_SIZE = 30.0
     
     var body: some View {
         HStack {
             Image("card_rank")
                 .resizable()
-                .frame(width: iconSize, height: iconSize)
-                .cornerRadius(iconSize)
+                .frame(width: RankAssociationViewModel.ICON_SIZE, height: RankAssociationViewModel.ICON_SIZE)
+                .cornerRadius(RankAssociationViewModel.ICON_SIZE)
             Text("x\(rank)")
                 .fontWeight(.semibold)
         }

@@ -10,14 +10,14 @@ import SwiftUI
 struct LevelAssociationViewModel: View {
     var level: Int
     
-    let iconSize = 30.0
+    private static let ICON_SIZE = 30.0
     
     var body: some View {
         HStack {
             Image("card_level")
                 .resizable()
-                .frame(width: iconSize, height: iconSize)
-                .cornerRadius(iconSize)
+                .frame(width: LevelAssociationViewModel.ICON_SIZE, height: LevelAssociationViewModel.ICON_SIZE)
+                .cornerRadius(LevelAssociationViewModel.ICON_SIZE)
             Text("x\(level)")
                 .fontWeight(.semibold)
         }

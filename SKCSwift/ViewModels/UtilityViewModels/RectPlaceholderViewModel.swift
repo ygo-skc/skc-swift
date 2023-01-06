@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct RectPlaceholderViewModel: View {
-    let width: CGFloat
-    let height: CGFloat
-    let radius: CGFloat
+    private let width: CGFloat
+    private let height: CGFloat
+    private let radius: CGFloat
     
     init(width: CGFloat = 300, height: CGFloat = 300, radius: CGFloat = 10) {
         self.width = width

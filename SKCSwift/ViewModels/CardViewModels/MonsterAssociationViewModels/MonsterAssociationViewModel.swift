@@ -12,15 +12,13 @@ struct MonsterAssociationViewModel: View {
     var monsterAssociation: MonsterAssociation
     var attribute: Attribute
     
-    let iconSize = 30.0
+    private static let ICON_SIZE = 30.0
     
     var body: some View {
         HStack {
             Spacer()
             HStack {
-                AsyncImage(url: URL(string: "https://thesupremekingscastle.com/assets/\(attribute.rawValue).svg"))
-                    .frame(width: iconSize, height: iconSize)
-                    .cornerRadius(iconSize)
+                AttributeViewModel(attribute: attribute)
                 
                 if (monsterAssociation.level != nil) {
                     LevelAssociationViewModel(level: monsterAssociation.level!)

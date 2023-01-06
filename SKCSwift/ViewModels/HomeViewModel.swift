@@ -14,12 +14,23 @@ struct HomeViewModel: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("Content").fontWeight(.bold)
+                    Text("Content")
+                        .fontWeight(.bold)
                         .font(.title2)
-                    Text("The SKC Database has 1,000 cards, 36 ban lists and 200 products.").fontWeight(.regular)
+                    Text("The SKC Database has 1,000 cards, 36 ban lists and 200 products.")
+                        .fontWeight(.regular)
                         .font(.headline)
                 }
-            }.navigationTitle("Home")
+            }
+            .padding(.horizontal)
+            .navigationTitle("Home")
+                .frame(
+                    minWidth: 0,
+                    maxWidth: .infinity,
+                    minHeight: 0,
+                    maxHeight: .infinity,
+                    alignment: .topLeading
+                )
         }
     }
 }

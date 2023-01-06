@@ -27,6 +27,7 @@ struct CardStatsViewModel: View {
                 let attribute = Attribute(rawValue: cardAttribute)
                 if (monsterAssociation != nil && attribute != nil){
                     MonsterAssociationViewModel(monsterAssociation: monsterAssociation!, attribute: attribute!)
+                        .padding(.top, -5.0)
                 }
                 
                 VStack {
@@ -53,16 +54,18 @@ struct CardStatsViewModel: View {
                                 .fontWeight(.light)
                         }.padding(.top, 1)
                     }.padding(5)
-                }.background(Color("TranslucentBackground")).cornerRadius(10)
+                }.background(Color("TranslucentBackground")).cornerRadius(15)
             }.padding(.horizontal, 5.0)
                 .padding(.vertical, 10.0)
-        }.background(Color("Fusion")).cornerRadius(10).frame(
-            minWidth: 0,
-            maxWidth: .infinity,
-            minHeight: 0,
-            maxHeight: .infinity,
-            alignment: .topLeading
-        )
+        }.background(Color("Fusion"))
+            .cornerRadius(15)
+            .frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
     }
 }
 

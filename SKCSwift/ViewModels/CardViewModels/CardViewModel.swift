@@ -14,13 +14,13 @@ struct CardViewModel: View {
     @State private var showView = false
     @State private var isDataLoaded = false
     
-    let screenWidth = UIScreen.main.bounds.width - 15
-    let imageSize = UIScreen.main.bounds.width - 50
+    private let screenWidth = UIScreen.main.bounds.width - 15
+    private let imageSize = UIScreen.main.bounds.width - 60
     private let imageUrl: URL
     
     init(cardId: String) {
         self.cardId = cardId
-        self.imageUrl =  URL(string: "https://images.thesupremekingscastle.com/cards/original/\(cardId).jpg")!
+        self.imageUrl =  URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(cardId).jpg")!
     }
     
     var body: some View {
@@ -28,7 +28,10 @@ struct CardViewModel: View {
             VStack {
                 RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
                 if (isDataLoaded) {
-                    CardStatsViewModel(cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation, cardId: cardData.cardID, cardAttribute: cardData.cardAttribute)
+                    CardStatsViewModel(
+                        cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
+                        cardId: cardData.cardID, cardAttribute: cardData.cardAttribute
+                    )
                 } else {
                     RectPlaceholderViewModel(width: screenWidth, height: 200, radius: 10)
                 }
