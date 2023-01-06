@@ -12,15 +12,22 @@ struct RectPlaceholderViewModel: View {
     let height: CGFloat
     let radius: CGFloat
     
+    init(width: CGFloat = 300, height: CGFloat = 300, radius: CGFloat = 10) {
+        self.width = width
+        self.height = height
+        self.radius = radius
+    }
+    
     var body: some View {
         Rectangle()
             .foregroundColor(.gray.opacity(0.70))
-            .cornerRadius(radius).frame(width: width, height: height)
+            .cornerRadius(radius)
+            .frame(width: width, height: height)
     }
 }
 
 struct RectPlaceholderViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        RectPlaceholderViewModel(width: UIScreen.main.bounds.width, height: 300, radius: 10)
+        RectPlaceholderViewModel(width: UIScreen.main.bounds.width)
     }
 }

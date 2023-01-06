@@ -14,12 +14,8 @@ struct LevelAssociationViewModel: View {
     
     var body: some View {
         HStack {
-<<<<<<< HEAD
             Image("card_level")
                 .resizable()
-=======
-            AsyncImage(url: URL(string: "https://thesupremekingscastle.com/assets/Light.svg"))
->>>>>>> master
                 .frame(width: iconSize, height: iconSize)
                 .cornerRadius(iconSize)
             Text("x\(level)")

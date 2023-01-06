@@ -48,7 +48,7 @@ struct CardSearchResultsViewModel: View {
     
     var body: some View {
         HStack {
-            RoundedImageViewModel(radius: 70, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/original/\(cardId).jpg")!)
+            RoundedImageViewModel(radius: 70, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/x-sm/\(cardId).jpg")!)
             VStack(alignment: .leading) {
                 Text(cardName).fontWeight(.bold).font(.footnote)
                 if (monsterType != nil) {

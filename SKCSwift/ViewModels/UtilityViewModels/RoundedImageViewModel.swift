@@ -17,7 +17,7 @@ struct RoundedImageViewModel: View {
                 .frame(width: radius, height: radius)
                 .cornerRadius(radius)
         } placeholder: {
-            RectPlaceholderViewModel(width: .infinity, height: .infinity, radius: radius)
+            RectPlaceholderViewModel(width: radius, height: radius, radius: radius)
         }.frame(width: radius, height: radius)
     }
 }
@@ -26,6 +26,6 @@ struct RoundedImageViewModel_Previews: PreviewProvider {
     static var previews: some View {
         let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/original/90307498.jpg")!
         
-        RoundedRectImage(width: 100, height: 100, imageUrl: imageUrl)
+        RoundedImageViewModel(radius: 100, imageUrl: imageUrl)
     }
 }
