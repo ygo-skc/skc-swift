@@ -21,11 +21,12 @@ struct MonsterAssociationViewModel: View {
                 AsyncImage(url: URL(string: "https://thesupremekingscastle.com/assets/\(attribute.rawValue).svg"))
                     .frame(width: iconSize, height: iconSize)
                     .cornerRadius(iconSize)
-                AsyncImage(url: URL(string: "https://thesupremekingscastle.com/assets/Light.svg"))
-                    .frame(width: iconSize, height: iconSize)
-                    .cornerRadius(iconSize)
-                Text("x\(monsterAssociation.level!)")
-                    .fontWeight(.semibold)
+                
+                if (monsterAssociation.level != nil) {
+                    LevelAssociationViewModel(level: monsterAssociation.level!)
+                } else if (monsterAssociation.rank != nil) {
+                    RankAssociationViewModel(rank: monsterAssociation.rank!)
+                }
             }.padding(.vertical, 5.0).padding(.horizontal, 15).background(Color("TranslucentBackground")).cornerRadius(50.0)
             Spacer()
         }
@@ -41,6 +42,8 @@ struct MonsterAssociationViewModel_Previews: PreviewProvider {
             MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(level: 3), attribute: Attribute(rawValue: "Earth")!)
             MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(level: 4), attribute: Attribute(rawValue: "Water")!)
             MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(level: 4), attribute: Attribute(rawValue: "Fire")!)
+            
+            MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(rank: 4), attribute: Attribute(rawValue: "Fire")!)
         }
     }
 }
