@@ -15,7 +15,7 @@ struct CardSearchViewModel: View {
         NavigationStack {
             List(searchResults, id: \.cardID) { card in
                 NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
-                    CardSearchResultsViewModel(cardName: card.cardName, monsterType: card.monsterType)
+                    CardSearchResultsViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                 })
             }.listStyle(.plain).searchable(text: self.$searchText, prompt: "Search cards...")
                 .onChange(of: searchText) { value in
@@ -42,14 +42,18 @@ struct CardSearchLinkDestination: View {
 }
 
 struct CardSearchResultsViewModel: View {
+    var cardId: String
     var cardName: String
     var monsterType: String?
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(cardName).fontWeight(.bold).font(.footnote)
-            if (monsterType != nil) {
-                Text(monsterType!).fontWeight(.light).font(.footnote)
+        HStack {
+            RoundedImageViewModel(radius: 70, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/original/\(cardId).jpg")!)
+            VStack(alignment: .leading) {
+                Text(cardName).fontWeight(.bold).font(.footnote)
+                if (monsterType != nil) {
+                    Text(monsterType!).fontWeight(.light).font(.footnote)
+                }
             }
         }
     }
@@ -57,7 +61,7 @@ struct CardSearchResultsViewModel: View {
 
 struct SearchCardViewModel_Previews: PreviewProvider {
     static var previews: some View {
-                CardSearchViewModel()
-//        CardSearchLinkDestination(cardId: "")
+        CardSearchViewModel()
+        //        CardSearchLinkDestination(cardId: "")
     }
 }
