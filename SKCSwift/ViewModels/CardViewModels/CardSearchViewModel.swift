@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardSearchViewModel: View {
-    @State var searchResults: [Card] = []
+    @State var searchResults = [SearchResults]()
     @State var searchText = ""
     @State var isFetching = false
     
@@ -31,10 +31,16 @@ struct CardSearchViewModel: View {
                     )
             }
             
-            List(searchResults, id: \.cardID) { card in
-                NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
-                    CardSearchResultsViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                })
+            List(searchResults) { searchResults in
+                Section(header: Text(searchResults.section) ) {
+                    ForEach(searchResults.results, id: \.cardID) { card in
+                        LazyVStack {
+                            NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
+                                CardSearchResultsViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                            })
+                        }
+                    }
+                }
             }.listStyle(.plain).searchable(text: self.$searchText, prompt: "Search cards...")
                 .onChange(of: searchText) { value in
                     if (value == "") {
@@ -43,8 +49,18 @@ struct CardSearchViewModel: View {
                         isFetching = true
                         searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
                             switch result {
-                            case .success(let card):
-                                self.searchResults = card
+                            case .success(let cards):
+                                var results = [String: [Card]]()
+                                
+                                cards.forEach { card in
+                                    results[card.cardColor, default: []].append(card)
+                                }
+                                
+                                var searchResults = [SearchResults]()
+                                for (section, cards) in results {
+                                    searchResults.append(SearchResults(section: section, results: cards))
+                                }
+                                self.searchResults = searchResults
                             case .failure(let error):
                                 print(error)
                             }
@@ -56,6 +72,12 @@ struct CardSearchViewModel: View {
             
         }
     }
+}
+
+struct SearchResults: Identifiable {
+    var id = UUID()
+    var section: String
+    var results: [Card]
 }
 
 struct CardSearchLinkDestination: View {
