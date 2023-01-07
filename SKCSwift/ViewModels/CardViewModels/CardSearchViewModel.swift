@@ -8,15 +8,25 @@
 import SwiftUI
 
 struct CardSearchViewModel: View {
-    @State var searchResults = [SearchResults]()
-    @State var searchText = ""
-    @State var isFetching = false
+    @State private var searchResults = [SearchResults]()
+    @State private var searchText = ""
+    @State private var isFetching = false
     
     var body: some View {
         NavigationStack {
-            if (searchResults.isEmpty && !searchText.isEmpty && !isFetching) {
-                Text("Nothing found in database")
-                    .font(.title)
+            if (!isFetching && !searchText.isEmpty && searchResults.isEmpty) {
+                VStack {
+                    Spacer()
+                    Text("Nothing found in database")
+                        .font(.title2)
+                }.padding(.horizontal)
+                    .frame(
+                        minWidth: 0,
+                        maxWidth: .infinity,
+                        minHeight: 0,
+                        maxHeight: .infinity,
+                        alignment: .center
+                    )
             } else if (searchText.isEmpty) {
                 VStack(alignment: .leading) {
                     Text("Suggestions")
@@ -32,7 +42,7 @@ struct CardSearchViewModel: View {
             }
             
             List(searchResults) { searchResults in
-                Section(header: Text(searchResults.section) ) {
+                Section(header: Text(searchResults.section).font(.headline).fontWeight(.black) ) {
                     ForEach(searchResults.results, id: \.cardID) { card in
                         LazyVStack {
                             NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
@@ -41,7 +51,8 @@ struct CardSearchViewModel: View {
                         }
                     }
                 }
-            }.listStyle(.plain).searchable(text: self.$searchText, prompt: "Search cards...")
+            }.listStyle(.plain)
+                .searchable(text: self.$searchText, prompt: "Search for card...")
                 .onChange(of: searchText) { value in
                     if (value == "") {
                         searchResults = []
@@ -69,7 +80,6 @@ struct CardSearchViewModel: View {
                         })
                     }
                 }.navigationTitle("Search")
-            
         }
     }
 }
