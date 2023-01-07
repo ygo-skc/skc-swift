@@ -41,9 +41,9 @@ struct CardSearchViewModel: View {
                     )
             }
             
-            List(searchResults) { searchResults in
-                Section(header: Text(searchResults.section).font(.headline).fontWeight(.black) ) {
-                    ForEach(searchResults.results, id: \.cardID) { card in
+            List(searchResults) { sr in
+                Section(header: Text(sr.section).font(.headline).fontWeight(.black) ) {
+                    ForEach(sr.results, id: \.cardID) { card in
                         LazyVStack {
                             NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
                                 CardSearchResultsViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
@@ -62,14 +62,20 @@ struct CardSearchViewModel: View {
                             switch result {
                             case .success(let cards):
                                 var results = [String: [Card]]()
+                                var sections = [String]()
                                 
                                 cards.forEach { card in
-                                    results[card.cardColor, default: []].append(card)
+                                    let section = card.cardColor
+                                    if results[section] == nil {
+                                        results[section] = []
+                                        sections.append(section)
+                                    }
+                                    results[section]!.append(card)
                                 }
                                 
                                 var searchResults = [SearchResults]()
-                                for (section, cards) in results {
-                                    searchResults.append(SearchResults(section: section, results: cards))
+                                for (section) in sections {
+                                    searchResults.append(SearchResults(section: section, results: results[section]!))
                                 }
                                 self.searchResults = searchResults
                             case .failure(let error):
@@ -105,7 +111,7 @@ struct CardSearchResultsViewModel: View {
     
     var body: some View {
         HStack {
-            RoundedImageViewModel(radius: 70, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/x-sm/\(cardId).jpg")!)
+            RoundedImageViewModel(radius: 60, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/x-sm/\(cardId).jpg")!)
             VStack(alignment: .leading) {
                 Text(cardName).fontWeight(.bold).font(.footnote)
                 if (monsterType != nil) {
