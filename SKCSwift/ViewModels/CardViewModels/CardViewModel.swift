@@ -35,6 +35,26 @@ struct CardViewModel: View {
                 } else {
                     RectPlaceholderViewModel(width: screenWidth, height: 200, radius: 10)
                 }
+                
+                
+                Button {
+                    showView.toggle()
+                } label: {
+                    Text("Products")
+                        .font(.title3)
+                }
+                .sheet(isPresented: $showView) {
+                    RelatedProductsContentViewModels(cardName: cardData.cardName, products: cardData.foundIn ?? [Product]())
+                }
+                
+                Button {
+                    showView.toggle()
+                } label: {
+                    Text("Ban Lists")
+                        .font(.title3)
+                }
+                .sheet(isPresented: $showView) {
+                }
             }
             .onAppear {
                 getCardData(cardId: cardId, {result in
@@ -47,17 +67,6 @@ struct CardViewModel: View {
                     }
                 })
             }
-            
-            Button {
-                showView.toggle()
-            } label: {
-                Text("Suggestions")
-                    .font(.title3)
-            }
-            .sheet(isPresented: $showView) {
-                Text("Yo")
-            }
-            
         }.frame(width: screenWidth)
     }
 }

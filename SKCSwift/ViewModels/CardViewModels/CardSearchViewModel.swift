@@ -119,12 +119,13 @@ struct CardSearchResultsViewModel: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 struct SearchCardViewModel_Previews: PreviewProvider {
     static var previews: some View {
         CardSearchViewModel()
-        //        CardSearchLinkDestination(cardId: "")
+        CardSearchResultsViewModel(cardId: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
     }
 }
