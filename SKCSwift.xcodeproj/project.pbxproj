@@ -29,6 +29,7 @@
 		1F86EC3F29688821004F4F1B /* AttributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC3E29688821004F4F1B /* AttributeViewModel.swift */; };
 		1F86EC4629694FE6004F4F1B /* RelatedProductsContentViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC4529694FE6004F4F1B /* RelatedProductsContentViewModels.swift */; };
 		1F86EC48296A0055004F4F1B /* DateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC47296A0055004F4F1B /* DateViewModel.swift */; };
+		1F86EC4A296A35C7004F4F1B /* RelatedBanListsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */; };
 		1F962B2B2967D065007974DA /* RoundedImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */; };
 		1FB939042965029B00BF0CBA /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939032965029B00BF0CBA /* Product.swift */; };
 		1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* SKCAPI.swift */; };
@@ -78,6 +79,7 @@
 		1F86EC3E29688821004F4F1B /* AttributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeViewModel.swift; sourceTree = "<group>"; };
 		1F86EC4529694FE6004F4F1B /* RelatedProductsContentViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedProductsContentViewModels.swift; sourceTree = "<group>"; };
 		1F86EC47296A0055004F4F1B /* DateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateViewModel.swift; sourceTree = "<group>"; };
+		1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedBanListsViewModel.swift; sourceTree = "<group>"; };
 		1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageViewModel.swift; sourceTree = "<group>"; };
 		1FB939032965029B00BF0CBA /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		1FB93905296503AE00BF0CBA /* SKCAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCAPI.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				1F3C10A929673E1200EE4EBE /* CardViewModel.swift */,
 				1F86EC4529694FE6004F4F1B /* RelatedProductsContentViewModels.swift */,
 				1F6687E32967A04D00C8555D /* MonsterAssociationViewModels */,
+				1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */,
 			);
 			path = CardViewModels;
 			sourceTree = "<group>";
@@ -380,6 +383,7 @@
 				1F6687E02967904400C8555D /* CardSearchViewModel.swift in Sources */,
 				1F6687E2296798E700C8555D /* HomeViewModel.swift in Sources */,
 				1F6687E72967A13600C8555D /* LevelAssociationViewModel.swift in Sources */,
+				1F86EC4A296A35C7004F4F1B /* RelatedBanListsViewModel.swift in Sources */,
 				1F86EC48296A0055004F4F1B /* DateViewModel.swift in Sources */,
 				1F6687E52967A07A00C8555D /* RankAssociationViewModel.swift in Sources */,
 				1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */,

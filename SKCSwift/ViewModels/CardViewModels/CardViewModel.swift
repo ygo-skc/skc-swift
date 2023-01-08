@@ -11,7 +11,8 @@ struct CardViewModel: View {
     var cardId: String
     
     @State private var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
-    @State private var showView = false
+    @State private var showProductsSheet = false
+    @State private var showBanListsSheet = false
     @State private var isDataLoaded = false
     
     private let screenWidth = UIScreen.main.bounds.width - 15
@@ -37,24 +38,33 @@ struct CardViewModel: View {
                 }
                 
                 
-                Button {
-                    showView.toggle()
-                } label: {
-                    Text("Products")
-                        .font(.title3)
+                HStack {
+                    Button {
+                        showProductsSheet.toggle()
+                    } label: {
+                        HStack {
+                            
+                            Text("Products")
+                            Image(systemName: "chevron.right")
+                        }
+                    }
+                    .sheet(isPresented: $showProductsSheet) {
+                        RelatedProductsContentViewModels(cardName: cardData.cardName, products: cardData.foundIn ?? [Product]())
+                    }
+                    
+                    Button {
+                        showBanListsSheet.toggle()
+                    } label: {
+                        HStack {
+                            Text("Ban Lists")
+                            Image(systemName: "chevron.right")
+                        }
+                    }
+                    .sheet(isPresented: $showBanListsSheet) {
+                        RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: cardData.restrictedIn?.TCG ?? [BanList]())
+                    }
                 }
-                .sheet(isPresented: $showView) {
-                    RelatedProductsContentViewModels(cardName: cardData.cardName, products: cardData.foundIn ?? [Product]())
-                }
-                
-                Button {
-                    showView.toggle()
-                } label: {
-                    Text("Ban Lists")
-                        .font(.title3)
-                }
-                .sheet(isPresented: $showView) {
-                }
+                .buttonStyle(.borderedProminent)
             }
             .onAppear {
                 getCardData(cardId: cardId, {result in

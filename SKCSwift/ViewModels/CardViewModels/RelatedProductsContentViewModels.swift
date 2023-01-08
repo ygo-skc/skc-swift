@@ -25,7 +25,6 @@ struct RelatedProductsContentViewModels: View {
         } else {
             NavigationStack {
                 VStack(alignment: .leading) {
-                    
                     Text("\(cardName) Was Printed In")
                         .font(.headline)
                         .multilineTextAlignment(.leading)
@@ -61,7 +60,6 @@ struct ProductListItemViewModel: View {
                     .fontWeight(.thin)
                 Text(product.productName)
                     .lineLimit(2)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.subheadline)
                     .fontWeight(.heavy)
                 HStack {
@@ -74,6 +72,7 @@ struct ProductListItemViewModel: View {
                 }
                 .padding(.top, 1)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             DateViewModel(date: product.productReleaseDate)
         }
         .frame(
