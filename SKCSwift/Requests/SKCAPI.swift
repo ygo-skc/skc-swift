@@ -13,7 +13,9 @@ func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -
     
     URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
         if (error != nil) {
-            print("Error occurred while calling SKC API \(error!.localizedDescription)")
+            if (error!.localizedDescription != "cancelled") {
+                print("Error occurred while calling SKC API \(error!.localizedDescription)")
+            }
         } else if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 404 {
             print("Card \(cardId) not found in database.")
         }else {
@@ -27,13 +29,15 @@ func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -
     }).resume()
 }
 
-func searchCard(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void)->  Void {
+func searchCard(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void)->  URLSessionDataTask {
     let url = searchCardURL(cardName: searchTerm)
     let request = baseSKCAPIRequest(url: url)
     
-    URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+    let req = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
         if (error != nil) {
-            print("Error occurred while calling SKC API \(error!.localizedDescription)")
+            if (error!.localizedDescription != "cancelled") {
+                print("Error occurred while calling SKC API \(error!.localizedDescription)")
+            }
         } else {
             do {
                 let cardData = try JSONDecoder().decode([Card].self, from: data!)
@@ -42,5 +46,8 @@ func searchCard(searchTerm: String, _ completion: @escaping (Result<[Card], Erro
                 print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
             }
         }
-    }).resume()
+    })
+    req.resume()
+    
+    return req
 }

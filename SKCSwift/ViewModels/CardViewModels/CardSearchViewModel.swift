@@ -11,6 +11,7 @@ struct CardSearchViewModel: View {
     @State private var searchResults = [SearchResults]()
     @State private var searchText = ""
     @State private var isFetching = false
+    @State private var task: URLSessionDataTask?
     
     var body: some View {
         NavigationStack {
@@ -54,11 +55,15 @@ struct CardSearchViewModel: View {
             }.listStyle(.plain)
                 .searchable(text: self.$searchText, prompt: "Search for card...")
                 .onChange(of: searchText) { value in
+                    if (isFetching) {
+                        task?.cancel()
+                    }
+                    
                     if (value == "") {
                         searchResults = []
                     } else {
                         isFetching = true
-                        searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
+                        task = searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
                             switch result {
                             case .success(let cards):
                                 var results = [String: [Card]]()
