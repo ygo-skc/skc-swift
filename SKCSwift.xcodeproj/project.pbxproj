@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F21FF692977BB2E00B4451A /* RelatedContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF682977BB2E00B4451A /* RelatedContent.swift */; };
 		1F30FE6E296B721500B80816 /* CardSearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */; };
 		1F30FE70296B729400B80816 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6F296B729400B80816 /* SearchResults.swift */; };
 		1F32565229635936001AACF1 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565129635936001AACF1 /* Card.swift */; };
@@ -29,9 +30,7 @@
 		1F8212022961FF0100238EE1 /* SKCSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */; };
 		1F8212042961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */; };
 		1F86EC3F29688821004F4F1B /* AttributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC3E29688821004F4F1B /* AttributeViewModel.swift */; };
-		1F86EC4629694FE6004F4F1B /* RelatedProductsContentViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC4529694FE6004F4F1B /* RelatedProductsContentViewModels.swift */; };
 		1F86EC48296A0055004F4F1B /* DateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC47296A0055004F4F1B /* DateViewModel.swift */; };
-		1F86EC4A296A35C7004F4F1B /* RelatedBanListsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */; };
 		1F962B2B2967D065007974DA /* RoundedImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */; };
 		1FB939042965029B00BF0CBA /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939032965029B00BF0CBA /* Product.swift */; };
 		1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* SKCAPI.swift */; };
@@ -56,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1F21FF682977BB2E00B4451A /* RelatedContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContent.swift; sourceTree = "<group>"; };
 		1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchResultViewModel.swift; sourceTree = "<group>"; };
 		1F30FE6F296B729400B80816 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
 		1F32565129635936001AACF1 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -81,9 +81,7 @@
 		1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITests.swift; sourceTree = "<group>"; };
 		1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1F86EC3E29688821004F4F1B /* AttributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeViewModel.swift; sourceTree = "<group>"; };
-		1F86EC4529694FE6004F4F1B /* RelatedProductsContentViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedProductsContentViewModels.swift; sourceTree = "<group>"; };
 		1F86EC47296A0055004F4F1B /* DateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateViewModel.swift; sourceTree = "<group>"; };
-		1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedBanListsViewModel.swift; sourceTree = "<group>"; };
 		1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageViewModel.swift; sourceTree = "<group>"; };
 		1FB939032965029B00BF0CBA /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		1FB93905296503AE00BF0CBA /* SKCAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCAPI.swift; sourceTree = "<group>"; };
@@ -153,8 +151,7 @@
 			children = (
 				1F32565A2963E195001AACF1 /* CardStatsViewModel.swift */,
 				1F3C10A929673E1200EE4EBE /* CardViewModel.swift */,
-				1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */,
-				1F86EC4529694FE6004F4F1B /* RelatedProductsContentViewModels.swift */,
+				1F21FF682977BB2E00B4451A /* RelatedContent.swift */,
 				1F6687E32967A04D00C8555D /* MonsterAssociationViewModels */,
 			);
 			path = CardViewModels;
@@ -372,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F7655302964CB2D00512EF1 /* RectPlaceholderViewModel.swift in Sources */,
+				1F21FF692977BB2E00B4451A /* RelatedContent.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
@@ -385,13 +383,11 @@
 				1FB939042965029B00BF0CBA /* Product.swift in Sources */,
 				1F30FE70296B729400B80816 /* SearchResults.swift in Sources */,
 				1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */,
-				1F86EC4629694FE6004F4F1B /* RelatedProductsContentViewModels.swift in Sources */,
 				1F30FE6E296B721500B80816 /* CardSearchResultViewModel.swift in Sources */,
 				1F962B2B2967D065007974DA /* RoundedImageViewModel.swift in Sources */,
 				1F6687E02967904400C8555D /* CardSearchViewModel.swift in Sources */,
 				1F6687E2296798E700C8555D /* HomeViewModel.swift in Sources */,
 				1F6687E72967A13600C8555D /* LevelAssociationViewModel.swift in Sources */,
-				1F86EC4A296A35C7004F4F1B /* RelatedBanListsViewModel.swift in Sources */,
 				1F86EC48296A0055004F4F1B /* DateViewModel.swift in Sources */,
 				1F6687E52967A07A00C8555D /* RankAssociationViewModel.swift in Sources */,
 				1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */,

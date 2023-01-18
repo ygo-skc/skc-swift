@@ -47,11 +47,11 @@ struct CardViewModel: View {
                     CardViewButton(text: "Products", sheetContents: RelatedProductsContentViewModels(cardName: cardData.cardName, products: self.products))
                         .disabled(self.products.isEmpty)
                     
-                    CardViewButton2(text: "TCG Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.tcgBanLists))
+                    CardViewButton(text: "TCG Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.tcgBanLists))
                         .disabled(self.tcgBanLists.isEmpty)
-                    CardViewButton2(text: "Master Duel Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.mdBanLists))
+                    CardViewButton(text: "Master Duel Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.mdBanLists))
                         .disabled(self.mdBanLists.isEmpty)
-                    CardViewButton2(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.dlBanLists))
+                    CardViewButton(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.dlBanLists))
                         .disabled(self.dlBanLists.isEmpty)
                 }
                 .padding(.all)
@@ -59,7 +59,6 @@ struct CardViewModel: View {
             .padding(.horizontal, 5)
             .buttonStyle(.borderedProminent)
         }
-        .frame(width: .infinity)
         .onAppear {
             getCardData(cardId: cardId, {result in
                 switch result {
@@ -81,34 +80,9 @@ struct CardViewModel: View {
 }
 
 
-struct CardViewButton: View {
+struct CardViewButton<T: RelatedContent>: View {
     var text: String
-    var sheetContents: RelatedProductsContentViewModels
-
-    @State private var showSheet = false
-
-    var body: some View {
-
-        Button {
-            showSheet.toggle()
-        } label: {
-            HStack {
-                Text(text)
-                Spacer()
-                Image(systemName: "chevron.right")
-            }
-            .frame(maxWidth: 200)
-        }
-        .sheet(isPresented: $showSheet) {
-            sheetContents
-        }
-    }
-}
-
-
-struct CardViewButton2: View {
-    var text: String
-    var sheetContents: RelatedBanListsViewModel
+    var sheetContents: T
 
     @State private var showSheet = false
 
