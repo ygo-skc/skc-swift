@@ -20,7 +20,7 @@ struct CardViewModel: View {
     @State private var mdBanLists = [BanList]()
     @State private var dlBanLists = [BanList]()
     
-    private let screenWidth = UIScreen.main.bounds.width - 15
+
     private let imageSize = UIScreen.main.bounds.width - 60
     private let imageUrl: URL
     
@@ -39,7 +39,7 @@ struct CardViewModel: View {
                         cardId: cardData.cardID, cardAttribute: cardData.cardAttribute
                     )
                 } else {
-                    RectPlaceholderViewModel(width: screenWidth, height: 200, radius: 10)
+                    RectPlaceholderViewModel(width: .infinity, height: 200, radius: 10)
                 }
                 
                 
@@ -53,27 +53,30 @@ struct CardViewModel: View {
                         .disabled(self.mdBanLists.isEmpty)
                     CardViewButton2(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.dlBanLists))
                         .disabled(self.dlBanLists.isEmpty)
-                }.padding(.all)
+                }
+                .padding(.all)
             }
+            .padding(.horizontal, 5)
             .buttonStyle(.borderedProminent)
-            .onAppear {
-                getCardData(cardId: cardId, {result in
-                    switch result {
-                    case .success(let card):
-                        self.cardData = card
-                        
-                        self.products = cardData.foundIn ?? [Product]()
-                        self.tcgBanLists = cardData.restrictedIn?.TCG ?? [BanList]()
-                        self.mdBanLists = cardData.restrictedIn?.MD ?? [BanList]()
-                        self.dlBanLists = cardData.restrictedIn?.DL ?? [BanList]()
-                        
-                        self.isDataLoaded = true
-                    case .failure(let error):
-                        print(error)
-                    }
-                })
-            }
-        }.frame(width: screenWidth)
+        }
+        .frame(width: .infinity)
+        .onAppear {
+            getCardData(cardId: cardId, {result in
+                switch result {
+                case .success(let card):
+                    self.cardData = card
+                    
+                    self.products = cardData.foundIn ?? [Product]()
+                    self.tcgBanLists = cardData.restrictedIn?.TCG ?? [BanList]()
+                    self.mdBanLists = cardData.restrictedIn?.MD ?? [BanList]()
+                    self.dlBanLists = cardData.restrictedIn?.DL ?? [BanList]()
+                    
+                    self.isDataLoaded = true
+                case .failure(let error):
+                    print(error)
+                }
+            })
+        }
     }
 }
 
