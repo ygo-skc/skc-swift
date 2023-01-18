@@ -167,28 +167,10 @@ struct BanListItemViewModel: View {
                     .lineLimit(1)
                     .font(.subheadline)
                     .fontWeight(.heavy)
-                switch banListInstance.banStatus {
-                case "Forbidden":
-                    Circle()
-                        .foregroundColor(.red)
-                        .frame(width: 30)
-                case "Limited", "Limited 1":
-                    Circle()
-                        .foregroundColor(.yellow)
-                        .frame(width: 30)
-                case "Semi-Limited", "Limited 2":
-                    Circle()
-                        .foregroundColor(.green)
-                        .frame(width: 30)
-                case "Limited 3":
-                    Circle()
-                        .foregroundColor(.blue)
-                        .frame(width: 30)
-                default:
-                    Circle()
-                        .foregroundColor(.black)
-                        .frame(width: 30)
-                }
+                
+                Circle()
+                    .foregroundColor(banStatusColor(status: banListInstance.banStatus))
+                    .frame(width: 30)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             DateViewModel(date: banListInstance.banListDate)

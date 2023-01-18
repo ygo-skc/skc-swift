@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1F21FF692977BB2E00B4451A /* RelatedContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF682977BB2E00B4451A /* RelatedContent.swift */; };
+		1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF6B2977BC2D00B4451A /* UIColors.swift */; };
 		1F30FE6E296B721500B80816 /* CardSearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */; };
 		1F30FE70296B729400B80816 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6F296B729400B80816 /* SearchResults.swift */; };
 		1F32565229635936001AACF1 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565129635936001AACF1 /* Card.swift */; };
@@ -56,6 +57,7 @@
 
 /* Begin PBXFileReference section */
 		1F21FF682977BB2E00B4451A /* RelatedContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContent.swift; sourceTree = "<group>"; };
+		1F21FF6B2977BC2D00B4451A /* UIColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColors.swift; sourceTree = "<group>"; };
 		1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchResultViewModel.swift; sourceTree = "<group>"; };
 		1F30FE6F296B729400B80816 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
 		1F32565129635936001AACF1 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -113,6 +115,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F21FF6A2977BC1700B4451A /* util */ = {
+			isa = PBXGroup;
+			children = (
+				1F21FF6B2977BC2D00B4451A /* UIColors.swift */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
 		1F32564D296358AB001AACF1 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
@@ -202,6 +212,7 @@
 		1F8211E52961FF0000238EE1 /* SKCSwift */ = {
 			isa = PBXGroup;
 			children = (
+				1F21FF6A2977BC1700B4451A /* util */,
 				1F8211E82961FF0000238EE1 /* ContentView.swift */,
 				1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */,
 				1F8211EA2961FF0100238EE1 /* Assets.xcassets */,
@@ -369,6 +380,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F7655302964CB2D00512EF1 /* RectPlaceholderViewModel.swift in Sources */,
+				1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */,
 				1F21FF692977BB2E00B4451A /* RelatedContent.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
