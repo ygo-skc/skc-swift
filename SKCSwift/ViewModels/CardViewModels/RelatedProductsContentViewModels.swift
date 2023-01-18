@@ -68,7 +68,6 @@ struct ProductListItemViewModel: View {
                         .fontWeight(.bold)
                     Text(product.productContent[0].rarities.joined(separator: ", "))
                         .font(.callout)
-                        .fontWeight(.thin)
                 }
                 .padding(.top, 1)
             }

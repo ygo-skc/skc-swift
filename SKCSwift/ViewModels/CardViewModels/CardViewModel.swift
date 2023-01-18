@@ -15,6 +15,11 @@ struct CardViewModel: View {
     @State private var showBanListsSheet = false
     @State private var isDataLoaded = false
     
+    @State private var products = [Product]()
+    @State private var tcgBanLists = [BanList]()
+    @State private var mdBanLists = [BanList]()
+    @State private var dlBanLists = [BanList]()
+    
     private let screenWidth = UIScreen.main.bounds.width - 15
     private let imageSize = UIScreen.main.bounds.width - 60
     private let imageUrl: URL
@@ -38,39 +43,30 @@ struct CardViewModel: View {
                 }
                 
                 
-                HStack {
-                    Button {
-                        showProductsSheet.toggle()
-                    } label: {
-                        HStack {
-                            
-                            Text("Products")
-                            Image(systemName: "chevron.right")
-                        }
-                    }
-                    .sheet(isPresented: $showProductsSheet) {
-                        RelatedProductsContentViewModels(cardName: cardData.cardName, products: cardData.foundIn ?? [Product]())
-                    }
+                VStack {
+                    CardViewButton(text: "Products", sheetContents: RelatedProductsContentViewModels(cardName: cardData.cardName, products: self.products))
+                        .disabled(self.products.isEmpty)
                     
-                    Button {
-                        showBanListsSheet.toggle()
-                    } label: {
-                        HStack {
-                            Text("Ban Lists")
-                            Image(systemName: "chevron.right")
-                        }
-                    }
-                    .sheet(isPresented: $showBanListsSheet) {
-                        RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: cardData.restrictedIn?.TCG ?? [BanList]())
-                    }
-                }
-                .buttonStyle(.borderedProminent)
+                    CardViewButton2(text: "TCG Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.tcgBanLists))
+                        .disabled(self.tcgBanLists.isEmpty)
+                    CardViewButton2(text: "Master Duel Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.mdBanLists))
+                        .disabled(self.mdBanLists.isEmpty)
+                    CardViewButton2(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.dlBanLists))
+                        .disabled(self.dlBanLists.isEmpty)
+                }.padding(.all)
             }
+            .buttonStyle(.borderedProminent)
             .onAppear {
                 getCardData(cardId: cardId, {result in
                     switch result {
                     case .success(let card):
                         self.cardData = card
+                        
+                        self.products = cardData.foundIn ?? [Product]()
+                        self.tcgBanLists = cardData.restrictedIn?.TCG ?? [BanList]()
+                        self.mdBanLists = cardData.restrictedIn?.MD ?? [BanList]()
+                        self.dlBanLists = cardData.restrictedIn?.DL ?? [BanList]()
+                        
                         self.isDataLoaded = true
                     case .failure(let error):
                         print(error)
@@ -78,6 +74,56 @@ struct CardViewModel: View {
                 })
             }
         }.frame(width: screenWidth)
+    }
+}
+
+
+struct CardViewButton: View {
+    var text: String
+    var sheetContents: RelatedProductsContentViewModels
+
+    @State private var showSheet = false
+
+    var body: some View {
+
+        Button {
+            showSheet.toggle()
+        } label: {
+            HStack {
+                Text(text)
+                Spacer()
+                Image(systemName: "chevron.right")
+            }
+            .frame(maxWidth: 200)
+        }
+        .sheet(isPresented: $showSheet) {
+            sheetContents
+        }
+    }
+}
+
+
+struct CardViewButton2: View {
+    var text: String
+    var sheetContents: RelatedBanListsViewModel
+
+    @State private var showSheet = false
+
+    var body: some View {
+
+        Button {
+            showSheet.toggle()
+        } label: {
+            HStack {
+                Text(text)
+                Spacer()
+                Image(systemName: "chevron.right")
+            }
+            .frame(maxWidth: 200)
+        }
+        .sheet(isPresented: $showSheet) {
+            sheetContents
+        }
     }
 }
 

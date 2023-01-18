@@ -153,9 +153,9 @@
 			children = (
 				1F32565A2963E195001AACF1 /* CardStatsViewModel.swift */,
 				1F3C10A929673E1200EE4EBE /* CardViewModel.swift */,
+				1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */,
 				1F86EC4529694FE6004F4F1B /* RelatedProductsContentViewModels.swift */,
 				1F6687E32967A04D00C8555D /* MonsterAssociationViewModels */,
-				1F86EC49296A35C7004F4F1B /* RelatedBanListsViewModel.swift */,
 			);
 			path = CardViewModels;
 			sourceTree = "<group>";

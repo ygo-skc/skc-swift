@@ -63,13 +63,17 @@ struct BanListItemViewModel: View {
                     Circle()
                         .foregroundColor(.red)
                         .frame(width: 30)
-                case "Limited":
+                case "Limited", "Limited 1":
                     Circle()
                         .foregroundColor(.yellow)
                         .frame(width: 30)
-                case "Semi-Limited":
+                case "Semi-Limited", "Limited 2":
                     Circle()
                         .foregroundColor(.green)
+                        .frame(width: 30)
+                case "Limited 3":
+                    Circle()
+                        .foregroundColor(.blue)
                         .frame(width: 30)
                 default:
                     Circle()
