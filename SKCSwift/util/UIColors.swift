@@ -10,13 +10,13 @@ import SwiftUI
 func banStatusColor(status: String) -> Color {
     switch status {
     case "Forbidden":
-        return .red
+        return Color("forbidden")
     case "Limited", "Limited 1":
-        return .yellow
+        return Color("limited")
     case "Semi-Limited", "Limited 2":
-        return .green
+        return Color("semi-limited")
     case "Limited 3":
-        return .blue
+        return Color("limited-three")
     default:
         return .gray
     }
