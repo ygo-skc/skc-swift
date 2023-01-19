@@ -7,10 +7,6 @@
 
 import Foundation
 
-enum Attribute: String {
-    case dark = "Dark", light = "Light", earth = "Earth", wind = "Wind", water = "Water", fire = "Fire"
-}
-
 struct MonsterAssociation: Codable {
     var level: Int?
     var rank: Int?

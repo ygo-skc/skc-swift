@@ -118,41 +118,30 @@ struct RelatedProductsContentViewModels_Previews: PreviewProvider {
 // related ban lists
 struct RelatedBanListsViewModel: RelatedContent {
     var cardName: String
-    var tcgBanlists: [BanList]
+    var banlists: [BanList]
+    var format: BanListFormat
     
     var body: some View {
-        if (tcgBanlists.isEmpty) {
-            VStack {
-                Text("No Ban Lists Found")
-                    .font(.title)
-                    .padding(.horizontal)
-                Text("\(cardName) has not been added to any ban list in TCG, Master Duel or Duel Links formats or the database hasn't been updated")
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 1)
-                    .padding(.horizontal)
+        NavigationStack {
+            VStack(alignment: .leading) {
+                Text("\(format.rawValue) Ban Lists \(cardName) Was In")
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
+                    .padding()
+                List {
+                    ForEach(banlists, id: \.banListDate) { instance in
+                        BanListItemViewModel(banListInstance: instance)
+                    }
+                }.listStyle(.plain)
             }
-        } else {
-            NavigationStack {
-                VStack(alignment: .leading) {
-                    Text("TCG Ban Lists \(cardName) Was In")
-                        .font(.headline)
-                        .multilineTextAlignment(.leading)
-                        .padding()
-                    List {
-                        ForEach(tcgBanlists, id: \.banListDate) { instance in
-                            BanListItemViewModel(banListInstance: instance)
-                        }
-                    }.listStyle(.plain)
-                }
-                .navigationTitle("Ban Lists")
-                .frame(
-                    minWidth: 0,
-                    maxWidth: .infinity,
-                    minHeight: 0,
-                    maxHeight: .infinity,
-                    alignment: .topLeading
-                )
-            }
+            .navigationTitle("Ban Lists")
+            .frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
         }
     }
 }
@@ -192,6 +181,6 @@ struct RelatedBanListsViewModel_Previews: PreviewProvider {
             BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG")
         ]
         
-        RelatedBanListsViewModel(cardName: "Elemental HERO Stratos", tcgBanlists: banLists)
+        RelatedBanListsViewModel(cardName: "Elemental HERO Stratos", banlists: banLists, format: BanListFormat.tcg)
     }
 }

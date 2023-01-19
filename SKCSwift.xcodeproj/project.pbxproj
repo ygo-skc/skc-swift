@@ -36,6 +36,7 @@
 		1FB939042965029B00BF0CBA /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939032965029B00BF0CBA /* Product.swift */; };
 		1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* SKCAPI.swift */; };
 		1FB939082965043500BF0CBA /* BanList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939072965043500BF0CBA /* BanList.swift */; };
+		1FE8C9BF2978CED9005AD924 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C9BE2978CED9005AD924 /* Enums.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +89,7 @@
 		1FB939032965029B00BF0CBA /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		1FB93905296503AE00BF0CBA /* SKCAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCAPI.swift; sourceTree = "<group>"; };
 		1FB939072965043500BF0CBA /* BanList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BanList.swift; sourceTree = "<group>"; };
+		1FE8C9BE2978CED9005AD924 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				1F21FF6B2977BC2D00B4451A /* UIColors.swift */,
+				1FE8C9BE2978CED9005AD924 /* Enums.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
 				1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */,
+				1FE8C9BF2978CED9005AD924 /* Enums.swift in Sources */,
 				1F86EC3F29688821004F4F1B /* AttributeViewModel.swift in Sources */,
 				1F32565229635936001AACF1 /* Card.swift in Sources */,
 				1F3256592963E116001AACF1 /* MonsterAssociationViewModel.swift in Sources */,

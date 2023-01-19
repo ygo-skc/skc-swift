@@ -47,11 +47,11 @@ struct CardViewModel: View {
                     CardViewButton(text: "Products", sheetContents: RelatedProductsContentViewModels(cardName: cardData.cardName, products: self.products))
                         .disabled(self.products.isEmpty)
                     
-                    CardViewButton(text: "TCG Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.tcgBanLists))
+                    CardViewButton(text: "TCG Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, banlists: self.tcgBanLists, format: BanListFormat.tcg))
                         .disabled(self.tcgBanLists.isEmpty)
-                    CardViewButton(text: "Master Duel Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.mdBanLists))
+                    CardViewButton(text: "Master Duel Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, banlists: self.mdBanLists, format: BanListFormat.md))
                         .disabled(self.mdBanLists.isEmpty)
-                    CardViewButton(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, tcgBanlists: self.dlBanLists))
+                    CardViewButton(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, banlists: self.dlBanLists, format: BanListFormat.dl))
                         .disabled(self.dlBanLists.isEmpty)
                 }
                 .padding(.all)
