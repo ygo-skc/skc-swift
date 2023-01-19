@@ -22,7 +22,7 @@ struct RectPlaceholderViewModel: View {
         Rectangle()
             .foregroundColor(.gray.opacity(0.70))
             .cornerRadius(radius)
-            .frame(width: width, height: height)
+            .frame(width: abs(width), height: abs(height))
     }
 }
 

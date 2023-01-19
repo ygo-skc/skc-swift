@@ -89,7 +89,12 @@ struct CardSearchViewModel: View {
             }
             
             List(searchResults) { sr in
-                Section(header: Text(sr.section).font(.headline).fontWeight(.black) ) {
+                Section(header: HStack{
+                    Circle()
+                        .foregroundColor(cardColorUI(cardColor: sr.section))
+                        .frame(width: 15)
+                    Text(sr.section)
+                }.font(.headline).fontWeight(.black) ) {
                     ForEach(sr.results, id: \.cardID) { card in
                         LazyVStack {
                             NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {

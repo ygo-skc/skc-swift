@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CardStatsViewModel: View {
     var cardName: String
+    var cardColor: String
     var monsterType: String?
     var cardEffect: String
     var monsterAssociation: MonsterAssociation?
@@ -58,7 +59,7 @@ struct CardStatsViewModel: View {
                     .cornerRadius(10)
             }.padding(.horizontal, 5.0)
                 .padding(.vertical, 10.0)
-        }.background(Color("Fusion"))
+        }.background(cardColorUI(cardColor: cardColor))
             .cornerRadius(15)
             .frame(
                 minWidth: 0,
@@ -80,6 +81,6 @@ struct CardStatsViewModel_Previews: PreviewProvider {
         let cardAttribute = "Light"
         let monsterAssociation = MonsterAssociation(level: 10)
         
-        CardStatsViewModel(cardName: cardName, monsterType: monsterType, cardEffect: cardEffect, monsterAssociation: monsterAssociation, cardId: cardId, cardAttribute: cardAttribute)
+        CardStatsViewModel(cardName: cardName, cardColor: "Fusion", monsterType: monsterType, cardEffect: cardEffect, monsterAssociation: monsterAssociation, cardId: cardId, cardAttribute: cardAttribute)
     }
 }

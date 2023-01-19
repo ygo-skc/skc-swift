@@ -35,7 +35,7 @@ struct CardViewModel: View {
                 RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
                 if (isDataLoaded) {
                     CardStatsViewModel(
-                        cardName: cardData.cardName, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
+                        cardName: cardData.cardName, cardColor: cardData.cardColor, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
                         cardId: cardData.cardID, cardAttribute: cardData.cardAttribute
                     )
                 } else {
