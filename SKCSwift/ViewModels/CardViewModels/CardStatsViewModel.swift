@@ -15,6 +15,24 @@ struct CardStatsViewModel: View {
     var monsterAssociation: MonsterAssociation?
     var cardId: String
     var cardAttribute: String
+    var monsterAttack: String
+    var monsterDefense: String
+    
+    private let nilStat = "?"
+    
+    init(cardName: String, cardColor: String, monsterType: String? = nil, cardEffect: String, monsterAssociation: MonsterAssociation? = nil, cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil) {
+        self.cardName = cardName
+        self.cardColor = cardColor
+        self.monsterType = monsterType
+        self.cardEffect = cardEffect
+        self.monsterAssociation = monsterAssociation
+        self.cardId = cardId
+        self.cardAttribute = cardAttribute
+        
+        let nilDefStat = (cardColor == "Link") ? "—" : nilStat  // override missing stat for certain edge cases
+        self.monsterAttack = (monsterAttack == nil) ? nilStat : String(monsterAttack!)
+        self.monsterDefense = (monsterDefense == nil) ? nilDefStat : String(monsterDefense!)
+    }
     
     var body: some View {
         VStack {
@@ -22,7 +40,7 @@ struct CardStatsViewModel: View {
                 Text(cardName)
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .foregroundColor(Color.white.opacity(0.9))
+                    .foregroundColor(.white)
                     .bold()
                 
                 let attribute = Attribute(rawValue: cardAttribute)
@@ -51,8 +69,27 @@ struct CardStatsViewModel: View {
                         
                         HStack {
                             Text(cardId)
-                                .font(.footnote)
+                                .font(.callout)
                                 .fontWeight(.light)
+                            
+                            Spacer()
+                            
+                            if (cardColor != "Spell" && cardColor != "Trap") {
+                                HStack {
+                                    Text(monsterAttack)
+                                        .padding(.horizontal, 4.0)
+                                        .padding(.vertical, 2.0)
+                                        .foregroundColor(.red)
+                                        .fontWeight(.bold)
+                                    Text(monsterDefense)
+                                        .padding(.horizontal, 4.0)
+                                        .padding(.vertical, 2.0)
+                                        .foregroundColor(.blue)
+                                        .fontWeight(.bold)
+                                }
+                                .background(Color("TranslucentBackground"))
+                                .cornerRadius(20)
+                            }
                         }.padding(.top, 1)
                     }.padding(5)
                 }.background(Color("TranslucentBackground"))
@@ -80,7 +117,9 @@ struct CardStatsViewModel_Previews: PreviewProvider {
             cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.",
             monsterAssociation: MonsterAssociation(level: 10),
             cardId: "90307498",
-            cardAttribute: "Light"
+            cardAttribute: "Light",
+            monsterAttack: 3000,
+            monsterDefense: 2500
         )
     }
 }

@@ -20,7 +20,7 @@ struct CardViewModel: View {
     @State private var mdBanLists = [BanList]()
     @State private var dlBanLists = [BanList]()
     
-
+    
     private let imageSize = UIScreen.main.bounds.width - 60
     private let imageUrl: URL
     
@@ -36,7 +36,7 @@ struct CardViewModel: View {
                 if (isDataLoaded) {
                     CardStatsViewModel(
                         cardName: cardData.cardName, cardColor: cardData.cardColor, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
-                        cardId: cardData.cardID, cardAttribute: cardData.cardAttribute
+                        cardId: cardData.cardID, cardAttribute: cardData.cardAttribute, monsterAttack: cardData.monsterAttack, monsterDefense: cardData.monsterDefense
                     )
                 } else {
                     RectPlaceholderViewModel(width: .infinity, height: 200, radius: 10)
@@ -83,11 +83,11 @@ struct CardViewModel: View {
 struct CardViewButton<T: RelatedContent>: View {
     var text: String
     var sheetContents: T
-
+    
     @State private var showSheet = false
-
+    
     var body: some View {
-
+        
         Button {
             showSheet.toggle()
         } label: {
