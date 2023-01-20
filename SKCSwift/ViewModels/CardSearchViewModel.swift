@@ -22,6 +22,8 @@ struct CardSearchViewModel: View {
         if (value == "") {
             self.searchResults = []
             self.searchResultsIds = []
+            self.isFetching = false
+            self.task = nil
         } else {
             isFetching = true
             task = searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
@@ -54,7 +56,7 @@ struct CardSearchViewModel: View {
                     print(error)
                 }
                 
-                isFetching = false
+                self.isFetching = false
             })
         }
         
@@ -133,6 +135,5 @@ struct CardSearchLinkDestination: View {
 struct SearchCardViewModel_Previews: PreviewProvider {
     static var previews: some View {
         CardSearchViewModel()
-        CardSearchLinkDestination(cardId: "40044918")
     }
 }

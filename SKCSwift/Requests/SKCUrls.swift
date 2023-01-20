@@ -12,6 +12,7 @@ func cardInfoURL(cardId: String) -> URL {
     components.scheme = "https"
     components.host = SKC_API_BASE_URL.description
     components.path = "/api/v1/card/\(cardId)"
+    
     components.queryItems = [
         URLQueryItem(name: "allInfo", value: "true")
     ]
@@ -28,6 +29,7 @@ func searchCardURL(cardName: String) -> URL {
     components.scheme = "https"
     components.host = SKC_API_BASE_URL.description
     components.path = "/api/v1/card/search"
+    
     components.queryItems = [
         URLQueryItem(name: "limit", value: "10"),
         URLQueryItem(name: "cName", value: cardName)
