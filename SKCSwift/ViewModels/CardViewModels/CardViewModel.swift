@@ -39,7 +39,7 @@ struct CardViewModel: View {
                         cardId: cardData.cardID, cardAttribute: cardData.cardAttribute, monsterAttack: cardData.monsterAttack, monsterDefense: cardData.monsterDefense
                     )
                 } else {
-                    RectPlaceholderViewModel(width: .infinity, height: 200, radius: 10)
+                    RectPlaceholderViewModel(height: 200, radius: 10)
                 }
                 
                 

@@ -98,7 +98,7 @@ struct CardSearchViewModel: View {
                     .font(.headline)
                     .fontWeight(.black) ) {
                         ForEach(sr.results, id: \.cardID) { card in
-                            LazyVStack {
+                            VStack {
                                 NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
                                     CardSearchResultViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                 })
@@ -109,6 +109,7 @@ struct CardSearchViewModel: View {
             .listStyle(.plain)
             .navigationTitle("Search")
             .searchable(text: self.$searchText, prompt: "Search for card...")
+            .disableAutocorrection(true)
             .onChange(of: searchText, perform: newSearchSubject)
             .frame(
                 maxWidth: .infinity,

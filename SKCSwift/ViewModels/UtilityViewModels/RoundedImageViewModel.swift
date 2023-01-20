@@ -13,7 +13,8 @@ struct RoundedImageViewModel: View {
     
     var body: some View {
         AsyncImage(url: imageUrl) { image in
-            image.resizable()
+            image
+                .resizable()
                 .frame(width: radius, height: radius)
                 .cornerRadius(radius)
         } placeholder: {

@@ -13,7 +13,7 @@ struct CardSearchResultViewModel: View {
     var monsterType: String?
     
     var body: some View {
-        HStack {
+        LazyHStack {
             RoundedImageViewModel(radius: 60, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(cardId).jpg")!)
             VStack(alignment: .leading) {
                 Text(cardName).fontWeight(.bold).font(.footnote)

@@ -87,12 +87,12 @@ struct CardStatsViewModel: View {
                                         .foregroundColor(.blue)
                                         .fontWeight(.bold)
                                 }
-                                .background(Color("TranslucentBackground"))
+                                .background(Color("translucent_background"))
                                 .cornerRadius(20)
                             }
                         }.padding(.top, 1)
                     }.padding(5)
-                }.background(Color("TranslucentBackground"))
+                }.background(Color("translucent_background"))
                     .cornerRadius(10)
             }.padding(.horizontal, 5.0)
                 .padding(.vertical, 10.0)
