@@ -29,21 +29,28 @@ struct RelatedProductsContentViewModels: RelatedContent {
         } else {
             NavigationStack {
                 VStack(alignment: .leading) {
+                    Text("Products: \(products.count)")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.leading)
+                        .padding(.horizontal)
+                        .padding(.top)
                     Text("\(cardName) Was Printed In")
                         .font(.headline)
+                        .fontWeight(.light)
                         .multilineTextAlignment(.leading)
-                        .padding()
+                        .padding(.horizontal)
+                    
+                    Divider()
+                    
                     List {
                         ForEach(products, id: \.productId) { product in
                             ProductListItemViewModel(product: product)
                         }
                     }.listStyle(.plain)
                 }
-                .navigationTitle("Products")
                 .frame(
-                    minWidth: 0,
                     maxWidth: .infinity,
-                    minHeight: 0,
                     maxHeight: .infinity,
                     alignment: .topLeading
                 )
@@ -58,14 +65,14 @@ struct ProductListItemViewModel: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("\(product.productId)-\(product.productLocale)\(product.productContent[0].productPosition)")
-                    .frame(alignment: .trailing)
-                    .font(.subheadline)
-                    .fontWeight(.thin)
                 Text(product.productName)
                     .lineLimit(2)
                     .font(.subheadline)
                     .fontWeight(.heavy)
+                Text("\(product.productId)-\(product.productLocale)\(product.productContent[0].productPosition)")
+                    .frame(alignment: .trailing)
+                    .font(.subheadline)
+                    .fontWeight(.light)
                 HStack {
                     Text("Rarities")
                         .font(.footnote)
@@ -79,9 +86,7 @@ struct ProductListItemViewModel: View {
             DateViewModel(date: product.productReleaseDate)
         }
         .frame(
-            minWidth: 0,
             maxWidth: .infinity,
-            minHeight: 0,
             maxHeight: .infinity,
             alignment: .topLeading
         )
@@ -124,21 +129,28 @@ struct RelatedBanListsViewModel: RelatedContent {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
+                Text("Ban Lists: \(banlists.count)")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal)
+                    .padding(.top)
                 Text("\(format.rawValue) Ban Lists \(cardName) Was In")
                     .font(.headline)
+                    .fontWeight(.light)
                     .multilineTextAlignment(.leading)
-                    .padding()
+                    .padding(.horizontal)
+                
+                Divider()
+                
                 List {
                     ForEach(banlists, id: \.banListDate) { instance in
                         BanListItemViewModel(banListInstance: instance)
                     }
                 }.listStyle(.plain)
             }
-            .navigationTitle("Ban Lists")
             .frame(
-                minWidth: 0,
                 maxWidth: .infinity,
-                minHeight: 0,
                 maxHeight: .infinity,
                 alignment: .topLeading
             )
@@ -165,9 +177,7 @@ struct BanListItemViewModel: View {
             DateViewModel(date: banListInstance.banListDate)
         }
         .frame(
-            minWidth: 0,
             maxWidth: .infinity,
-            minHeight: 0,
             maxHeight: .infinity,
             alignment: .topLeading
         )

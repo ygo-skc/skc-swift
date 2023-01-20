@@ -79,12 +79,15 @@ struct CardViewModel: View {
     }
 }
 
-
-struct CardViewButton<T: RelatedContent>: View {
+struct CardViewButton<RC: RelatedContent>: View {
     var text: String
-    var sheetContents: T
+    var sheetContents: RC
     
     @State private var showSheet = false
+    
+    func sheetDismissed() {
+        showSheet = false
+    }
     
     var body: some View {
         
@@ -98,7 +101,7 @@ struct CardViewButton<T: RelatedContent>: View {
             }
             .frame(maxWidth: 200)
         }
-        .sheet(isPresented: $showSheet) {
+        .sheet(isPresented: $showSheet, onDismiss: sheetDismissed) {
             sheetContents
         }
     }
