@@ -18,7 +18,8 @@ struct RoundedImageViewModel: View {
                 .cornerRadius(radius)
         } placeholder: {
             RectPlaceholderViewModel(width: radius, height: radius, radius: radius)
-        }.frame(width: radius, height: radius)
+        }
+        .frame(width: radius, height: radius)
     }
 }
 

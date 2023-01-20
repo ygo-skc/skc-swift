@@ -57,6 +57,8 @@ struct CardSearchViewModel: View {
                 isFetching = false
             })
         }
+        
+        
     }
     
     var body: some View {
@@ -66,26 +68,24 @@ struct CardSearchViewModel: View {
                     Spacer()
                     Text("Nothing found in database")
                         .font(.title2)
-                }.padding(.horizontal)
-                    .frame(
-                        minWidth: 0,
-                        maxWidth: .infinity,
-                        minHeight: 0,
-                        maxHeight: .infinity,
-                        alignment: .center
-                    )
+                }
+                .padding(.horizontal)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .center
+                )
             } else if (searchText.isEmpty) {
                 VStack(alignment: .leading) {
                     Text("Suggestions")
-                        .font(.title)
-                }.padding(.horizontal)
-                    .frame(
-                        minWidth: 0,
-                        maxWidth: .infinity,
-                        minHeight: 0,
-                        maxHeight: .infinity,
-                        alignment: .topLeading
-                    )
+                        .font(.title2)
+                }
+                .padding(.all)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .topLeading
+                )
             }
             
             List(searchResults) { sr in
@@ -94,20 +94,29 @@ struct CardSearchViewModel: View {
                         .foregroundColor(cardColorUI(cardColor: sr.section))
                         .frame(width: 15)
                     Text(sr.section)
-                }.font(.headline).fontWeight(.black) ) {
-                    ForEach(sr.results, id: \.cardID) { card in
-                        LazyVStack {
-                            NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
-                                CardSearchResultViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                            })
+                }
+                    .font(.headline)
+                    .fontWeight(.black) ) {
+                        ForEach(sr.results, id: \.cardID) { card in
+                            LazyVStack {
+                                NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
+                                    CardSearchResultViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                })
+                            }
                         }
                     }
-                }
-            }.listStyle(.plain)
-                .searchable(text: self.$searchText, prompt: "Search for card...")
-                .onChange(of: searchText, perform: newSearchSubject)
-                .navigationTitle("Search")
+            }
+            .listStyle(.plain)
+            .navigationTitle("Search")
+            .searchable(text: self.$searchText, prompt: "Search for card...")
+            .onChange(of: searchText, perform: newSearchSubject)
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity
+            )
+            .ignoresSafeArea(.keyboard)
         }
+        .scrollDismissesKeyboard(.immediately)
     }
 }
 
