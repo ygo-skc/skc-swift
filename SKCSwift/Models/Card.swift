@@ -10,6 +10,7 @@ import Foundation
 struct MonsterAssociation: Codable {
     var level: Int?
     var rank: Int?
+    var scaleRating: Int?
     var linkRating: Int?
     var linkArrows: [String]?
 }

@@ -32,6 +32,8 @@
 		1F8212042961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */; };
 		1F86EC3F29688821004F4F1B /* AttributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC3E29688821004F4F1B /* AttributeViewModel.swift */; };
 		1F86EC48296A0055004F4F1B /* DateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC47296A0055004F4F1B /* DateViewModel.swift */; };
+		1F8EC87D297B6AAA007A85B4 /* LinkAssociationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8EC87C297B6AAA007A85B4 /* LinkAssociationViewModel.swift */; };
+		1F8EC87F297B6E4C007A85B4 /* PendulumAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8EC87E297B6E4C007A85B4 /* PendulumAssociation.swift */; };
 		1F962B2B2967D065007974DA /* RoundedImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */; };
 		1FB939042965029B00BF0CBA /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939032965029B00BF0CBA /* Product.swift */; };
 		1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* SKCAPI.swift */; };
@@ -86,6 +88,8 @@
 		1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1F86EC3E29688821004F4F1B /* AttributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeViewModel.swift; sourceTree = "<group>"; };
 		1F86EC47296A0055004F4F1B /* DateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateViewModel.swift; sourceTree = "<group>"; };
+		1F8EC87C297B6AAA007A85B4 /* LinkAssociationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkAssociationViewModel.swift; sourceTree = "<group>"; };
+		1F8EC87E297B6E4C007A85B4 /* PendulumAssociation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendulumAssociation.swift; sourceTree = "<group>"; };
 		1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageViewModel.swift; sourceTree = "<group>"; };
 		1FB939032965029B00BF0CBA /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		1FB93905296503AE00BF0CBA /* SKCAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCAPI.swift; sourceTree = "<group>"; };
@@ -187,10 +191,12 @@
 		1F6687E32967A04D00C8555D /* MonsterAssociationViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */,
-				1F6687E42967A07A00C8555D /* RankAssociationViewModel.swift */,
-				1F6687E62967A13600C8555D /* LevelAssociationViewModel.swift */,
 				1F86EC3E29688821004F4F1B /* AttributeViewModel.swift */,
+				1F6687E62967A13600C8555D /* LevelAssociationViewModel.swift */,
+				1F8EC87C297B6AAA007A85B4 /* LinkAssociationViewModel.swift */,
+				1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */,
+				1F8EC87E297B6E4C007A85B4 /* PendulumAssociation.swift */,
+				1F6687E42967A07A00C8555D /* RankAssociationViewModel.swift */,
 			);
 			path = MonsterAssociationViewModels;
 			sourceTree = "<group>";
@@ -388,6 +394,8 @@
 				1F7655302964CB2D00512EF1 /* RectPlaceholderViewModel.swift in Sources */,
 				1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */,
 				1F21FF692977BB2E00B4451A /* RelatedContent.swift in Sources */,
+				1F8EC87F297B6E4C007A85B4 /* PendulumAssociation.swift in Sources */,
+				1F8EC87D297B6AAA007A85B4 /* LinkAssociationViewModel.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,

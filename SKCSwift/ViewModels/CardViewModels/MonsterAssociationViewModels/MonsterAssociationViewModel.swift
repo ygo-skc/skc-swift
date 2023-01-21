@@ -22,8 +22,13 @@ struct MonsterAssociationViewModel: View {
                 
                 if (monsterAssociation.level != nil) {
                     LevelAssociationViewModel(level: monsterAssociation.level!)
+                    if (monsterAssociation.scaleRating != nil) {
+                        PendulumAssociation(pendScale: monsterAssociation.scaleRating!)
+                    }
                 } else if (monsterAssociation.rank != nil) {
                     RankAssociationViewModel(rank: monsterAssociation.rank!)
+                } else if (monsterAssociation.linkRating != nil && monsterAssociation.linkArrows != nil) {
+                    LinkAssociationViewModel(linkRating: monsterAssociation.linkRating!, linkArrows: monsterAssociation.linkArrows!)
                 }
             }
             .padding(.vertical, 5.0)
@@ -46,6 +51,10 @@ struct MonsterAssociationViewModel_Previews: PreviewProvider {
             MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(level: 4), attribute: Attribute(rawValue: "Fire")!)
             
             MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(rank: 4), attribute: Attribute(rawValue: "Fire")!)
+            
+            MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(level: 4, scaleRating: 10), attribute: Attribute(rawValue: "Water")!)
+            
+            MonsterAssociationViewModel(monsterAssociation: MonsterAssociation(linkRating: 4, linkArrows: ["↙️", "⬇️", "↘️", "⬆️"]), attribute: Attribute(rawValue: "Fire")!)
         }
     }
 }
