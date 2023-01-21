@@ -28,6 +28,6 @@ struct RectPlaceholderViewModel: View {
 
 struct RectPlaceholderViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        RectPlaceholderViewModel(width: UIScreen.main.bounds.width)
+        RectPlaceholderViewModel(width: UIScreen.main.bounds.width - 20)
     }
 }

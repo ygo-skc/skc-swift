@@ -17,7 +17,6 @@ struct LevelAssociationViewModel: View {
             Image("card_level")
                 .resizable()
                 .frame(width: LevelAssociationViewModel.ICON_SIZE, height: LevelAssociationViewModel.ICON_SIZE)
-                .cornerRadius(LevelAssociationViewModel.ICON_SIZE)
             Text("x\(level)")
                 .fontWeight(.semibold)
         }

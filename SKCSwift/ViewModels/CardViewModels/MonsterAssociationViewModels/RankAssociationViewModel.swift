@@ -17,7 +17,6 @@ struct RankAssociationViewModel: View {
             Image("card_rank")
                 .resizable()
                 .frame(width: RankAssociationViewModel.ICON_SIZE, height: RankAssociationViewModel.ICON_SIZE)
-                .cornerRadius(RankAssociationViewModel.ICON_SIZE)
             Text("x\(rank)")
                 .fontWeight(.semibold)
         }

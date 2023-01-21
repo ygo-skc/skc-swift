@@ -25,7 +25,11 @@ struct MonsterAssociationViewModel: View {
                 } else if (monsterAssociation.rank != nil) {
                     RankAssociationViewModel(rank: monsterAssociation.rank!)
                 }
-            }.padding(.vertical, 5.0).padding(.horizontal, 15).background(Color("translucent_background")).cornerRadius(50.0)
+            }
+            .padding(.vertical, 5.0)
+            .padding(.horizontal, 15)
+            .background(Color("translucent_background"))
+            .cornerRadius(50.0)
             Spacer()
         }
     }

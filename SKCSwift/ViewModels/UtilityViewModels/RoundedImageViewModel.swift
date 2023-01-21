@@ -26,8 +26,11 @@ struct RoundedImageViewModel: View {
 
 struct RoundedImageViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        let imageUrl = URL(string: "https://images.thesupremekingscastle.com/cards/original/90307498.jpg")!
+        let radius = 250.0
         
-        RoundedImageViewModel(radius: 100, imageUrl: imageUrl)
+        RoundedImageViewModel(radius: radius, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/90307498.jpg")!)
+            .previewDisplayName("Kluger")
+        RoundedImageViewModel(radius: radius, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/87468732.jpg")!)
+            .previewDisplayName("Pendulum")
     }
 }

@@ -7,13 +7,14 @@
 
 import SwiftUI
 
+let dateFormatter = DateFormatter()
+
 struct DateViewModel: View {
     private var month: String
     private var day: String
     private var year: String
     
     init(date: String) {
-        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
         let date = dateFormatter.date(from: date)!
@@ -25,9 +26,8 @@ struct DateViewModel: View {
     var body: some View {
         VStack {
             VStack {
-                
                 Text(month)
-                    .font(.subheadline)
+                    .font(.headline)
                     .foregroundColor(Color(.white))
                     .padding(.vertical, 3)
             }
@@ -39,8 +39,8 @@ struct DateViewModel: View {
                 .fontWeight(.bold)
                 .padding(.top, -5)
             Text(year)
-                .font(.footnote)
-        }.frame(width: 70)
+                .font(.callout)
+        }.frame(width: 80)
             .background(Color("gray"))
             .cornerRadius(15)
         
@@ -49,6 +49,44 @@ struct DateViewModel: View {
 
 struct DateViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        DateViewModel(date: "2022-11-18")
+        // Groups are needed as you can only have a max of 10 subviews, groups allow us to spread the views.
+        Group {
+            DateViewModel(date: "2022-01-31")
+                .previewDisplayName("January")
+            DateViewModel(date: "2022-02-18")
+                .previewDisplayName("Febuary")
+            DateViewModel(date: "2022-03-18")
+                .previewDisplayName("March")
+            DateViewModel(date: "2022-04-18")
+                .previewDisplayName("April")
+        }
+        
+        Group {
+            DateViewModel(date: "2022-05-18")
+                .previewDisplayName("May")
+            DateViewModel(date: "2022-06-18")
+                .previewDisplayName("June")
+            DateViewModel(date: "2022-07-18")
+                .previewDisplayName("July")
+            DateViewModel(date: "2022-08-18")
+                .previewDisplayName("August")
+        }
+        
+        Group {
+            DateViewModel(date: "2022-09-18")
+                .previewDisplayName("Septemeber")
+            DateViewModel(date: "2022-10-18")
+                .previewDisplayName("October")
+            DateViewModel(date: "2022-11-18")
+                .previewDisplayName("November")
+            DateViewModel(date: "2022-12-31")
+                .previewDisplayName("December")
+        }
+        
+        Group {
+            DateViewModel(date: "2022-09-18")
+                .previewDisplayName("Dark Theme")
+                .preferredColorScheme(.dark)
+        }
     }
 }
