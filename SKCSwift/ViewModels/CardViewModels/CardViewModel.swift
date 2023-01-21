@@ -39,11 +39,15 @@ struct CardViewModel: View {
                         cardId: cardData.cardID, cardAttribute: cardData.cardAttribute, monsterAttack: cardData.monsterAttack, monsterDefense: cardData.monsterDefense
                     )
                 } else {
-                    RectPlaceholderViewModel(height: 200, radius: 10)
+                    RectPlaceholderViewModel(width: imageSize, height: 200, radius: 10)
                 }
                 
                 
                 VStack {
+                    Text("Related Content")
+                        .font(.title)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                
                     CardViewButton(text: "Products", sheetContents: RelatedProductsContentViewModels(cardName: cardData.cardName, products: self.products))
                         .disabled(self.products.isEmpty)
                     

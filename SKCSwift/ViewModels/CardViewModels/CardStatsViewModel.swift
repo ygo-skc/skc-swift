@@ -18,7 +18,7 @@ struct CardStatsViewModel: View {
     var monsterAttack: String
     var monsterDefense: String
     
-    private let nilStat = "?"
+    private static let nilStat = "?"
     
     init(cardName: String, cardColor: String, monsterType: String? = nil, cardEffect: String, monsterAssociation: MonsterAssociation? = nil, cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil) {
         self.cardName = cardName
@@ -29,8 +29,8 @@ struct CardStatsViewModel: View {
         self.cardId = cardId
         self.cardAttribute = cardAttribute
         
-        let nilDefStat = (cardColor == "Link") ? "—" : nilStat  // override missing stat for certain edge cases
-        self.monsterAttack = (monsterAttack == nil) ? nilStat : String(monsterAttack!)
+        let nilDefStat = (cardColor == "Link") ? "—" : CardStatsViewModel.nilStat  // override missing stat for certain edge cases
+        self.monsterAttack = (monsterAttack == nil) ? CardStatsViewModel.nilStat : String(monsterAttack!)
         self.monsterDefense = (monsterDefense == nil) ? nilDefStat : String(monsterDefense!)
     }
     
@@ -46,62 +46,62 @@ struct CardStatsViewModel: View {
                 let attribute = Attribute(rawValue: cardAttribute)
                 if (monsterAssociation != nil && attribute != nil){
                     MonsterAssociationViewModel(monsterAssociation: monsterAssociation!, attribute: attribute!)
-                        .padding(.top, -5.0)
+                        .padding(.top, -8.0)
                 }
                 
-                VStack {
-                    VStack(alignment: .leading) {
-                        if (monsterType != nil) {
-                            Text(monsterType!)
-                                .font(.headline)
-                                .fontWeight(.medium)
-                                .multilineTextAlignment(.leading)
-                                .bold()
-                                .padding(.bottom, 1.0)
-                        }
-                        
-                        Text(replaceHTMLEntities(subject: cardEffect))
-                            .font(.body)
-                            .fontWeight(.light)
+                
+                VStack(alignment: .leading) {
+                    if (monsterType != nil) {
+                        Text(monsterType!)
+                            .font(.headline)
+                            .fontWeight(.medium)
                             .multilineTextAlignment(.leading)
                             .bold()
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                            .padding(.bottom, 1.0)
+                    }
+                    
+                    Text(replaceHTMLEntities(subject: cardEffect))
+                        .font(.body)
+                        .fontWeight(.light)
+                        .multilineTextAlignment(.leading)
+                        .bold()
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                    
+                    HStack {
+                        Text(cardId)
+                            .font(.callout)
+                            .fontWeight(.light)
                         
-                        HStack {
-                            Text(cardId)
-                                .font(.callout)
-                                .fontWeight(.light)
-                            
-                            Spacer()
-                            
-                            if (cardColor != "Spell" && cardColor != "Trap") {
-                                HStack {
-                                    Text(monsterAttack)
-                                        .padding(.horizontal, 4.0)
-                                        .padding(.vertical, 2.0)
-                                        .foregroundColor(.red)
-                                        .fontWeight(.bold)
-                                    Text(monsterDefense)
-                                        .padding(.horizontal, 4.0)
-                                        .padding(.vertical, 2.0)
-                                        .foregroundColor(.blue)
-                                        .fontWeight(.bold)
-                                }
-                                .background(Color("translucent_background"))
-                                .cornerRadius(20)
+                        Spacer()
+                        
+                        if (cardColor != "Spell" && cardColor != "Trap") {
+                            HStack {
+                                Text(monsterAttack)
+                                    .padding(.horizontal, 4.0)
+                                    .padding(.vertical, 2.0)
+                                    .foregroundColor(.red)
+                                    .fontWeight(.bold)
+                                Text(monsterDefense)
+                                    .padding(.horizontal, 4.0)
+                                    .padding(.vertical, 2.0)
+                                    .foregroundColor(.blue)
+                                    .fontWeight(.bold)
                             }
-                        }.padding(.top, 1)
-                    }.padding(5)
-                }.background(Color("translucent_background"))
-                    .cornerRadius(10)
+                            .background(Color("translucent_background"))
+                            .cornerRadius(20)
+                        }
+                    }
+                    .padding(.top, 1)
+                }
+                .padding(.all, 8)
+                .background(Color("translucent_background"))
+                .cornerRadius(10)
             }.padding(.horizontal, 5.0)
                 .padding(.vertical, 10.0)
         }.background(cardColorUI(cardColor: cardColor))
             .cornerRadius(15)
             .frame(
-                minWidth: 0,
                 maxWidth: .infinity,
-                minHeight: 0,
                 maxHeight: .infinity,
                 alignment: .topLeading
             )
