@@ -52,8 +52,7 @@ struct CardSearchViewModel: View {
                         self.searchResults = searchResults
                         self.searchResultsIds = searchResultsIds
                     }
-                case .failure(let error):
-                    print(error)
+                case .failure: break    // TODO add error screen for appropriate error response
                 }
                 
                 self.isFetching = false

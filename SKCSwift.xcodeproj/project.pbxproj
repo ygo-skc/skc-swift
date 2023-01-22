@@ -16,8 +16,10 @@
 		1F3256592963E116001AACF1 /* MonsterAssociationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */; };
 		1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565A2963E195001AACF1 /* CardStatsViewModel.swift */; };
 		1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */; };
-		1F3C10A8296739F500EE4EBE /* SKCUrls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A7296739F500EE4EBE /* SKCUrls.swift */; };
+		1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A7296739F500EE4EBE /* APIURLs.swift */; };
 		1F3C10AA29673E1200EE4EBE /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A929673E1200EE4EBE /* CardViewModel.swift */; };
+		1F601D06297DFBFC007E1E0C /* CardSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */; };
+		1F601D08297DFD52007E1E0C /* DeckList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D07297DFD52007E1E0C /* DeckList.swift */; };
 		1F6687E02967904400C8555D /* CardSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687DF2967904400C8555D /* CardSearchViewModel.swift */; };
 		1F6687E2296798E700C8555D /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E1296798E700C8555D /* HomeViewModel.swift */; };
 		1F6687E52967A07A00C8555D /* RankAssociationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E42967A07A00C8555D /* RankAssociationViewModel.swift */; };
@@ -36,7 +38,7 @@
 		1F8EC87F297B6E4C007A85B4 /* PendulumAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8EC87E297B6E4C007A85B4 /* PendulumAssociation.swift */; };
 		1F962B2B2967D065007974DA /* RoundedImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */; };
 		1FB939042965029B00BF0CBA /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939032965029B00BF0CBA /* Product.swift */; };
-		1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* SKCAPI.swift */; };
+		1FB93906296503AE00BF0CBA /* DataTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* DataTasks.swift */; };
 		1FB939082965043500BF0CBA /* BanList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939072965043500BF0CBA /* BanList.swift */; };
 		1FE8C9BF2978CED9005AD924 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C9BE2978CED9005AD924 /* Enums.swift */; };
 		1FE8C9C12978ED3F005AD924 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C9C02978ED3F005AD924 /* Text.swift */; };
@@ -69,8 +71,10 @@
 		1F3256582963E116001AACF1 /* MonsterAssociationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonsterAssociationViewModel.swift; sourceTree = "<group>"; };
 		1F32565A2963E195001AACF1 /* CardStatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStatsViewModel.swift; sourceTree = "<group>"; };
 		1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectImage.swift; sourceTree = "<group>"; };
-		1F3C10A7296739F500EE4EBE /* SKCUrls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCUrls.swift; sourceTree = "<group>"; };
+		1F3C10A7296739F500EE4EBE /* APIURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLs.swift; sourceTree = "<group>"; };
 		1F3C10A929673E1200EE4EBE /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
+		1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestions.swift; sourceTree = "<group>"; };
+		1F601D07297DFD52007E1E0C /* DeckList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckList.swift; sourceTree = "<group>"; };
 		1F6687DF2967904400C8555D /* CardSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchViewModel.swift; sourceTree = "<group>"; };
 		1F6687E1296798E700C8555D /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		1F6687E42967A07A00C8555D /* RankAssociationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankAssociationViewModel.swift; sourceTree = "<group>"; };
@@ -92,7 +96,7 @@
 		1F8EC87E297B6E4C007A85B4 /* PendulumAssociation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendulumAssociation.swift; sourceTree = "<group>"; };
 		1F962B2A2967D065007974DA /* RoundedImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageViewModel.swift; sourceTree = "<group>"; };
 		1FB939032965029B00BF0CBA /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
-		1FB93905296503AE00BF0CBA /* SKCAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCAPI.swift; sourceTree = "<group>"; };
+		1FB93905296503AE00BF0CBA /* DataTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTasks.swift; sourceTree = "<group>"; };
 		1FB939072965043500BF0CBA /* BanList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BanList.swift; sourceTree = "<group>"; };
 		1FE8C9BE2978CED9005AD924 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		1FE8C9C02978ED3F005AD924 /* Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
@@ -137,8 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				1F32565329635AAC001AACF1 /* RequestHelper.swift */,
-				1FB93905296503AE00BF0CBA /* SKCAPI.swift */,
-				1F3C10A7296739F500EE4EBE /* SKCUrls.swift */,
+				1FB93905296503AE00BF0CBA /* DataTasks.swift */,
+				1F3C10A7296739F500EE4EBE /* APIURLs.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";
@@ -150,6 +154,8 @@
 				1F32565129635936001AACF1 /* Card.swift */,
 				1FB939032965029B00BF0CBA /* Product.swift */,
 				1F30FE6F296B729400B80816 /* SearchResults.swift */,
+				1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */,
+				1F601D07297DFD52007E1E0C /* DeckList.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -399,15 +405,17 @@
 				1F32565B2963E195001AACF1 /* CardStatsViewModel.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
+				1F601D08297DFD52007E1E0C /* DeckList.swift in Sources */,
 				1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */,
 				1FE8C9BF2978CED9005AD924 /* Enums.swift in Sources */,
+				1F601D06297DFBFC007E1E0C /* CardSuggestions.swift in Sources */,
 				1FE8C9C12978ED3F005AD924 /* Text.swift in Sources */,
 				1F86EC3F29688821004F4F1B /* AttributeViewModel.swift in Sources */,
 				1F32565229635936001AACF1 /* Card.swift in Sources */,
 				1F3256592963E116001AACF1 /* MonsterAssociationViewModel.swift in Sources */,
-				1F3C10A8296739F500EE4EBE /* SKCUrls.swift in Sources */,
+				1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */,
 				1F3C10AA29673E1200EE4EBE /* CardViewModel.swift in Sources */,
-				1FB93906296503AE00BF0CBA /* SKCAPI.swift in Sources */,
+				1FB93906296503AE00BF0CBA /* DataTasks.swift in Sources */,
 				1FB939042965029B00BF0CBA /* Product.swift in Sources */,
 				1F30FE70296B729400B80816 /* SearchResults.swift in Sources */,
 				1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */,
