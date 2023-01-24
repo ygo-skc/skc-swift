@@ -38,30 +38,13 @@ struct CardViewModel: View {
                         cardName: cardData.cardName, cardColor: cardData.cardColor, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
                         cardId: cardData.cardID, cardAttribute: cardData.cardAttribute, monsterAttack: cardData.monsterAttack, monsterDefense: cardData.monsterDefense
                     )
+                    
+                    RelatedContentViewModel(cardName: cardData.cardName, products: products, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
                 } else {
                     RectPlaceholderViewModel(width: imageSize, height: 200, radius: 10)
                 }
-                
-                
-                VStack {
-                    Text("Related Content")
-                        .font(.title)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                
-                    CardViewButton(text: "Products", sheetContents: RelatedProductsContentViewModels(cardName: cardData.cardName, products: self.products))
-                        .disabled(self.products.isEmpty)
-                    
-                    CardViewButton(text: "TCG Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, banlists: self.tcgBanLists, format: BanListFormat.tcg))
-                        .disabled(self.tcgBanLists.isEmpty)
-                    CardViewButton(text: "Master Duel Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, banlists: self.mdBanLists, format: BanListFormat.md))
-                        .disabled(self.mdBanLists.isEmpty)
-                    CardViewButton(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardData.cardName, banlists: self.dlBanLists, format: BanListFormat.dl))
-                        .disabled(self.dlBanLists.isEmpty)
-                }
-                .padding(.all)
             }
             .padding(.horizontal, 5)
-            .buttonStyle(.borderedProminent)
         }
         .onAppear {
             getCardData(cardId: cardId, {result in
@@ -79,34 +62,6 @@ struct CardViewModel: View {
                     print(error)
                 }
             })
-        }
-    }
-}
-
-struct CardViewButton<RC: RelatedContent>: View {
-    var text: String
-    var sheetContents: RC
-    
-    @State private var showSheet = false
-    
-    func sheetDismissed() {
-        showSheet = false
-    }
-    
-    var body: some View {
-        
-        Button {
-            showSheet.toggle()
-        } label: {
-            HStack {
-                Text(text)
-                Spacer()
-                Image(systemName: "chevron.right")
-            }
-            .frame(maxWidth: 200)
-        }
-        .sheet(isPresented: $showSheet, onDismiss: sheetDismissed) {
-            sheetContents
         }
     }
 }
