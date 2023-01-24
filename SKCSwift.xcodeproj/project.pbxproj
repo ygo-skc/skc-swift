@@ -169,11 +169,11 @@
 		1F32565529636BA2001AACF1 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				1FA24A0029809F3200C04B79 /* RelatedContentViewModels */,
 				1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */,
 				1F6687DF2967904400C8555D /* CardSearchViewModel.swift */,
 				1F6687E1296798E700C8555D /* HomeViewModel.swift */,
 				1F3C10AB29673ED000EE4EBE /* CardViewModels */,
+				1FA24A0029809F3200C04B79 /* RelatedContentViewModels */,
 				1F3C10AC29673F1900EE4EBE /* UtilityViewModels */,
 			);
 			path = ViewModels;

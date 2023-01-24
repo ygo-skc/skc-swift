@@ -15,12 +15,12 @@ struct HomeViewModel: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     Text("Content")
-                        .fontWeight(.bold)
-                        .font(.title2)
+                        .font(.title)
                     Text("The SKC Database has 1,000 cards, 36 ban lists and 200 products.")
-                        .fontWeight(.regular)
-                        .font(.headline)
+                        .fontWeight(.light)
+                        .font(.title3)
                 }
+                .padding(.top)
             }
             .padding(.horizontal)
             .navigationTitle("Home")
