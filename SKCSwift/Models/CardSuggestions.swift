@@ -19,5 +19,5 @@ struct CardSuggestions: Codable {
     var namedReferences: [CardReference]
     var materialArchetypes: [String]
     var referencedArchetypes: [String]
-    var decks: [DeckList]?
+    var decks: [DeckList]
 }

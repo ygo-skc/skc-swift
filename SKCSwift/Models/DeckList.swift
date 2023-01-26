@@ -16,12 +16,12 @@ struct DeckList: Codable {
     var id: String
     var name: String
     var listContent: String
-    var videoUrl: String?   // this needs to be changed in api as it has an uppercase in spec
-    var uniqueCards: Int?
+    var videoUrl: String
+    var uniqueCards: [String]
     var deckMascots: [String]?
-    var numMainDeckCards: Int?
-    var numExtraDeckCards: Int?
-    var tags: [String]?
+    var numMainDeckCards: Int
+    var numExtraDeckCards: Int
+    var tags: [String]
     var createdAt: String
     var updatedAt: String
     var mainDeck: [DeckContent]?

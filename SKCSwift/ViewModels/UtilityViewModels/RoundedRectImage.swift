@@ -11,13 +11,14 @@ struct RoundedRectImage: View {
     var width: CGFloat
     var height: CGFloat
     var imageUrl: URL
+    var cornerRadius = 50.0
     
     var body: some View {
         AsyncImage(url: imageUrl) { image in
             image
                 .resizable()
                 .frame(width: width, height: height)
-                .cornerRadius(50.0)
+                .cornerRadius(cornerRadius)
         } placeholder: {
             RectPlaceholderViewModel(width: width, height: width, radius: 50.0)
         }.frame(width: width, height: height)
