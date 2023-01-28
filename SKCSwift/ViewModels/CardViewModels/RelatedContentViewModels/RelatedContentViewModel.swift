@@ -23,39 +23,12 @@ struct RelatedContentViewModel: View {
                 .fontWeight(.light)
                 .padding(.top, -10)
             
-            VStack(alignment: .leading) {
-                Text("Products")
-                    .font(.title3)
-                Text("Total Printings: \(self.products.count)")
-                    .font(.body)
-                    .fontWeight(.light)
-                CardViewButton(text: "Products", sheetContents: RelatedProductsContentViewModels(cardName: cardName, products: self.products))
-                    .disabled(self.products.isEmpty)
+            HStack(alignment: .top) {
+                RelatedProductsViewModel(cardName: cardName, products: products)
+                RelatedBanListsViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
             }
             .padding(.top)
-            
-            VStack(alignment: .leading) {
-                Text("Ban Lists")
-                    .font(.title3)
-                Text("TCG Ocurrences: \(self.tcgBanLists.count)")
-                    .font(.body)
-                    .fontWeight(.light)
-                Text("Master Duel Ocurrences: \(self.mdBanLists.count)")
-                    .font(.body)
-                    .fontWeight(.light)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                Text("Duel Links Ocurrences: \(self.dlBanLists.count)")
-                    .font(.body)
-                    .fontWeight(.light)
-                
-                CardViewButton(text: "TCG Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardName, banlists: self.tcgBanLists, format: BanListFormat.tcg))
-                    .disabled(self.tcgBanLists.isEmpty)
-                CardViewButton(text: "Master Duel Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardName, banlists: self.mdBanLists, format: BanListFormat.md))
-                    .disabled(self.mdBanLists.isEmpty)
-                CardViewButton(text: "Duel Links Ban Lists", sheetContents: RelatedBanListsViewModel(cardName: cardName, banlists: self.dlBanLists, format: BanListFormat.dl))
-                    .disabled(self.dlBanLists.isEmpty)
-            }
-            .padding(.top)
+            .frame(maxWidth: .infinity)
         }
         .padding(.all)
         .frame(

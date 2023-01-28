@@ -18,7 +18,7 @@ struct DeckList: Codable {
     var listContent: String
     var videoUrl: String
     var uniqueCards: [String]
-    var deckMascots: [String]?
+    var deckMascots: [String]
     var numMainDeckCards: Int
     var numExtraDeckCards: Int
     var tags: [String]

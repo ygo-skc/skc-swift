@@ -26,12 +26,12 @@ struct CardViewButton<RC: RelatedContent>: View {
         } label: {
             HStack {
                 Text(text)
+                    .font(.title3)
             }
-            .frame(maxWidth: .infinity)
         }
         .sheet(isPresented: $showSheet, onDismiss: sheetDismissed) {
             sheetContents
         }
-        .buttonStyle(.borderedProminent)
+        .padding(.top, 1)
     }
 }
