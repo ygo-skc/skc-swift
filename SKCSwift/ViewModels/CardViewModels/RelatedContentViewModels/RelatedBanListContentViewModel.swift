@@ -12,7 +12,7 @@ struct RelatedBanListContentViewModel: RelatedContent {
     var banlists: [BanList]
     var format: BanListFormat
     
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -32,7 +32,7 @@ struct RelatedBanListContentViewModel: RelatedContent {
                 Spacer()
                 
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss()
                 }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title)

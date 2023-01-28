@@ -157,7 +157,6 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
     @State private var showSheet = false
     
     var body: some View {
-        
         Button {
             showSheet.toggle()
         } label: {
