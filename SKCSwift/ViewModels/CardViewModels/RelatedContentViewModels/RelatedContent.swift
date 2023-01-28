@@ -26,13 +26,13 @@ struct CardViewButton<RC: RelatedContent>: View {
         } label: {
             HStack {
                 Text(text)
-                    .font(.title3)
+                    .font(.subheadline)
                 Image(systemName: "chevron.right")
             }
         }
         .sheet(isPresented: $showSheet, onDismiss: sheetDismissed) {
             sheetContents
         }
-        .padding(.top, 1)
+        .padding([.top, .bottom], 1)
     }
 }

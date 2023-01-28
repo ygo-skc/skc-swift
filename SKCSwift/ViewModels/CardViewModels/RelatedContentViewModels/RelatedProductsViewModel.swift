@@ -36,8 +36,8 @@ struct RelatedProductsViewModel: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Products")
-                .font(.title3)
-                .fontWeight(.heavy)
+                .font(.title2)
+                .fontWeight(.black)
             
             CardViewButton(text: "TCG", sheetContents: RelatedProductsContentViewModels(cardName: cardName, products: self.products))
                 .disabled(products.isEmpty)
@@ -51,10 +51,13 @@ struct RelatedProductsViewModel: View {
                     .padding(.leading, -5)
             }
             
-            Text(latestReleaseInfo)
-                .font(.subheadline)
-                .fontWeight(.bold)
-                .padding(.top, 2)
+            HStack {
+                Image(systemName: "calendar")
+                Text(latestReleaseInfo)
+                    .font(.subheadline)
+                    .fontWeight(.light)
+                    .padding(.top, 1)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }

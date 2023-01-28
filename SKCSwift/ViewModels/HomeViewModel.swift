@@ -18,7 +18,7 @@ struct HomeViewModel: View {
                         .font(.title)
                     Text("The SKC Database has 1,000 cards, 36 ban lists and 200 products.")
                         .fontWeight(.light)
-                        .font(.title3)
+                        .font(.headline)
                 }
                 .padding(.top)
             }

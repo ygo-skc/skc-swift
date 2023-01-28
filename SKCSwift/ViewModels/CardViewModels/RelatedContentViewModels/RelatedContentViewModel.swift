@@ -19,11 +19,11 @@ struct RelatedContentViewModel: View {
             Text("Related Content")
                 .font(.title)
             Text("Expore Yu-Gi-Oh! products or forbidden/ban lists that are assoicated with this card")
-                .font(.title3)
+                .font(.headline)
                 .fontWeight(.light)
                 .padding(.top, -10)
             
-            HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: 10) {
                 RelatedProductsViewModel(cardName: cardName, products: products)
                 RelatedBanListsViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
             }

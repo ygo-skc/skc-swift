@@ -17,17 +17,21 @@ struct RelatedBanListsViewModel: View {
         VStack(alignment: .leading) {
             Text("Ban Lists")
                 .font(.title3)
-                .fontWeight(.heavy)
+                .fontWeight(.black)
             
             // TCG ban list deets
             CardViewButton(text: "TCG", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg))
                 .disabled(tcgBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: tcgBanLists.count)
             
+            Divider()
+            
             // MD ban list deets
             CardViewButton(text: "Master Duel", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md))
                 .disabled(mdBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: mdBanLists.count)
+            
+            Divider()
             
             // DL ban list deets
             CardViewButton(text: "Duel Links", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl))
