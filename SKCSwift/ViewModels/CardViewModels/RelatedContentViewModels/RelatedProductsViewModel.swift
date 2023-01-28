@@ -11,6 +11,28 @@ struct RelatedProductsViewModel: View {
     var cardName: String
     var products: [Product]
     
+    private var latestReleaseInfo: String
+    
+    init(cardName: String, products: [Product]) {
+        self.cardName = cardName
+        self.products = products
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if (!products.isEmpty) {
+            let mostRecentProductReleaseDate = dateFormatter.date(from: products[0].productReleaseDate)!
+            let elapsedInterval = mostRecentProductReleaseDate.timeIntervalSinceNow
+            let elapsedDays = Int(floor(abs(elapsedInterval) / 60 / 60 / 24))
+            
+            if (elapsedInterval > 0) {
+                latestReleaseInfo = "\(elapsedDays) day(s) until next printing"
+            } else {
+                latestReleaseInfo = "\(elapsedDays) day(s) since last printing"
+            }
+        } else {
+            latestReleaseInfo = "Nothhing in DB"
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Products")
@@ -28,6 +50,11 @@ struct RelatedProductsViewModel: View {
                     .fontWeight(.light)
                     .padding(.leading, -5)
             }
+            
+            Text(latestReleaseInfo)
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .padding(.top, 2)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
