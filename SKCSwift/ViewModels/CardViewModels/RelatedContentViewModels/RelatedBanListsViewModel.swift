@@ -16,45 +16,41 @@ struct RelatedBanListsViewModel: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Ban Lists")
-                .font(.title2)
+                .font(.title3)
+                .fontWeight(.heavy)
             
+            // TCG ban list deets
             CardViewButton(text: "TCG", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg))
-                .disabled(self.tcgBanLists.isEmpty)
-            HStack {
-                Text("\(self.tcgBanLists.count)")
-                    .font(.body)
-                    .fontWeight(.bold)
-                Text("Occurences(s)")
-                    .font(.body)
-                    .fontWeight(.light)
-                    .padding(.leading, -5)
-            }
+                .disabled(tcgBanLists.isEmpty)
+            RelatedBanListsOccurrences(occurrences: tcgBanLists.count)
             
-            
+            // MD ban list deets
             CardViewButton(text: "Master Duel", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md))
-            HStack {
-                Text("\(self.mdBanLists.count)")
-                    .font(.body)
-                    .fontWeight(.bold)
-                Text("Occurences(s)")
-                    .font(.body)
-                    .fontWeight(.light)
-                    .padding(.leading, -5)
-            }
+                .disabled(mdBanLists.isEmpty)
+            RelatedBanListsOccurrences(occurrences: mdBanLists.count)
             
+            // DL ban list deets
             CardViewButton(text: "Duel Links", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl))
-                .disabled(self.dlBanLists.isEmpty)
-            HStack {
-                Text("\(self.dlBanLists.count)")
-                    .font(.body)
-                    .fontWeight(.bold)
-                Text("Occurences(s)")
-                    .font(.body)
-                    .fontWeight(.light)
-                    .padding(.leading, -5)
-            }
+                .disabled(dlBanLists.isEmpty)
+            RelatedBanListsOccurrences(occurrences: dlBanLists.count)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+}
+
+struct RelatedBanListsOccurrences: View {
+    var occurrences: Int
+    
+    var body: some View {
+        HStack {
+            Text(String(occurrences))
+                .font(.body)
+                .fontWeight(.bold)
+            Text("Occurences(s)")
+                .font(.body)
+                .fontWeight(.light)
+                .padding(.leading, -5)
+        }
     }
 }
 

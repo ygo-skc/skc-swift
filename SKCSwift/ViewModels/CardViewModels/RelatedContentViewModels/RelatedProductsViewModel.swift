@@ -14,12 +14,13 @@ struct RelatedProductsViewModel: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Products")
-                .font(.title2)
+                .font(.title3)
+                .fontWeight(.heavy)
             
             CardViewButton(text: "TCG", sheetContents: RelatedProductsContentViewModels(cardName: cardName, products: self.products))
-                .disabled(self.products.isEmpty)
+                .disabled(products.isEmpty)
             HStack {
-                Text("\(self.products.count)")
+                Text(String(products.count))
                     .font(.body)
                     .fontWeight(.bold)
                 Text("Printing(s)")

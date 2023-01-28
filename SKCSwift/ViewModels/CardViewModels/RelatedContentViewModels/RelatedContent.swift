@@ -27,6 +27,7 @@ struct CardViewButton<RC: RelatedContent>: View {
             HStack {
                 Text(text)
                     .font(.title3)
+                Image(systemName: "chevron.right")
             }
         }
         .sheet(isPresented: $showSheet, onDismiss: sheetDismissed) {
