@@ -11,56 +11,56 @@ struct RelatedProductsContentViewModels: RelatedContent {
     var cardName: String
     var products: [Product]
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
-        if (products.isEmpty) {
-            VStack {
-                Text("No Products Found")
-                    .font(.title)
-                    .padding(.horizontal)
-                Text("\(cardName) has not been released in the TCG or the DB does not have info on the products it was featured in")
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 1)
-                    .padding(.horizontal)
-            }
-        } else {
-            NavigationStack {
-                VStack(alignment: .leading) {
-                    Text("Products: \(products.count)")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.leading)
-                        .padding(.horizontal)
-                        .padding(.top)
-                    Text("\(cardName) Was Printed In")
-                        .font(.headline)
-                        .fontWeight(.light)
-                        .multilineTextAlignment(.leading)
-                        .padding(.horizontal)
+            VStack(alignment: .leading) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Products: \(products.count)")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .multilineTextAlignment(.leading)
+                            .padding(.top)
+                        Text("\(cardName) Was Printed In")
+                            .font(.headline)
+                            .fontWeight(.light)
+                            .multilineTextAlignment(.leading)
+                    }
                     
-                    Divider()
+                    Spacer()
                     
-                    List {
-                        ForEach(products, id: \.productId) { product in
-                            ProductListItemViewModel(product: product)
-                        }
-                    }.listStyle(.plain)
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title)
+                    })
                 }
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .topLeading
-                )
+                .padding(.horizontal)
+                
+                Divider()
+                
+                List {
+                    ForEach(products, id: \.productId) { product in
+                        ProductListItemViewModel(product: product)
+                    }
+                }.listStyle(.plain)
             }
-        }
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
     }
 }
 
-struct ProductListItemViewModel: View {
+private struct ProductListItemViewModel: View {
     var product: Product
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
+            LazyVStack(alignment: .leading) {
                 Text(product.productName)
                     .lineLimit(2)
                     .font(.subheadline)

@@ -12,44 +12,56 @@ struct RelatedBanListContentViewModel: RelatedContent {
     var banlists: [BanList]
     var format: BanListFormat
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                Text("Ban Lists: \(banlists.count)")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.leading)
-                    .padding(.horizontal)
-                    .padding(.top)
-                Text("\(format.rawValue) Ban Lists \(cardName) Was In")
-                    .font(.headline)
-                    .fontWeight(.light)
-                    .multilineTextAlignment(.leading)
-                    .padding(.horizontal)
+        VStack(alignment: .leading) {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Ban Lists: \(banlists.count)")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.leading)
+                        .padding(.top)
+                    Text("\(format.rawValue) Ban Lists \(cardName) Was In")
+                        .font(.headline)
+                        .fontWeight(.light)
+                        .multilineTextAlignment(.leading)
+                }
                 
-                Divider()
+                Spacer()
                 
-                List {
-                    ForEach(banlists, id: \.banListDate) { instance in
-                        BanListItemViewModel(banListInstance: instance)
-                    }
-                }.listStyle(.plain)
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                })
             }
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
+            .padding(.horizontal)
+            
+            Divider()
+            
+            List {
+                ForEach(banlists, id: \.banListDate) { instance in
+                    BanListItemViewModel(banListInstance: instance)
+                }
+            }.listStyle(.plain)
         }
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity,
+            alignment: .topLeading
+        )
     }
 }
 
-struct BanListItemViewModel: View {
+private struct BanListItemViewModel: View {
     var banListInstance: BanList
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
+            LazyVStack(alignment: .leading) {
                 Text(banListInstance.banStatus)
                     .lineLimit(1)
                     .font(.subheadline)
@@ -60,6 +72,7 @@ struct BanListItemViewModel: View {
                     .frame(width: 30)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            
             DateViewModel(date: banListInstance.banListDate)
         }
         .frame(

@@ -31,37 +31,48 @@ struct CardViewModel: View {
     
     var body: some View {
         ScrollView {
-            VStack {
-                RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
-                if (isDataLoaded) {
-                    CardStatsViewModel(
-                        cardName: cardData.cardName, cardColor: cardData.cardColor, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
-                        cardId: cardData.cardID, cardAttribute: cardData.cardAttribute, monsterAttack: cardData.monsterAttack, monsterDefense: cardData.monsterDefense
-                    )
-                    
-                    RelatedContentViewModel(cardName: cardData.cardName, products: products, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
-                } else {
-                    RectPlaceholderViewModel(width: imageSize, height: 200, radius: 10)
+            ZStack {
+                VStack {
+                    RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
+                    if (isDataLoaded) {
+                        CardStatsViewModel(
+                            cardName: cardData.cardName, cardColor: cardData.cardColor, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
+                            cardId: cardData.cardID, cardAttribute: cardData.cardAttribute, monsterAttack: cardData.monsterAttack, monsterDefense: cardData.monsterDefense
+                        )
+                        
+                        RelatedContentViewModel(cardName: cardData.cardName, products: products, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
+                    } else {
+                        RectPlaceholderViewModel(width: imageSize, height: 200, radius: 10)
+                    }
                 }
+                .padding(.horizontal, 5)
             }
-            .padding(.horizontal, 5)
-        }
-        .onAppear {
-            getCardData(cardId: cardId, {result in
-                switch result {
-                case .success(let card):
-                    self.cardData = card
-                    
-                    self.products = cardData.foundIn ?? [Product]()
-                    self.tcgBanLists = cardData.restrictedIn?.TCG ?? [BanList]()
-                    self.mdBanLists = cardData.restrictedIn?.MD ?? [BanList]()
-                    self.dlBanLists = cardData.restrictedIn?.DL ?? [BanList]()
-                    
-                    self.isDataLoaded = true
-                case .failure(let error):
-                    print(error)
-                }
-            })
+            .onAppear {
+                getCardData(cardId: cardId, {result in
+                    switch result {
+                    case .success(let card):
+                        self.cardData = card
+                        
+                        self.products = cardData.foundIn ?? [Product]()
+                        self.tcgBanLists = cardData.restrictedIn?.TCG ?? [BanList]()
+                        self.mdBanLists = cardData.restrictedIn?.MD ?? [BanList]()
+                        self.dlBanLists = cardData.restrictedIn?.DL ?? [BanList]()
+                        
+                        self.isDataLoaded = true
+                    case .failure(let error):
+                        print(error)
+                    }
+                })
+                
+                getCardSuggestionsTask(cardId: cardId, {result in
+                    switch result {
+                    case .success(let suggestions):
+                        print(suggestions)
+                    case .failure(let error):
+                        print(error)
+                    }
+                })
+            }
         }
     }
 }

@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+protocol RelatedContent: View {}
+
 struct RelatedContentViewModel: View {
     var cardName: String
     var products:[Product]
@@ -24,8 +26,8 @@ struct RelatedContentViewModel: View {
                 .padding(.top, -10)
             
             HStack(alignment: .top, spacing: 10) {
-                RelatedProductsViewModel(cardName: cardName, products: products)
-                RelatedBanListsViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
+                RelatedProductsSectionViewModel(cardName: cardName, products: products)
+                RelatedBanListsSectionViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
             }
             .padding(.top)
             .frame(maxWidth: .infinity)
@@ -36,6 +38,139 @@ struct RelatedContentViewModel: View {
             maxHeight: .infinity,
             alignment: .topLeading
         )
+    }
+}
+
+private struct RelatedContentSectionHeaderViewModel: View {
+    var header: String
+    
+    var body: some View {
+        Text(header)
+            .font(.title2)
+            .fontWeight(.black)
+    }
+}
+
+private struct RelatedProductsSectionViewModel: RelatedContent {
+    var cardName: String
+    var products: [Product]
+    
+    private var latestReleaseInfo = "Last Day Printed Not Found In DB"
+    
+    init(cardName: String, products: [Product]) {
+        self.cardName = cardName
+        self.products = products
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        if (!products.isEmpty) {
+            let elapsedDays = determineElapsedDaysSinceToday(reference: products[0].productReleaseDate)
+            
+            if (elapsedDays > 0) {
+                latestReleaseInfo = "\(elapsedDays) day(s) until next printing"
+            } else {
+                latestReleaseInfo = "\(elapsedDays) day(s) since last printing"
+            }
+        }
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            RelatedContentSectionHeaderViewModel(header: "Products")
+            
+            RelatedContentSheetButton(text: "TCG", sheetContents: RelatedProductsContentViewModels(cardName: cardName, products: self.products))
+                .disabled(products.isEmpty)
+            HStack {
+                Text(String(products.count))
+                    .font(.body)
+                    .fontWeight(.bold)
+                Text("Printing(s)")
+                    .font(.body)
+                    .fontWeight(.light)
+                    .padding(.leading, -5)
+            }
+            
+            HStack {
+                Image(systemName: "calendar")
+                Text(latestReleaseInfo)
+                    .font(.subheadline)
+                    .fontWeight(.light)
+                    .padding(.top, 1)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+}
+
+private struct RelatedBanListsSectionViewModel: RelatedContent{
+    var cardName: String
+    var tcgBanLists: [BanList]
+    var mdBanLists: [BanList]
+    var dlBanLists: [BanList]
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            RelatedContentSectionHeaderViewModel(header: "Ban Lists")
+            
+            // TCG ban list deets
+            RelatedContentSheetButton(text: "TCG", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg))
+                .disabled(tcgBanLists.isEmpty)
+            RelatedBanListsOccurrences(occurrences: tcgBanLists.count)
+            
+            Divider()
+            
+            // MD ban list deets
+            RelatedContentSheetButton(text: "Master Duel", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md))
+                .disabled(mdBanLists.isEmpty)
+            RelatedBanListsOccurrences(occurrences: mdBanLists.count)
+            
+            Divider()
+            
+            // DL ban list deets
+            RelatedContentSheetButton(text: "Duel Links", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl))
+                .disabled(dlBanLists.isEmpty)
+            RelatedBanListsOccurrences(occurrences: dlBanLists.count)
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+}
+
+private struct RelatedBanListsOccurrences: View {
+    var occurrences: Int
+    
+    var body: some View {
+        HStack {
+            Text(String(occurrences))
+                .font(.body)
+                .fontWeight(.bold)
+            Text("Occurences(s)")
+                .font(.body)
+                .fontWeight(.light)
+                .padding(.leading, -5)
+        }
+    }
+}
+
+private struct RelatedContentSheetButton<RC: RelatedContent>: View {
+    var text: String
+    var sheetContents: RC
+    
+    @State private var showSheet = false
+    
+    var body: some View {
+        
+        Button {
+            showSheet.toggle()
+        } label: {
+            HStack {
+                Text(text)
+                    .font(.headline)
+                Image(systemName: "chevron.right")
+            }
+        }
+        .sheet(isPresented: $showSheet, onDismiss: {showSheet = false}) {
+            sheetContents
+        }
+        .padding([.top, .bottom], 1)
     }
 }
 
