@@ -7,19 +7,60 @@
 
 import SwiftUI
 
+private class CardInformationViewModel: ObservableObject {
+    @Published var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
+    @Published var isDataLoaded = false
+    
+    func fetchData(cardId: String) {
+        getCardData(cardId: cardId, {result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let card):
+                    self.cardData = card
+                    self.isDataLoaded = true
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        })
+    }
+    
+    func getProducts() -> [Product] {
+        return cardData.foundIn ?? [Product]()
+    }
+    
+    func getBanList(format: BanListFormat) -> [BanList] {
+        switch format {
+        case .tcg:
+            return cardData.restrictedIn?.TCG ?? [BanList]()
+        case .md:
+            return cardData.restrictedIn?.MD ?? [BanList]()
+        case .dl:
+            return cardData.restrictedIn?.DL ?? [BanList]()
+        }
+    }
+}
+
+private class CardSuggestionInformationViewModel: ObservableObject {
+    func fetchData(cardId: String) {
+        getCardSuggestionsTask(cardId: cardId, {result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let suggestions):
+                    print(suggestions)
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        })
+    }
+}
+
 struct CardViewModel: View {
     var cardId: String
     
-    @State private var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
-    @State private var showProductsSheet = false
-    @State private var showBanListsSheet = false
-    @State private var isDataLoaded = false
-    
-    @State private var products = [Product]()
-    @State private var tcgBanLists = [BanList]()
-    @State private var mdBanLists = [BanList]()
-    @State private var dlBanLists = [BanList]()
-    
+    @StateObject private var cardInformation = CardInformationViewModel()
+    @StateObject private var cardSuggestions = CardSuggestionInformationViewModel()
     
     private let imageSize = UIScreen.main.bounds.width - 60
     private let imageUrl: URL
@@ -31,47 +72,28 @@ struct CardViewModel: View {
     
     var body: some View {
         ScrollView {
-            ZStack {
-                VStack {
-                    RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
-                    if (isDataLoaded) {
-                        CardStatsViewModel(
-                            cardName: cardData.cardName, cardColor: cardData.cardColor, monsterType: cardData.monsterType, cardEffect: cardData.cardEffect, monsterAssociation: cardData.monsterAssociation,
-                            cardId: cardData.cardID, cardAttribute: cardData.cardAttribute, monsterAttack: cardData.monsterAttack, monsterDefense: cardData.monsterDefense
-                        )
-                        
-                        RelatedContentViewModel(cardName: cardData.cardName, products: products, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
-                    } else {
-                        RectPlaceholderViewModel(width: imageSize, height: 200, radius: 10)
-                    }
+            VStack {
+                RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
+                if (cardInformation.isDataLoaded) {
+                    CardStatsViewModel(
+                        cardName: cardInformation.cardData.cardName, cardColor: cardInformation.cardData.cardColor, monsterType: cardInformation.cardData.monsterType,
+                        cardEffect: cardInformation.cardData.cardEffect, monsterAssociation: cardInformation.cardData.monsterAssociation,
+                        cardId: cardInformation.cardData.cardID, cardAttribute: cardInformation.cardData.cardAttribute,
+                        monsterAttack: cardInformation.cardData.monsterAttack, monsterDefense: cardInformation.cardData.monsterDefense
+                    )
+                    
+                    RelatedContentViewModel(
+                        cardName: cardInformation.cardData.cardName, products: cardInformation.getProducts(), tcgBanLists: cardInformation.getBanList(format: BanListFormat.tcg),
+                        mdBanLists: cardInformation.getBanList(format: BanListFormat.md), dlBanLists: cardInformation.getBanList(format: BanListFormat.dl)
+                    )
+                } else {
+                    RectPlaceholderViewModel(width: imageSize, height: 200, radius: 10)
                 }
-                .padding(.horizontal, 5)
             }
+            .padding(.horizontal, 5)
             .onAppear {
-                getCardData(cardId: cardId, {result in
-                    switch result {
-                    case .success(let card):
-                        self.cardData = card
-                        
-                        self.products = cardData.foundIn ?? [Product]()
-                        self.tcgBanLists = cardData.restrictedIn?.TCG ?? [BanList]()
-                        self.mdBanLists = cardData.restrictedIn?.MD ?? [BanList]()
-                        self.dlBanLists = cardData.restrictedIn?.DL ?? [BanList]()
-                        
-                        self.isDataLoaded = true
-                    case .failure(let error):
-                        print(error)
-                    }
-                })
-                
-                getCardSuggestionsTask(cardId: cardId, {result in
-                    switch result {
-                    case .success(let suggestions):
-                        print(suggestions)
-                    case .failure(let error):
-                        print(error)
-                    }
-                })
+                cardInformation.fetchData(cardId: cardId)
+                cardSuggestions.fetchData(cardId: cardId)
             }
         }
     }
