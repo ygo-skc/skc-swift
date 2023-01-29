@@ -14,44 +14,46 @@ struct RelatedProductsContentViewModels: RelatedContent {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-            VStack(alignment: .leading) {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Products: \(products.count)")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .multilineTextAlignment(.leading)
-                            .padding(.top)
-                        Text("\(cardName) Was Printed In")
-                            .font(.headline)
-                            .fontWeight(.light)
-                            .multilineTextAlignment(.leading)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        dismiss()
-                    }, label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title)
-                    })
+        VStack(alignment: .leading) {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Products: \(products.count)")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.leading)
+                        .padding(.top)
+                    Text("\(cardName) Was Printed In")
+                        .font(.headline)
+                        .fontWeight(.light)
+                        .multilineTextAlignment(.leading)
                 }
-                .padding(.horizontal)
                 
-                Divider()
+                Spacer()
                 
-                List {
-                    ForEach(products, id: \.productId) { product in
+                Button(action: {
+                    dismiss()
+                }, label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                })
+            }
+            .padding(.horizontal)
+            
+            Divider()
+            
+            List {
+                ForEach(products, id: \.productId) { product in
+                    LazyVStack {
                         ProductListItemViewModel(product: product)
                     }
-                }.listStyle(.plain)
-            }
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
+                }
+            }.listStyle(.plain)
+        }
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity,
+            alignment: .topLeading
+        )
     }
 }
 
@@ -60,7 +62,7 @@ private struct ProductListItemViewModel: View {
     
     var body: some View {
         HStack {
-            LazyVStack(alignment: .leading) {
+            VStack(alignment: .leading) {
                 Text(product.productName)
                     .lineLimit(2)
                     .font(.subheadline)
@@ -79,6 +81,7 @@ private struct ProductListItemViewModel: View {
                 .padding(.top, 1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            
             DateViewModel(date: product.productReleaseDate)
         }
         .frame(

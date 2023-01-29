@@ -44,7 +44,9 @@ struct RelatedBanListContentViewModel: RelatedContent {
             
             List {
                 ForEach(banlists, id: \.banListDate) { instance in
-                    BanListItemViewModel(banListInstance: instance)
+                    LazyVStack {
+                        BanListItemViewModel(banListInstance: instance)
+                    }
                 }
             }.listStyle(.plain)
         }
@@ -61,7 +63,7 @@ private struct BanListItemViewModel: View {
     
     var body: some View {
         HStack {
-            LazyVStack(alignment: .leading) {
+            VStack(alignment: .leading) {
                 Text(banListInstance.banStatus)
                     .lineLimit(1)
                     .font(.subheadline)
