@@ -18,9 +18,14 @@ struct CardStatsViewModel: View {
     var monsterAttack: String
     var monsterDefense: String
     
+    var showAllInfo: Bool
+    
     private static let nilStat = "?"
     
-    init(cardName: String, cardColor: String, monsterType: String? = nil, cardEffect: String, monsterAssociation: MonsterAssociation? = nil, cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil) {
+    init(
+        cardName: String, cardColor: String, monsterType: String? = nil, cardEffect: String, monsterAssociation: MonsterAssociation? = nil,
+        cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil, showAllInfo: Bool = true
+    ) {
         self.cardName = cardName
         self.cardColor = cardColor
         self.monsterType = monsterType
@@ -28,6 +33,8 @@ struct CardStatsViewModel: View {
         self.monsterAssociation = monsterAssociation
         self.cardId = cardId
         self.cardAttribute = cardAttribute
+        
+        self.showAllInfo = showAllInfo
         
         let nilDefStat = (cardColor == "Link") ? "—" : CardStatsViewModel.nilStat  // override missing stat for certain edge cases
         self.monsterAttack = (monsterAttack == nil) ? CardStatsViewModel.nilStat : String(monsterAttack!)
@@ -42,6 +49,7 @@ struct CardStatsViewModel: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
                     .bold()
+                    .lineLimit(1)
                 
                 let attribute = Attribute(rawValue: cardAttribute)
                 if (monsterAssociation != nil && attribute != nil){
@@ -61,11 +69,7 @@ struct CardStatsViewModel: View {
                     }
                     
                     Text(replaceHTMLEntities(subject: cardEffect))
-                        .font(.body)
-                        .fontWeight(.light)
-                        .multilineTextAlignment(.leading)
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                        .modifier(CardEffectModifier(variant: (showAllInfo) ? .fullText : .shortened))
                     
                     HStack {
                         Text(cardId)
@@ -108,6 +112,34 @@ struct CardStatsViewModel: View {
     }
 }
 
+private struct CardEffectModifier: ViewModifier {
+    enum CardEffectVariant {
+        case fullText
+        case shortened
+    }
+    
+    var variant: CardEffectVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .fullText:
+            content
+                .font(.body)
+                .fontWeight(.light)
+                .multilineTextAlignment(.leading)
+                .bold()
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+        case .shortened:
+            content
+                .fontWeight(.light)
+                .multilineTextAlignment(.leading)
+                .bold()
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .lineLimit(3)
+        }
+    }
+}
+
 struct CardStatsViewModel_Previews: PreviewProvider {
     static var previews: some View {
         CardStatsViewModel(
@@ -121,5 +153,19 @@ struct CardStatsViewModel_Previews: PreviewProvider {
             monsterAttack: 3000,
             monsterDefense: 2500
         )
+        
+        CardStatsViewModel(
+            cardName: "Elemental HERO Neos Kluger",
+            cardColor: "Fusion",
+            monsterType: "Spellcaster/Fusion/Effect",
+            cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.",
+            monsterAssociation: MonsterAssociation(level: 10),
+            cardId: "90307498",
+            cardAttribute: "Light",
+            monsterAttack: 3000,
+            monsterDefense: 2500,
+            showAllInfo: false
+        )
+        .previewDisplayName("Don't show all info")
     }
 }

@@ -8,8 +8,8 @@
 import SwiftUI
 
 private class CardInformationViewModel: ObservableObject {
-    @Published var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
-    @Published var isDataLoaded = false
+    @Published private(set) var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
+    @Published private(set) var isDataLoaded = false
     
     func fetchData(cardId: String) {
         getCardData(cardId: cardId, {result in
@@ -42,12 +42,22 @@ private class CardInformationViewModel: ObservableObject {
 }
 
 private class CardSuggestionInformationViewModel: ObservableObject {
+    @Published private(set) var hasSelfReference: Bool = false
+    @Published private(set) var namedMaterials: [CardReference] = [CardReference]()
+    @Published private(set) var namedReferences: [CardReference] = [CardReference]()
+    @Published private(set) var isDataLoaded = false
+    
+    
     func fetchData(cardId: String) {
         getCardSuggestionsTask(cardId: cardId, {result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let suggestions):
-                    print(suggestions)
+                    self.hasSelfReference = suggestions.hasSelfReference
+                    self.namedMaterials = suggestions.namedMaterials
+                    self.namedReferences = suggestions.namedReferences
+                    
+                    self.isDataLoaded = true
                 case .failure(let error):
                     print(error)
                 }
@@ -72,7 +82,7 @@ struct CardViewModel: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            LazyVStack {
                 RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
                 if (cardInformation.isDataLoaded) {
                     CardStatsViewModel(
@@ -81,6 +91,8 @@ struct CardViewModel: View {
                         cardId: cardInformation.cardData.cardID, cardAttribute: cardInformation.cardData.cardAttribute,
                         monsterAttack: cardInformation.cardData.monsterAttack, monsterDefense: cardInformation.cardData.monsterDefense
                     )
+                    
+                    CardSuggestionsViewModel(namedMaterials: cardSuggestions.namedMaterials, namedReferences: cardSuggestions.namedReferences, isDataLoaded: cardSuggestions.isDataLoaded)
                     
                     RelatedContentViewModel(
                         cardName: cardInformation.cardData.cardName, products: cardInformation.getProducts(), tcgBanLists: cardInformation.getBanList(format: BanListFormat.tcg),

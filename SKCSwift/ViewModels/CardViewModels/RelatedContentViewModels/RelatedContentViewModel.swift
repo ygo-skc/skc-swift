@@ -77,8 +77,11 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
         VStack(alignment: .leading) {
             RelatedContentSectionHeaderViewModel(header: "Products")
             
-            RelatedContentSheetButton(text: "TCG", sheetContents: RelatedProductsContentViewModels(cardName: cardName, products: self.products))
-                .disabled(products.isEmpty)
+            RelatedContentSheetButton(text: "TCG") {
+                RelatedProductsContentViewModels(cardName: cardName, products: self.products)
+            }
+            .disabled(products.isEmpty)
+            
             HStack {
                 Text(String(products.count))
                     .font(.body)
@@ -112,22 +115,28 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             RelatedContentSectionHeaderViewModel(header: "Ban Lists")
             
             // TCG ban list deets
-            RelatedContentSheetButton(text: "TCG", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg))
-                .disabled(tcgBanLists.isEmpty)
+            RelatedContentSheetButton(text: "TCG") {
+                RelatedBanListContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
+            }
+            .disabled(tcgBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: tcgBanLists.count)
             
             Divider()
             
             // MD ban list deets
-            RelatedContentSheetButton(text: "Master Duel", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md))
-                .disabled(mdBanLists.isEmpty)
+            RelatedContentSheetButton(text: "Master Duel") {
+                RelatedBanListContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
+            }
+            .disabled(mdBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: mdBanLists.count)
             
             Divider()
             
             // DL ban list deets
-            RelatedContentSheetButton(text: "Duel Links", sheetContents: RelatedBanListContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl))
-                .disabled(dlBanLists.isEmpty)
+            RelatedContentSheetButton(text: "Duel Links") {
+                RelatedBanListContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
+            }
+            .disabled(dlBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: dlBanLists.count)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -152,7 +161,12 @@ private struct RelatedBanListsOccurrences: View {
 
 private struct RelatedContentSheetButton<RC: RelatedContent>: View {
     var text: String
-    var sheetContents: RC
+    var sheetContent: RC
+    
+    init(text: String, @ViewBuilder sheetContent: () -> RC) {
+        self.text = text
+        self.sheetContent = sheetContent()
+    }
     
     @State private var showSheet = false
     
@@ -167,7 +181,7 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
             }
         }
         .sheet(isPresented: $showSheet, onDismiss: {showSheet = false}) {
-            sheetContents
+            sheetContent
         }
         .padding([.top, .bottom], 1)
     }

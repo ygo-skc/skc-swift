@@ -56,6 +56,5 @@ func cardSuggestionsURL(cardId: String) -> URL {
         fatalError("URL is incorrect")
     }
     
-    print(url)
     return url
 }

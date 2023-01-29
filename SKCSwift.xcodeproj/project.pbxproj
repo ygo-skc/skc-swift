@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F1A3AC529871EE600B69892 /* CardSuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1A3AC429871EE600B69892 /* CardSuggestionsViewModel.swift */; };
 		1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF6B2977BC2D00B4451A /* UIColors.swift */; };
 		1F30FE6E296B721500B80816 /* CardSearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */; };
 		1F30FE70296B729400B80816 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6F296B729400B80816 /* SearchResults.swift */; };
@@ -66,6 +67,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1F1A3AC429871EE600B69892 /* CardSuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestionsViewModel.swift; sourceTree = "<group>"; };
 		1F21FF6B2977BC2D00B4451A /* UIColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColors.swift; sourceTree = "<group>"; };
 		1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchResultViewModel.swift; sourceTree = "<group>"; };
 		1F30FE6F296B729400B80816 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
@@ -291,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				1FA24A062980A63700C04B79 /* SuggestedCardViewModel.swift */,
+				1F1A3AC429871EE600B69892 /* CardSuggestionsViewModel.swift */,
 			);
 			path = CardSuggestions;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 				1F6687E2296798E700C8555D /* HomeViewModel.swift in Sources */,
 				1F6687E72967A13600C8555D /* LevelAssociationViewModel.swift in Sources */,
 				1FA249FF29809DC500C04B79 /* RelatedContentViewModel.swift in Sources */,
+				1F1A3AC529871EE600B69892 /* CardSuggestionsViewModel.swift in Sources */,
 				1FA24A0429809FA200C04B79 /* RelatedBanListContentViewModel.swift in Sources */,
 				1F86EC48296A0055004F4F1B /* DateViewModel.swift in Sources */,
 				1F6687E52967A07A00C8555D /* RankAssociationViewModel.swift in Sources */,
