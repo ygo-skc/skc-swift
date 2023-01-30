@@ -106,7 +106,6 @@ struct CardStatsViewModel: View {
             .cornerRadius(15)
             .frame(
                 maxWidth: .infinity,
-                maxHeight: .infinity,
                 alignment: .topLeading
             )
     }

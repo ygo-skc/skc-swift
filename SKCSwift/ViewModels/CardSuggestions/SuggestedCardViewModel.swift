@@ -29,7 +29,7 @@ struct SuggestedCardViewModel: View {
             
             CardStatsViewModel(cardName: cardName, cardColor: cardColor, monsterType: monsterType, cardEffect: cardEffect, cardId: cardId, cardAttribute: cardAttribute, showAllInfo: false)
         }
-        .frame(width: 250)
+        .frame(maxWidth: 250)
     }
 }
 
