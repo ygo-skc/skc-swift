@@ -14,6 +14,8 @@ struct SuggestedCardViewModel: View {
     var cardEffect: String
     var cardAttribute: String
     var monsterType: String?
+    var monsterAttack: Int?
+    var monsterDefense: Int?
     var occurrence: Int
     
     var body: some View {
@@ -27,7 +29,10 @@ struct SuggestedCardViewModel: View {
                     .fontWeight(.heavy)
             }
             
-            CardStatsViewModel(cardName: cardName, cardColor: cardColor, monsterType: monsterType, cardEffect: cardEffect, cardId: cardId, cardAttribute: cardAttribute, showAllInfo: false)
+            CardStatsViewModel(
+                cardName: cardName, cardColor: cardColor, monsterType: monsterType, cardEffect: cardEffect, cardId: cardId, cardAttribute: cardAttribute, monsterAttack: monsterAttack,
+                monsterDefense: monsterDefense, variant: .condensed
+            )
         }
         .frame(maxWidth: 250)
     }

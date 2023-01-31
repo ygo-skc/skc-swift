@@ -55,7 +55,7 @@ private struct NamedSuggestionsViewModel: View {
                         ForEach(references, id: \.card.cardID) { suggestion in
                             SuggestedCardViewModel(cardId: suggestion.card.cardID, cardName: suggestion.card.cardName, cardColor: suggestion.card.cardColor,
                                                    cardEffect: suggestion.card.cardEffect, cardAttribute: suggestion.card.cardAttribute, monsterType: suggestion.card.monsterType,
-                                                   occurrence: suggestion.occurrences
+                                                   monsterAttack: suggestion.card.monsterAttack, monsterDefense: suggestion.card.monsterDefense, occurrence: suggestion.occurrences
                             )
                         }
                     }

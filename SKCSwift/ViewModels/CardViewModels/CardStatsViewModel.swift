@@ -18,13 +18,13 @@ struct CardStatsViewModel: View {
     var monsterAttack: String
     var monsterDefense: String
     
-    var showAllInfo: Bool
+    var variant: CardStatsVariant
     
     private static let nilStat = "?"
     
     init(
         cardName: String, cardColor: String, monsterType: String? = nil, cardEffect: String, monsterAssociation: MonsterAssociation? = nil,
-        cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil, showAllInfo: Bool = true
+        cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil, variant: CardStatsVariant = .full
     ) {
         self.cardName = cardName
         self.cardColor = cardColor
@@ -34,7 +34,7 @@ struct CardStatsViewModel: View {
         self.cardId = cardId
         self.cardAttribute = cardAttribute
         
-        self.showAllInfo = showAllInfo
+        self.variant = variant
         
         let nilDefStat = (cardColor == "Link") ? "—" : CardStatsViewModel.nilStat  // override missing stat for certain edge cases
         self.monsterAttack = (monsterAttack == nil) ? CardStatsViewModel.nilStat : String(monsterAttack!)
@@ -45,11 +45,8 @@ struct CardStatsViewModel: View {
         VStack {
             VStack  {
                 Text(cardName)
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                    .modifier(CardNameModifier(variant: variant))
                     .foregroundColor(.white)
-                    .bold()
-                    .lineLimit(1)
                 
                 let attribute = Attribute(rawValue: cardAttribute)
                 if (monsterAssociation != nil && attribute != nil){
@@ -61,19 +58,21 @@ struct CardStatsViewModel: View {
                 VStack(alignment: .leading) {
                     if (monsterType != nil) {
                         Text(monsterType!)
-                            .font(.headline)
+                            .modifier(MonsterTypeModifier(variant: variant))
                             .fontWeight(.medium)
                             .multilineTextAlignment(.leading)
-                            .bold()
                             .padding(.bottom, 1.0)
                     }
                     
                     Text(replaceHTMLEntities(subject: cardEffect))
-                        .modifier(CardEffectModifier(variant: (showAllInfo) ? .fullText : .shortened))
+                        .modifier(CardEffectModifier(variant: variant))
+                        .fontWeight(.light)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
                     
                     HStack {
                         Text(cardId)
-                            .font(.callout)
+                            .modifier(CardIdModifier(variant: variant))
                             .fontWeight(.light)
                         
                         Spacer()
@@ -81,15 +80,17 @@ struct CardStatsViewModel: View {
                         if (cardColor != "Spell" && cardColor != "Trap") {
                             HStack {
                                 Text(monsterAttack)
-                                    .padding(.horizontal, 4.0)
+                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                    .fontWeight(.bold)
+                                    .padding(.leading, 10)
                                     .padding(.vertical, 2.0)
                                     .foregroundColor(.red)
-                                    .fontWeight(.bold)
                                 Text(monsterDefense)
-                                    .padding(.horizontal, 4.0)
+                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                    .fontWeight(.bold)
+                                    .padding(.trailing, 10)
                                     .padding(.vertical, 2.0)
                                     .foregroundColor(.blue)
-                                    .fontWeight(.bold)
                             }
                             .background(Color("translucent_background"))
                             .cornerRadius(20)
@@ -111,30 +112,87 @@ struct CardStatsViewModel: View {
     }
 }
 
-private struct CardEffectModifier: ViewModifier {
-    enum CardEffectVariant {
-        case fullText
-        case shortened
-    }
-    
-    var variant: CardEffectVariant
+enum CardStatsVariant {
+    case full
+    case condensed
+}
+
+private struct CardNameModifier: ViewModifier {
+    var variant: CardStatsVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .fullText:
+        case .full:
+            content
+                .font(.title3)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+        case .condensed:
+            content
+                .font(.headline)
+                .fontWeight(.medium)
+                .lineLimit(1)
+        }
+    }
+}
+
+private struct MonsterTypeModifier: ViewModifier {
+    var variant: CardStatsVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .full:
+            content
+                .font(.headline)
+        case .condensed:
+            content
+                .font(.subheadline)
+        }
+    }
+}
+
+private struct CardEffectModifier: ViewModifier {
+    var variant: CardStatsVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .full:
             content
                 .font(.body)
-                .fontWeight(.light)
-                .multilineTextAlignment(.leading)
-                .bold()
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-        case .shortened:
+        case .condensed:
             content
-                .fontWeight(.light)
-                .multilineTextAlignment(.leading)
-                .bold()
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .font(.callout)
                 .lineLimit(3)
+        }
+    }
+}
+
+private struct CardIdModifier: ViewModifier {
+    var variant: CardStatsVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .full:
+            content
+                .font(.callout)
+        case .condensed:
+            content
+                .font(.footnote)
+        }
+    }
+}
+
+private struct MonsterAttackDefenseModifier: ViewModifier {
+    var variant: CardStatsVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .full:
+            content
+                .font(.callout)
+        case .condensed:
+            content
+                .font(.footnote)
         }
     }
 }
@@ -163,7 +221,7 @@ struct CardStatsViewModel_Previews: PreviewProvider {
             cardAttribute: "Light",
             monsterAttack: 3000,
             monsterDefense: 2500,
-            showAllInfo: false
+            variant: .condensed
         )
         .previewDisplayName("Don't show all info")
     }
