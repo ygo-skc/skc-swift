@@ -137,7 +137,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1F21FF6A2977BC1700B4451A /* util */ = {
+		1F21FF6A2977BC1700B4451A /* Util */ = {
 			isa = PBXGroup;
 			children = (
 				1F21FF6B2977BC2D00B4451A /* UIColors.swift */,
@@ -145,7 +145,7 @@
 				1FE8C9C02978ED3F005AD924 /* Text.swift */,
 				1FD83E1B2985B2E900E40822 /* Dates.swift */,
 			);
-			path = util;
+			path = Util;
 			sourceTree = "<group>";
 		};
 		1F32564D296358AB001AACF1 /* Requests */ = {
@@ -248,7 +248,7 @@
 				1F3256502963590D001AACF1 /* Models */,
 				1F8211EC2961FF0100238EE1 /* Preview Content */,
 				1F32564D296358AB001AACF1 /* Requests */,
-				1F21FF6A2977BC1700B4451A /* util */,
+				1F21FF6A2977BC1700B4451A /* Util */,
 				1F32565529636BA2001AACF1 /* ViewModels */,
 			);
 			path = SKCSwift;
