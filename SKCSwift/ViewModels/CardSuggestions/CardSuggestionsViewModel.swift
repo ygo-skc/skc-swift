@@ -14,12 +14,18 @@ struct CardSuggestionsViewModel: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Suggestions")
+            Text("Card Suggestions")
                 .font(.title)
-                .padding(.vertical)
+                .padding(.top)
+            
+            Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
+                .fontWeight(.light)
+                .padding(.top, -10)
             
             NamedSuggestionsViewModel(header: "Named Materials", references: namedMaterials, isDataLoaded: isDataLoaded)
+            Divider()
             NamedSuggestionsViewModel(header: "Named References", references: namedReferences, isDataLoaded: isDataLoaded)
+            Divider()
         }
         .frame(maxWidth: .infinity)
         .padding(.all)
@@ -34,7 +40,8 @@ private struct NamedSuggestionsViewModel: View {
     var body: some View {
         Text(header)
             .font(.title2)
-            .fontWeight(.black)
+            .fontWeight(.bold)
+            .padding(.top)
         
         if (isDataLoaded) {
             if (references.isEmpty) {
@@ -75,10 +82,10 @@ struct CardSuggestionsViewModel_Previews: PreviewProvider {
                 )
             ],
             namedReferences: [
-                //                CardReference(
-                //                    occurrences: 1,
-                //                    card: Card(cardID: "05126490", cardName: "Neos Wiseman", cardColor: "Effect", cardAttribute: "Light", cardEffect: "Cannot be Normal Summoned or Set. Must be Special Summoned (from your hand) by sending 1 face-up \"Elemental HERO Neos\" and 1 face-up \"Yubel\" you control to the Graveyard, and cannot be Special Summoned by other ways. This card cannot be destroyed by card effects. At the end of the Damage Step, if this card battled an opponent's monster: Inflict damage to your opponent equal to the ATK of the monster it battled, and you gain Life Points equal to that monster's DEF.")
-                //                )
+                                CardReference(
+                                    occurrences: 1,
+                                    card: Card(cardID: "05126490", cardName: "Neos Wiseman", cardColor: "Effect", cardAttribute: "Light", cardEffect: "Cannot be Normal Summoned or Set. Must be Special Summoned (from your hand) by sending 1 face-up \"Elemental HERO Neos\" and 1 face-up \"Yubel\" you control to the Graveyard, and cannot be Special Summoned by other ways. This card cannot be destroyed by card effects. At the end of the Damage Step, if this card battled an opponent's monster: Inflict damage to your opponent equal to the ATK of the monster it battled, and you gain Life Points equal to that monster's DEF.")
+                                )
             ], isDataLoaded: true)
     }
 }
