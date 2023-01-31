@@ -1,5 +1,5 @@
 //
-//  RelatedBanListsViewModel.swift
+//  RelatedBanListsContentViewModel.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 1/24/23.
