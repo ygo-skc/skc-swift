@@ -116,7 +116,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             
             // TCG ban list deets
             RelatedContentSheetButton(text: "TCG") {
-                RelatedBanListContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
+                RelatedBanListsContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
             }
             .disabled(tcgBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: tcgBanLists.count)
@@ -125,7 +125,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             
             // MD ban list deets
             RelatedContentSheetButton(text: "Master Duel") {
-                RelatedBanListContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
+                RelatedBanListsContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
             }
             .disabled(mdBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: mdBanLists.count)
@@ -134,7 +134,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             
             // DL ban list deets
             RelatedContentSheetButton(text: "Duel Links") {
-                RelatedBanListContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
+                RelatedBanListsContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
             }
             .disabled(dlBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: dlBanLists.count)

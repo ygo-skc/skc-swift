@@ -24,8 +24,11 @@ struct CardSuggestionsViewModel: View {
             
             NamedSuggestionsViewModel(header: "Named Materials", references: namedMaterials, isDataLoaded: isDataLoaded)
             Divider()
+                .padding(.top)
+            
             NamedSuggestionsViewModel(header: "Named References", references: namedReferences, isDataLoaded: isDataLoaded)
             Divider()
+                .padding(.top)
         }
         .frame(maxWidth: .infinity)
         .padding(.all)

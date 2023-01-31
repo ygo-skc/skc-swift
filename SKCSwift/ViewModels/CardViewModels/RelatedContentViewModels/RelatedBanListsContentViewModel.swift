@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RelatedBanListContentViewModel: RelatedContent {
+struct RelatedBanListsContentViewModel: RelatedContent {
     var cardName: String
     var banlists: [BanList]
     var format: BanListFormat
@@ -92,6 +92,6 @@ struct RelatedBanListContentViewModel_Previews: PreviewProvider {
             BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG")
         ]
         
-        RelatedBanListContentViewModel(cardName: "Elemental HERO Stratos", banlists: banLists, format: BanListFormat.tcg)
+        RelatedBanListsContentViewModel(cardName: "Elemental HERO Stratos", banlists: banLists, format: BanListFormat.tcg)
     }
 }

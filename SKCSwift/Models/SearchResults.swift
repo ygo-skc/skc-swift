@@ -1,5 +1,5 @@
 //
-//  CardSearchResults.swift
+//  SearchResults.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 1/8/23.
