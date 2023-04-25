@@ -22,21 +22,17 @@ struct CardSuggestionsViewModel: View {
                 .fontWeight(.light)
                 .padding(.top, -10)
             
-            if (namedMaterials.isEmpty && namedReferences.isEmpty) {
+            if (!isDataLoaded) {
+                RectPlaceholderViewModel(width: .infinity, height: 150, radius: 10)
+            }
+            else if (namedMaterials.isEmpty && namedReferences.isEmpty) {
                 Text("Nothing here 🤔")
                     .font(.headline)
                     .padding(.all)
                     .frame(maxWidth: .infinity, alignment: .center)
             } else {
-                NamedSuggestionsViewModel(header: "Named Materials", references: namedMaterials, isDataLoaded: isDataLoaded, maxWidth: 300)
-                Divider()
-                    .padding(.top)
-                
-                NamedSuggestionsViewModel(header: "Named References", references: namedReferences, isDataLoaded: isDataLoaded, maxWidth: 300)
-                Divider()
-                    .padding(.top)
-                
-                
+                NamedSuggestionsViewModel(header: "Named Materials", references: namedMaterials)
+                NamedSuggestionsViewModel(header: "Named References", references: namedReferences)
             }
         }
         .frame(maxWidth: .infinity)
@@ -48,16 +44,14 @@ struct CardSuggestionsViewModel: View {
 private struct NamedSuggestionsViewModel: View {
     var header: String
     var references: [CardReference]
-    var isDataLoaded: Bool
-    var maxWidth: CGFloat
     
     var body: some View {
-        Text(header)
-            .font(.title2)
-            .fontWeight(.bold)
-            .padding(.top)
-        
-        if (isDataLoaded && !references.isEmpty) {
+        if (!references.isEmpty) {
+            Text(header)
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.top)
+            
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(references, id: \.card.cardID) { suggestion in
@@ -68,10 +62,10 @@ private struct NamedSuggestionsViewModel: View {
                     }
                 }
             }
-            .padding(.horizontal, -20)
+                .padding(.horizontal, -16)
             
-        } else {
-            RectPlaceholderViewModel(width: maxWidth, height: 150, radius: 10)
+            Divider()
+                .padding(.top)
         }
     }
 }
@@ -92,7 +86,7 @@ struct CardSuggestionsViewModel_Previews: PreviewProvider {
             namedReferences: [
                 CardReference(
                     occurrences: 1,
-                    card: Card(cardID: "05126490", cardName: "Neos Wiseman", cardColor: "Effect", cardAttribute: "Light", cardEffect: "Cannot be Normal Summoned or Set. Must be Special Summoned (from your hand) by sending 1 face-up \"Elemental HERO Neos\" and 1 face-up \"Yubel\" you control to the Graveyard, and cannot be Special Summoned by other ways. This card cannot be destroyed by card effects. At the end of the Damage Step, if this card battled an opponent's monster: Inflict damage to your opponent equal to the ATK of the monster it battled, and you gain Life Points equal to that monster's DEF.")
+                    card: Card(cardID: "78371393", cardName: "Yubel", cardColor: "Effect", cardAttribute: "Dark", cardEffect: "This card cannot be destroyed by battle. You take no Battle Damage from battles involving this card. Before damage calculation, when this face-up Attack Position card is attacked by an opponent's monster: Inflict damage to your opponent equal to that monster's ATK. During your End Phase: Tribute 1 other monster or destroy this card. When this card is destroyed, except by its own effect: Its owner can Special Summon 1 \"Yubel - Terror Incarnate\" from their hand, Deck, or Graveyard.")
                 )
             ], isDataLoaded: true)
     }

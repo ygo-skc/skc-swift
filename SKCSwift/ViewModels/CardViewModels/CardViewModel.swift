@@ -99,7 +99,7 @@ struct CardViewModel: View {
                         mdBanLists: cardInformation.getBanList(format: BanListFormat.md), dlBanLists: cardInformation.getBanList(format: BanListFormat.dl)
                     )
                 } else {
-                    RectPlaceholderViewModel(width: imageSize, height: 200, radius: 10)
+                    RectPlaceholderViewModel(width: .infinity, height: 200, radius: 10)
                 }
             }
             .padding(.horizontal, 5)
