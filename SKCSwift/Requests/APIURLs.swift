@@ -7,6 +7,13 @@
 
 import Foundation
 
+private func createURL(components: URLComponents) -> URL {
+    guard let url = components.url else {
+        fatalError("URL is incorrect")
+    }
+    return url
+}
+
 // SKC API URL creation methods
 
 func cardInfoURL(cardId: String) -> URL {
@@ -19,11 +26,7 @@ func cardInfoURL(cardId: String) -> URL {
         URLQueryItem(name: "allInfo", value: "true")
     ]
     
-    guard let url = components.url else {
-        fatalError("URL is incorrect")
-    }
-    
-    return url
+    return createURL(components: components)
 }
 
 func searchCardURL(cardName: String) -> URL {
@@ -37,11 +40,7 @@ func searchCardURL(cardName: String) -> URL {
         URLQueryItem(name: "cName", value: cardName)
     ]
     
-    guard let url = components.url else {
-        fatalError("URL is incorrect")
-    }
-    
-    return url
+    return createURL(components: components)
 }
 
 // SKC Suggestion Engine URL creation methods
@@ -50,11 +49,7 @@ func cardSuggestionsURL(cardId: String) -> URL {
     var components = URLComponents()
     components.scheme = "https"
     components.host = SKC_SUGGESTION_ENGINE_BASE_URL.description
-    components.path = "/api/v1/suggestions/card/\(cardId)"
+    components.path = String(format: SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description, cardId)
     
-    guard let url = components.url else {
-        fatalError("URL is incorrect")
-    }
-    
-    return url
+    return createURL(components: components)
 }

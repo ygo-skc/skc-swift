@@ -107,6 +107,7 @@ struct CardViewModel: View {
                 cardInformation.fetchData(cardId: cardId)
                 cardSuggestions.fetchData(cardId: cardId)
             }
+            .frame(maxHeight: .infinity)
         }
     }
 }

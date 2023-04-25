@@ -24,7 +24,7 @@ struct RelatedProductsContentViewModels: RelatedContent {
                         .padding(.top)
                     Text("\(cardName) Was Printed In")
                         .font(.headline)
-                        .fontWeight(.light)
+                        .fontWeight(.regular)
                         .multilineTextAlignment(.leading)
                 }
                 

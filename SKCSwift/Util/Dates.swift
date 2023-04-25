@@ -8,7 +8,7 @@
 import Foundation
 
 func determineElapsedDaysSinceToday(reference: String) -> Int {
-    let mostRecentProductReleaseDate = dateFormatter.date(from: reference)!
-    let elapsedInterval = Date().timeIntervalSince(mostRecentProductReleaseDate)
+    let referenceDate = dateFormatter.date(from: reference)!
+    let elapsedInterval = Date().timeIntervalSince(referenceDate)
     return Int(floor(elapsedInterval) / 60 / 60 / 24)
 }

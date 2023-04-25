@@ -27,7 +27,7 @@ struct CardSuggestionsViewModel: View {
             }
             else if (namedMaterials.isEmpty && namedReferences.isEmpty) {
                 Text("Nothing here 🤔")
-                    .font(.headline)
+                    .font(.subheadline)
                     .padding(.all)
                     .frame(maxWidth: .infinity, alignment: .center)
             } else {

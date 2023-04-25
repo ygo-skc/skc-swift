@@ -25,7 +25,7 @@ struct RelatedBanListsContentViewModel: RelatedContent {
                         .padding(.top)
                     Text("\(format.rawValue) Ban Lists \(cardName) Was In")
                         .font(.headline)
-                        .fontWeight(.light)
+                        .fontWeight(.regular)
                         .multilineTextAlignment(.leading)
                 }
                 

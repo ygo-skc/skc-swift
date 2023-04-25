@@ -47,7 +47,7 @@ private struct RelatedContentSectionHeaderViewModel: View {
     var body: some View {
         Text(header)
             .font(.title2)
-            .fontWeight(.black)
+            .fontWeight(.semibold)
     }
 }
 
@@ -65,7 +65,7 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
         if (!products.isEmpty) {
             let elapsedDays = determineElapsedDaysSinceToday(reference: products[0].productReleaseDate)
             
-            if (elapsedDays > 0) {
+            if (elapsedDays < 0) {
                 latestReleaseInfo = "\(elapsedDays) day(s) until next printing"
             } else {
                 latestReleaseInfo = "\(elapsedDays) day(s) since last printing"
