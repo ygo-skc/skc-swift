@@ -53,3 +53,12 @@ func cardSuggestionsURL(cardId: String) -> URL {
     
     return createURL(components: components)
 }
+
+func cardSupportURL(cardId: String) -> URL {
+    var components = URLComponents()
+    components.scheme = "https"
+    components.host = SKC_SUGGESTION_ENGINE_BASE_URL.description
+    components.path = String(format: SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardId)
+    
+    return createURL(components: components)
+}

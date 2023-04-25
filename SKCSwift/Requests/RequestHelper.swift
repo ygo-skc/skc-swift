@@ -30,3 +30,4 @@ let SKC_API_CARD_INFORMATION_ENDPOINT: StaticString = "/api/v1/card/%@"
 // SKC Suggestion request helpers
 let SKC_SUGGESTION_ENGINE_BASE_URL: StaticString = "suggestions.skc-ygo-api.com"
 let SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
+let SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@/support"
