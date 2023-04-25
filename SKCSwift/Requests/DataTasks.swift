@@ -9,25 +9,43 @@ import Foundation
 
 // SKC API Data Tasks
 
+private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bool {
+    // handle error
+    if let error = error {
+        if (error.localizedDescription != "cancelled") {
+            print("Error occurred while calling \(url.absoluteString) \(error.localizedDescription)")
+        }
+        return true
+    }
+    
+    if let httpResponse = response as? HTTPURLResponse {
+        if httpResponse.statusCode == 200 {
+            return false
+        }
+        if httpResponse.statusCode == 404 {
+            print("404 status for url \(url.absoluteString).")
+        }
+        return true
+    }
+    
+    return false
+}
+
 func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void)->  Void {
     let url = cardInfoURL(cardId: cardId)
     let request = baseRequest(url: url)
     
     URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle error
-        if (error != nil) {
-            print("Error occurred while calling SKC API \(error!.localizedDescription)")
-            return
-        } else if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 404 {
-            print("Card \(cardId) not found in database.")
-        }
+        // handle errors
+        let hasErrors = handleErrors(response: response, error: error, url: url)
         
-        // read body as no error was present
-        do {
-            let cardData = try decoder.decode(Card.self, from: body!)
-            completion(.success(cardData))
-        } catch {
-            print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
+        if let body = body, hasErrors == false {
+            do {
+                let cardData = try decoder.decode(Card.self, from: body)
+                completion(.success(cardData))
+            } catch {
+                print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
+            }
         }
     })
     .resume()
@@ -38,21 +56,18 @@ func searchCard(searchTerm: String, _ completion: @escaping (Result<[Card], Erro
     let request = baseRequest(url: url)
     
     let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle error
-        if (error != nil) {
-            if (error!.localizedDescription != "cancelled") {
-                print("Error occurred while calling SKC API \(error!.localizedDescription)")
-            }
-            completion(.failure(error!))
-            return
-        }
+        // handle errors
+        let hasErrors = handleErrors(response: response, error: error, url: url)
         
-        // read body as no error was present
-        do {
-            let cardData = try decoder.decode([Card].self, from: body!)
-            completion(.success(cardData))
-        } catch {
-            print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
+        if let body = body, hasErrors == false {
+            do {
+                let cardData = try decoder.decode([Card].self, from: body)
+                completion(.success(cardData))
+            } catch {
+                print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
+            }
+        } else {
+            completion(.failure(error!))
         }
     })
     
@@ -68,20 +83,16 @@ func getCardSuggestionsTask(cardId: String, _ completion: @escaping (Result<Card
     let request = baseRequest(url: url)
     
     URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle error
-        if (error != nil) {
-            print("Error occurred while calling SKC Suggestion Engine \(error!.localizedDescription)")
-            return
-        } else if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 404 {
-            print("Card \(cardId) not found in database.")
-        }
+        // handle errors
+        let hasErrors = handleErrors(response: response, error: error, url: url)
         
-        // read body as no error was present
-        do {
-            let cardData = try decoder.decode(CardSuggestions.self, from: body!)
-            completion(.success(cardData))
-        } catch {
-            print("An error ocurred while decoding output from SKC Suggestion Engine \(error)")
+        if let body = body, hasErrors == false {
+            do {
+                let cardData = try decoder.decode(CardSuggestions.self, from: body)
+                completion(.success(cardData))
+            } catch {
+                print("An error ocurred while decoding output from SKC Suggestion Engine \(error)")
+            }
         }
     })
     .resume()
