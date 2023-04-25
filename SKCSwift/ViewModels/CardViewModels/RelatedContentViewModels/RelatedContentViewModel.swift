@@ -17,7 +17,7 @@ struct RelatedContentViewModel: View {
     var dlBanLists: [BanList]
     
     var body: some View {
-        VStack(alignment: .leading) {
+        LazyVStack(alignment: .leading) {
             Text("Related Content")
                 .font(.title)
             Text("Expore Yu-Gi-Oh! products or forbidden/ban lists that are assoicated with this card")

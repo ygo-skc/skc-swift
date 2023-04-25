@@ -13,7 +13,7 @@ struct CardSuggestionsViewModel: View {
     var isDataLoaded: Bool
     
     var body: some View {
-        VStack(alignment: .leading) {
+        LazyVStack(alignment: .leading) {
             Text("Card Suggestions")
                 .font(.title)
                 .padding(.top)
@@ -22,16 +22,26 @@ struct CardSuggestionsViewModel: View {
                 .fontWeight(.light)
                 .padding(.top, -10)
             
-            NamedSuggestionsViewModel(header: "Named Materials", references: namedMaterials, isDataLoaded: isDataLoaded)
-            Divider()
-                .padding(.top)
-            
-            NamedSuggestionsViewModel(header: "Named References", references: namedReferences, isDataLoaded: isDataLoaded)
-            Divider()
-                .padding(.top)
+            if (namedMaterials.isEmpty && namedReferences.isEmpty) {
+                Text("Nothing here 🤔")
+                    .font(.headline)
+                    .padding(.all)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } else {
+                NamedSuggestionsViewModel(header: "Named Materials", references: namedMaterials, isDataLoaded: isDataLoaded, maxWidth: 300)
+                Divider()
+                    .padding(.top)
+                
+                NamedSuggestionsViewModel(header: "Named References", references: namedReferences, isDataLoaded: isDataLoaded, maxWidth: 300)
+                Divider()
+                    .padding(.top)
+                
+                
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.all)
+        
     }
 }
 
@@ -39,6 +49,7 @@ private struct NamedSuggestionsViewModel: View {
     var header: String
     var references: [CardReference]
     var isDataLoaded: Bool
+    var maxWidth: CGFloat
     
     var body: some View {
         Text(header)
@@ -46,27 +57,21 @@ private struct NamedSuggestionsViewModel: View {
             .fontWeight(.bold)
             .padding(.top)
         
-        if (isDataLoaded) {
-            if (references.isEmpty) {
-                Text("Nothing here 🤔")
-                    .font(.headline)
-                    .padding(.all)
-                    .frame(maxWidth: .infinity, alignment: .center)
-            } else {
-                ScrollView(.horizontal) {
-                    HStack {
-                        ForEach(references, id: \.card.cardID) { suggestion in
-                            SuggestedCardViewModel(cardId: suggestion.card.cardID, cardName: suggestion.card.cardName, cardColor: suggestion.card.cardColor,
-                                                   cardEffect: suggestion.card.cardEffect, cardAttribute: suggestion.card.cardAttribute, monsterType: suggestion.card.monsterType,
-                                                   monsterAttack: suggestion.card.monsterAttack, monsterDefense: suggestion.card.monsterDefense, occurrence: suggestion.occurrences
-                            )
-                        }
+        if (isDataLoaded && !references.isEmpty) {
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(references, id: \.card.cardID) { suggestion in
+                        SuggestedCardViewModel(cardId: suggestion.card.cardID, cardName: suggestion.card.cardName, cardColor: suggestion.card.cardColor,
+                                               cardEffect: suggestion.card.cardEffect, cardAttribute: suggestion.card.cardAttribute, monsterType: suggestion.card.monsterType,
+                                               monsterAttack: suggestion.card.monsterAttack, monsterDefense: suggestion.card.monsterDefense, occurrence: suggestion.occurrences
+                        )
                     }
                 }
-                .padding(.horizontal, -20)
             }
+            .padding(.horizontal, -20)
+            
         } else {
-            RectPlaceholderViewModel(width: 300, height: 150, radius: 10)
+            RectPlaceholderViewModel(width: maxWidth, height: 150, radius: 10)
         }
     }
 }
@@ -85,10 +90,10 @@ struct CardSuggestionsViewModel_Previews: PreviewProvider {
                 )
             ],
             namedReferences: [
-                                CardReference(
-                                    occurrences: 1,
-                                    card: Card(cardID: "05126490", cardName: "Neos Wiseman", cardColor: "Effect", cardAttribute: "Light", cardEffect: "Cannot be Normal Summoned or Set. Must be Special Summoned (from your hand) by sending 1 face-up \"Elemental HERO Neos\" and 1 face-up \"Yubel\" you control to the Graveyard, and cannot be Special Summoned by other ways. This card cannot be destroyed by card effects. At the end of the Damage Step, if this card battled an opponent's monster: Inflict damage to your opponent equal to the ATK of the monster it battled, and you gain Life Points equal to that monster's DEF.")
-                                )
+                CardReference(
+                    occurrences: 1,
+                    card: Card(cardID: "05126490", cardName: "Neos Wiseman", cardColor: "Effect", cardAttribute: "Light", cardEffect: "Cannot be Normal Summoned or Set. Must be Special Summoned (from your hand) by sending 1 face-up \"Elemental HERO Neos\" and 1 face-up \"Yubel\" you control to the Graveyard, and cannot be Special Summoned by other ways. This card cannot be destroyed by card effects. At the end of the Damage Step, if this card battled an opponent's monster: Inflict damage to your opponent equal to the ATK of the monster it battled, and you gain Life Points equal to that monster's DEF.")
+                )
             ], isDataLoaded: true)
     }
 }
