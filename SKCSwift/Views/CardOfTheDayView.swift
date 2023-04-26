@@ -13,10 +13,32 @@ struct CardOfTheDayView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if (cardOfTheDay.isDataLoaded) {
-                Text("Card of the Day")
-                    .font(.title)
-                    .padding(.top)
-                Text(cardOfTheDay.card.cardName)
+                HStack {
+                    RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(cardOfTheDay.card.cardID).jpg")!)
+                    VStack(alignment: .leading) {
+                        Text("Card of the Day")
+                            .font(.title)
+                            .multilineTextAlignment(.center)
+                            
+                        Text(cardOfTheDay.card.cardName)
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                        
+                        HStack {
+                            Circle()
+                                .foregroundColor(cardColorUI(cardColor: cardOfTheDay.card.cardColor))
+                                .frame(width: 20)
+                            Text(cardOfTheDay.card.cardColor)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        }
+                    }
+                }
+                .frame(
+                    minWidth: 0,
+                    maxWidth: .infinity,
+                    alignment: .topLeading
+                )
             }
         }
         .frame(
@@ -26,6 +48,7 @@ struct CardOfTheDayView: View {
             maxHeight: .infinity,
             alignment: .topLeading
         )
+        .padding(.top)
         .onAppear{
             cardOfTheDay.fetchData()
         }

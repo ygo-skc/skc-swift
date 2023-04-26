@@ -20,19 +20,19 @@ struct HomeView: View {
                         .fontWeight(.light)
                         .font(.headline)
                 }
+                .frame(
+                    minWidth: 0,
+                    maxWidth: .infinity,
+                    minHeight: 0,
+                    maxHeight: .infinity,
+                    alignment: .topLeading
+                )
                 .padding(.top)
                 
                 CardOfTheDayView()
             }
             .padding(.horizontal)
             .navigationTitle("Home")
-            .frame(
-                minWidth: 0,
-                maxWidth: .infinity,
-                minHeight: 0,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
         }
     }
 }
