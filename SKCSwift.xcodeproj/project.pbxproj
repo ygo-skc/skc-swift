@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F0F993D29F8972600AA9F69 /* CardOfTheDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */; };
 		1F1A3AC529871EE600B69892 /* CardSuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1A3AC429871EE600B69892 /* CardSuggestionsViewModel.swift */; };
 		1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF6B2977BC2D00B4451A /* UIColors.swift */; };
 		1F30FE6E296B721500B80816 /* CardSearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6D296B721500B80816 /* CardSearchResultViewModel.swift */; };
@@ -67,6 +68,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDay.swift; sourceTree = "<group>"; };
 		1F1A3AC429871EE600B69892 /* CardSuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestionsViewModel.swift; sourceTree = "<group>"; };
 		1F20ECC92988C4B100D1161D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1F21FF6B2977BC2D00B4451A /* UIColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColors.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				1F30FE6F296B729400B80816 /* SearchResults.swift */,
 				1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */,
 				1F601D07297DFD52007E1E0C /* DeckList.swift */,
+				1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				1F6687E2296798E700C8555D /* HomeViewModel.swift in Sources */,
 				1F6687E72967A13600C8555D /* LevelAssociationViewModel.swift in Sources */,
 				1FA249FF29809DC500C04B79 /* RelatedContentViewModel.swift in Sources */,
+				1F0F993D29F8972600AA9F69 /* CardOfTheDay.swift in Sources */,
 				1F1A3AC529871EE600B69892 /* CardSuggestionsViewModel.swift in Sources */,
 				1F86EC48296A0055004F4F1B /* DateViewModel.swift in Sources */,
 				1F6687E52967A07A00C8555D /* RankAssociationViewModel.swift in Sources */,

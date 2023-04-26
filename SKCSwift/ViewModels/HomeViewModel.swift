@@ -7,6 +7,52 @@
 
 import SwiftUI
 
+private class CardOfTheDayViewModel: ObservableObject {
+    @Published private(set) var date: String = ""
+    @Published private(set) var card: Card = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
+    @Published private(set) var isDataLoaded = false
+    
+    
+    func fetchData() {
+        getCardOfTheDayTask({result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let cardOfTheyDay):
+                    self.date = cardOfTheyDay.date
+                    self.card = cardOfTheyDay.card
+                    self.isDataLoaded = true
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        })
+    }
+}
+struct COTDViewModel: View {
+    @StateObject private var cardOfTheDay = CardOfTheDayViewModel()
+    
+    var body: some View {
+        VStack {
+            if (cardOfTheDay.isDataLoaded) {
+                Text("Card of the Day")
+                    .font(.title)
+                    .padding(.top)
+                Text(cardOfTheDay.card.cardName)
+            }
+        }
+        .frame(
+            minWidth: 0,
+            maxWidth: .infinity,
+            minHeight: 0,
+            maxHeight: .infinity,
+            alignment: .topLeading
+        )
+        .onAppear{
+            cardOfTheDay.fetchData()
+        }
+    }
+}
+
 struct HomeViewModel: View {
     let screenWidth = UIScreen.main.bounds.width - 10
     
@@ -21,6 +67,8 @@ struct HomeViewModel: View {
                         .font(.headline)
                 }
                 .padding(.top)
+                
+                COTDViewModel()
             }
             .padding(.horizontal)
             .navigationTitle("Home")

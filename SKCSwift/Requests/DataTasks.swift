@@ -97,3 +97,23 @@ func getCardSuggestionsTask(cardId: String, _ completion: @escaping (Result<Card
     })
     .resume()
 }
+
+func getCardOfTheDayTask(_ completion: @escaping (Result<CardOfTheDay, Error>) -> Void)->  Void {
+    let url = cardOfTheDayURL()
+    let request = baseRequest(url: url)
+    
+    URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
+        // handle errors
+        let hasErrors = handleErrors(response: response, error: error, url: url)
+        
+        if let body = body, hasErrors == false {
+            do {
+                let cardOfTheDay = try decoder.decode(CardOfTheDay.self, from: body)
+                completion(.success(cardOfTheDay))
+            } catch {
+                print("An error ocurred while decoding output from SKC Suggestion Engine \(error)")
+            }
+        }
+    })
+    .resume()
+}

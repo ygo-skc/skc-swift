@@ -62,3 +62,12 @@ func cardSupportURL(cardId: String) -> URL {
     
     return createURL(components: components)
 }
+
+func cardOfTheDayURL() -> URL {
+    var components = URLComponents()
+    components.scheme = "https"
+    components.host = SKC_SUGGESTION_ENGINE_BASE_URL.description
+    components.path = SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT.description
+    
+    return createURL(components: components)
+}
