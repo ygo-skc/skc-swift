@@ -12,10 +12,10 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            HomeViewModel().tabItem{
+            HomeView().tabItem{
                 Image(systemName: "house")
             }
-            CardSearchViewModel().tabItem{
+            CardSearchView().tabItem{
                 Image(systemName: "magnifyingglass")
             }
         }

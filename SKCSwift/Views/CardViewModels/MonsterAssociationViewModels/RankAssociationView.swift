@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RankAssociationViewModel: View {
+struct RankAssociationView: View {
     var rank: Int
     
     private static let ICON_SIZE = 30.0
@@ -16,7 +16,7 @@ struct RankAssociationViewModel: View {
         HStack {
             Image("card_rank")
                 .resizable()
-                .frame(width: RankAssociationViewModel.ICON_SIZE, height: RankAssociationViewModel.ICON_SIZE)
+                .frame(width: RankAssociationView.ICON_SIZE, height: RankAssociationView.ICON_SIZE)
             Text("x\(rank)")
                 .fontWeight(.semibold)
         }
@@ -25,6 +25,6 @@ struct RankAssociationViewModel: View {
 
 struct RankAssociationViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        RankAssociationViewModel(rank: 4)
+        RankAssociationView(rank: 4)
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PendulumAssociation: View {
+struct PendulumAssociationView: View {
     var pendScale: Int
     
     private static let ICON_SIZE = 30.0
@@ -16,15 +16,15 @@ struct PendulumAssociation: View {
         HStack {
             Image("pend_scale")
                 .resizable()
-                .frame(width: PendulumAssociation.ICON_SIZE, height: PendulumAssociation.ICON_SIZE)
+                .frame(width: PendulumAssociationView.ICON_SIZE, height: PendulumAssociationView.ICON_SIZE)
             Text("x\(pendScale)")
                 .fontWeight(.semibold)
         }
     }
 }
 
-struct PendulumAssociation_Previews: PreviewProvider {
+struct PendulumAssociationView_Previews: PreviewProvider {
     static var previews: some View {
-        PendulumAssociation(pendScale: 4)
+        PendulumAssociationView(pendScale: 4)
     }
 }

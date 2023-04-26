@@ -1,18 +1,19 @@
 //
-//  SearchCardViewModel.swift
+//  CardSearchViewModel.swift
 //  SKCSwift
 //
-//  Created by Javi Gomez on 1/5/23.
+//  Created by Javi Gomez on 4/25/23.
 //
 
-import SwiftUI
+import Foundation
 
-struct CardSearchViewModel: View {
-    @State private var searchResults = [SearchResults]()
-    @State private var searchResultsIds = [String]()
-    @State private var searchText = ""
-    @State private var isFetching = false
-    @State private var task: URLSessionDataTask?
+
+class CardSearchViewModel: ObservableObject {
+    @Published private(set) var searchResults = [SearchResults]()
+    @Published private(set) var searchResultsIds = [String]()
+    @Published var searchText = ""
+    @Published private(set) var isFetching = false
+    @Published private(set) var task: URLSessionDataTask?
     
     func newSearchSubject(value: String) {
         if (isFetching) {
@@ -58,81 +59,5 @@ struct CardSearchViewModel: View {
                 self.isFetching = false
             })
         }
-        
-        
-    }
-    
-    var body: some View {
-        NavigationStack {
-            if (!isFetching && !searchText.isEmpty && searchResults.isEmpty) {
-                VStack {
-                    Spacer()
-                    Text("Nothing found in database")
-                        .font(.title2)
-                }
-                .padding(.horizontal)
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .center
-                )
-            } else if (searchText.isEmpty) {
-                VStack(alignment: .leading) {
-                    Text("Suggestions")
-                        .font(.title2)
-                }
-                .padding(.all)
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .topLeading
-                )
-            }
-            
-            List(searchResults) { sr in
-                Section(header: HStack{
-                    Circle()
-                        .foregroundColor(cardColorUI(cardColor: sr.section))
-                        .frame(width: 15)
-                    Text(sr.section)
-                }
-                    .font(.headline)
-                    .fontWeight(.black) ) {
-                        ForEach(sr.results, id: \.cardID) { card in
-                            VStack {
-                                NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
-                                    CardSearchResultViewModel(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                                })
-                            }
-                        }
-                    }
-            }
-            .listStyle(.plain)
-            .navigationTitle("Search")
-            .searchable(text: self.$searchText, prompt: "Search for card...")
-            .disableAutocorrection(true)
-            .onChange(of: searchText, perform: newSearchSubject)
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity
-            )
-            .ignoresSafeArea(.keyboard)
-        }
-        .scrollDismissesKeyboard(.immediately)
-    }
-}
-
-struct CardSearchLinkDestination: View {
-    var cardId: String
-    
-    var body: some View {
-        CardViewModel(cardId: cardId)
-            .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct SearchCardViewModel_Previews: PreviewProvider {
-    static var previews: some View {
-        CardSearchViewModel()
     }
 }

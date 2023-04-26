@@ -1,5 +1,5 @@
 //
-//  RelatedProductsContentViewModels.swift
+//  RelatedProductsContentView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 1/24/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RelatedProductsContentViewModels: RelatedContent {
+struct RelatedProductsContentView: RelatedContent {
     var cardName: String
     var products: [Product]
     
@@ -82,7 +82,7 @@ private struct ProductListItemViewModel: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            DateViewModel(date: product.productReleaseDate)
+            DateView(date: product.productReleaseDate)
         }
         .frame(
             maxWidth: .infinity,
@@ -92,7 +92,7 @@ private struct ProductListItemViewModel: View {
     }
 }
 
-struct RelatedProductsContentViewModels_Previews: PreviewProvider {
+struct RelatedProductsContentView_Previews: PreviewProvider {
     static var previews: some View {
         let products = [
             Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector",
@@ -113,7 +113,7 @@ struct RelatedProductsContentViewModels_Previews: PreviewProvider {
                     ])
         ]
         
-        RelatedProductsContentViewModels(cardName: "Elemental Hero Stratos", products: products)
+        RelatedProductsContentView(cardName: "Elemental Hero Stratos", products: products)
         ProductListItemViewModel(product: products[0])
             .padding(.horizontal)
     }

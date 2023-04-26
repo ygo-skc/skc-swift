@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LinkAssociationViewModel: View {
+struct LinkAssociationView: View {
     var linkRating: Int
     var linkArrows: String
     
@@ -26,6 +26,6 @@ struct LinkAssociationViewModel: View {
 
 struct LinkAssociationViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        LinkAssociationViewModel(linkRating: 4, linkArrows: ["↙️","↘️"])
+        LinkAssociationView(linkRating: 4, linkArrows: ["↙️","↘️"])
     }
 }

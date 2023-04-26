@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardSuggestionsViewModel: View {
+struct CardSuggestionsView: View {
     var namedMaterials: [CardReference]
     var namedReferences: [CardReference]
     var isDataLoaded: Bool
@@ -23,7 +23,7 @@ struct CardSuggestionsViewModel: View {
                 .padding(.top, -10)
             
             if (!isDataLoaded) {
-                RectPlaceholderViewModel(width: .infinity, height: 150, radius: 10)
+                RectPlaceholderView(width: .infinity, height: 150, radius: 10)
             }
             else if (namedMaterials.isEmpty && namedReferences.isEmpty) {
                 Text("Nothing here 🤔")
@@ -31,8 +31,8 @@ struct CardSuggestionsViewModel: View {
                     .padding(.all)
                     .frame(maxWidth: .infinity, alignment: .center)
             } else {
-                NamedSuggestionsViewModel(header: "Named Materials", references: namedMaterials)
-                NamedSuggestionsViewModel(header: "Named References", references: namedReferences)
+                NamedSuggestionsView(header: "Named Materials", references: namedMaterials)
+                NamedSuggestionsView(header: "Named References", references: namedReferences)
             }
         }
         .frame(maxWidth: .infinity)
@@ -41,7 +41,7 @@ struct CardSuggestionsViewModel: View {
     }
 }
 
-private struct NamedSuggestionsViewModel: View {
+private struct NamedSuggestionsView: View {
     var header: String
     var references: [CardReference]
     
@@ -55,7 +55,7 @@ private struct NamedSuggestionsViewModel: View {
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(references, id: \.card.cardID) { suggestion in
-                        SuggestedCardViewModel(cardId: suggestion.card.cardID, cardName: suggestion.card.cardName, cardColor: suggestion.card.cardColor,
+                        SuggestedCardView(cardId: suggestion.card.cardID, cardName: suggestion.card.cardName, cardColor: suggestion.card.cardColor,
                                                cardEffect: suggestion.card.cardEffect, cardAttribute: suggestion.card.cardAttribute, monsterType: suggestion.card.monsterType,
                                                monsterAttack: suggestion.card.monsterAttack, monsterDefense: suggestion.card.monsterDefense, occurrence: suggestion.occurrences
                         )
@@ -72,7 +72,7 @@ private struct NamedSuggestionsViewModel: View {
 
 struct CardSuggestionsViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        CardSuggestionsViewModel(
+        CardSuggestionsView(
             namedMaterials: [
                 CardReference(
                     occurrences: 1,

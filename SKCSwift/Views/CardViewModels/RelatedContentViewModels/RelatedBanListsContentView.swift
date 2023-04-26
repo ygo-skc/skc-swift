@@ -1,5 +1,5 @@
 //
-//  RelatedBanListsContentViewModel.swift
+//  RelatedBanListsContentView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 1/24/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RelatedBanListsContentViewModel: RelatedContent {
+struct RelatedBanListsContentView: RelatedContent {
     var cardName: String
     var banlists: [BanList]
     var format: BanListFormat
@@ -75,7 +75,7 @@ private struct BanListItemViewModel: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            DateViewModel(date: banListInstance.banListDate)
+            DateView(date: banListInstance.banListDate)
         }
         .frame(
             maxWidth: .infinity,
@@ -92,6 +92,6 @@ struct RelatedBanListContentViewModel_Previews: PreviewProvider {
             BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG")
         ]
         
-        RelatedBanListsContentViewModel(cardName: "Elemental HERO Stratos", banlists: banLists, format: BanListFormat.tcg)
+        RelatedBanListsContentView(cardName: "Elemental HERO Stratos", banlists: banLists, format: BanListFormat.tcg)
     }
 }

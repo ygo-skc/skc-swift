@@ -1,5 +1,5 @@
 //
-//  RelatedContentViewModel.swift
+//  RelatedContentView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 1/24/23.
@@ -9,7 +9,7 @@ import SwiftUI
 
 protocol RelatedContent: View {}
 
-struct RelatedContentViewModel: View {
+struct RelatedContentView: View {
     var cardName: String
     var products:[Product]
     var tcgBanLists: [BanList]
@@ -78,7 +78,7 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
             RelatedContentSectionHeaderViewModel(header: "Products")
             
             RelatedContentSheetButton(text: "TCG") {
-                RelatedProductsContentViewModels(cardName: cardName, products: self.products)
+                RelatedProductsContentView(cardName: cardName, products: self.products)
             }
             .disabled(products.isEmpty)
             
@@ -116,7 +116,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             
             // TCG ban list deets
             RelatedContentSheetButton(text: "TCG") {
-                RelatedBanListsContentViewModel(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
+                RelatedBanListsContentView(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
             }
             .disabled(tcgBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: tcgBanLists.count)
@@ -125,7 +125,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             
             // MD ban list deets
             RelatedContentSheetButton(text: "Master Duel") {
-                RelatedBanListsContentViewModel(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
+                RelatedBanListsContentView(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
             }
             .disabled(mdBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: mdBanLists.count)
@@ -134,7 +134,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             
             // DL ban list deets
             RelatedContentSheetButton(text: "Duel Links") {
-                RelatedBanListsContentViewModel(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
+                RelatedBanListsContentView(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
             }
             .disabled(dlBanLists.isEmpty)
             RelatedBanListsOccurrences(occurrences: dlBanLists.count)
@@ -187,63 +187,63 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
     }
 }
 
-struct RelatedContentViewModel_Previews: PreviewProvider {
+struct RelatedContentView_Previews: PreviewProvider {
     static var previews: some View {
-        RelatedContentViewModel(cardName: "Elemental HERO Stratos",
-                                products: [
-                                    Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector", productReleaseDate: "2022-03-11",
-                                            productContent: [
-                                                ProductContent(productPosition: "015", rarities: ["Duel Terminal Normal Parallel Rare", "Common"])
-                                            ]
-                                           )
-                                ],
-                                tcgBanLists: [
-                                    BanList(banListDate: "2019-07-15", cardID: "40044918", banStatus: "Semi-Limited", format: "TCG"),
-                                    BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG"),
-                                    BanList(banListDate: "2019-01-28", cardID: "40044918", banStatus: "Limited", format: "TCG")
-                                ],
-                                mdBanLists: [],
-                                dlBanLists: []
+        RelatedContentView(cardName: "Elemental HERO Stratos",
+                           products: [
+                            Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector", productReleaseDate: "2022-03-11",
+                                    productContent: [
+                                        ProductContent(productPosition: "015", rarities: ["Duel Terminal Normal Parallel Rare", "Common"])
+                                    ]
+                                   )
+                           ],
+                           tcgBanLists: [
+                            BanList(banListDate: "2019-07-15", cardID: "40044918", banStatus: "Semi-Limited", format: "TCG"),
+                            BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG"),
+                            BanList(banListDate: "2019-01-28", cardID: "40044918", banStatus: "Limited", format: "TCG")
+                           ],
+                           mdBanLists: [],
+                           dlBanLists: []
         )
         .previewDisplayName("Stratos")
         
-        RelatedContentViewModel(cardName: "Elemental HERO Liquid Soldier",
-                                products: [
-                                    Product(productId: "LDS3", productLocale: "EN", productName: "Legendary Duelists: Season 3", productType: "Set", productSubType: "Reprint", productReleaseDate: "2022-07-22",
-                                            productContent: [
-                                                ProductContent(productPosition: "103", rarities: ["Secret Rare"])
-                                            ]
-                                           ),
-                                    Product(productId: "LED6", productLocale: "EN", productName: "Legendary Duelists: Magical Hero", productType: "Pack", productSubType: "Legendary Duelists", productReleaseDate: "2020-01-17",
-                                            productContent: [
-                                                ProductContent(productPosition: "013", rarities: ["Ultra Rare"])
-                                            ]
-                                           )
-                                ],
-                                tcgBanLists: [],
-                                mdBanLists: [],
-                                dlBanLists: [
-                                    BanList(banListDate: "2022-12-26", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
-                                    BanList(banListDate: "2022-12-08", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
-                                    BanList(banListDate: "2022-09-28", cardID: "59392529", banStatus: "Limited 2", format: "DL")
-                                ]
+        RelatedContentView(cardName: "Elemental HERO Liquid Soldier",
+                           products: [
+                            Product(productId: "LDS3", productLocale: "EN", productName: "Legendary Duelists: Season 3", productType: "Set", productSubType: "Reprint", productReleaseDate: "2022-07-22",
+                                    productContent: [
+                                        ProductContent(productPosition: "103", rarities: ["Secret Rare"])
+                                    ]
+                                   ),
+                            Product(productId: "LED6", productLocale: "EN", productName: "Legendary Duelists: Magical Hero", productType: "Pack", productSubType: "Legendary Duelists", productReleaseDate: "2020-01-17",
+                                    productContent: [
+                                        ProductContent(productPosition: "013", rarities: ["Ultra Rare"])
+                                    ]
+                                   )
+                           ],
+                           tcgBanLists: [],
+                           mdBanLists: [],
+                           dlBanLists: [
+                            BanList(banListDate: "2022-12-26", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
+                            BanList(banListDate: "2022-12-08", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
+                            BanList(banListDate: "2022-09-28", cardID: "59392529", banStatus: "Limited 2", format: "DL")
+                           ]
         )
         .previewDisplayName("Liquid Boi")
         
-        RelatedContentViewModel(cardName: "Monster Reborn",
-                                products: [],
-                                tcgBanLists: [
-                                    BanList(banListDate: "2022-12-01", cardID: "83764718", banStatus: "Limited", format: "TCG"),
-                                    BanList(banListDate: "2022-10-03", cardID: "83764718", banStatus: "Limited", format: "TCG")
-                                ],
-                                mdBanLists: [
-                                    BanList(banListDate: "2023-01-10", cardID: "83764718", banStatus: "Limited", format: "MD")
-                                ],
-                                dlBanLists: [
-                                    BanList(banListDate: "2022-12-26", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
-                                    BanList(banListDate: "2022-12-08", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
-                                    BanList(banListDate: "2022-09-28", cardID: "83764718", banStatus: "Limited 1", format: "DL")
-                                ]
+        RelatedContentView(cardName: "Monster Reborn",
+                           products: [],
+                           tcgBanLists: [
+                            BanList(banListDate: "2022-12-01", cardID: "83764718", banStatus: "Limited", format: "TCG"),
+                            BanList(banListDate: "2022-10-03", cardID: "83764718", banStatus: "Limited", format: "TCG")
+                           ],
+                           mdBanLists: [
+                            BanList(banListDate: "2023-01-10", cardID: "83764718", banStatus: "Limited", format: "MD")
+                           ],
+                           dlBanLists: [
+                            BanList(banListDate: "2022-12-26", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
+                            BanList(banListDate: "2022-12-08", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
+                            BanList(banListDate: "2022-09-28", cardID: "83764718", banStatus: "Limited 1", format: "DL")
+                           ]
         )
         .previewDisplayName("Liquid Boi")
     }

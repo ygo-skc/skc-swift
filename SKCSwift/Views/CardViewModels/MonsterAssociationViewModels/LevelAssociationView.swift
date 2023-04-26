@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LevelAssociationViewModel: View {
+struct LevelAssociationView: View {
     var level: Int
     
     private static let ICON_SIZE = 30.0
@@ -16,7 +16,7 @@ struct LevelAssociationViewModel: View {
         HStack {
             Image("card_level")
                 .resizable()
-                .frame(width: LevelAssociationViewModel.ICON_SIZE, height: LevelAssociationViewModel.ICON_SIZE)
+                .frame(width: LevelAssociationView.ICON_SIZE, height: LevelAssociationView.ICON_SIZE)
             Text("x\(level)")
                 .fontWeight(.semibold)
         }
@@ -25,6 +25,6 @@ struct LevelAssociationViewModel: View {
 
 struct LevelAssociationViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        LevelAssociationViewModel(level: 10)
+        LevelAssociationView(level: 10)
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardStatsViewModel: View {
+struct CardStatsView: View {
     var cardName: String
     var cardColor: String
     var monsterType: String?
@@ -36,8 +36,8 @@ struct CardStatsViewModel: View {
         
         self.variant = variant
         
-        let nilDefStat = (cardColor == "Link") ? "—" : CardStatsViewModel.nilStat  // override missing stat for certain edge cases
-        self.monsterAttack = (monsterAttack == nil) ? CardStatsViewModel.nilStat : String(monsterAttack!)
+        let nilDefStat = (cardColor == "Link") ? "—" : CardStatsView.nilStat  // override missing stat for certain edge cases
+        self.monsterAttack = (monsterAttack == nil) ? CardStatsView.nilStat : String(monsterAttack!)
         self.monsterDefense = (monsterDefense == nil) ? nilDefStat : String(monsterDefense!)
     }
     
@@ -50,7 +50,7 @@ struct CardStatsViewModel: View {
                 
                 let attribute = Attribute(rawValue: cardAttribute)
                 if (monsterAssociation != nil && attribute != nil){
-                    MonsterAssociationViewModel(monsterAssociation: monsterAssociation!, attribute: attribute!)
+                    MonsterAssociationView(monsterAssociation: monsterAssociation!, attribute: attribute!)
                         .padding(.top, -8.0)
                 }
                 
@@ -197,9 +197,9 @@ private struct MonsterAttackDefenseModifier: ViewModifier {
     }
 }
 
-struct CardStatsViewModel_Previews: PreviewProvider {
+struct CardStatsView_Previews: PreviewProvider {
     static var previews: some View {
-        CardStatsViewModel(
+        CardStatsView(
             cardName: "Elemental HERO Neos Kluger",
             cardColor: "Fusion",
             monsterType: "Spellcaster/Fusion/Effect",
@@ -211,7 +211,7 @@ struct CardStatsViewModel_Previews: PreviewProvider {
             monsterDefense: 2500
         )
         
-        CardStatsViewModel(
+        CardStatsView(
             cardName: "Elemental HERO Neos Kluger",
             cardColor: "Fusion",
             monsterType: "Spellcaster/Fusion/Effect",
