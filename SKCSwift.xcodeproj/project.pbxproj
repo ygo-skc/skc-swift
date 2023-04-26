@@ -203,13 +203,13 @@
 				1F6687DF2967904400C8555D /* CardSearchView.swift */,
 				1F6687E1296798E700C8555D /* HomeView.swift */,
 				1FA24A052980A5E400C04B79 /* CardSuggestions */,
-				1F3C10AB29673ED000EE4EBE /* CardViewModels */,
+				1F3C10AB29673ED000EE4EBE /* Card */,
 				1F3C10AC29673F1900EE4EBE /* Utility */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		1F3C10AB29673ED000EE4EBE /* CardViewModels */ = {
+		1F3C10AB29673ED000EE4EBE /* Card */ = {
 			isa = PBXGroup;
 			children = (
 				1F32565A2963E195001AACF1 /* CardStatsView.swift */,
@@ -217,7 +217,7 @@
 				1F6687E32967A04D00C8555D /* MonsterAssociationViewModels */,
 				1FA24A0029809F3200C04B79 /* RelatedContentViewModels */,
 			);
-			path = CardViewModels;
+			path = Card;
 			sourceTree = "<group>";
 		};
 		1F3C10AC29673F1900EE4EBE /* Utility */ = {
