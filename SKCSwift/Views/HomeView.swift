@@ -17,11 +17,6 @@ struct HomeView: View {
                     VStack {
                         Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information")
                             .font(.body)
-                            .frame(
-                                minWidth: 0,
-                                maxWidth: .infinity,
-                                alignment: .topLeading
-                            )
                         
                         Text("DB Stats")
                             .font(.title2)

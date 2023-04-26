@@ -13,36 +13,9 @@ struct CardOfTheDayView: View {
     var body: some View {
         SectionView(header: "Card of the day") {
             if (cardOfTheDay.isDataLoaded) {
-                NavigationLink(destination: CardSearchLinkDestination(cardId: cardOfTheDay.card.cardID)) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(cardOfTheDay.card.cardName)
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                            
-                            if (cardOfTheDay.card.monsterType != nil) {
-                                Text(cardOfTheDay.card.monsterType!)
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
-                            }
-                            
-                            HStack {
-                                Circle()
-                                    .foregroundColor(cardColorUI(cardColor: cardOfTheDay.card.cardColor))
-                                    .frame(width: 15)
-                                Text(cardOfTheDay.card.cardColor)
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
-                            }
-                            .padding(.top, -10)
-                        }
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: .topLeading
-                        )
-                        RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(cardOfTheDay.card.cardID).jpg")!)
-                    }
-                }
+                NavigationLink(destination: CardSearchLinkDestination(cardId: cardOfTheDay.card.cardID), label: {
+                    CardOfTheDayContentView(cardId: cardOfTheDay.card.cardID, cardName: cardOfTheDay.card.cardName, cardColor: cardOfTheDay.card.cardColor)
+                })
                 .buttonStyle(PlainButtonStyle())
             }
         }
@@ -52,23 +25,40 @@ struct CardOfTheDayView: View {
     }
 }
 
-struct SectionView<Content:View>: View {
-    var header: String
-    @ViewBuilder var content: () -> Content
+private struct CardOfTheDayContentView: View {
+    var cardId: String
+    var cardName: String
+    var monsterType: String?
+    var cardColor: String
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(header)
-                .font(.title2)
-                .fontWeight(.heavy)
-                .multilineTextAlignment(.center)
-                .padding(.bottom, -1)
-            
-            content()
-                .padding(.vertical)
-                .padding(.horizontal)
-                .background(Color("gray"))
-                .cornerRadius(15)
+        HStack {
+            VStack(alignment: .leading) {
+                Text(cardName)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                
+                if (monsterType != nil) {
+                    Text(monsterType!)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                
+                HStack {
+                    Circle()
+                        .foregroundColor(cardColorUI(cardColor: cardColor))
+                        .frame(width: 15)
+                    Text(cardColor)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                .padding(.top, -10)
+            }
+            .frame(
+                maxWidth: .infinity,
+                alignment: .topLeading
+            )
+            RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(cardId).jpg")!)
         }
     }
 }
