@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+@MainActor
 class CardSearchViewModel: ObservableObject {
     @Published private(set) var searchResults = [SearchResults]()
     @Published private(set) var searchResultsIds = [String]()
@@ -28,35 +28,38 @@ class CardSearchViewModel: ObservableObject {
         } else {
             isFetching = true
             task = searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
-                switch result {
-                case .success(let cards):
-                    var results = [String: [Card]]()
-                    var sections = [String]()
-                    var searchResultsIds = [String]()
-                    
-                    cards.forEach { card in
-                        let section = card.cardColor
-                        if results[section] == nil {
-                            results[section] = []
-                            sections.append(section)
-                        }
-                        results[section]!.append(card)
-                        searchResultsIds.append(card.cardID)
-                    }
-                    
-                    if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
-                        var searchResults = [SearchResults]()
-                        for (section) in sections {
-                            searchResults.append(SearchResults(section: section, results: results[section]!))
+                
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let cards):
+                        var results = [String: [Card]]()
+                        var sections = [String]()
+                        var searchResultsIds = [String]()
+                        
+                        cards.forEach { card in
+                            let section = card.cardColor
+                            if results[section] == nil {
+                                results[section] = []
+                                sections.append(section)
+                            }
+                            results[section]!.append(card)
+                            searchResultsIds.append(card.cardID)
                         }
                         
-                        self.searchResults = searchResults
-                        self.searchResultsIds = searchResultsIds
+                        if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
+                            var searchResults = [SearchResults]()
+                            for (section) in sections {
+                                searchResults.append(SearchResults(section: section, results: results[section]!))
+                            }
+                            
+                            self.searchResults = searchResults
+                            self.searchResultsIds = searchResultsIds
+                        }
+                    case .failure: break    // TODO add error screen for appropriate error response
                     }
-                case .failure: break    // TODO add error screen for appropriate error response
+                    
+                    self.isFetching = false
                 }
-                
-                self.isFetching = false
             })
         }
     }

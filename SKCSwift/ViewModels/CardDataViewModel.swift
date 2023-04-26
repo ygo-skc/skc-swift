@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class CardInformationViewModel: ObservableObject {
     @Published private(set) var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
     @Published private(set) var isDataLoaded = false

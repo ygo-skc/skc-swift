@@ -8,6 +8,7 @@
 import Foundation
 
 
+@MainActor
 class CardOfTheDayViewModel: ObservableObject {
     @Published private(set) var date: String = ""
     @Published private(set) var card: Card = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")

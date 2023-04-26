@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class CardSuggestionInformationViewModel: ObservableObject {
     @Published private(set) var hasSelfReference: Bool = false
     @Published private(set) var namedMaterials: [CardReference] = [CardReference]()
