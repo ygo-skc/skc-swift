@@ -70,7 +70,7 @@ struct CardSearchView: View {
     }
 }
 
-private struct CardSearchLinkDestination: View {
+struct CardSearchLinkDestination: View {
     var cardId: String
     
     var body: some View {

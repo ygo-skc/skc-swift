@@ -11,46 +11,64 @@ struct CardOfTheDayView: View {
     @StateObject private var cardOfTheDay = CardOfTheDayViewModel()
     
     var body: some View {
-        VStack(alignment: .leading) {
+        SectionView(header: "Card of the day") {
             if (cardOfTheDay.isDataLoaded) {
-                HStack {
-                    RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(cardOfTheDay.card.cardID).jpg")!)
-                    VStack(alignment: .leading) {
-                        Text("Card of the Day")
-                            .font(.title)
-                            .multilineTextAlignment(.center)
-                            
-                        Text(cardOfTheDay.card.cardName)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                        
-                        HStack {
-                            Circle()
-                                .foregroundColor(cardColorUI(cardColor: cardOfTheDay.card.cardColor))
-                                .frame(width: 20)
-                            Text(cardOfTheDay.card.cardColor)
+                NavigationLink(destination: CardSearchLinkDestination(cardId: cardOfTheDay.card.cardID)) {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(cardOfTheDay.card.cardName)
                                 .font(.title3)
                                 .fontWeight(.semibold)
+                            
+                            if (cardOfTheDay.card.monsterType != nil) {
+                                Text(cardOfTheDay.card.monsterType!)
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                            }
+                            
+                            HStack {
+                                Circle()
+                                    .foregroundColor(cardColorUI(cardColor: cardOfTheDay.card.cardColor))
+                                    .frame(width: 15)
+                                Text(cardOfTheDay.card.cardColor)
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                            }
+                            .padding(.top, -10)
                         }
+                        .frame(
+                            maxWidth: .infinity,
+                            alignment: .topLeading
+                        )
+                        RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(cardOfTheDay.card.cardID).jpg")!)
                     }
                 }
-                .frame(
-                    minWidth: 0,
-                    maxWidth: .infinity,
-                    alignment: .topLeading
-                )
+                .buttonStyle(PlainButtonStyle())
             }
         }
-        .frame(
-            minWidth: 0,
-            maxWidth: .infinity,
-            minHeight: 0,
-            maxHeight: .infinity,
-            alignment: .topLeading
-        )
-        .padding(.top)
         .onAppear{
             cardOfTheDay.fetchData()
+        }
+    }
+}
+
+struct SectionView<Content:View>: View {
+    var header: String
+    @ViewBuilder var content: () -> Content
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(header)
+                .font(.title2)
+                .fontWeight(.heavy)
+                .multilineTextAlignment(.center)
+                .padding(.bottom, -1)
+            
+            content()
+                .padding(.vertical)
+                .padding(.horizontal)
+                .background(Color("gray"))
+                .cornerRadius(15)
         }
     }
 }

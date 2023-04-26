@@ -101,14 +101,16 @@ struct CardStatsView: View {
                 .padding(.all, 8)
                 .background(Color("translucent_background"))
                 .cornerRadius(10)
-            }.padding(.horizontal, 5.0)
-                .padding(.vertical, 10.0)
-        }.background(cardColorUI(cardColor: cardColor))
-            .cornerRadius(15)
-            .frame(
-                maxWidth: .infinity,
-                alignment: .topLeading
-            )
+            }
+            .padding(.horizontal, 5.0)
+            .padding(.vertical, 10.0)
+        }
+        .background(cardColorUI(cardColor: cardColor))
+        .cornerRadius(15)
+        .frame(
+            maxWidth: .infinity,
+            alignment: .topLeading
+        )
     }
 }
 

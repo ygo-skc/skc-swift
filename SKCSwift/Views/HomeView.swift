@@ -13,26 +13,51 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading) {
-                    Text("Content")
-                        .font(.title)
-                    Text("The SKC Database has 1,000 cards, 36 ban lists and 200 products.")
-                        .fontWeight(.light)
-                        .font(.headline)
+                SectionView(header: "Content") {
+                    VStack {
+                        Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information")
+                            .font(.body)
+                            .frame(
+                                minWidth: 0,
+                                maxWidth: .infinity,
+                                alignment: .topLeading
+                            )
+                        
+                        Text("DB Stats")
+                            .font(.title2)
+                            .padding(.vertical, 2)
+                        HStack {
+                            DBStatView(count: "10,993", stat: "Cards")
+                                .padding(.horizontal)
+                            DBStatView(count: "47", stat: "Ban Lists")
+                                .padding(.horizontal)
+                            DBStatView(count: "285", stat: "Products")
+                                .padding(.horizontal)
+                        }
+                    }
                 }
-                .frame(
-                    minWidth: 0,
-                    maxWidth: .infinity,
-                    minHeight: 0,
-                    maxHeight: .infinity,
-                    alignment: .topLeading
-                )
                 .padding(.top)
                 
                 CardOfTheDayView()
+                    .padding(.top)
             }
             .padding(.horizontal)
             .navigationTitle("Home")
+        }
+    }
+}
+
+struct DBStatView: View {
+    var count: String
+    var stat: String
+    
+    var body: some View {
+        VStack {
+            Text(count)
+                .font(.title3)
+            Text(stat)
+                .font(.headline)
+                .fontWeight(.heavy)
         }
     }
 }

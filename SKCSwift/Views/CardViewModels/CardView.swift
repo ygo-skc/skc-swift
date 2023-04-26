@@ -50,6 +50,7 @@ struct CardView: View {
             }
             .frame(maxHeight: .infinity)
         }
+        .navigationTitle("Card")
     }
 }
 
