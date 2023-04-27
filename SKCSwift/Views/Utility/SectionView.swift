@@ -23,27 +23,11 @@ struct SectionView<Destination: View, Content: View>: View {
             
             if (disableDestination) {
                 content()
-                    .frame(
-                        minWidth: 0,
-                        maxWidth: .infinity,
-                        alignment: .topLeading
-                    )
-                    .padding(.vertical)
-                    .padding(.horizontal)
-                    .background(Color("gray"))
-                    .cornerRadius(15)
+                    .modifier(SectionViewModifier(variant: SectionViewVariant.gray))
             } else {
                 NavigationLink(destination: destination, label: {
                     content()
-                        .frame(
-                            minWidth: 0,
-                            maxWidth: .infinity,
-                            alignment: .topLeading
-                        )
-                        .padding(.vertical)
-                        .padding(.horizontal)
-                        .background(Color("gray"))
-                        .cornerRadius(15)
+                        .modifier(SectionViewModifier(variant: SectionViewVariant.gray))
                 })
                 .buttonStyle(PlainButtonStyle())
             }
@@ -51,12 +35,40 @@ struct SectionView<Destination: View, Content: View>: View {
     }
 }
 
-//struct SectionView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SectionView(header: "Test") {
-//            VStack {
-//                Text("Yo")
-//            }
-//        }
-//    }
-//}
+enum SectionViewVariant {
+    case gray
+}
+
+private struct SectionViewModifier: ViewModifier {
+    var variant: SectionViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .gray:
+            content
+                .frame(
+                    minWidth: 0,
+                    maxWidth: .infinity,
+                    alignment: .topLeading
+                )
+                .padding(.vertical)
+                .padding(.horizontal)
+                .background(Color("gray"))
+                .cornerRadius(15)
+        }
+    }
+}
+
+struct SectionView_Previews: PreviewProvider {
+    static var previews: some View {
+        SectionView(
+            header: "Header",
+            disableDestination: true,
+            destination: {EmptyView()},
+            content: {
+                VStack {
+                    Text("Yo")
+                }}
+        )
+    }
+}
