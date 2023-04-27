@@ -60,6 +60,7 @@ private struct CardOfTheDayContentView: View {
             )
             RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(cardId).jpg")!)
         }
+        .contentShape(Rectangle())
     }
 }
 
