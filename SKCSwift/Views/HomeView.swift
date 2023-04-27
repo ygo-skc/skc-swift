@@ -16,24 +16,7 @@ struct HomeView: View {
                 SectionView(header: "Content",
                             disableDestination: true,
                             destination: {EmptyView()},
-                            content: {
-                    VStack {
-                        Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information")
-                            .font(.body)
-                        
-                        Text("DB Stats")
-                            .font(.title2)
-                            .padding(.vertical, 2)
-                        HStack {
-                            DBStatView(count: "10,993", stat: "Cards")
-                                .padding(.horizontal)
-                            DBStatView(count: "47", stat: "Ban Lists")
-                                .padding(.horizontal)
-                            DBStatView(count: "285", stat: "Products")
-                                .padding(.horizontal)
-                        }
-                    }
-                })
+                            content: {DBStatsView()})
                 .padding(.top)
                 
                 CardOfTheDayView()
@@ -41,21 +24,6 @@ struct HomeView: View {
             }
             .padding(.horizontal)
             .navigationTitle("Home")
-        }
-    }
-}
-
-struct DBStatView: View {
-    var count: String
-    var stat: String
-    
-    var body: some View {
-        VStack {
-            Text(count)
-                .font(.title3)
-            Text(stat)
-                .font(.headline)
-                .fontWeight(.heavy)
         }
     }
 }
