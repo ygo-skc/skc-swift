@@ -53,7 +53,7 @@ private struct SectionViewModifier: ViewModifier {
                 )
                 .padding(.vertical)
                 .padding(.horizontal)
-                .background(Color("gray"))
+                .background(Color("section-background"))
                 .cornerRadius(15)
         }
     }

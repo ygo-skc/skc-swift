@@ -24,6 +24,10 @@ struct DBStatsView: View {
                 DBStatView(count: "285", stat: "Products")
                     .padding(.horizontal)
             }
+            .frame(
+                minWidth: 0,
+                maxWidth: .infinity
+            )
         }
     }
 }
