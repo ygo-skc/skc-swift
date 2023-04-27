@@ -9,13 +9,18 @@ import SwiftUI
 
 struct DBStatsView: View {
     var body: some View {
-        VStack {
-            Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information")
+        VStack(alignment: .leading) {
+            Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
                 .font(.body)
             
             Text("DB Stats")
                 .font(.title2)
                 .padding(.vertical, 2)
+                .frame(
+                    minWidth: 0,
+                    maxWidth: .infinity,
+                    alignment: .center
+                )
             HStack {
                 DBStatView(count: "10,993", stat: "Cards")
                     .padding(.horizontal)
