@@ -13,7 +13,10 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                SectionView(header: "Content") {
+                SectionView(header: "Content",
+                            disableDestination: true,
+                            destination: {EmptyView()},
+                            content: {
                     VStack {
                         Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information")
                             .font(.body)
@@ -30,7 +33,7 @@ struct HomeView: View {
                                 .padding(.horizontal)
                         }
                     }
-                }
+                })
                 .padding(.top)
                 
                 CardOfTheDayView()

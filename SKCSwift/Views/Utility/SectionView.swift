@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct SectionView<Content:View>: View {
+struct SectionView<Destination: View, Content: View>: View {
     var header: String
+    var disableDestination: Bool
+    @ViewBuilder var destination: () -> Destination
     @ViewBuilder var content: () -> Content
     
     var body: some View {
@@ -19,26 +21,42 @@ struct SectionView<Content:View>: View {
                 .multilineTextAlignment(.center)
                 .padding(.bottom, -1)
             
-            content()
-                .frame(
-                    minWidth: 0,
-                    maxWidth: .infinity,
-                    alignment: .topLeading
-                )
-                .padding(.vertical)
-                .padding(.horizontal)
-                .background(Color("gray"))
-                .cornerRadius(15)
-        }
-    }
-}
-
-struct SectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        SectionView(header: "Test") {
-            VStack {
-                Text("Yo")
+            if (disableDestination) {
+                content()
+                    .frame(
+                        minWidth: 0,
+                        maxWidth: .infinity,
+                        alignment: .topLeading
+                    )
+                    .padding(.vertical)
+                    .padding(.horizontal)
+                    .background(Color("gray"))
+                    .cornerRadius(15)
+            } else {
+                NavigationLink(destination: destination, label: {
+                    content()
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            alignment: .topLeading
+                        )
+                        .padding(.vertical)
+                        .padding(.horizontal)
+                        .background(Color("gray"))
+                        .cornerRadius(15)
+                })
+                .buttonStyle(PlainButtonStyle())
             }
         }
     }
 }
+
+//struct SectionView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SectionView(header: "Test") {
+//            VStack {
+//                Text("Yo")
+//            }
+//        }
+//    }
+//}

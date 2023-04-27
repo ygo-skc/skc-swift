@@ -11,14 +11,12 @@ struct CardOfTheDayView: View {
     @StateObject private var cardOfTheDay = CardOfTheDayViewModel()
     
     var body: some View {
-        SectionView(header: "Card of the day") {
-            if (cardOfTheDay.isDataLoaded) {
-                NavigationLink(destination: CardSearchLinkDestination(cardId: cardOfTheDay.card.cardID), label: {
-                    CardOfTheDayContentView(cardId: cardOfTheDay.card.cardID, cardName: cardOfTheDay.card.cardName, cardColor: cardOfTheDay.card.cardColor)
-                })
-                .buttonStyle(PlainButtonStyle())
-            }
-        }
+        SectionView(
+            header: "Card of the day",
+            disableDestination: false,
+            destination: {CardSearchLinkDestination(cardId: cardOfTheDay.card.cardID)},
+            content: {CardOfTheDayContentView(cardId: cardOfTheDay.card.cardID, cardName: cardOfTheDay.card.cardName, cardColor: cardOfTheDay.card.cardColor)}
+        )
         .onAppear{
             cardOfTheDay.fetchData()
         }
