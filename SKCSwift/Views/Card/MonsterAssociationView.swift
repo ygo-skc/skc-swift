@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
+private let ICON_SIZE = 30.0
+
 struct MonsterAssociationView: View {
     var monsterAssociation: MonsterAssociation
     var attribute: Attribute
-    
-    private static let ICON_SIZE = 30.0
     
     var body: some View {
         HStack {
@@ -62,13 +62,11 @@ struct MonsterAssociationView_Previews: PreviewProvider {
 struct LevelAssociationView: View {
     var level: Int
     
-    private static let ICON_SIZE = 30.0
-    
     var body: some View {
         HStack {
             Image("card_level")
                 .resizable()
-                .frame(width: LevelAssociationView.ICON_SIZE, height: LevelAssociationView.ICON_SIZE)
+                .frame(width: ICON_SIZE, height: ICON_SIZE)
             Text("x\(level)")
                 .fontWeight(.semibold)
         }
@@ -84,13 +82,11 @@ struct LevelAssociationViewModel_Previews: PreviewProvider {
 struct PendulumAssociationView: View {
     var pendScale: Int
     
-    private static let ICON_SIZE = 30.0
-    
     var body: some View {
         HStack {
             Image("pend_scale")
                 .resizable()
-                .frame(width: PendulumAssociationView.ICON_SIZE, height: PendulumAssociationView.ICON_SIZE)
+                .frame(width: ICON_SIZE, height: ICON_SIZE)
             Text("x\(pendScale)")
                 .fontWeight(.semibold)
         }
@@ -100,13 +96,11 @@ struct PendulumAssociationView: View {
 struct RankAssociationView: View {
     var rank: Int
     
-    private static let ICON_SIZE = 30.0
-    
     var body: some View {
         HStack {
             Image("card_rank")
                 .resizable()
-                .frame(width: RankAssociationView.ICON_SIZE, height: RankAssociationView.ICON_SIZE)
+                .frame(width: ICON_SIZE, height: ICON_SIZE)
             Text("x\(rank)")
                 .fontWeight(.semibold)
         }
