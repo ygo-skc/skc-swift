@@ -8,6 +8,26 @@
 import SwiftUI
 
 struct DBStatsView: View {
+    @State private(set) var stats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
+    @State private(set) var isDataLoaded = false
+    
+    func fetchData() {
+        if isDataLoaded {
+            return
+        }
+        getDBStatsTask({result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let stats):
+                    self.stats = stats
+                    self.isDataLoaded = true
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        })
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
@@ -22,17 +42,20 @@ struct DBStatsView: View {
                     alignment: .center
                 )
             HStack {
-                DBStatView(count: "10,993", stat: "Cards")
+                DBStatView(count: String(stats.cardTotal), stat: "Cards")
                     .padding(.horizontal)
-                DBStatView(count: "47", stat: "Ban Lists")
+                DBStatView(count: String(stats.banListTotal), stat: "Ban Lists")
                     .padding(.horizontal)
-                DBStatView(count: "285", stat: "Products")
+                DBStatView(count: String(stats.productTotal), stat: "Products")
                     .padding(.horizontal)
             }
             .frame(
                 minWidth: 0,
                 maxWidth: .infinity
             )
+        }
+        .onAppear {
+            fetchData()
         }
     }
 }

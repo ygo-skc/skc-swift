@@ -43,6 +43,15 @@ func searchCardURL(cardName: String) -> URL {
     return createURL(components: components)
 }
 
+func dbStatsURL() -> URL {
+    var components = URLComponents()
+    components.scheme = "https"
+    components.host = SKC_API_BASE_URL.description
+    components.path = SKC_API_DB_STATS_ENDPOINT.description
+    
+    return createURL(components: components)
+}
+
 // SKC Suggestion Engine URL creation methods
 
 func cardSuggestionsURL(cardId: String) -> URL {

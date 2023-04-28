@@ -76,6 +76,28 @@ func searchCard(searchTerm: String, _ completion: @escaping (Result<[Card], Erro
     return dataTask
 }
 
+func getDBStatsTask(_ completion: @escaping (Result<SKCDatabaseStats, Error>) -> Void)->  Void {
+    let url = dbStatsURL()
+    let request = baseRequest(url: url)
+    
+    URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
+        // handle errors
+        let hasErrors = handleErrors(response: response, error: error, url: url)
+        
+        if let body = body, hasErrors == false {
+            do {
+                let stats = try decoder.decode(SKCDatabaseStats.self, from: body)
+                completion(.success(stats))
+            } catch {
+                print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
+            }
+        } else {
+            completion(.failure(error!))
+        }
+    })
+    .resume()
+}
+
 // SKC API Data Tasks
 
 func getCardSuggestionsTask(cardId: String, _ completion: @escaping (Result<CardSuggestions, Error>) -> Void)->  Void {
