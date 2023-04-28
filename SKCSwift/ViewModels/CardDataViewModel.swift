@@ -13,6 +13,9 @@ class CardInformationViewModel: ObservableObject {
     @Published private(set) var isDataLoaded = false
     
     func fetchData(cardId: String) {
+        if isDataLoaded {
+            return
+        }
         getCardData(cardId: cardId, {result in
             DispatchQueue.main.async {
                 switch result {

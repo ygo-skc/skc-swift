@@ -8,7 +8,7 @@
 import Foundation
 
 @MainActor
-class CardSuggestionInformationViewModel: ObservableObject {
+class CardSuggestionViewModel: ObservableObject {
     @Published private(set) var hasSelfReference: Bool = false
     @Published private(set) var namedMaterials: [CardReference] = [CardReference]()
     @Published private(set) var namedReferences: [CardReference] = [CardReference]()
@@ -16,6 +16,9 @@ class CardSuggestionInformationViewModel: ObservableObject {
     
     
     func fetchData(cardId: String) {
+        if isDataLoaded {
+            return
+        }
         getCardSuggestionsTask(cardId: cardId, {result in
             DispatchQueue.main.async {
                 switch result {

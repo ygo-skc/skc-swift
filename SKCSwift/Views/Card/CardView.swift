@@ -10,8 +10,8 @@ import SwiftUI
 struct CardView: View {
     var cardId: String
     
-    @StateObject private var cardInformation = CardInformationViewModel()
-    @StateObject private var cardSuggestions = CardSuggestionInformationViewModel()
+    @StateObject private var cardInformationViewModel = CardInformationViewModel()
+    @StateObject private var cardSuggestionsViewModel = CardSuggestionViewModel()
     
     private let imageSize = UIScreen.main.bounds.width - 60
     private let imageUrl: URL
@@ -25,19 +25,19 @@ struct CardView: View {
         ScrollView {
             LazyVStack {
                 RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
-                if (cardInformation.isDataLoaded) {
+                if (cardInformationViewModel.isDataLoaded) {
                     CardStatsView(
-                        cardName: cardInformation.cardData.cardName, cardColor: cardInformation.cardData.cardColor, monsterType: cardInformation.cardData.monsterType,
-                        cardEffect: cardInformation.cardData.cardEffect, monsterAssociation: cardInformation.cardData.monsterAssociation,
-                        cardId: cardInformation.cardData.cardID, cardAttribute: cardInformation.cardData.cardAttribute,
-                        monsterAttack: cardInformation.cardData.monsterAttack, monsterDefense: cardInformation.cardData.monsterDefense
+                        cardName: cardInformationViewModel.cardData.cardName, cardColor: cardInformationViewModel.cardData.cardColor, monsterType: cardInformationViewModel.cardData.monsterType,
+                        cardEffect: cardInformationViewModel.cardData.cardEffect, monsterAssociation: cardInformationViewModel.cardData.monsterAssociation,
+                        cardId: cardInformationViewModel.cardData.cardID, cardAttribute: cardInformationViewModel.cardData.cardAttribute,
+                        monsterAttack: cardInformationViewModel.cardData.monsterAttack, monsterDefense: cardInformationViewModel.cardData.monsterDefense
                     )
                     
-                    CardSuggestionsView(namedMaterials: cardSuggestions.namedMaterials, namedReferences: cardSuggestions.namedReferences, isDataLoaded: cardSuggestions.isDataLoaded)
+                    CardSuggestionsView(namedMaterials: cardSuggestionsViewModel.namedMaterials, namedReferences: cardSuggestionsViewModel.namedReferences, isDataLoaded: cardSuggestionsViewModel.isDataLoaded)
                     
                     RelatedContentView(
-                        cardName: cardInformation.cardData.cardName, products: cardInformation.getProducts(), tcgBanLists: cardInformation.getBanList(format: BanListFormat.tcg),
-                        mdBanLists: cardInformation.getBanList(format: BanListFormat.md), dlBanLists: cardInformation.getBanList(format: BanListFormat.dl)
+                        cardName: cardInformationViewModel.cardData.cardName, products: cardInformationViewModel.getProducts(), tcgBanLists: cardInformationViewModel.getBanList(format: BanListFormat.tcg),
+                        mdBanLists: cardInformationViewModel.getBanList(format: BanListFormat.md), dlBanLists: cardInformationViewModel.getBanList(format: BanListFormat.dl)
                     )
                 } else {
                     RectPlaceholderView(width: .infinity, height: 200, radius: 10)
@@ -45,8 +45,8 @@ struct CardView: View {
             }
             .padding(.horizontal, 5)
             .onAppear {
-                cardInformation.fetchData(cardId: cardId)
-                cardSuggestions.fetchData(cardId: cardId)
+                cardInformationViewModel.fetchData(cardId: cardId)
+                cardSuggestionsViewModel.fetchData(cardId: cardId)
             }
             .frame(maxHeight: .infinity)
         }

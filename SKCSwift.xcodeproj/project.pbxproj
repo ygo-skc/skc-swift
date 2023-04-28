@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1F0F993D29F8972600AA9F69 /* CardOfTheDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */; };
 		1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */; };
-		1F0F994229F8A3ED00AA9F69 /* CardOfTheDayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994129F8A3ED00AA9F69 /* CardOfTheDayViewModel.swift */; };
 		1F0F994429F8A4E400AA9F69 /* CardSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994329F8A4E400AA9F69 /* CardSearchViewModel.swift */; };
 		1F0F994629F8A7F100AA9F69 /* CardSuggestionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994529F8A7F100AA9F69 /* CardSuggestionsViewModel.swift */; };
 		1F0F994829F8A82500AA9F69 /* CardDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994729F8A82500AA9F69 /* CardDataViewModel.swift */; };
@@ -76,7 +75,6 @@
 /* Begin PBXFileReference section */
 		1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDay.swift; sourceTree = "<group>"; };
 		1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDayView.swift; sourceTree = "<group>"; };
-		1F0F994129F8A3ED00AA9F69 /* CardOfTheDayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDayViewModel.swift; sourceTree = "<group>"; };
 		1F0F994329F8A4E400AA9F69 /* CardSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchViewModel.swift; sourceTree = "<group>"; };
 		1F0F994529F8A7F100AA9F69 /* CardSuggestionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestionsViewModel.swift; sourceTree = "<group>"; };
 		1F0F994729F8A82500AA9F69 /* CardDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDataViewModel.swift; sourceTree = "<group>"; };
@@ -155,7 +153,6 @@
 		1F0F993E29F8A30F00AA9F69 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				1F0F994129F8A3ED00AA9F69 /* CardOfTheDayViewModel.swift */,
 				1F0F994329F8A4E400AA9F69 /* CardSearchViewModel.swift */,
 				1F0F994529F8A7F100AA9F69 /* CardSuggestionsViewModel.swift */,
 				1F0F994729F8A82500AA9F69 /* CardDataViewModel.swift */,
@@ -480,7 +477,6 @@
 				1FB9823C29F9D27900679D81 /* SectionView.swift in Sources */,
 				1F86EC3F29688821004F4F1B /* AttributeView.swift in Sources */,
 				1F0F994629F8A7F100AA9F69 /* CardSuggestionsViewModel.swift in Sources */,
-				1F0F994229F8A3ED00AA9F69 /* CardOfTheDayViewModel.swift in Sources */,
 				1F32565229635936001AACF1 /* Card.swift in Sources */,
 				1F3256592963E116001AACF1 /* MonsterAssociationView.swift in Sources */,
 				1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */,
