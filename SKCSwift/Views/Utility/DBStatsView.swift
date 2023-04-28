@@ -42,11 +42,11 @@ struct DBStatsView: View {
                     alignment: .center
                 )
             HStack {
-                DBStatView(count: String(stats.cardTotal), stat: "Cards")
+                DBStatView(count: stats.cardTotal.decimal, stat: "Cards")
                     .padding(.horizontal)
-                DBStatView(count: String(stats.banListTotal), stat: "Ban Lists")
+                DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists")
                     .padding(.horizontal)
-                DBStatView(count: String(stats.productTotal), stat: "Products")
+                DBStatView(count: stats.productTotal.decimal, stat: "Products")
                     .padding(.horizontal)
             }
             .frame(
