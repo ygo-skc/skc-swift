@@ -201,7 +201,6 @@
 		1F32565529636BA2001AACF1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F6687DF2967904400C8555D /* CardSearchView.swift */,
 				1F6687E1296798E700C8555D /* HomeView.swift */,
 				1FA24A052980A5E400C04B79 /* CardSuggestions */,
@@ -225,6 +224,7 @@
 		1F3C10AC29673F1900EE4EBE /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F86EC47296A0055004F4F1B /* DateView.swift */,
 				1FB9823D29FA117800679D81 /* DBStatsView.swift */,
 				1F76552F2964CB2D00512EF1 /* RectPlaceholderView.swift */,
@@ -271,13 +271,13 @@
 		1F8211E52961FF0000238EE1 /* SKCSwift */ = {
 			isa = PBXGroup;
 			children = (
-				1F8211EA2961FF0100238EE1 /* Assets.xcassets */,
-				1F8211E82961FF0000238EE1 /* ContentView.swift */,
 				1F20ECC92988C4B100D1161D /* Info.plist */,
+				1F8211E82961FF0000238EE1 /* ContentView.swift */,
+				1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */,
+				1F8211EA2961FF0100238EE1 /* Assets.xcassets */,
 				1F3256502963590D001AACF1 /* Models */,
 				1F8211EC2961FF0100238EE1 /* Preview Content */,
 				1F32564D296358AB001AACF1 /* Requests */,
-				1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */,
 				1F21FF6A2977BC1700B4451A /* Util */,
 				1F0F993E29F8A30F00AA9F69 /* ViewModels */,
 				1F32565529636BA2001AACF1 /* Views */,
