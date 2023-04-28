@@ -58,3 +58,92 @@ struct MonsterAssociationView_Previews: PreviewProvider {
         }
     }
 }
+
+struct LevelAssociationView: View {
+    var level: Int
+    
+    private static let ICON_SIZE = 30.0
+    
+    var body: some View {
+        HStack {
+            Image("card_level")
+                .resizable()
+                .frame(width: LevelAssociationView.ICON_SIZE, height: LevelAssociationView.ICON_SIZE)
+            Text("x\(level)")
+                .fontWeight(.semibold)
+        }
+    }
+}
+
+struct LevelAssociationViewModel_Previews: PreviewProvider {
+    static var previews: some View {
+        LevelAssociationView(level: 10)
+    }
+}
+
+struct PendulumAssociationView: View {
+    var pendScale: Int
+    
+    private static let ICON_SIZE = 30.0
+    
+    var body: some View {
+        HStack {
+            Image("pend_scale")
+                .resizable()
+                .frame(width: PendulumAssociationView.ICON_SIZE, height: PendulumAssociationView.ICON_SIZE)
+            Text("x\(pendScale)")
+                .fontWeight(.semibold)
+        }
+    }
+}
+
+struct RankAssociationView: View {
+    var rank: Int
+    
+    private static let ICON_SIZE = 30.0
+    
+    var body: some View {
+        HStack {
+            Image("card_rank")
+                .resizable()
+                .frame(width: RankAssociationView.ICON_SIZE, height: RankAssociationView.ICON_SIZE)
+            Text("x\(rank)")
+                .fontWeight(.semibold)
+        }
+    }
+}
+
+struct RankAssociationViewModel_Previews: PreviewProvider {
+    static var previews: some View {
+        RankAssociationView(rank: 4)
+    }
+}
+
+struct PendulumAssociationView_Previews: PreviewProvider {
+    static var previews: some View {
+        PendulumAssociationView(pendScale: 4)
+    }
+}
+
+struct LinkAssociationView: View {
+    var linkRating: Int
+    var linkArrows: String
+    
+    init(linkRating: Int, linkArrows: [String]) {
+        self.linkRating = linkRating
+        self.linkArrows = linkArrows.joined(separator: " ")
+    }
+    
+    var body: some View {
+        HStack {
+            Text("L\(linkRating): \(linkArrows)")
+                .fontWeight(.bold)
+        }
+    }
+}
+
+struct LinkAssociationViewModel_Previews: PreviewProvider {
+    static var previews: some View {
+        LinkAssociationView(linkRating: 4, linkArrows: ["↙️","↘️"])
+    }
+}

@@ -26,8 +26,6 @@
 		1F601D08297DFD52007E1E0C /* DeckList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D07297DFD52007E1E0C /* DeckList.swift */; };
 		1F6687E02967904400C8555D /* CardSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687DF2967904400C8555D /* CardSearchView.swift */; };
 		1F6687E2296798E700C8555D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E1296798E700C8555D /* HomeView.swift */; };
-		1F6687E52967A07A00C8555D /* RankAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E42967A07A00C8555D /* RankAssociationView.swift */; };
-		1F6687E72967A13600C8555D /* LevelAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E62967A13600C8555D /* LevelAssociationView.swift */; };
 		1F68DA382988C22B00541E81 /* RelatedBanListsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */; };
 		1F7655302964CB2D00512EF1 /* RectPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76552F2964CB2D00512EF1 /* RectPlaceholderView.swift */; };
 		1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */; };
@@ -39,8 +37,6 @@
 		1F8212042961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */; };
 		1F86EC3F29688821004F4F1B /* AttributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC3E29688821004F4F1B /* AttributeView.swift */; };
 		1F86EC48296A0055004F4F1B /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC47296A0055004F4F1B /* DateView.swift */; };
-		1F8EC87D297B6AAA007A85B4 /* LinkAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8EC87C297B6AAA007A85B4 /* LinkAssociationView.swift */; };
-		1F8EC87F297B6E4C007A85B4 /* PendulumAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8EC87E297B6E4C007A85B4 /* PendulumAssociationView.swift */; };
 		1F962B2B2967D065007974DA /* RoundedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageView.swift */; };
 		1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA249FE29809DC500C04B79 /* RelatedContentView.swift */; };
 		1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */; };
@@ -94,8 +90,6 @@
 		1F601D07297DFD52007E1E0C /* DeckList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckList.swift; sourceTree = "<group>"; };
 		1F6687DF2967904400C8555D /* CardSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchView.swift; sourceTree = "<group>"; };
 		1F6687E1296798E700C8555D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		1F6687E42967A07A00C8555D /* RankAssociationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankAssociationView.swift; sourceTree = "<group>"; };
-		1F6687E62967A13600C8555D /* LevelAssociationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelAssociationView.swift; sourceTree = "<group>"; };
 		1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedBanListsContentView.swift; sourceTree = "<group>"; };
 		1F76552F2964CB2D00512EF1 /* RectPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectPlaceholderView.swift; sourceTree = "<group>"; };
 		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,8 +104,6 @@
 		1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1F86EC3E29688821004F4F1B /* AttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeView.swift; sourceTree = "<group>"; };
 		1F86EC47296A0055004F4F1B /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
-		1F8EC87C297B6AAA007A85B4 /* LinkAssociationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkAssociationView.swift; sourceTree = "<group>"; };
-		1F8EC87E297B6E4C007A85B4 /* PendulumAssociationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendulumAssociationView.swift; sourceTree = "<group>"; };
 		1F962B2A2967D065007974DA /* RoundedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageView.swift; sourceTree = "<group>"; };
 		1FA249FE29809DC500C04B79 /* RelatedContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContentView.swift; sourceTree = "<group>"; };
 		1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedProductsContentView.swift; sourceTree = "<group>"; };
@@ -213,9 +205,10 @@
 		1F3C10AB29673ED000EE4EBE /* Card */ = {
 			isa = PBXGroup;
 			children = (
+				1F86EC3E29688821004F4F1B /* AttributeView.swift */,
+				1F3256582963E116001AACF1 /* MonsterAssociationView.swift */,
 				1F32565A2963E195001AACF1 /* CardStatsView.swift */,
 				1F3C10A929673E1200EE4EBE /* CardView.swift */,
-				1F6687E32967A04D00C8555D /* MonsterAssociationViewModels */,
 				1FA24A0029809F3200C04B79 /* RelatedContentViewModels */,
 			);
 			path = Card;
@@ -233,19 +226,6 @@
 				1FB9823B29F9D27900679D81 /* SectionView.swift */,
 			);
 			path = Utility;
-			sourceTree = "<group>";
-		};
-		1F6687E32967A04D00C8555D /* MonsterAssociationViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				1F86EC3E29688821004F4F1B /* AttributeView.swift */,
-				1F6687E62967A13600C8555D /* LevelAssociationView.swift */,
-				1F8EC87C297B6AAA007A85B4 /* LinkAssociationView.swift */,
-				1F3256582963E116001AACF1 /* MonsterAssociationView.swift */,
-				1F8EC87E297B6E4C007A85B4 /* PendulumAssociationView.swift */,
-				1F6687E42967A07A00C8555D /* RankAssociationView.swift */,
-			);
-			path = MonsterAssociationViewModels;
 			sourceTree = "<group>";
 		};
 		1F8211DA2961FF0000238EE1 = {
@@ -463,9 +443,7 @@
 				1F7655302964CB2D00512EF1 /* RectPlaceholderView.swift in Sources */,
 				1F68DA382988C22B00541E81 /* RelatedBanListsContentView.swift in Sources */,
 				1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */,
-				1F8EC87F297B6E4C007A85B4 /* PendulumAssociationView.swift in Sources */,
 				1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */,
-				1F8EC87D297B6AAA007A85B4 /* LinkAssociationView.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsView.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
@@ -494,12 +472,10 @@
 				1F962B2B2967D065007974DA /* RoundedImageView.swift in Sources */,
 				1F6687E02967904400C8555D /* CardSearchView.swift in Sources */,
 				1F6687E2296798E700C8555D /* HomeView.swift in Sources */,
-				1F6687E72967A13600C8555D /* LevelAssociationView.swift in Sources */,
 				1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */,
 				1F0F993D29F8972600AA9F69 /* CardOfTheDay.swift in Sources */,
 				1F1A3AC529871EE600B69892 /* CardSuggestionsView.swift in Sources */,
 				1F86EC48296A0055004F4F1B /* DateView.swift in Sources */,
-				1F6687E52967A07A00C8555D /* RankAssociationView.swift in Sources */,
 				1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
