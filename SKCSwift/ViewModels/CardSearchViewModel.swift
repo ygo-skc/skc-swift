@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 class CardSearchViewModel: ObservableObject {
     @Published private(set) var searchResults = [SearchResults]()
     @Published private(set) var searchResultsIds = [String]()
@@ -28,7 +27,6 @@ class CardSearchViewModel: ObservableObject {
         } else {
             isFetching = true
             task = searchCardTask(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
-                
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let cards):

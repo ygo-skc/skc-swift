@@ -16,7 +16,7 @@ class CardInformationViewModel: ObservableObject {
         if isDataLoaded {
             return
         }
-        getCardTask(cardId: cardId, {result in
+        getCardTask(cardId: cardId) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let card):
@@ -26,7 +26,7 @@ class CardInformationViewModel: ObservableObject {
                     print(error)
                 }
             }
-        })
+        }
     }
     
     func getProducts() -> [Product] {

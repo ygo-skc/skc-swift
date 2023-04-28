@@ -31,7 +31,7 @@ private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bo
     return false
 }
 
-func getCardTask(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void)->  Void {
+func getCardTask(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void) ->  Void {
     let url = cardInfoURL(cardId: cardId)
     let request = baseRequest(url: url)
     
@@ -51,7 +51,7 @@ func getCardTask(cardId: String, _ completion: @escaping (Result<Card, Error>) -
     .resume()
 }
 
-func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void)->  URLSessionDataTask {
+func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void) ->  URLSessionDataTask {
     let url = searchCardURL(cardName: searchTerm)
     let request = baseRequest(url: url)
     
@@ -76,7 +76,7 @@ func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], 
     return dataTask
 }
 
-func getDBStatsTask(_ completion: @escaping (Result<SKCDatabaseStats, Error>) -> Void)->  Void {
+func getDBStatsTask(_ completion: @escaping (Result<SKCDatabaseStats, Error>) -> Void) ->  Void {
     let url = dbStatsURL()
     let request = baseRequest(url: url)
     
@@ -100,7 +100,7 @@ func getDBStatsTask(_ completion: @escaping (Result<SKCDatabaseStats, Error>) ->
 
 // SKC API Data Tasks
 
-func getCardSuggestionsTask(cardId: String, _ completion: @escaping (Result<CardSuggestions, Error>) -> Void)->  Void {
+func getCardSuggestionsTask(cardId: String, _ completion: @escaping (Result<CardSuggestions, Error>) -> Void) ->  Void {
     let url = cardSuggestionsURL(cardId: cardId)
     let request = baseRequest(url: url)
     
@@ -120,7 +120,7 @@ func getCardSuggestionsTask(cardId: String, _ completion: @escaping (Result<Card
     .resume()
 }
 
-func getCardOfTheDayTask(_ completion: @escaping (Result<CardOfTheDay, Error>) -> Void)->  Void {
+func getCardOfTheDayTask(_ completion: @escaping (Result<CardOfTheDay, Error>) -> Void) ->  Void {
     let url = cardOfTheDayURL()
     let request = baseRequest(url: url)
     
