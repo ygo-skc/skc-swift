@@ -31,7 +31,7 @@ private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bo
     return false
 }
 
-func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void)->  Void {
+func getCardTask(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void)->  Void {
     let url = cardInfoURL(cardId: cardId)
     let request = baseRequest(url: url)
     
@@ -51,7 +51,7 @@ func getCardData(cardId: String, _ completion: @escaping (Result<Card, Error>) -
     .resume()
 }
 
-func searchCard(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void)->  URLSessionDataTask {
+func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void)->  URLSessionDataTask {
     let url = searchCardURL(cardName: searchTerm)
     let request = baseRequest(url: url)
     

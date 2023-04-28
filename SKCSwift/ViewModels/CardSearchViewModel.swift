@@ -27,7 +27,7 @@ class CardSearchViewModel: ObservableObject {
             self.task = nil
         } else {
             isFetching = true
-            task = searchCard(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
+            task = searchCardTask(searchTerm: value.trimmingCharacters(in: .whitespacesAndNewlines), {result in
                 
                 DispatchQueue.main.async {
                     switch result {
