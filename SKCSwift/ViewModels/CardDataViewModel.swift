@@ -16,7 +16,7 @@ class CardInformationViewModel: ObservableObject {
         if isDataLoaded {
             return
         }
-        getCardTask(cardId: cardId) { result in
+        request(url: cardInfoURL(cardId: cardId)) { (result: Result<Card, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let card):

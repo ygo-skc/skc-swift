@@ -16,7 +16,7 @@ struct CardOfTheDayView: View {
         if isDataLoaded {
             return
         }
-        getCardOfTheDayTask({result in
+        request(url: cardOfTheDayURL()) { (result: Result<CardOfTheDay, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let cardOfTheyDay):
@@ -27,7 +27,7 @@ struct CardOfTheDayView: View {
                     print(error)
                 }
             }
-        })
+        }
     }
     
     var body: some View {

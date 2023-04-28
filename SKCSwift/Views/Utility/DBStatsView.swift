@@ -15,7 +15,7 @@ struct DBStatsView: View {
         if isDataLoaded {
             return
         }
-        getDBStatsTask({result in
+        request(url: dbStatsURL()) { (result: Result<SKCDatabaseStats, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let stats):
@@ -25,7 +25,7 @@ struct DBStatsView: View {
                     print(error)
                 }
             }
-        })
+        }
     }
     
     var body: some View {

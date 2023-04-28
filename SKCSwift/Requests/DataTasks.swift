@@ -7,8 +7,6 @@
 
 import Foundation
 
-// SKC API Data Tasks
-
 private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bool {
     // handle error
     if let error = error {
@@ -31,24 +29,25 @@ private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bo
     return false
 }
 
-func getCardTask(cardId: String, _ completion: @escaping (Result<Card, Error>) -> Void) ->  Void {
-    let url = cardInfoURL(cardId: cardId)
+func request<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  Void {
     let request = baseRequest(url: url)
     
-    URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
+    let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
         // handle errors
         let hasErrors = handleErrors(response: response, error: error, url: url)
         
         if let body = body, hasErrors == false {
             do {
-                let cardData = try decoder.decode(Card.self, from: body)
+                let cardData = try decoder.decode(T.self, from: body)
                 completion(.success(cardData))
             } catch {
-                print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
+                print("An error ocurred while decoding output from http request \(error.localizedDescription)")
             }
         }
     })
-    .resume()
+    
+    dataTask.priority = priority
+    dataTask.resume()
 }
 
 func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void) ->  URLSessionDataTask {
@@ -74,68 +73,4 @@ func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], 
     dataTask.priority = 1
     dataTask.resume()
     return dataTask
-}
-
-func getDBStatsTask(_ completion: @escaping (Result<SKCDatabaseStats, Error>) -> Void) ->  Void {
-    let url = dbStatsURL()
-    let request = baseRequest(url: url)
-    
-    URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle errors
-        let hasErrors = handleErrors(response: response, error: error, url: url)
-        
-        if let body = body, hasErrors == false {
-            do {
-                let stats = try decoder.decode(SKCDatabaseStats.self, from: body)
-                completion(.success(stats))
-            } catch {
-                print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
-            }
-        } else {
-            completion(.failure(error!))
-        }
-    })
-    .resume()
-}
-
-// SKC API Data Tasks
-
-func getCardSuggestionsTask(cardId: String, _ completion: @escaping (Result<CardSuggestions, Error>) -> Void) ->  Void {
-    let url = cardSuggestionsURL(cardId: cardId)
-    let request = baseRequest(url: url)
-    
-    URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle errors
-        let hasErrors = handleErrors(response: response, error: error, url: url)
-        
-        if let body = body, hasErrors == false {
-            do {
-                let cardData = try decoder.decode(CardSuggestions.self, from: body)
-                completion(.success(cardData))
-            } catch {
-                print("An error ocurred while decoding output from SKC Suggestion Engine \(error)")
-            }
-        }
-    })
-    .resume()
-}
-
-func getCardOfTheDayTask(_ completion: @escaping (Result<CardOfTheDay, Error>) -> Void) ->  Void {
-    let url = cardOfTheDayURL()
-    let request = baseRequest(url: url)
-    
-    URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle errors
-        let hasErrors = handleErrors(response: response, error: error, url: url)
-        
-        if let body = body, hasErrors == false {
-            do {
-                let cardOfTheDay = try decoder.decode(CardOfTheDay.self, from: body)
-                completion(.success(cardOfTheDay))
-            } catch {
-                print("An error ocurred while decoding output from SKC Suggestion Engine \(error)")
-            }
-        }
-    })
-    .resume()
 }

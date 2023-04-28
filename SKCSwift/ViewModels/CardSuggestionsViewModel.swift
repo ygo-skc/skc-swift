@@ -19,7 +19,8 @@ class CardSuggestionViewModel: ObservableObject {
         if isDataLoaded {
             return
         }
-        getCardSuggestionsTask(cardId: cardId, {result in
+        
+        request(url: cardSuggestionsURL(cardId: cardId)) { (result: Result<CardSuggestions, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let suggestions):
@@ -32,6 +33,6 @@ class CardSuggestionViewModel: ObservableObject {
                     print(error)
                 }
             }
-        })
+        }
     }
 }
