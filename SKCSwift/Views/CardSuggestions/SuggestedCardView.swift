@@ -34,7 +34,7 @@ struct SuggestedCardView: View {
                 monsterDefense: monsterDefense, variant: .condensed
             )
         }
-        .frame(maxWidth: 250)
+        .frame(width: 250)
     }
 }
 

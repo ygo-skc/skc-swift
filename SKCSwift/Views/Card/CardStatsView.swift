@@ -164,7 +164,7 @@ private struct CardEffectModifier: ViewModifier {
         case .condensed:
             content
                 .font(.callout)
-                .lineLimit(3)
+                .lineLimit(3, reservesSpace: true)
         }
     }
 }
