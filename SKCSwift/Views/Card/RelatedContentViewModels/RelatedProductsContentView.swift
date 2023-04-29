@@ -62,7 +62,7 @@ private struct ProductListItemViewModel: View {
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(product.productName)
                     .lineLimit(2)
                     .font(.subheadline)
@@ -78,7 +78,6 @@ private struct ProductListItemViewModel: View {
                     Text(product.productContent[0].rarities.joined(separator: ", "))
                         .font(.callout)
                 }
-                .padding(.top, 1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             

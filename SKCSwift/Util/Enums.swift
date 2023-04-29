@@ -14,3 +14,7 @@ enum Attribute: String {
 enum BanListFormat: String {
     case tcg = "TCG", md = "Master Duel", dl = "Duel Links"
 }
+
+enum RelatedContentType: String {
+    case products = "Products", ban_lists = "Ban Lists"
+}

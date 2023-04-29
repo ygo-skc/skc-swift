@@ -59,7 +59,7 @@ struct MonsterAssociationView_Previews: PreviewProvider {
     }
 }
 
-struct LevelAssociationView: View {
+private struct LevelAssociationView: View {
     var level: Int
     
     var body: some View {
@@ -79,7 +79,7 @@ struct LevelAssociationViewModel_Previews: PreviewProvider {
     }
 }
 
-struct PendulumAssociationView: View {
+private struct PendulumAssociationView: View {
     var pendScale: Int
     
     var body: some View {
@@ -93,7 +93,7 @@ struct PendulumAssociationView: View {
     }
 }
 
-struct RankAssociationView: View {
+private struct RankAssociationView: View {
     var rank: Int
     
     var body: some View {
@@ -107,19 +107,19 @@ struct RankAssociationView: View {
     }
 }
 
-struct RankAssociationViewModel_Previews: PreviewProvider {
+private struct RankAssociationViewModel_Previews: PreviewProvider {
     static var previews: some View {
         RankAssociationView(rank: 4)
     }
 }
 
-struct PendulumAssociationView_Previews: PreviewProvider {
+private struct PendulumAssociationView_Previews: PreviewProvider {
     static var previews: some View {
         PendulumAssociationView(pendScale: 4)
     }
 }
 
-struct LinkAssociationView: View {
+private struct LinkAssociationView: View {
     var linkRating: Int
     var linkArrows: String
     

@@ -70,7 +70,7 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             RelatedContentSectionHeaderViewModel(header: "Products")
             
             RelatedContentSheetButton(text: "TCG") {
@@ -78,23 +78,15 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
             }
             .disabled(products.isEmpty)
             
-            HStack {
-                Text(String(products.count))
-                    .font(.body)
-                    .fontWeight(.bold)
-                Text("Printing(s)")
-                    .font(.body)
-                    .fontWeight(.light)
-                    .padding(.leading, -5)
-            }
+            RelatedContentCount(count: products.count, contentType: .products)
             
             HStack {
                 Image(systemName: "calendar")
                 Text(latestReleaseInfo)
                     .font(.subheadline)
                     .fontWeight(.light)
-                    .padding(.top, 1)
             }
+            .padding(.top)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
@@ -107,7 +99,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
     var dlBanLists: [BanList]
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             RelatedContentSectionHeaderViewModel(header: "Ban Lists")
             
             // TCG ban list deets
@@ -115,42 +107,50 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
                 RelatedBanListsContentView(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
             }
             .disabled(tcgBanLists.isEmpty)
-            RelatedBanListsOccurrences(occurrences: tcgBanLists.count)
-            
-            Divider()
+            RelatedContentCount(count: tcgBanLists.count, contentType: .ban_lists)
             
             // MD ban list deets
             RelatedContentSheetButton(text: "Master Duel") {
                 RelatedBanListsContentView(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
             }
             .disabled(mdBanLists.isEmpty)
-            RelatedBanListsOccurrences(occurrences: mdBanLists.count)
-            
-            Divider()
+            RelatedContentCount(count: mdBanLists.count, contentType: .ban_lists)
             
             // DL ban list deets
             RelatedContentSheetButton(text: "Duel Links") {
                 RelatedBanListsContentView(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
             }
             .disabled(dlBanLists.isEmpty)
-            RelatedBanListsOccurrences(occurrences: dlBanLists.count)
+            RelatedContentCount(count: dlBanLists.count, contentType: .ban_lists)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
-private struct RelatedBanListsOccurrences: View {
-    var occurrences: Int
+private struct RelatedContentCount: View {
+    var count: Int
+    var contentType: RelatedContentType
+    
+    private var descriptor: String
+    
+    init(count: Int, contentType: RelatedContentType) {
+        self.count = count
+        self.contentType = contentType
+        
+        self.descriptor = (contentType == .ban_lists) ? "Occurences(s)" : "Printing(s)"
+    }
     
     var body: some View {
-        HStack {
-            Text(String(occurrences))
-                .font(.body)
-                .fontWeight(.bold)
-            Text("Occurences(s)")
-                .font(.body)
-                .fontWeight(.light)
-                .padding(.leading, -5)
+        Group {
+            HStack {
+                Text(String(count))
+                    .font(.body)
+                    .fontWeight(.bold)
+                Text(descriptor)
+                    .font(.body)
+                    .fontWeight(.light)
+            }
+            Divider()
         }
     }
 }
@@ -179,7 +179,6 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
         .sheet(isPresented: $showSheet, onDismiss: {showSheet = false}) {
             sheetContent
         }
-        .padding([.top, .bottom], 1)
     }
 }
 
