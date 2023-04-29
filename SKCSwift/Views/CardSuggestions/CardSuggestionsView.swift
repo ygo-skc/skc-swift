@@ -18,9 +18,9 @@ struct CardSuggestionsView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if (!isDataLoaded) {
-                RectPlaceholderView(width: .infinity, height: 150, radius: 10)
+                ProgressView()
             } else {
-                Text("Card Suggestions")
+                Text("Suggestions")
                     .font(.title)
                     .padding(.top)
                 
@@ -30,7 +30,8 @@ struct CardSuggestionsView: View {
                 
                 if (namedMaterials.isEmpty && namedReferences.isEmpty) {
                     Text("Nothing here 🤔")
-                        .font(.subheadline)
+                        .font(.headline)
+                        .fontWeight(.regular)
                         .padding(.all)
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else {
