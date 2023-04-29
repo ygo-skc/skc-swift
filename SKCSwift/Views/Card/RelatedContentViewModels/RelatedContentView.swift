@@ -17,7 +17,7 @@ struct RelatedContentView: View {
     var dlBanLists: [BanList]
     
     var body: some View {
-        LazyVStack(alignment: .leading) {
+        LazyVStack(alignment: .leading, spacing: 5) {
             Text("Explore")
                 .font(.title)
             
@@ -25,10 +25,10 @@ struct RelatedContentView: View {
                 RelatedProductsSectionViewModel(cardName: cardName, products: products)
                 RelatedBanListsSectionViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
             }
-            .padding(.top)
             .frame(maxWidth: .infinity)
         }
-        .padding(.all)
+        .padding(.horizontal)
+        .padding(.top)
         .frame(
             maxWidth: .infinity,
             maxHeight: .infinity,

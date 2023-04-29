@@ -16,23 +16,20 @@ struct CardSuggestionsView: View {
     @State private(set) var isDataLoaded = false
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             if (!isDataLoaded) {
                 ProgressView()
             } else {
                 Text("Suggestions")
                     .font(.title)
-                    .padding(.top)
                 
                 Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
                     .fontWeight(.light)
-                    .padding(.top, -10)
-                
+                Spacer(minLength: 10)
                 if (namedMaterials.isEmpty && namedReferences.isEmpty) {
                     Text("Nothing here 🤔")
                         .font(.headline)
                         .fontWeight(.regular)
-                        .padding(.all)
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     NamedSuggestionsView(header: "Named Materials", references: namedMaterials)
@@ -74,7 +71,6 @@ private struct NamedSuggestionsView: View {
             Text(header)
                 .font(.title2)
                 .fontWeight(.bold)
-                .padding(.top)
             
             ScrollView(.horizontal) {
                 HStack {
