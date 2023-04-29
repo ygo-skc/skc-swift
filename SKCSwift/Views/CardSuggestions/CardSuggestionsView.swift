@@ -73,7 +73,7 @@ private struct NamedSuggestionsView: View {
                 .fontWeight(.bold)
             
             ScrollView(.horizontal) {
-                HStack {
+                HStack(spacing: 15) {
                     ForEach(references, id: \.card.cardID) { suggestion in
                         SuggestedCardView(cardId: suggestion.card.cardID, cardName: suggestion.card.cardName, cardColor: suggestion.card.cardColor,
                                           cardEffect: suggestion.card.cardEffect, cardAttribute: suggestion.card.cardAttribute, monsterType: suggestion.card.monsterType,

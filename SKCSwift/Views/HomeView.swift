@@ -13,14 +13,10 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                SectionView(header: "Content",
-                            disableDestination: true,
-                            destination: {EmptyView()},
-                            content: {DBStatsView()})
-                .padding(.top)
-                
-                CardOfTheDayView()
-                    .padding(.top)
+                VStack(spacing: 35) {
+                    DBStatsView()
+                    CardOfTheDayView()
+                }
             }
             .padding(.horizontal)
             .navigationTitle("Home")

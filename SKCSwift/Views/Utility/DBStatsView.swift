@@ -29,34 +29,39 @@ struct DBStatsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
-                .font(.body)
-            
-            Text("DB Stats")
-                .font(.title2)
-                .padding(.vertical, 2)
+        SectionView(header: "Content",
+                    disableDestination: true,
+                    destination: {EmptyView()},
+                    content: {
+            VStack(alignment: .leading) {
+                Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
+                    .font(.body)
+                
+                Text("DB Stats")
+                    .font(.title2)
+                    .padding(.vertical, 2)
+                    .frame(
+                        minWidth: 0,
+                        maxWidth: .infinity,
+                        alignment: .center
+                    )
+                HStack {
+                    DBStatView(count: stats.cardTotal.decimal, stat: "Cards")
+                        .padding(.horizontal)
+                    DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists")
+                        .padding(.horizontal)
+                    DBStatView(count: stats.productTotal.decimal, stat: "Products")
+                        .padding(.horizontal)
+                }
                 .frame(
                     minWidth: 0,
-                    maxWidth: .infinity,
-                    alignment: .center
+                    maxWidth: .infinity
                 )
-            HStack {
-                DBStatView(count: stats.cardTotal.decimal, stat: "Cards")
-                    .padding(.horizontal)
-                DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists")
-                    .padding(.horizontal)
-                DBStatView(count: stats.productTotal.decimal, stat: "Products")
-                    .padding(.horizontal)
             }
-            .frame(
-                minWidth: 0,
-                maxWidth: .infinity
-            )
-        }
-        .onAppear {
-            fetchData()
-        }
+            .onAppear {
+                fetchData()
+            }
+        })
     }
 }
 
