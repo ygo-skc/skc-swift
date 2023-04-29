@@ -37,35 +37,32 @@ struct CardOfTheDayView: View {
             destination: {CardSearchLinkDestination(cardId: card.cardID)},
             content: {
                 HStack {
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 3) {
                         if isDataLoaded {
                             Text(card.cardName)
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                        } else {
-                            RectPlaceholderView(width: 200, height: 20, radius: 5)
-                        }
-                        
-                        if let monsterType = card.monsterType {
-                            Text(monsterType)
                                 .font(.headline)
-                                .fontWeight(.semibold)
-                        }
-                        
-                        HStack {
-                            if isDataLoaded {
+                                .fontWeight(.heavy)
+                            
+                            
+                            if let monsterType = card.monsterType {
+                                Text(monsterType)
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                            }
+                            
+                            HStack {
                                 Circle()
                                     .foregroundColor(cardColorUI(cardColor: card.cardColor))
-                                    .frame(width: 15)
+                                    .frame(width: 10)
                                 Text(card.cardColor)
                                     .font(.headline)
                                     .fontWeight(.semibold)
-                            } else {
-                                RectPlaceholderView(width: 120, height: 20, radius: 5)
-                                    .padding(.top, 3)
                             }
+                        } else {
+                            RectPlaceholderView(width: 200, height: 18, radius: 5)
+                            RectPlaceholderView(width: 120, height: 18, radius: 5)
+                            RectPlaceholderView(width: 60, height: 18, radius: 5)
                         }
-                        .padding(.top, -8)
                     }
                     .frame(
                         maxWidth: .infinity,
