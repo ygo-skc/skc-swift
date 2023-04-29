@@ -38,7 +38,7 @@ func request<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping 
         
         if let body = body, hasErrors == false {
             do {
-                let cardData = try decoder.decode(T.self, from: body)
+                let cardData = try RequestHelpers.decoder.decode(T.self, from: body)
                 completion(.success(cardData))
             } catch {
                 print("An error ocurred while decoding output from http request \(error.localizedDescription)")
@@ -60,7 +60,7 @@ func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], 
         
         if let body = body, hasErrors == false {
             do {
-                let cardData = try decoder.decode([Card].self, from: body)
+                let cardData = try RequestHelpers.decoder.decode([Card].self, from: body)
                 completion(.success(cardData))
             } catch {
                 print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")

@@ -8,7 +8,9 @@
 import Foundation
 
 // common request helpers
-let decoder = JSONDecoder()
+struct RequestHelpers {
+    static let decoder = JSONDecoder()
+}
 let GET: StaticString = "GET"
 let CLIENT_ID: StaticString = "skc-swift"
 
