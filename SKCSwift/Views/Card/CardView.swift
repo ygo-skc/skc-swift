@@ -11,7 +11,6 @@ struct CardView: View {
     var cardId: String
     
     @StateObject private var cardInformationViewModel = CardInformationViewModel()
-    @StateObject private var cardSuggestionsViewModel = CardSuggestionViewModel()
     
     private let imageSize = UIScreen.main.bounds.width - 60
     private let imageUrl: URL
@@ -33,12 +32,12 @@ struct CardView: View {
                         monsterAttack: cardInformationViewModel.cardData.monsterAttack, monsterDefense: cardInformationViewModel.cardData.monsterDefense
                     )
                     
-                    CardSuggestionsView(namedMaterials: cardSuggestionsViewModel.namedMaterials, namedReferences: cardSuggestionsViewModel.namedReferences, isDataLoaded: cardSuggestionsViewModel.isDataLoaded)
-                    
                     RelatedContentView(
                         cardName: cardInformationViewModel.cardData.cardName, products: cardInformationViewModel.getProducts(), tcgBanLists: cardInformationViewModel.getBanList(format: BanListFormat.tcg),
                         mdBanLists: cardInformationViewModel.getBanList(format: BanListFormat.md), dlBanLists: cardInformationViewModel.getBanList(format: BanListFormat.dl)
                     )
+                    
+                    CardSuggestionsView(cardId: cardId)
                 } else {
                     RectPlaceholderView(width: .infinity, height: 200, radius: 10)
                 }
@@ -46,7 +45,6 @@ struct CardView: View {
             .padding(.horizontal, 5)
             .onAppear {
                 cardInformationViewModel.fetchData(cardId: cardId)
-                cardSuggestionsViewModel.fetchData(cardId: cardId)
             }
             .frame(maxHeight: .infinity)
         }

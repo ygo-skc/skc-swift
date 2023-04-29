@@ -18,12 +18,8 @@ struct RelatedContentView: View {
     
     var body: some View {
         LazyVStack(alignment: .leading) {
-            Text("Related Content")
+            Text("Explore")
                 .font(.title)
-            Text("Expore Yu-Gi-Oh! products or forbidden/ban lists that are assoicated with this card")
-                .font(.headline)
-                .fontWeight(.light)
-                .padding(.top, -10)
             
             HStack(alignment: .top, spacing: 10) {
                 RelatedProductsSectionViewModel(cardName: cardName, products: products)
