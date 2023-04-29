@@ -19,22 +19,26 @@ struct SuggestedCardView: View {
     var occurrence: Int
     
     var body: some View {
-        VStack {
-            HStack {
-                RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(cardId).jpg")!)
+        NavigationLink(destination: CardSearchLinkDestination(cardId: cardId), label: {
+            VStack {
+                HStack {
+                    RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(cardId).jpg")!)
+                    
+                    Text("Quantity: \(occurrence)")
+                        .padding(.leading)
+                        .font(.headline)
+                        .fontWeight(.heavy)
+                }
                 
-                Text("Quantity: \(occurrence)")
-                    .padding(.leading)
-                    .font(.headline)
-                    .fontWeight(.heavy)
+                CardStatsView(
+                    cardName: cardName, cardColor: cardColor, monsterType: monsterType, cardEffect: cardEffect, cardId: cardId, cardAttribute: cardAttribute, monsterAttack: monsterAttack,
+                    monsterDefense: monsterDefense, variant: .condensed
+                )
             }
-            
-            CardStatsView(
-                cardName: cardName, cardColor: cardColor, monsterType: monsterType, cardEffect: cardEffect, cardId: cardId, cardAttribute: cardAttribute, monsterAttack: monsterAttack,
-                monsterDefense: monsterDefense, variant: .condensed
-            )
-        }
-        .frame(width: 250)
+            .contentShape(Rectangle())
+            .frame(width: 250)
+        })
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
