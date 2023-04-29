@@ -80,3 +80,19 @@ func cardOfTheDayURL() -> URL {
     
     return createURL(components: components)
 }
+
+// Heart API URL creation methods
+
+func upcomingEventsURL() -> URL {
+    var components = URLComponents()
+    components.scheme = "https"
+    components.host = HEART_API_BASE_URL.description
+    components.path = HEART_API_EVENT_ENDPOINT.description
+    
+    components.queryItems = [
+        URLQueryItem(name: "service", value: "skc"),
+        URLQueryItem(name: "tags", value: "product-release")
+    ]
+    
+    return createURL(components: components)
+}
