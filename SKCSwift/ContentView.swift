@@ -12,13 +12,16 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            HomeView().tabItem{
-                Image(systemName: "house")
-            }
-            CardSearchView().tabItem{
-                Image(systemName: "magnifyingglass")
-            }
+            HomeView()
+                .tabItem {
+                    Image(systemName: "house")
+                }
+            CardSearchView()
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                }
         }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

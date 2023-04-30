@@ -61,7 +61,7 @@ struct UpcomingTCGProducts: View {
                         }
                         Text("Description")
                             .font(.headline)
-                            .fontWeight(.light)
+                            .fontWeight(.thin)
                         Text(LocalizedStringKey(event.notes))
                             .lineLimit(5)
                             .font(.body)
