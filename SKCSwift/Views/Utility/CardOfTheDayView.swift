@@ -41,13 +41,13 @@ struct CardOfTheDayView: View {
                         if isDataLoaded {
                             Text(card.cardName)
                                 .font(.headline)
-                                .fontWeight(.heavy)
+                                .fontWeight(.bold)
                             
                             
                             if let monsterType = card.monsterType {
                                 Text(monsterType)
                                     .font(.headline)
-                                    .fontWeight(.semibold)
+                                    .fontWeight(.regular)
                             }
                             
                             HStack {
@@ -56,7 +56,7 @@ struct CardOfTheDayView: View {
                                     .frame(width: 10)
                                 Text(card.cardColor)
                                     .font(.headline)
-                                    .fontWeight(.semibold)
+                                    .fontWeight(.regular)
                             }
                         } else {
                             RectPlaceholderView(width: 200, height: 18, radius: 5)

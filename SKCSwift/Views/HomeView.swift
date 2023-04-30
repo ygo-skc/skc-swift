@@ -21,7 +21,6 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             }
-            .navigationTitle("Home")
         }
     }
 }
