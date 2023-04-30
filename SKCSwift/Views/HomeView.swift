@@ -11,7 +11,7 @@ struct HomeView: View {
     let screenWidth = UIScreen.main.bounds.width - 10
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ScrollView {
                 VStack(spacing: 35) {
                     DBStatsView()
@@ -21,6 +21,9 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             }
+            .navigationBarTitle("Home")
+            .navigationBarHidden(true)
+            .clipped()
         }
     }
 }
