@@ -36,13 +36,14 @@ struct CardOfTheDayView: View {
             disableDestination: !isDataLoaded,
             destination: {CardSearchLinkDestination(cardId: card.cardID)},
             content: {
-                HStack {
+                HStack(spacing: 20) {
+                    RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
                     VStack(alignment: .leading, spacing: 3) {
                         if isDataLoaded {
                             Text(card.cardName)
+                                .lineLimit(2)
                                 .font(.headline)
                                 .fontWeight(.bold)
-                            
                             
                             if let monsterType = card.monsterType {
                                 Text(monsterType)
@@ -68,7 +69,6 @@ struct CardOfTheDayView: View {
                         maxWidth: .infinity,
                         alignment: .topLeading
                     )
-                    RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(card.cardID).jpg")!)
                 }
                 .contentShape(Rectangle())
             }

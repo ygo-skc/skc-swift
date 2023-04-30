@@ -62,20 +62,16 @@ private struct BanListItemViewModel: View {
     var banListInstance: BanList
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(banListInstance.banStatus)
-                    .lineLimit(1)
-                    .font(.subheadline)
-                    .fontWeight(.heavy)
-                
-                Circle()
-                    .foregroundColor(banStatusColor(status: banListInstance.banStatus))
-                    .frame(width: 30)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            DateView(date: banListInstance.banListDate)
+        HStack(spacing: 5) {
+            DateView(date: banListInstance.banListDate, variant: .condensed)
+                .padding(.trailing, 10)
+            Circle()
+                .foregroundColor(banStatusColor(status: banListInstance.banStatus))
+                .frame(width: 20)
+            Text(banListInstance.banStatus)
+                .lineLimit(1)
+                .font(.subheadline)
+                .fontWeight(.heavy)
         }
         .frame(
             maxWidth: .infinity,

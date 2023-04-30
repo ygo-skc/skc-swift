@@ -61,7 +61,9 @@ private struct ProductListItemViewModel: View {
     var product: Product
     
     var body: some View {
-        HStack {
+        HStack(spacing: 15) {
+            DateView(date: product.productReleaseDate)
+            
             VStack(alignment: .leading, spacing: 5) {
                 Text(product.productName)
                     .lineLimit(2)
@@ -80,8 +82,6 @@ private struct ProductListItemViewModel: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
-            DateView(date: product.productReleaseDate)
         }
         .frame(
             maxWidth: .infinity,
