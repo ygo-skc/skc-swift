@@ -13,9 +13,11 @@ struct DateView: View {
     private var month: String
     private var day: String
     private var year: String
+    private var variant: DateViewVariant
     
-    init(date: String) {
+    init(date: String, variant: DateViewVariant = .normal) {
         dateFormatter.dateFormat = "yyyy-MM-dd"
+        self.variant = variant
         
         let date = dateFormatter.date(from: date)!
         self.month = Calendar.current.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
@@ -27,23 +29,72 @@ struct DateView: View {
         VStack {
             VStack {
                 Text(month)
-                    .font(.headline)
-                    .foregroundColor(Color(.white))
-                    .padding(.vertical, 3)
+                    .modifier(DateViewMonthModifier(variant: variant))
             }
             .frame(maxWidth: .infinity)
             .background(Color("pink_red"))
             
             Text(day)
+                .modifier(DateViewDayModifier(variant: variant))
+            Text(year)
+                .modifier(DateViewYearModifier(variant: variant))
+        }
+        .frame(width: 80)
+        .background(Color("gray"))
+        .cornerRadius(15)
+    }
+}
+
+private struct DateViewMonthModifier: ViewModifier {
+    var variant: DateViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .font(.headline)
+                .foregroundColor(Color(.white))
+                .padding(.vertical, 1)
+        case .condensed:
+            content
+                .font(.subheadline)
+                .foregroundColor(Color(.white))
+                .padding(.vertical, 1)
+        }
+    }
+}
+
+private struct DateViewDayModifier: ViewModifier {
+    var variant: DateViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
                 .font(.title3)
                 .fontWeight(.bold)
                 .padding(.top, -5)
-            Text(year)
+        case .condensed:
+            content
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .padding(.top, -5)
+        }
+    }
+}
+
+private struct DateViewYearModifier: ViewModifier {
+    var variant: DateViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
                 .font(.callout)
-        }.frame(width: 80)
-            .background(Color("gray"))
-            .cornerRadius(15)
-        
+        case .condensed:
+            content
+                .font(.footnote)
+        }
     }
 }
 

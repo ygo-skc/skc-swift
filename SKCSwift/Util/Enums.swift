@@ -19,12 +19,17 @@ enum RelatedContentType: String {
     case products = "Products", ban_lists = "Ban Lists"
 }
 
-enum CardStatsVariant {
-    case full
+enum CardStatsViewVariant {
+    case normal
     case condensed
 }
 
 enum SectionViewVariant {
     case plain
     case styled
+}
+
+enum DateViewVariant {
+    case normal
+    case condensed
 }

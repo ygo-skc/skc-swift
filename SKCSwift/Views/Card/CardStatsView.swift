@@ -18,13 +18,13 @@ struct CardStatsView: View {
     var monsterAttack: String
     var monsterDefense: String
     
-    var variant: CardStatsVariant
+    var variant: CardStatsViewVariant
     
     private static let nilStat = "?"
     
     init(
         cardName: String, cardColor: String, monsterType: String? = nil, cardEffect: String, monsterAssociation: MonsterAssociation? = nil,
-        cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil, variant: CardStatsVariant = .full
+        cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil, variant: CardStatsViewVariant = .normal
     ) {
         self.cardName = cardName
         self.cardColor = cardColor
@@ -115,11 +115,11 @@ struct CardStatsView: View {
 }
 
 private struct CardNameModifier: ViewModifier {
-    var variant: CardStatsVariant
+    var variant: CardStatsViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .full:
+        case .normal:
             content
                 .font(.title3)
                 .fontWeight(.semibold)
@@ -134,11 +134,11 @@ private struct CardNameModifier: ViewModifier {
 }
 
 private struct MonsterTypeModifier: ViewModifier {
-    var variant: CardStatsVariant
+    var variant: CardStatsViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .full:
+        case .normal:
             content
                 .font(.headline)
         case .condensed:
@@ -149,11 +149,11 @@ private struct MonsterTypeModifier: ViewModifier {
 }
 
 private struct CardEffectModifier: ViewModifier {
-    var variant: CardStatsVariant
+    var variant: CardStatsViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .full:
+        case .normal:
             content
                 .font(.body)
         case .condensed:
@@ -165,11 +165,11 @@ private struct CardEffectModifier: ViewModifier {
 }
 
 private struct CardIdModifier: ViewModifier {
-    var variant: CardStatsVariant
+    var variant: CardStatsViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .full:
+        case .normal:
             content
                 .font(.callout)
         case .condensed:
@@ -180,11 +180,11 @@ private struct CardIdModifier: ViewModifier {
 }
 
 private struct MonsterAttackDefenseModifier: ViewModifier {
-    var variant: CardStatsVariant
+    var variant: CardStatsViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .full:
+        case .normal:
             content
                 .font(.callout)
         case .condensed:

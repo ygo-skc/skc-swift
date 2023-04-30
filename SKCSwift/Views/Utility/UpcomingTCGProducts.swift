@@ -52,7 +52,7 @@ struct UpcomingTCGProducts: View {
                                     .font(.headline)
                                     .fontWeight(.bold)
                                 Spacer()
-                                DateView(date: "2022-01-01")
+                                DateView(date: "2022-01-01", variant: .condensed)
                             }
                             .frame(
                                 minWidth: 0,
