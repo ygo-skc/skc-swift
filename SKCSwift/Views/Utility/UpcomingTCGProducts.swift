@@ -45,30 +45,34 @@ struct UpcomingTCGProducts: View {
                     ProgressView()
                 } else {
                     ForEach(events[..<5], id: \.name) { event in
-                        VStack(alignment: .leading, spacing: 5) {
-                            HStack {
-                                Text(event.name)
-                                    .lineLimit(2, reservesSpace: true)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                Spacer()
-                                DateView(date: "2022-01-01", variant: .condensed)
+                        VStack(alignment: .leading) {
+                            Spacer()
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack {
+                                    Text(event.name)
+                                        .lineLimit(2, reservesSpace: true)
+                                        .font(.headline)
+                                        .fontWeight(.bold)
+                                    Spacer()
+                                    DateView(date: "2022-01-01", variant: .condensed)
+                                }
+                                .frame(
+                                    minWidth: 0,
+                                    maxWidth: .infinity
+                                )
                             }
-                            .frame(
-                                minWidth: 0,
-                                maxWidth: .infinity
-                            )
+                            
+                            Text("Description")
+                                .font(.headline)
+                                .fontWeight(.thin)
+                            Text(LocalizedStringKey(event.notes))
+                                .lineLimit(5)
+                                .font(.body)
+                            Divider()
+                                .padding(.horizontal)
                         }
-                        Text("Description")
-                            .font(.headline)
-                            .fontWeight(.thin)
-                        Text(LocalizedStringKey(event.notes))
-                            .lineLimit(5)
-                            .font(.body)
-                        Divider()
-                            .padding(.horizontal)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             .onAppear {
