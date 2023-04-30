@@ -39,9 +39,9 @@ struct DateView: View {
             Text(year)
                 .modifier(DateViewYearModifier(variant: variant))
         }
-        .frame(width: 80)
+        .frame(width: (variant == .normal) ? 80 : 60)
         .background(Color("gray"))
-        .cornerRadius(15)
+        .cornerRadius((variant == .normal) ? 15 : 10)
     }
 }
 
