@@ -18,3 +18,13 @@ enum BanListFormat: String {
 enum RelatedContentType: String {
     case products = "Products", ban_lists = "Ban Lists"
 }
+
+enum CardStatsVariant {
+    case full
+    case condensed
+}
+
+enum SectionViewVariant {
+    case plain
+    case styled
+}

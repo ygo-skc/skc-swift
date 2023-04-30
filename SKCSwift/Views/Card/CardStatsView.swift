@@ -114,11 +114,6 @@ struct CardStatsView: View {
     }
 }
 
-enum CardStatsVariant {
-    case full
-    case condensed
-}
-
 private struct CardNameModifier: ViewModifier {
     var variant: CardStatsVariant
     

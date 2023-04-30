@@ -16,6 +16,7 @@ struct HomeView: View {
                 VStack(spacing: 35) {
                     DBStatsView()
                     CardOfTheDayView()
+                    Divider()
                     UpcomingTCGProducts()
                 }
                 .padding(.horizontal)

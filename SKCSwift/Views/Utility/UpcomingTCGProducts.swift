@@ -32,9 +32,10 @@ struct UpcomingTCGProducts: View {
     var body: some View {
         SectionView(header: "Upcoming products",
                     disableDestination: true,
+                    variant: .plain,
                     destination: {EmptyView()},
                     content: {
-            LazyVStack(alignment: .leading, spacing: 10) {
+            LazyVStack(spacing: 5) {
                 Text("TCG products that have been anounced and which we have a tenative release date for.")
                     .font(.body)
                 
@@ -47,9 +48,9 @@ struct UpcomingTCGProducts: View {
                         VStack(alignment: .leading, spacing: 5) {
                             HStack {
                                 Text(event.name)
-                                    .lineLimit(2)
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
+                                    .lineLimit(2, reservesSpace: true)
+                                    .font(.headline)
+                                    .fontWeight(.bold)
                                 Spacer()
                                 DateView(date: "2022-01-01")
                             }
@@ -60,11 +61,12 @@ struct UpcomingTCGProducts: View {
                         }
                         Text("Description")
                             .font(.headline)
-                            .fontWeight(.medium)
+                            .fontWeight(.light)
                         Text(LocalizedStringKey(event.notes))
                             .lineLimit(5)
                             .font(.body)
                         Divider()
+                            .padding(.horizontal)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

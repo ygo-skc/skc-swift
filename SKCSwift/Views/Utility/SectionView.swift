@@ -10,6 +10,8 @@ import SwiftUI
 struct SectionView<Destination: View, Content: View>: View {
     var header: String
     var disableDestination: Bool
+    var variant: SectionViewVariant = .styled
+    
     @ViewBuilder var destination: () -> Destination
     @ViewBuilder var content: () -> Content
     
@@ -23,11 +25,11 @@ struct SectionView<Destination: View, Content: View>: View {
             
             if (disableDestination) {
                 content()
-                    .modifier(SectionViewModifier(variant: SectionViewVariant.gray))
+                    .modifier(SectionViewModifier(variant: variant))
             } else {
                 NavigationLink(destination: destination, label: {
                     content()
-                        .modifier(SectionViewModifier(variant: SectionViewVariant.gray))
+                        .modifier(SectionViewModifier(variant: variant))
                 })
                 .buttonStyle(PlainButtonStyle())
             }
@@ -35,22 +37,15 @@ struct SectionView<Destination: View, Content: View>: View {
     }
 }
 
-enum SectionViewVariant {
-    case gray
-}
-
 private struct SectionViewModifier: ViewModifier {
     var variant: SectionViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .gray:
+        case .plain:
             content
-                .frame(
-                    minWidth: 0,
-                    maxWidth: .infinity,
-                    alignment: .topLeading
-                )
+        case .styled:
+            content
                 .padding(.vertical)
                 .padding(.horizontal)
                 .background(Color("section-background"))
