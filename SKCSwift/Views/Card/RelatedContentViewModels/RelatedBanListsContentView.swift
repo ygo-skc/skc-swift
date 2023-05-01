@@ -40,15 +40,12 @@ struct RelatedBanListsContentView: RelatedContent {
             }
             .padding(.horizontal)
             
-            Divider()
-            
             List {
                 ForEach(banlists, id: \.banListDate) { instance in
-                    LazyVStack {
-                        BanListItemViewModel(banListInstance: instance)
-                    }
+                    BanListItemViewModel(banListInstance: instance)
                 }
-            }.listStyle(.plain)
+            }
+            .listStyle(.plain)
         }
         .frame(
             maxWidth: .infinity,

@@ -22,7 +22,7 @@ struct CardView: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 20) {
                 RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
                 if (cardInformationViewModel.isDataLoaded) {
                     CardStatsView(
@@ -42,7 +42,6 @@ struct CardView: View {
                     RectPlaceholderView(width: .infinity, height: 200, radius: 10)
                 }
             }
-            .padding(.horizontal, 5)
             .onAppear {
                 cardInformationViewModel.fetchData(cardId: cardId)
             }

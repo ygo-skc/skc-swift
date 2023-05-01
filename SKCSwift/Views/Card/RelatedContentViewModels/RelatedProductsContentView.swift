@@ -39,15 +39,14 @@ struct RelatedProductsContentView: RelatedContent {
             }
             .padding(.horizontal)
             
-            Divider()
-            
             List {
                 ForEach(products, id: \.productId) { product in
-                    LazyVStack {
-                        ProductListItemViewModel(product: product)
-                    }
+                    ProductListItemViewModel(product: product)
                 }
-            }.listStyle(.plain)
+            }
+            .listStyle(.plain)
+            .padding(.top, 0)
+            
         }
         .frame(
             maxWidth: .infinity,

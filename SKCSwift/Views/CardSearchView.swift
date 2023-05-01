@@ -47,11 +47,10 @@ struct CardSearchView: View {
                     .font(.headline)
                     .fontWeight(.black) ) {
                         ForEach(sr.results, id: \.cardID) { card in
-                            VStack {
-                                NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
-                                    CardSearchResultView(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                                })
-                            }
+                            NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
+                                CardSearchResultView(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                            })
+                            
                         }
                     }
             }
@@ -92,7 +91,7 @@ private struct CardSearchResultView: View {
     var monsterType: String?
     
     var body: some View {
-        LazyHStack {
+        HStack {
             RoundedImageView(radius: 60, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(cardId).jpg")!)
             VStack(alignment: .leading) {
                 Text(cardName).fontWeight(.bold).font(.footnote)

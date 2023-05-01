@@ -17,7 +17,7 @@ struct RelatedContentView: View {
     var dlBanLists: [BanList]
     
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 5) {
             Text("Explore")
                 .font(.title)
             
@@ -28,7 +28,6 @@ struct RelatedContentView: View {
             .frame(maxWidth: .infinity)
         }
         .padding(.horizontal)
-        .padding(.top)
         .frame(
             maxWidth: .infinity,
             maxHeight: .infinity,
