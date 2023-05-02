@@ -16,7 +16,7 @@ struct CardSuggestionsView: View {
     @State private(set) var isDataLoaded = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        LazyVStack(alignment: .leading, spacing: 5) {
             if (!isDataLoaded) {
                 ProgressView()
             } else {
@@ -36,6 +36,7 @@ struct CardSuggestionsView: View {
                     NamedSuggestionsView(header: "Named References", references: namedReferences)
                 }
             }
+            Spacer(minLength: 10)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal)
@@ -81,10 +82,6 @@ private struct NamedSuggestionsView: View {
                         )
                     }
                 }
-                .frame(
-                    minHeight: 0,
-                    maxHeight: .infinity
-                )
             }
             .padding(.horizontal, -16)
             
