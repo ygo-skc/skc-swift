@@ -21,7 +21,7 @@ struct RelatedContentView: View {
             Text("Explore")
                 .font(.title)
             
-            HStack(alignment: .top, spacing: 10) {
+            HStack(alignment: .top, spacing: 15) {
                 RelatedProductsSectionViewModel(cardName: cardName, products: products)
                 RelatedBanListsSectionViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
             }
@@ -42,7 +42,7 @@ private struct RelatedContentSectionHeaderViewModel: View {
     var body: some View {
         Text(header)
             .font(.title2)
-            .fontWeight(.semibold)
+            .fontWeight(.medium)
     }
 }
 
@@ -61,15 +61,15 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
             let elapsedDays = determineElapsedDaysSinceToday(reference: products[0].productReleaseDate)
             
             if (elapsedDays < 0) {
-                latestReleaseInfo = "\(elapsedDays) day(s) until next printing"
+                latestReleaseInfo = "\(elapsedDays.decimal) day(s) until next printing"
             } else {
-                latestReleaseInfo = "\(elapsedDays) day(s) since last printing"
+                latestReleaseInfo = "\(elapsedDays.decimal) day(s) since last printing"
             }
         }
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 8) {
             RelatedContentSectionHeaderViewModel(header: "Products")
             
             RelatedContentSheetButton(text: "TCG") {
@@ -98,7 +98,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
     var dlBanLists: [BanList]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 8) {
             RelatedContentSectionHeaderViewModel(header: "Ban Lists")
             
             // TCG ban list deets

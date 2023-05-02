@@ -20,6 +20,7 @@ struct CardStatsView: View {
     
     var variant: CardStatsViewVariant
     
+    private var attribute: Attribute?
     private static let nilStat = "?"
     
     init(
@@ -39,36 +40,30 @@ struct CardStatsView: View {
         let nilDefStat = (cardColor == "Link") ? "—" : CardStatsView.nilStat  // override missing stat for certain edge cases
         self.monsterAttack = (monsterAttack == nil) ? CardStatsView.nilStat : String(monsterAttack!)
         self.monsterDefense = (monsterDefense == nil) ? nilDefStat : String(monsterDefense!)
+        
+        self.attribute = Attribute(rawValue: cardAttribute)
     }
     
     var body: some View {
         VStack {
-            VStack  {
+            VStack(spacing: 5)  {
                 Text(cardName)
                     .modifier(CardNameModifier(variant: variant))
                     .foregroundColor(.white)
                 
-                let attribute = Attribute(rawValue: cardAttribute)
-                if (monsterAssociation != nil && attribute != nil){
+                if (monsterAssociation != nil && attribute != nil) {
                     MonsterAssociationView(monsterAssociation: monsterAssociation!, attribute: attribute!)
-                        .padding(.top, -8.0)
                 }
                 
                 
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 5) {
                     if (monsterType != nil) {
                         Text(monsterType!)
                             .modifier(MonsterTypeModifier(variant: variant))
-                            .fontWeight(.medium)
-                            .multilineTextAlignment(.leading)
-                            .padding(.bottom, 1.0)
                     }
                     
                     Text(replaceHTMLEntities(subject: cardEffect))
                         .modifier(CardEffectModifier(variant: variant))
-                        .fontWeight(.light)
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
                     
                     HStack {
                         Text(cardId)
@@ -78,20 +73,15 @@ struct CardStatsView: View {
                         Spacer()
                         
                         if (cardColor != "Spell" && cardColor != "Trap") {
-                            HStack {
+                            HStack(spacing: 15) {
                                 Text(monsterAttack)
                                     .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                    .fontWeight(.bold)
-                                    .padding(.leading, 10)
-                                    .padding(.vertical, 2.0)
                                     .foregroundColor(.red)
                                 Text(monsterDefense)
                                     .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                    .fontWeight(.bold)
-                                    .padding(.trailing, 10)
-                                    .padding(.vertical, 2.0)
                                     .foregroundColor(.blue)
                             }
+                            .padding(.all, 5)
                             .background(Color("translucent_background"))
                             .cornerRadius(20)
                         }
@@ -141,9 +131,15 @@ private struct MonsterTypeModifier: ViewModifier {
         case .normal:
             content
                 .font(.headline)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.leading)
+                .padding(.bottom, 1.0)
         case .condensed:
             content
                 .font(.subheadline)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.leading)
+                .padding(.bottom, 1.0)
         }
     }
 }
@@ -156,10 +152,16 @@ private struct CardEffectModifier: ViewModifier {
         case .normal:
             content
                 .font(.body)
+                .fontWeight(.light)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
         case .condensed:
             content
                 .font(.callout)
                 .lineLimit(3, reservesSpace: true)
+                .fontWeight(.light)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
         }
     }
 }
@@ -187,9 +189,11 @@ private struct MonsterAttackDefenseModifier: ViewModifier {
         case .normal:
             content
                 .font(.callout)
+                .fontWeight(.bold)
         case .condensed:
             content
                 .font(.footnote)
+                .fontWeight(.bold)
         }
     }
 }

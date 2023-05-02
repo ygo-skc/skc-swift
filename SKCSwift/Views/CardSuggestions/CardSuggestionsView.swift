@@ -71,7 +71,7 @@ private struct NamedSuggestionsView: View {
         if (!references.isEmpty) {
             Text(header)
                 .font(.title2)
-                .fontWeight(.bold)
+                .fontWeight(.medium)
             
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
