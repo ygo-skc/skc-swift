@@ -57,10 +57,8 @@ struct CardStatsView: View {
                 
                 
                 VStack(alignment: .leading, spacing: 5) {
-                    if (monsterType != nil) {
-                        Text(monsterType!)
-                            .modifier(MonsterTypeModifier(variant: variant))
-                    }
+                    Text((monsterType != nil) ? monsterType! : "Spell")
+                        .modifier(MonsterTypeModifier(variant: variant))
                     
                     Text(replaceHTMLEntities(subject: cardEffect))
                         .modifier(CardEffectModifier(variant: variant))
@@ -71,20 +69,16 @@ struct CardStatsView: View {
                             .fontWeight(.light)
                         
                         Spacer()
-                        
-                        if (cardColor != "Spell" && cardColor != "Trap") {
-                            HStack(spacing: 15) {
-                                Text(monsterAttack)
-                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                    .foregroundColor(.red)
-                                Text(monsterDefense)
-                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                    .foregroundColor(.blue)
-                            }
-                            .padding(.all, 5)
-                            .background(Color("translucent_background"))
-                            .cornerRadius(20)
+                        HStack(spacing: 15) {
+                            Text(monsterAttack)
+                                .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                .foregroundColor(.red)
+                            Text(monsterDefense)
+                                .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                .foregroundColor(.blue)
                         }
+                        .modifier(MonsterAttackDefenseContainerModifier(cardType: (cardColor == "Spell" || cardColor == "Trap") ? .non_monster : .monster))
+                        
                     }
                     .padding(.top, 1)
                 }
@@ -194,6 +188,26 @@ private struct MonsterAttackDefenseModifier: ViewModifier {
             content
                 .font(.footnote)
                 .fontWeight(.bold)
+        }
+    }
+}
+
+private struct MonsterAttackDefenseContainerModifier: ViewModifier {
+    var cardType: CardType
+    
+    func body(content: Content) -> some View {
+        switch(cardType) {
+        case .monster:
+            content
+                .padding(.all, 5)
+                .background(Color("translucent_background"))
+                .cornerRadius(20)
+        case .non_monster:
+            content
+                .padding(.all, 5)
+                .background(Color("translucent_background"))
+                .cornerRadius(20)
+                .hidden()
         }
     }
 }

@@ -24,6 +24,11 @@ enum CardStatsViewVariant {
     case condensed
 }
 
+enum CardType {
+    case monster
+    case non_monster
+}
+
 enum SectionViewVariant {
     case plain
     case styled

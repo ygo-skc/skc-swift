@@ -16,7 +16,7 @@ struct CardSuggestionsView: View {
     @State private(set) var isDataLoaded = false
     
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 5) {
             if (!isDataLoaded) {
                 ProgressView()
             } else {
