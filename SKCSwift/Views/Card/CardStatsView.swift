@@ -23,23 +23,20 @@ struct CardStatsView: View {
     private var attribute: Attribute?
     private static let nilStat = "?"
     
-    init(
-        cardName: String, cardColor: String, monsterType: String? = nil, cardEffect: String, monsterAssociation: MonsterAssociation? = nil,
-        cardId: String, cardAttribute: String, monsterAttack: Int? = nil, monsterDefense: Int? = nil, variant: CardStatsViewVariant = .normal
-    ) {
-        self.cardName = cardName
-        self.cardColor = cardColor
-        self.monsterType = monsterType
-        self.cardEffect = cardEffect
-        self.monsterAssociation = monsterAssociation
-        self.cardId = cardId
-        self.cardAttribute = cardAttribute
+    init(card: Card, variant: CardStatsViewVariant = .normal) {
+        self.cardName = card.cardName
+        self.cardColor = card.cardColor
+        self.monsterType = card.monsterType
+        self.cardEffect = card.cardEffect
+        self.monsterAssociation = card.monsterAssociation
+        self.cardId = card.cardID
+        self.cardAttribute = card.cardAttribute
         
         self.variant = variant
         
         let nilDefStat = (cardColor == "Link") ? "—" : CardStatsView.nilStat  // override missing stat for certain edge cases
-        self.monsterAttack = (monsterAttack == nil) ? CardStatsView.nilStat : String(monsterAttack!)
-        self.monsterDefense = (monsterDefense == nil) ? nilDefStat : String(monsterDefense!)
+        self.monsterAttack = (card.monsterAttack == nil) ? CardStatsView.nilStat : String(card.monsterAttack!)
+        self.monsterDefense = (card.monsterDefense == nil) ? nilDefStat : String(card.monsterDefense!)
         
         self.attribute = Attribute(rawValue: cardAttribute)
     }
@@ -215,28 +212,31 @@ private struct MonsterAttackDefenseContainerModifier: ViewModifier {
 struct CardStatsView_Previews: PreviewProvider {
     static var previews: some View {
         CardStatsView(
-            cardName: "Elemental HERO Neos Kluger",
-            cardColor: "Fusion",
-            monsterType: "Spellcaster/Fusion/Effect",
-            cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.",
-            monsterAssociation: MonsterAssociation(level: 10),
-            cardId: "90307498",
-            cardAttribute: "Light",
-            monsterAttack: 3000,
-            monsterDefense: 2500
+            card: Card(
+                cardID: "90307498",
+                cardName: "Elemental HERO Neos Kluger",
+                cardColor: "Fusion",
+                cardAttribute: "Light",
+                cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.",
+                monsterType: "Spellcaster/Fusion/Effect",
+                monsterAssociation: MonsterAssociation(level: 10),
+                monsterAttack: 3000,
+                monsterDefense: 2500
+            )
         )
         
         CardStatsView(
-            cardName: "Elemental HERO Neos Kluger",
-            cardColor: "Fusion",
-            monsterType: "Spellcaster/Fusion/Effect",
-            cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.",
-            monsterAssociation: MonsterAssociation(level: 10),
-            cardId: "90307498",
-            cardAttribute: "Light",
-            monsterAttack: 3000,
-            monsterDefense: 2500,
-            variant: .condensed
+            card: Card(
+                cardID: "90307498",
+                cardName: "Elemental HERO Neos Kluger",
+                cardColor: "Fusion",
+                cardAttribute: "Light",
+                cardEffect: "\"Elemental HERO Neos\" + \"Yubel\"\nMust be Fusion Summoned. Before damage calculation, if this card battles an opponent's monster: You can inflict damage to your opponent equal to that opponent's monster's ATK. If this face-up card is destroyed by battle, or leaves the field because of an opponent's card effect while its owner controls it: You can Special Summon 1 \"Neos Wiseman\" from your hand or Deck, ignoring its Summoning conditions. You can only use this effect of \"Elemental HERO Neos Kluger\" once per turn.",
+                monsterType: "Spellcaster/Fusion/Effect",
+                monsterAssociation: MonsterAssociation(level: 10),
+                monsterAttack: 3000,
+                monsterDefense: 2500
+            ), variant: .condensed
         )
         .previewDisplayName("Don't show all info")
     }

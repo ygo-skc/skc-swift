@@ -76,10 +76,7 @@ private struct NamedSuggestionsView: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
                     ForEach(references, id: \.card.cardID) { suggestion in
-                        SuggestedCardView(cardId: suggestion.card.cardID, cardName: suggestion.card.cardName, cardColor: suggestion.card.cardColor,
-                                          cardEffect: suggestion.card.cardEffect, cardAttribute: suggestion.card.cardAttribute, monsterType: suggestion.card.monsterType,
-                                          monsterAttack: suggestion.card.monsterAttack, monsterDefense: suggestion.card.monsterDefense, occurrence: suggestion.occurrences
-                        )
+                        SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
                     }
                 }
             }

@@ -46,11 +46,11 @@ struct DBStatsView: View {
                         alignment: .center
                     )
                 HStack {
-                    DBStatView(count: stats.cardTotal.decimal, stat: "Cards")
+                    DBStatView(count: stats.cardTotal.decimal, stat: "Cards", isDataLoaded: isDataLoaded)
                         .padding(.horizontal)
-                    DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists")
+                    DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists", isDataLoaded: isDataLoaded)
                         .padding(.horizontal)
-                    DBStatView(count: stats.productTotal.decimal, stat: "Products")
+                    DBStatView(count: stats.productTotal.decimal, stat: "Products", isDataLoaded: isDataLoaded)
                         .padding(.horizontal)
                 }
                 .frame(
@@ -69,11 +69,16 @@ struct DBStatsView: View {
 private struct DBStatView: View {
     var count: String
     var stat: String
+    var isDataLoaded: Bool
     
     var body: some View {
         VStack {
-            Text(count)
-                .font(.title3)
+            if isDataLoaded {
+                Text(count)
+                    .font(.title3)
+            } else {
+                RectPlaceholderView(width: 25, height: 20, radius: 10)
+            }
             Text(stat)
                 .font(.headline)
                 .fontWeight(.heavy)

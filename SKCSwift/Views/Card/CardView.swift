@@ -12,34 +12,18 @@ struct CardView: View {
     
     @StateObject private var cardInformationViewModel = CardInformationViewModel()
     
-    private let imageSize = UIScreen.main.bounds.width - 60
-    private let imageUrl: URL
-    
-    init(cardId: String) {
-        self.cardId = cardId
-        self.imageUrl =  URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(cardId).jpg")!
-    }
-    
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
-                RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
+                YGOCardView(card: cardInformationViewModel.cardData, isDataLoaded: cardInformationViewModel.isDataLoaded)
                 if (cardInformationViewModel.isDataLoaded) {
-                    CardStatsView(
-                        cardName: cardInformationViewModel.cardData.cardName, cardColor: cardInformationViewModel.cardData.cardColor, monsterType: cardInformationViewModel.cardData.monsterType,
-                        cardEffect: cardInformationViewModel.cardData.cardEffect, monsterAssociation: cardInformationViewModel.cardData.monsterAssociation,
-                        cardId: cardInformationViewModel.cardData.cardID, cardAttribute: cardInformationViewModel.cardData.cardAttribute,
-                        monsterAttack: cardInformationViewModel.cardData.monsterAttack, monsterDefense: cardInformationViewModel.cardData.monsterDefense
-                    )
-                    
                     RelatedContentView(
-                        cardName: cardInformationViewModel.cardData.cardName, products: cardInformationViewModel.getProducts(), tcgBanLists: cardInformationViewModel.getBanList(format: BanListFormat.tcg),
+                        cardName: cardInformationViewModel.cardData.cardName,
+                        products: cardInformationViewModel.getProducts(),
+                        tcgBanLists: cardInformationViewModel.getBanList(format: BanListFormat.tcg),
                         mdBanLists: cardInformationViewModel.getBanList(format: BanListFormat.md), dlBanLists: cardInformationViewModel.getBanList(format: BanListFormat.dl)
                     )
-                    
                     CardSuggestionsView(cardId: cardId)
-                } else {
-                    RectPlaceholderView(width: .infinity, height: 200, radius: 10)
                 }
             }
             .onAppear {
