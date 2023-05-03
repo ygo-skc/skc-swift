@@ -73,7 +73,7 @@ struct CardSearchLinkDestination: View {
     var cardId: String
     
     var body: some View {
-        CardView(cardId: cardId)
+        CardView(cardID: cardId)
             .navigationBarTitleDisplayMode(.inline)
     }
 }

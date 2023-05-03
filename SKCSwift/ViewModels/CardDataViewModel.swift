@@ -9,19 +9,24 @@ import Foundation
 
 @MainActor
 class CardInformationViewModel: ObservableObject {
-    @Published private(set) var cardData = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
-    @Published private(set) var isDataLoaded = false
+    private(set) var cardData: Card
+    private(set) var isDataLoaded = false
     
-    func fetchData(cardId: String) {
+    init(cardID: String) {
+        self.cardData = Card(cardID: cardID, cardName: "", cardColor: "", cardAttribute: "", cardEffect: "", monsterType: "")
+    }
+    
+    func fetchData() {
         if isDataLoaded {
             return
         }
-        request(url: cardInfoURL(cardId: cardId)) { (result: Result<Card, Error>) -> Void in
+        request(url: cardInfoURL(cardId: self.cardData.cardID)) { (result: Result<Card, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let card):
                     self.cardData = card
                     self.isDataLoaded = true
+                    self.objectWillChange.send()    // update views as fields are not marked as @Published
                 case .failure(let error):
                     print(error)
                 }
