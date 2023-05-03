@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardSuggestionsView: View {
-    var cardId: String
+    var cardID: String
     
     @State private(set) var hasSelfReference: Bool = false
     @State private(set) var namedMaterials: [CardReference] = [CardReference]()
@@ -45,7 +45,7 @@ struct CardSuggestionsView: View {
                 return
             }
             
-            request(url: cardSuggestionsURL(cardId: cardId)) { (result: Result<CardSuggestions, Error>) -> Void in
+            request(url: cardSuggestionsURL(cardID: cardID)) { (result: Result<CardSuggestions, Error>) -> Void in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let suggestions):
@@ -90,6 +90,6 @@ private struct NamedSuggestionsView: View {
 
 struct CardSuggestionsViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        CardSuggestionsView(cardId: "11502550")
+        CardSuggestionsView(cardID: "11502550")
     }
 }

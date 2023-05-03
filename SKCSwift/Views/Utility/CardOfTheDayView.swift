@@ -34,7 +34,7 @@ struct CardOfTheDayView: View {
         SectionView(
             header: "Card of the day",
             disableDestination: !isDataLoaded,
-            destination: {CardSearchLinkDestination(cardId: card.cardID)},
+            destination: {CardSearchLinkDestination(cardID: card.cardID)},
             content: {
                 HStack(spacing: 20) {
                     RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)

@@ -16,11 +16,11 @@ private func createURL(components: URLComponents) -> URL {
 
 // SKC API URL creation methods
 
-func cardInfoURL(cardId: String) -> URL {
+func cardInfoURL(cardID: String) -> URL {
     var components = URLComponents()
     components.scheme = "https"
     components.host = SKC_API_BASE_URL.description
-    components.path = String(format: SKC_API_CARD_INFORMATION_ENDPOINT.description, cardId)
+    components.path = String(format: SKC_API_CARD_INFORMATION_ENDPOINT.description, cardID)
     
     components.queryItems = [
         URLQueryItem(name: "allInfo", value: "true")
@@ -54,20 +54,20 @@ func dbStatsURL() -> URL {
 
 // SKC Suggestion Engine URL creation methods
 
-func cardSuggestionsURL(cardId: String) -> URL {
+func cardSuggestionsURL(cardID: String) -> URL {
     var components = URLComponents()
     components.scheme = "https"
     components.host = SKC_SUGGESTION_ENGINE_BASE_URL.description
-    components.path = String(format: SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description, cardId)
+    components.path = String(format: SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description, cardID)
     
     return createURL(components: components)
 }
 
-func cardSupportURL(cardId: String) -> URL {
+func cardSupportURL(cardID: String) -> URL {
     var components = URLComponents()
     components.scheme = "https"
     components.host = SKC_SUGGESTION_ENGINE_BASE_URL.description
-    components.path = String(format: SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardId)
+    components.path = String(format: SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardID)
     
     return createURL(components: components)
 }

@@ -13,7 +13,7 @@ struct CardStatsView: View {
     var monsterType: String?
     var cardEffect: String
     var monsterAssociation: MonsterAssociation?
-    var cardId: String
+    var cardID: String
     var cardAttribute: String
     var monsterAttack: String
     var monsterDefense: String
@@ -29,7 +29,7 @@ struct CardStatsView: View {
         self.monsterType = card.monsterType
         self.cardEffect = card.cardEffect
         self.monsterAssociation = card.monsterAssociation
-        self.cardId = card.cardID
+        self.cardID = card.cardID
         self.cardAttribute = card.cardAttribute
         
         self.variant = variant
@@ -61,7 +61,7 @@ struct CardStatsView: View {
                         .modifier(CardEffectModifier(variant: variant))
                     
                     HStack {
-                        Text(cardId)
+                        Text(cardID)
                             .modifier(CardIdModifier(variant: variant))
                             .fontWeight(.light)
                         

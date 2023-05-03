@@ -28,7 +28,7 @@ struct CardView: View {
                         tcgBanLists: model.getBanList(format: BanListFormat.tcg),
                         mdBanLists: model.getBanList(format: BanListFormat.md), dlBanLists: model.getBanList(format: BanListFormat.dl)
                     )
-                    CardSuggestionsView(cardId: cardID)
+                    CardSuggestionsView(cardID: cardID)
                 }
             }
             .onAppear {

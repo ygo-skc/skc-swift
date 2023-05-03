@@ -47,8 +47,8 @@ struct CardSearchView: View {
                     .font(.headline)
                     .fontWeight(.black) ) {
                         ForEach(sr.results, id: \.cardID) { card in
-                            NavigationLink(destination: CardSearchLinkDestination(cardId: card.cardID), label: {
-                                CardSearchResultView(cardId: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                            NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
+                                CardSearchResultView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                             })
                             
                         }
@@ -70,10 +70,10 @@ struct CardSearchView: View {
 }
 
 struct CardSearchLinkDestination: View {
-    var cardId: String
+    var cardID: String
     
     var body: some View {
-        CardView(cardID: cardId)
+        CardView(cardID: cardID)
             .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -86,13 +86,13 @@ struct SearchCardViewModel_Previews: PreviewProvider {
 
 
 private struct CardSearchResultView: View {
-    var cardId: String
+    var cardID: String
     var cardName: String
     var monsterType: String?
     
     var body: some View {
         HStack {
-            RoundedImageView(radius: 60, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(cardId).jpg")!)
+            RoundedImageView(radius: 60, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(cardID).jpg")!)
             VStack(alignment: .leading) {
                 Text(cardName).fontWeight(.bold).font(.footnote)
                 if (monsterType != nil) {
@@ -106,7 +106,7 @@ private struct CardSearchResultView: View {
 
 struct CardSearchResultView_Previews: PreviewProvider {
     static var previews: some View {
-        CardSearchResultView(cardId: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
-        CardSearchResultView(cardId: "08949584", cardName: "A HERO Lives")
+        CardSearchResultView(cardID: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
+        CardSearchResultView(cardID: "08949584", cardName: "A HERO Lives")
     }
 }
