@@ -33,25 +33,24 @@ struct DBStatsView: View {
                     disableDestination: true,
                     destination: {EmptyView()},
                     content: {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
                     .font(.body)
                 
                 Text("DB Stats")
                     .font(.title2)
-                    .padding(.vertical, 2)
                     .frame(
                         minWidth: 0,
                         maxWidth: .infinity,
                         alignment: .center
                     )
                 HStack {
-                    DBStatView(count: stats.cardTotal.decimal, stat: "Cards", isDataLoaded: isDataLoaded)
-                        .padding(.horizontal)
-                    DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists", isDataLoaded: isDataLoaded)
-                        .padding(.horizontal)
-                    DBStatView(count: stats.productTotal.decimal, stat: "Products", isDataLoaded: isDataLoaded)
-                        .padding(.horizontal)
+                    Group {
+                        DBStatView(count: stats.cardTotal.decimal, stat: "Cards", isDataLoaded: isDataLoaded)
+                        DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists", isDataLoaded: isDataLoaded)
+                        DBStatView(count: stats.productTotal.decimal, stat: "Products", isDataLoaded: isDataLoaded)
+                    }
+                    .padding(.horizontal)
                 }
                 .frame(
                     minWidth: 0,
@@ -77,7 +76,7 @@ private struct DBStatView: View {
                 Text(count)
                     .font(.title3)
             } else {
-                RectPlaceholderView(width: 25, height: 20, radius: 10)
+                PlaceholderView(width: 25, height: 20, radius: 5)
             }
             Text(stat)
                 .font(.headline)

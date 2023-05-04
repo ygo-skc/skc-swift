@@ -26,7 +26,7 @@
 		1F6687E02967904400C8555D /* CardSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687DF2967904400C8555D /* CardSearchView.swift */; };
 		1F6687E2296798E700C8555D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E1296798E700C8555D /* HomeView.swift */; };
 		1F68DA382988C22B00541E81 /* RelatedBanListsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */; };
-		1F7655302964CB2D00512EF1 /* RectPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76552F2964CB2D00512EF1 /* RectPlaceholderView.swift */; };
+		1F7655302964CB2D00512EF1 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */; };
 		1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */; };
 		1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E82961FF0000238EE1 /* ContentView.swift */; };
 		1F8211EB2961FF0100238EE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F8211EA2961FF0100238EE1 /* Assets.xcassets */; };
@@ -93,7 +93,7 @@
 		1F6687DF2967904400C8555D /* CardSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchView.swift; sourceTree = "<group>"; };
 		1F6687E1296798E700C8555D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedBanListsContentView.swift; sourceTree = "<group>"; };
-		1F76552F2964CB2D00512EF1 /* RectPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectPlaceholderView.swift; sourceTree = "<group>"; };
+		1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
 		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftApp.swift; sourceTree = "<group>"; };
 		1F8211E82961FF0000238EE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -227,7 +227,7 @@
 				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F86EC47296A0055004F4F1B /* DateView.swift */,
 				1FB9823D29FA117800679D81 /* DBStatsView.swift */,
-				1F76552F2964CB2D00512EF1 /* RectPlaceholderView.swift */,
+				1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */,
 				1F962B2A2967D065007974DA /* RoundedImageView.swift */,
 				1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */,
 				1FB9823B29F9D27900679D81 /* SectionView.swift */,
@@ -441,7 +441,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F0F994429F8A4E400AA9F69 /* CardSearchViewModel.swift in Sources */,
-				1F7655302964CB2D00512EF1 /* RectPlaceholderView.swift in Sources */,
+				1F7655302964CB2D00512EF1 /* PlaceholderView.swift in Sources */,
 				1F68DA382988C22B00541E81 /* RelatedBanListsContentView.swift in Sources */,
 				1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */,
 				1FBE069A29FDBE8000EA85A4 /* Events.swift in Sources */,

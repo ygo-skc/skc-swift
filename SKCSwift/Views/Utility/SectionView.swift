@@ -16,12 +16,11 @@ struct SectionView<Destination: View, Content: View>: View {
     @ViewBuilder var content: () -> Content
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(header)
                 .font(.title2)
                 .fontWeight(.heavy)
                 .multilineTextAlignment(.center)
-                .padding(.bottom, -1)
             
             if (disableDestination) {
                 content()

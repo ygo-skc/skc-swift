@@ -60,9 +60,9 @@ struct CardOfTheDayView: View {
                                     .fontWeight(.regular)
                             }
                         } else {
-                            RectPlaceholderView(width: 200, height: 18, radius: 5)
-                            RectPlaceholderView(width: 120, height: 18, radius: 5)
-                            RectPlaceholderView(width: 60, height: 18, radius: 5)
+                            PlaceholderView(width: 200, height: 18, radius: 5)
+                            PlaceholderView(width: 120, height: 18, radius: 5)
+                            PlaceholderView(width: 60, height: 18, radius: 5)
                         }
                     }
                     .frame(

@@ -14,11 +14,10 @@ struct SuggestedCardView: View {
     var body: some View {
         NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
             VStack {
-                HStack {
+                HStack(spacing: 20) {
                     RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card.cardID).jpg")!)
                     
-                    Text("Quantity: \(occurrence)")
-                        .padding(.leading)
+                    Text("\(occurrence) Reference(s)")
                         .font(.headline)
                         .fontWeight(.semibold)
                 }

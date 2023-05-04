@@ -69,7 +69,6 @@ struct UpcomingTCGProducts: View {
                                 .lineLimit(5)
                                 .font(.body)
                             Divider()
-                                .padding(.horizontal)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }

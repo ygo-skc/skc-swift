@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RectPlaceholderView: View {
+struct PlaceholderView: View {
     private let width: CGFloat
     private let height: CGFloat
     private let radius: CGFloat
@@ -28,6 +28,6 @@ struct RectPlaceholderView: View {
 
 struct RectPlaceholderViewModel_Previews: PreviewProvider {
     static var previews: some View {
-        RectPlaceholderView(width: UIScreen.main.bounds.width - 20)
+        PlaceholderView(width: UIScreen.main.bounds.width - 20)
     }
 }
