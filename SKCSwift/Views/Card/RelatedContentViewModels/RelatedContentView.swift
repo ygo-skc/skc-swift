@@ -56,7 +56,6 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
         self.cardName = cardName
         self.products = products
         
-        dateFormatter.dateFormat = "yyyy-MM-dd"
         if (!products.isEmpty) {
             let elapsedDays = determineElapsedDaysSinceToday(reference: products[0].productReleaseDate)
             

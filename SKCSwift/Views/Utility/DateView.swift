@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-let dateFormatter = DateFormatter()
 
 struct DateView: View {
     private var month: String
@@ -15,11 +14,10 @@ struct DateView: View {
     private var year: String
     private var variant: DateViewVariant
     
-    init(date: String, variant: DateViewVariant = .normal) {
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+    init(date: String, formatter: DateFormatter = Dates.yyyyMMdd_DateFormatter, variant: DateViewVariant = .normal) {
         self.variant = variant
         
-        let date = dateFormatter.date(from: date)!
+        let date = formatter.date(from: date)!
         self.month = Calendar.current.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
         self.day = String(Calendar.current.component(.day, from: date))
         self.year = String(Calendar.current.component(.year, from: date))
