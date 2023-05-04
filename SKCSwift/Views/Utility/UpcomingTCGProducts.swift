@@ -44,7 +44,7 @@ struct UpcomingTCGProducts: View {
                 if !isDataLoaded {
                     ProgressView()
                 } else {
-                    ForEach(events, id: \.name) { event in
+                    ForEach(events[..<5], id: \.name) { event in
                         VStack(alignment: .leading, spacing: 10) {
                             HStack(spacing: 20) {
                                 DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)

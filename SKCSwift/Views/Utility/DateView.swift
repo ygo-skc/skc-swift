@@ -18,9 +18,10 @@ struct DateView: View {
         self.variant = variant
         
         let date = formatter.date(from: date)!
-        self.month = Calendar.current.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
-        self.day = String(Calendar.current.component(.day, from: date))
-        self.year = String(Calendar.current.component(.year, from: date))
+        
+        self.month = Dates.gmt_Calendar.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
+        self.day = String(Dates.gmt_Calendar.component(.day, from: date))
+        self.year = String(Dates.gmt_Calendar.component(.year, from: date))
     }
     
     var body: some View {
