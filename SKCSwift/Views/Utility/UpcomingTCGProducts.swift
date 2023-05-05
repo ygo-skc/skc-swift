@@ -35,38 +35,35 @@ struct UpcomingTCGProducts: View {
                     variant: .plain,
                     destination: {EmptyView()},
                     content: {
-            VStack(spacing: 5) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text("TCG products that have been anounced and which we have a tenative release date for.")
                     .font(.body)
-                
-                Spacer()
+                    .padding(.bottom)
                 
                 if !isDataLoaded {
                     ProgressView()
                 } else {
                     ForEach(events[..<5], id: \.name) { event in
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack(spacing: 20) {
-                                DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
+                        HStack(alignment: .top, spacing: 20) {
+                            DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
+                            
+                            VStack(alignment: .leading, spacing: 8) {
                                 Text(event.name)
-                                    .lineLimit(2, reservesSpace: true)
+                                    .lineLimit(2)
                                     .font(.headline)
                                     .fontWeight(.bold)
                                     .frame(maxWidth: .infinity, alignment: .leading)
+                                Text(LocalizedStringKey(event.notes))
+                                    .lineLimit(5)
+                                    .font(.body)
                             }
-                            
-                            Text("Description")
-                                .font(.headline)
-                                .fontWeight(.light)
-                            Text(LocalizedStringKey(event.notes))
-                                .lineLimit(5)
-                                .font(.body)
-                            Divider()
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Divider()
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
+            .frame(maxWidth: .infinity)
             .onAppear {
                 fetchData()
             }
@@ -77,5 +74,6 @@ struct UpcomingTCGProducts: View {
 struct UpcomingTCGProducts_Previews: PreviewProvider {
     static var previews: some View {
         UpcomingTCGProducts()
+            .padding(.horizontal)
     }
 }

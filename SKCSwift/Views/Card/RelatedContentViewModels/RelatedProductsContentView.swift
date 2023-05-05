@@ -72,10 +72,10 @@ private struct ProductListItemViewModel: View {
                     .frame(alignment: .trailing)
                     .font(.subheadline)
                     .fontWeight(.light)
-                HStack {
+                HStack(alignment: .top) {
                     Text("Rarities")
-                        .font(.footnote)
-                        .fontWeight(.bold)
+                        .font(.callout)
+                        .fontWeight(.medium)
                     Text(product.productContent[0].rarities.joined(separator: ", "))
                         .font(.callout)
                 }
