@@ -30,6 +30,10 @@ private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bo
 }
 
 func request<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  Void {
+    _ = requestTask(url: url, completion)
+}
+
+func requestTask<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  URLSessionDataTask {
     let request = baseRequest(url: url)
     
     let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
@@ -43,30 +47,6 @@ func request<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping 
             } catch {
                 print("An error ocurred while decoding output from http request \(error.localizedDescription)")
             }
-        }
-    })
-    
-    dataTask.priority = priority
-    dataTask.resume()
-}
-
-func searchCardTask(searchTerm: String, _ completion: @escaping (Result<[Card], Error>) -> Void) ->  URLSessionDataTask {
-    let url = searchCardURL(cardName: searchTerm)
-    let request = baseRequest(url: url)
-    
-    let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle errors
-        let hasErrors = handleErrors(response: response, error: error, url: url)
-        
-        if let body = body, hasErrors == false {
-            do {
-                let cardData = try RequestHelpers.decoder.decode([Card].self, from: body)
-                completion(.success(cardData))
-            } catch {
-                print("An error ocurred while decoding output from SKC API \(error.localizedDescription)")
-            }
-        } else {
-            completion(.failure(error!))
         }
     })
     
