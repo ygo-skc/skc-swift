@@ -31,6 +31,7 @@ struct DateView: View {
                 .background(Color("pink_red"))
                 .modifier(DateViewMonthModifier(variant: variant))
             Text(day)
+                .padding(.top, -8)
                 .modifier(DateViewDayModifier(variant: variant))
             Text(year)
                 .modifier(DateViewYearModifier(variant: variant))
@@ -66,12 +67,12 @@ private struct DateViewMonthModifier: ViewModifier {
             content
                 .font(.headline)
                 .foregroundColor(Color(.white))
-                .padding(.vertical, 1)
+                .padding(.vertical, 0)
         case .condensed:
             content
                 .font(.subheadline)
                 .foregroundColor(Color(.white))
-                .padding(.vertical, 1)
+                .padding(.vertical, 0)
         }
     }
 }
@@ -85,12 +86,10 @@ private struct DateViewDayModifier: ViewModifier {
             content
                 .font(.title3)
                 .fontWeight(.bold)
-                .padding(.top, -5)
         case .condensed:
             content
                 .font(.subheadline)
                 .fontWeight(.bold)
-                .padding(.top, -5)
         }
     }
 }
