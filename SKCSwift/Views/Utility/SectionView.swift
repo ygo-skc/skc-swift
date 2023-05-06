@@ -17,21 +17,18 @@ struct SectionView<Destination: View, Content: View>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Section(header: Text(header)
+            Text(header)
                 .font(.title2)
                 .fontWeight(.heavy)
-            ) {
-                if (disableDestination) {
+            if (disableDestination) {
+                content()
+                    .modifier(SectionViewModifier(variant: variant))
+            } else {
+                NavigationLink(destination: destination, label: {
                     content()
                         .modifier(SectionViewModifier(variant: variant))
-                } else {
-                    NavigationLink(destination: destination, label: {
-                        content()
-                            .modifier(SectionViewModifier(variant: variant))
-                    })
-                    .buttonStyle(PlainButtonStyle())
-                }
-                
+                })
+                .buttonStyle(PlainButtonStyle())
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
