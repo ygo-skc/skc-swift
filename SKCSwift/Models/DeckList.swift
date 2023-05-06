@@ -5,8 +5,6 @@
 //  Created by Javi Gomez on 1/22/23.
 //
 
-import Foundation
-
 struct DeckContent: Codable {
     var quantity: Int
     var card: Card

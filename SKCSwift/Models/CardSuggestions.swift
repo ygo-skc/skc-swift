@@ -5,8 +5,6 @@
 //  Created by Javi Gomez on 1/22/23.
 //
 
-import Foundation
-
 struct CardReference: Codable {
     var occurrences: Int
     var card: Card

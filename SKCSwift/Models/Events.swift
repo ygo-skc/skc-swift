@@ -5,8 +5,6 @@
 //  Created by Javi Gomez on 4/27/23.
 //
 
-import Foundation
-
 struct Events: Codable {
     var service: String
     var events: [Event]

@@ -5,8 +5,6 @@
 //  Created by Javi Gomez on 1/2/23.
 //
 
-import Foundation
-
 struct MonsterAssociation: Codable {
     var level: Int?
     var rank: Int?

@@ -5,8 +5,6 @@
 //  Created by Javi Gomez on 1/3/23.
 //
 
-import Foundation
-
 struct Product: Codable {
     var productId: String
     var productLocale: String
