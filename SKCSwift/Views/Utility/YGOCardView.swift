@@ -28,7 +28,7 @@ struct YGOCardView: View {
             if (isDataLoaded) {
                 CardStatsView(card: card)
             } else {
-                PlaceholderView(width: .infinity, height: 250, radius: 10)
+                PlaceholderView(width: UIScreen.main.bounds.width, height: 250, radius: 10)
             }
         }
     }

@@ -22,7 +22,7 @@ struct PlaceholderView: View {
         Rectangle()
             .foregroundColor(.gray.opacity(0.70))
             .cornerRadius(radius)
-            .frame(width: abs(width), height: abs(height))
+            .frame(width: width, height: height)
     }
 }
 
