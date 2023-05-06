@@ -91,12 +91,18 @@ private struct CardSearchResultView: View {
     var monsterType: String?
     
     var body: some View {
-        HStack {
+        HStack(alignment: .top) {
             RoundedImageView(radius: 60, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(cardID).jpg")!)
             VStack(alignment: .leading) {
-                Text(cardName).fontWeight(.bold).font(.footnote)
-                if (monsterType != nil) {
-                    Text(monsterType!).fontWeight(.light).font(.footnote)
+                Text(cardName)
+                    .fontWeight(.bold)
+                    .font(.subheadline)
+                    .lineLimit(2)
+                if monsterType != nil {
+                    Text(monsterType!)
+                        .fontWeight(.light)
+                        .font(.callout)
+                        .lineLimit(2)
                 }
             }
         }

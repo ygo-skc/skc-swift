@@ -17,22 +17,24 @@ struct SectionView<Destination: View, Content: View>: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(header)
+            Section(header: Text(header)
                 .font(.title2)
                 .fontWeight(.heavy)
-                .multilineTextAlignment(.center)
-            
-            if (disableDestination) {
-                content()
-                    .modifier(SectionViewModifier(variant: variant))
-            } else {
-                NavigationLink(destination: destination, label: {
+            ) {
+                if (disableDestination) {
                     content()
                         .modifier(SectionViewModifier(variant: variant))
-                })
-                .buttonStyle(PlainButtonStyle())
+                } else {
+                    NavigationLink(destination: destination, label: {
+                        content()
+                            .modifier(SectionViewModifier(variant: variant))
+                    })
+                    .buttonStyle(PlainButtonStyle())
+                }
+                
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -43,8 +45,10 @@ private struct SectionViewModifier: ViewModifier {
         switch(variant) {
         case .plain:
             content
+                .frame(maxWidth: .infinity, alignment: .leading)
         case .styled:
             content
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical)
                 .padding(.horizontal)
                 .background(Color("section-background"))

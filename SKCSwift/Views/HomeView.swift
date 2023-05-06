@@ -16,7 +16,6 @@ struct HomeView: View {
                 LazyVStack(spacing: 35) {
                     DBStatsView()
                     CardOfTheDayView()
-                    Divider()
                     UpcomingTCGProducts()
                 }
                 .padding(.horizontal)

@@ -36,7 +36,7 @@ struct CardOfTheDayView: View {
             disableDestination: !isDataLoaded,
             destination: {CardSearchLinkDestination(cardID: card.cardID)},
             content: {
-                HStack(spacing: 20) {
+                HStack(alignment: .top, spacing: 20) {
                     RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
                     VStack(alignment: .leading, spacing: 3) {
                         if isDataLoaded {

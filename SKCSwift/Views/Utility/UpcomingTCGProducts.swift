@@ -54,7 +54,7 @@ struct UpcomingTCGProducts: View {
                                     .fontWeight(.bold)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Text(LocalizedStringKey(event.notes))
-                                    .lineLimit(5)
+                                    .lineLimit(7)
                                     .font(.body)
                             }
                         }
