@@ -26,21 +26,34 @@ struct DateView: View {
     
     var body: some View {
         VStack {
-            VStack {
-                Text(month)
-                    .modifier(DateViewMonthModifier(variant: variant))
-            }
-            .frame(maxWidth: .infinity)
-            .background(Color("pink_red"))
-            
+            Text(month)
+                .frame(maxWidth: .infinity)
+                .background(Color("pink_red"))
+                .modifier(DateViewMonthModifier(variant: variant))
             Text(day)
                 .modifier(DateViewDayModifier(variant: variant))
             Text(year)
                 .modifier(DateViewYearModifier(variant: variant))
         }
-        .frame(width: (variant == .normal) ? 80 : 60)
         .background(Color("gray"))
-        .cornerRadius((variant == .normal) ? 15 : 10)
+        .modifier(DateViewParentModifier(variant: variant))
+    }
+}
+
+private struct DateViewParentModifier: ViewModifier {
+    var variant: DateViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .frame(width: 80)
+                .cornerRadius(15)
+        case .condensed:
+            content
+                .frame(width: 60)
+                .cornerRadius(10)
+        }
     }
 }
 
@@ -100,6 +113,10 @@ private struct DateViewYearModifier: ViewModifier {
 struct DateView_Previews: PreviewProvider {
     static var previews: some View {
         // Groups are needed as you can only have a max of 10 subviews, groups allow us to spread the views.
+        
+        DateView(date: "2022-01-31", variant: .condensed)
+            .previewDisplayName("Condensed")
+        
         Group {
             DateView(date: "2022-01-31")
                 .previewDisplayName("January")
