@@ -13,7 +13,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 35) {
+                LazyVStack(spacing: 40) {
                     DBStatsView()
                     CardOfTheDayView()
                     UpcomingTCGProducts()

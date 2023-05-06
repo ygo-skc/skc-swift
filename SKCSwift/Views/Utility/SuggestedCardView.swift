@@ -19,7 +19,7 @@ struct SuggestedCardView: View {
                     
                     Text("\(occurrence) Reference(s)")
                         .font(.headline)
-                        .fontWeight(.semibold)
+                        .fontWeight(.regular)
                 }
                 
                 CardStatsView(card: card, variant: .condensed)

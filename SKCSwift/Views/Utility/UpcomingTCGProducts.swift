@@ -38,7 +38,7 @@ struct UpcomingTCGProducts: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text("TCG products that have been anounced and which we have a tenative release date for.")
                     .font(.body)
-                    .padding(.bottom)
+                    .padding(.vertical)
                 
                 if !isDataLoaded {
                     ProgressView()

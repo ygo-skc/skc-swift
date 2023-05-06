@@ -16,50 +16,52 @@ struct CardSuggestionsView: View {
     @State private(set) var isDataLoaded = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            if (!isDataLoaded) {
-                ProgressView()
-            } else {
-                Text("Suggestions")
-                    .font(.title)
-                
-                Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
-                    .fontWeight(.light)
-                Spacer(minLength: 10)
-                if (namedMaterials.isEmpty && namedReferences.isEmpty) {
-                    Text("Nothing here 🤔")
-                        .font(.headline)
-                        .fontWeight(.regular)
-                        .frame(maxWidth: .infinity, alignment: .center)
+        SectionView(header: "Suggestions",
+                    disableDestination: true,
+                    variant: .plain,
+                    destination: {EmptyView()},
+                    content: {
+            VStack(alignment: .leading, spacing: 5) {
+                if (!isDataLoaded) {
+                    ProgressView()
                 } else {
-                    NamedSuggestionsView(header: "Named Materials", references: namedMaterials)
-                    NamedSuggestionsView(header: "Named References", references: namedReferences)
+                    Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
+                        .fontWeight(.light)
+                        .padding(.vertical)
+                    if (namedMaterials.isEmpty && namedReferences.isEmpty) {
+                        Text("Nothing here 🤔")
+                            .font(.headline)
+                            .fontWeight(.regular)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    } else {
+                        NamedSuggestionsView(header: "Named Materials", references: namedMaterials)
+                        NamedSuggestionsView(header: "Named References", references: namedReferences)
+                    }
                 }
+                Spacer(minLength: 10)
             }
-            Spacer(minLength: 10)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal)
-        .onAppear {
-            if isDataLoaded {
-                return
-            }
-            
-            request(url: cardSuggestionsURL(cardID: cardID)) { (result: Result<CardSuggestions, Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let suggestions):
-                        self.hasSelfReference = suggestions.hasSelfReference
-                        self.namedMaterials = suggestions.namedMaterials
-                        self.namedReferences = suggestions.namedReferences
-                        
-                        self.isDataLoaded = true
-                    case .failure(let error):
-                        print(error)
+            .frame(maxWidth: .infinity)
+            .onAppear {
+                if isDataLoaded {
+                    return
+                }
+                
+                request(url: cardSuggestionsURL(cardID: cardID)) { (result: Result<CardSuggestions, Error>) -> Void in
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(let suggestions):
+                            self.hasSelfReference = suggestions.hasSelfReference
+                            self.namedMaterials = suggestions.namedMaterials
+                            self.namedReferences = suggestions.namedReferences
+                            
+                            self.isDataLoaded = true
+                        case .failure(let error):
+                            print(error)
+                        }
                     }
                 }
             }
-        }
+        })
     }
 }
 
@@ -70,7 +72,7 @@ private struct NamedSuggestionsView: View {
     var body: some View {
         if (!references.isEmpty) {
             Text(header)
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.medium)
             
             ScrollView(.horizontal) {

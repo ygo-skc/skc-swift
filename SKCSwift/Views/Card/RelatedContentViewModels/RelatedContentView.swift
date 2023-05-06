@@ -17,21 +17,24 @@ struct RelatedContentView: View {
     var dlBanLists: [BanList]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text("Explore")
-                .font(.title)
-            
-            HStack(alignment: .top, spacing: 15) {
-                RelatedProductsSectionViewModel(cardName: cardName, products: products)
-                RelatedBanListsSectionViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
+        SectionView(header: "Explore",
+                    disableDestination: true,
+                    variant: .plain,
+                    destination: {EmptyView()},
+                    content: {
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(alignment: .top, spacing: 15) {
+                    RelatedProductsSectionViewModel(cardName: cardName, products: products)
+                    RelatedBanListsSectionViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
+                }
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
         }
-        .padding(.horizontal)
-        .frame(
-            maxWidth: .infinity,
-            maxHeight: .infinity,
-            alignment: .topLeading
         )
     }
 }
@@ -41,8 +44,9 @@ private struct RelatedContentSectionHeaderViewModel: View {
     
     var body: some View {
         Text(header)
-            .font(.title2)
+            .font(.title3)
             .fontWeight(.medium)
+            .padding(.vertical)
     }
 }
 

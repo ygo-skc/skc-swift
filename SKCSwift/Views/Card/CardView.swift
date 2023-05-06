@@ -19,7 +19,7 @@ struct CardView: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 20) {
+            LazyVStack(spacing: 40) {
                 YGOCardView(card: model.cardData, isDataLoaded: model.isDataLoaded)
                 if (model.isDataLoaded) {
                     RelatedContentView(
@@ -28,7 +28,9 @@ struct CardView: View {
                         tcgBanLists: model.getBanList(format: BanListFormat.tcg),
                         mdBanLists: model.getBanList(format: BanListFormat.md), dlBanLists: model.getBanList(format: BanListFormat.dl)
                     )
+                    .padding(.horizontal)
                     CardSuggestionsView(cardID: cardID)
+                        .padding(.horizontal)
                 }
             }
             .onAppear {
