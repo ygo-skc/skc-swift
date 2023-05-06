@@ -18,12 +18,12 @@ struct CardStatsView: View {
     var monsterAttack: String
     var monsterDefense: String
     
-    var variant: CardStatsViewVariant
+    var variant: YGOCardViewVariant
     
     private var attribute: Attribute?
     private static let nilStat = "?"
     
-    init(card: Card, variant: CardStatsViewVariant = .normal) {
+    init(card: Card, variant: YGOCardViewVariant = .normal) {
         self.cardName = card.cardName
         self.cardColor = card.cardColor
         self.monsterType = card.monsterType
@@ -96,7 +96,7 @@ struct CardStatsView: View {
 }
 
 private struct CardNameModifier: ViewModifier {
-    var variant: CardStatsViewVariant
+    var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -115,7 +115,7 @@ private struct CardNameModifier: ViewModifier {
 }
 
 private struct MonsterTypeModifier: ViewModifier {
-    var variant: CardStatsViewVariant
+    var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -136,7 +136,7 @@ private struct MonsterTypeModifier: ViewModifier {
 }
 
 private struct CardEffectModifier: ViewModifier {
-    var variant: CardStatsViewVariant
+    var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -158,7 +158,7 @@ private struct CardEffectModifier: ViewModifier {
 }
 
 private struct CardIdModifier: ViewModifier {
-    var variant: CardStatsViewVariant
+    var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -173,7 +173,7 @@ private struct CardIdModifier: ViewModifier {
 }
 
 private struct MonsterAttackDefenseModifier: ViewModifier {
-    var variant: CardStatsViewVariant
+    var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {

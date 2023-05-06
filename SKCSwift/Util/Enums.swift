@@ -17,11 +17,6 @@ enum RelatedContentType: String {
     case products = "Products", ban_lists = "Ban Lists"
 }
 
-enum CardStatsViewVariant {
-    case normal
-    case condensed
-}
-
 enum CardType {
     case monster
     case non_monster
@@ -33,6 +28,11 @@ enum SectionViewVariant {
 }
 
 enum DateViewVariant {
+    case normal
+    case condensed
+}
+
+enum YGOCardViewVariant {
     case normal
     case condensed
 }

@@ -10,14 +10,19 @@ import SwiftUI
 struct YGOCardView: View {
     var card: Card
     var isDataLoaded: Bool
+    var variant: YGOCardViewVariant
     
-    private let imageSize = UIScreen.main.bounds.width - 60
+    private var width: CGFloat
+    private let imageSize: CGFloat
     private let imageUrl: URL
     
-    init(card: Card, isDataLoaded: Bool) {
+    init(card: Card, isDataLoaded: Bool, variant: YGOCardViewVariant = .normal) {
         self.card = card
         self.isDataLoaded = isDataLoaded
+        self.variant = variant
         
+        self.width = (variant == .normal) ?  UIScreen.main.bounds.width : 250
+        self.imageSize = width - 60
         self.imageUrl =  URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card.cardID).jpg")!
     }
     
@@ -26,11 +31,12 @@ struct YGOCardView: View {
             RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
             
             if (isDataLoaded) {
-                CardStatsView(card: card)
+                CardStatsView(card: card, variant: variant)
             } else {
-                PlaceholderView(width: UIScreen.main.bounds.width, height: 250, radius: 10)
+                PlaceholderView(width: width, height: 250, radius: 10)
             }
         }
+        .frame(width: width)
     }
 }
 

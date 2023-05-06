@@ -18,3 +18,9 @@ struct CardSuggestions: Codable {
     var materialArchetypes: [String]
     var referencedArchetypes: [String]
 }
+
+struct CardSupport: Codable {
+    var card: Card
+    var referencedBy: [Card]
+    var materialFor: [Card]
+}
