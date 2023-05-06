@@ -42,6 +42,7 @@ struct UpcomingTCGProducts: View {
                 
                 if !isDataLoaded {
                     ProgressView()
+                        .frame(maxWidth: .infinity)
                 } else {
                     ForEach(events, id: \.name) { event in
                         HStack(alignment: .top, spacing: 10) {
@@ -60,6 +61,7 @@ struct UpcomingTCGProducts: View {
                         }
                         Divider()
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 5)
                     }
                 }
             }
@@ -73,7 +75,9 @@ struct UpcomingTCGProducts: View {
 
 struct UpcomingTCGProducts_Previews: PreviewProvider {
     static var previews: some View {
-        UpcomingTCGProducts()
-            .padding(.horizontal)
+        ScrollView {
+            UpcomingTCGProducts()
+                .padding(.horizontal)
+        }
     }
 }

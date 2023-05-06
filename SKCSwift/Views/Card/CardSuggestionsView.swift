@@ -22,8 +22,9 @@ struct CardSuggestionsView: View {
                     destination: {EmptyView()},
                     content: {
             VStack(alignment: .leading, spacing: 5) {
-                if (!isDataLoaded) {
+                if !isDataLoaded {
                     ProgressView()
+                        .frame(maxWidth: .infinity)
                 } else {
                     Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
                         .fontWeight(.light)
@@ -94,5 +95,6 @@ private struct NamedSuggestionsView: View {
 struct CardSuggestionsViewModel_Previews: PreviewProvider {
     static var previews: some View {
         CardSuggestionsView(cardID: "11502550")
+            .padding(.horizontal)
     }
 }
