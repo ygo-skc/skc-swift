@@ -16,17 +16,17 @@ struct SectionView<Destination: View, Content: View>: View {
     @ViewBuilder var content: () -> Content
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: (variant == .styled) ? 5 : 10) {
             Text(header)
                 .font(.title2)
                 .fontWeight(.heavy)
-            if (disableDestination) {
+            if disableDestination {
                 content()
-                    .modifier(SectionViewModifier(variant: variant))
+                    .modifier(SectionContentViewModifier(variant: variant))
             } else {
                 NavigationLink(destination: destination, label: {
                     content()
-                        .modifier(SectionViewModifier(variant: variant))
+                        .modifier(SectionContentViewModifier(variant: variant))
                 })
                 .buttonStyle(PlainButtonStyle())
             }
@@ -35,7 +35,7 @@ struct SectionView<Destination: View, Content: View>: View {
     }
 }
 
-private struct SectionViewModifier: ViewModifier {
+private struct SectionContentViewModifier: ViewModifier {
     var variant: SectionViewVariant
     
     func body(content: Content) -> some View {
@@ -65,5 +65,20 @@ struct SectionView_Previews: PreviewProvider {
                     Text("Yo")
                 }}
         )
+        .padding(.horizontal)
+        .previewDisplayName("Styled")
+        
+        SectionView(
+            header: "Header",
+            disableDestination: true,
+            variant: .plain,
+            destination: {EmptyView()},
+            content: {
+                VStack {
+                    Text("This is some text!")
+                }}
+        )
+        .padding(.horizontal)
+        .previewDisplayName("Plain")
     }
 }

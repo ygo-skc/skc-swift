@@ -38,13 +38,13 @@ struct UpcomingTCGProducts: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text("TCG products that have been anounced and which we have a tenative release date for.")
                     .font(.body)
-                    .padding(.vertical)
+                    .padding(.bottom)
                 
                 if !isDataLoaded {
                     ProgressView()
                 } else {
                     ForEach(events, id: \.name) { event in
-                        HStack(alignment: .top, spacing: 20) {
+                        HStack(alignment: .top, spacing: 10) {
                             DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
                             
                             VStack(alignment: .leading, spacing: 8) {

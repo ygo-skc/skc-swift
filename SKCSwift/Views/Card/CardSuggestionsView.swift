@@ -27,18 +27,18 @@ struct CardSuggestionsView: View {
                 } else {
                     Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
                         .fontWeight(.light)
-                        .padding(.vertical)
+                        .padding(.bottom)
                     if (namedMaterials.isEmpty && namedReferences.isEmpty) {
                         Text("Nothing here 🤔")
                             .font(.headline)
                             .fontWeight(.regular)
                             .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.bottom)
                     } else {
                         NamedSuggestionsView(header: "Named Materials", references: namedMaterials)
                         NamedSuggestionsView(header: "Named References", references: namedReferences)
                     }
                 }
-                Spacer(minLength: 10)
             }
             .frame(maxWidth: .infinity)
             .onAppear {
@@ -74,6 +74,7 @@ private struct NamedSuggestionsView: View {
             Text(header)
                 .font(.title3)
                 .fontWeight(.medium)
+                .padding(.bottom)
             
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {

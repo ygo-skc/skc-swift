@@ -46,7 +46,6 @@ private struct RelatedContentSectionHeaderViewModel: View {
         Text(header)
             .font(.title3)
             .fontWeight(.medium)
-            .padding(.vertical)
     }
 }
 
