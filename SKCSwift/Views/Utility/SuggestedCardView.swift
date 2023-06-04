@@ -15,7 +15,7 @@ struct SuggestedCardView: View {
         NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
             VStack {
                 HStack(spacing: 20) {
-                    RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card.cardID).jpg")!)
+                    RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
                     
                     Text("\(occurrence) Reference(s)")
                         .font(.headline)
