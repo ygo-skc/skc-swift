@@ -67,7 +67,6 @@ struct UpcomingTCGProducts: View {
             }
             .frame(maxWidth: .infinity)
             .onAppear {
-                print("yooo")
                 fetchData()
             }
         })

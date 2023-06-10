@@ -16,6 +16,10 @@ struct ContentView: View {
                 .tabItem {
                     Image(systemName: "house")
                 }
+            BannedContent()
+                .tabItem {
+                    Image(systemName: "xmark.square")
+                }
             CardSearchView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")

@@ -17,3 +17,13 @@ struct BanListsForCard: Codable {
     var MD: [BanList]?
     var DL: [BanList]?
 }
+
+struct BanListDates: Codable {
+    var banListDates: [BanListDate]
+    var _links: HLink
+}
+
+struct BanListDate: Codable {
+    var format: String
+    var effectiveDate: String
+}

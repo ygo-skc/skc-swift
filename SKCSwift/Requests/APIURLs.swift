@@ -58,6 +58,18 @@ func dbStatsURL() -> URL {
     return createURL(components: components)
 }
 
+func banListDatesURL(format: String) -> URL {
+    var components = baseURLComponents(
+        host: SKC_API_BASE_URL.description,
+        path: SKC_API_BAN_LIST_DATES_ENDPOINT.description
+    )
+    components.queryItems = [
+        URLQueryItem(name: "format", value: format)
+    ]
+    
+    return createURL(components: components)
+}
+
 // SKC Suggestion Engine URL creation methods
 
 func cardSuggestionsURL(cardID: String) -> URL {
