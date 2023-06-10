@@ -17,6 +17,7 @@ struct HomeView: View {
                     DBStatsView()
                     CardOfTheDayView()
                     UpcomingTCGProducts()
+                    YouTubeUploadsView()
                 }
                 .padding(.horizontal)
             }

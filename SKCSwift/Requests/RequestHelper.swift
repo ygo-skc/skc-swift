@@ -39,3 +39,4 @@ let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/sugg
 // Heart API request helpers
 let HEART_API_BASE_URL: StaticString = "heart-api.com"
 let HEART_API_EVENT_ENDPOINT: StaticString = "/api/v1/events"
+let HEART_API_YT_UPLOADS_ENDPOINT: StaticString = "/api/v1/yt/channel/uploads"

@@ -98,3 +98,15 @@ func upcomingEventsURL() -> URL {
     
     return createURL(components: components)
 }
+
+func ytUploadsURL(ytChannelId: String) -> URL {
+    var components = baseURLComponents(
+        host: HEART_API_BASE_URL.description,
+        path: HEART_API_YT_UPLOADS_ENDPOINT.description
+    )
+    components.queryItems = [
+        URLQueryItem(name: "channelId", value: ytChannelId)
+    ]
+    
+    return createURL(components: components)
+}

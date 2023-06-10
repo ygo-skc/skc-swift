@@ -19,6 +19,8 @@
 		1F3256592963E116001AACF1 /* MonsterAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3256582963E116001AACF1 /* MonsterAssociationView.swift */; };
 		1F32565B2963E195001AACF1 /* CardStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565A2963E195001AACF1 /* CardStatsView.swift */; };
 		1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */; };
+		1F39328B2A34CA4800BD0DD2 /* YouTubeUploads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39328A2A34CA4800BD0DD2 /* YouTubeUploads.swift */; };
+		1F39328D2A34CC3600BD0DD2 /* YouTubeUploadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */; };
 		1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A7296739F500EE4EBE /* APIURLs.swift */; };
 		1F3C10AA29673E1200EE4EBE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A929673E1200EE4EBE /* CardView.swift */; };
 		1F601D06297DFBFC007E1E0C /* CardSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */; };
@@ -86,6 +88,8 @@
 		1F3256582963E116001AACF1 /* MonsterAssociationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonsterAssociationView.swift; sourceTree = "<group>"; };
 		1F32565A2963E195001AACF1 /* CardStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStatsView.swift; sourceTree = "<group>"; };
 		1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectImage.swift; sourceTree = "<group>"; };
+		1F39328A2A34CA4800BD0DD2 /* YouTubeUploads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeUploads.swift; sourceTree = "<group>"; };
+		1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YouTubeUploadsView.swift; sourceTree = "<group>"; };
 		1F3C10A7296739F500EE4EBE /* APIURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLs.swift; sourceTree = "<group>"; };
 		1F3C10A929673E1200EE4EBE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestions.swift; sourceTree = "<group>"; };
@@ -193,6 +197,7 @@
 				1FB939032965029B00BF0CBA /* Product.swift */,
 				1F30FE6F296B729400B80816 /* SearchResults.swift */,
 				1FB9824129FB4A8A00679D81 /* SKCDatabaseStats.swift */,
+				1F39328A2A34CA4800BD0DD2 /* YouTubeUploads.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -233,6 +238,7 @@
 				1FB9823B29F9D27900679D81 /* SectionView.swift */,
 				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
 				1FBE069729FDBD2B00EA85A4 /* UpcomingTCGProducts.swift */,
+				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
 				1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */,
 			);
 			path = Utility;
@@ -446,6 +452,7 @@
 				1F21FF6C2977BC2D00B4451A /* UIColors.swift in Sources */,
 				1FBE069A29FDBE8000EA85A4 /* Events.swift in Sources */,
 				1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */,
+				1F39328B2A34CA4800BD0DD2 /* YouTubeUploads.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsView.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
@@ -456,6 +463,7 @@
 				1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */,
 				1FE8C9BF2978CED9005AD924 /* Enums.swift in Sources */,
 				1FB9823E29FA117800679D81 /* DBStatsView.swift in Sources */,
+				1F39328D2A34CC3600BD0DD2 /* YouTubeUploadsView.swift in Sources */,
 				1F601D06297DFBFC007E1E0C /* CardSuggestions.swift in Sources */,
 				1FE8C9C12978ED3F005AD924 /* Text.swift in Sources */,
 				1FD83E1C2985B2E900E40822 /* Dates.swift in Sources */,
