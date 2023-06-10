@@ -23,7 +23,7 @@ struct YGOCardView: View {
         
         self.width = (variant == .normal) ?  UIScreen.main.bounds.width : 250
         self.imageSize = (variant == .normal) ? width - 60 : width - 30
-        self.imageUrl = (variant == .normal) ? URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card.cardID).jpg")! : URL(string: "https://images.thesupremekingscastle.com/cards/sm/\(card.cardID).jpg")!
+        self.imageUrl = (variant == .normal) ? URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card.cardID).jpg")! : URL(string: "https://images.thesupremekingscastle.com/cards/x-sm/\(card.cardID).jpg")!
     }
     
     var body: some View {
