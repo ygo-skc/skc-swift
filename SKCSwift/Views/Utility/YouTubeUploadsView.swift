@@ -12,6 +12,8 @@ struct YouTubeUploadsView: View {
     @State private var isDataLoaded = false
     
     private let SKC_CHANNEL_ID = "UCBZ_1wWyLQI3SV9IgLbyiNQ"
+    private let UPLOAD_IMG_WIDTH = UIScreen.main.bounds.width * 0.35
+    private let UPLOAD_IMG_HEIGHT = UIScreen.main.bounds.width * 0.28
     
     func fetchData() {
         if isDataLoaded {
@@ -37,7 +39,7 @@ struct YouTubeUploadsView: View {
                     variant: .plain,
                     destination: {EmptyView()},
                     content: {
-            VStack(alignment: .leading, spacing: 5) {
+            LazyVStack(alignment: .leading, spacing: 5) {
                 Text("Did you know I make YouTube videos? Keep tabs of TCG news, watch the best unboxings on YouTube and watch me play Master Duel. Don't forget to sub.")
                     .font(.body)
                     .padding(.bottom)
@@ -47,12 +49,14 @@ struct YouTubeUploadsView: View {
                         .frame(maxWidth: .infinity)
                 } else {
                     ForEach(videos, id: \.id) { video in
-                        HStack(spacing: 10)  {
-                            RoundedRectImage(width: UIScreen.main.bounds.width * 0.35, height: UIScreen.main.bounds.width * 0.3, imageUrl: URL(string: video.thumbnailUrl)!, cornerRadius: 5)
+                        HStack(spacing: 20)  {
+                            RoundedRectImage(width: UPLOAD_IMG_WIDTH, height: UPLOAD_IMG_HEIGHT, imageUrl: URL(string: video.thumbnailUrl)!, cornerRadius: 10)
                             VStack(alignment: .leading, spacing: 5) {
                                 Text(video.title)
+                                    .font(.callout)
+                                    .fontWeight(.regular)
                             }
-                            .frame(maxHeight: .infinity, alignment: .topLeading)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                         }
                         Divider()
                     }

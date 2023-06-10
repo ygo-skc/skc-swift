@@ -35,7 +35,7 @@ struct UpcomingTCGProducts: View {
                     variant: .plain,
                     destination: {EmptyView()},
                     content: {
-            VStack(alignment: .leading, spacing: 5) {
+            LazyVStack(alignment: .leading, spacing: 5) {
                 Text("TCG products that have been anounced and which we have a tenative release date for.")
                     .font(.body)
                     .padding(.bottom)
@@ -67,6 +67,7 @@ struct UpcomingTCGProducts: View {
             }
             .frame(maxWidth: .infinity)
             .onAppear {
+                print("yooo")
                 fetchData()
             }
         })
