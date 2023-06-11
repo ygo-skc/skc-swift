@@ -10,14 +10,17 @@ import SwiftUI
 struct HomeView: View {
     let screenWidth = UIScreen.main.bounds.width - 10
     
+    @State private var isTCGProductsInfoLoaded = false
+    
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 40) {
+                LazyVStack(spacing: 40) {
                     DBStatsView()
                     CardOfTheDayView()
-                    ScrollView {
-                        UpcomingTCGProducts()
+                    UpcomingTCGProducts(canLoadNextView: $isTCGProductsInfoLoaded)
+                    
+                    if isTCGProductsInfoLoaded {
                         YouTubeUploadsView()
                     }
                 }

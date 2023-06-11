@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct UpcomingTCGProducts: View {
-    @State private(set) var events = [Event]()
-    @State private(set) var isDataLoaded = false
+    @Binding var canLoadNextView: Bool
+    
+    @State private var isDataLoaded = false
+    @State private var events = [Event]()
     
     func fetchData() {
         if isDataLoaded {
@@ -30,54 +32,57 @@ struct UpcomingTCGProducts: View {
     }
     
     var body: some View {
-        SectionView(header: "Upcoming products",
-                    disableDestination: true,
-                    variant: .plain,
-                    destination: {EmptyView()},
-                    content: {
-            LazyVStack(alignment: .leading, spacing: 5) {
-                Text("TCG products that have been anounced and which we have a tenative release date for.")
-                    .font(.body)
-                    .padding(.bottom)
-                
-                if !isDataLoaded {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                } else {
-                    ForEach(events, id: \.name) { event in
-                        HStack(alignment: .top, spacing: 10) {
-                            DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
-                            
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(event.name)
-                                    .lineLimit(2)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text(LocalizedStringKey(event.notes))
-                                    .lineLimit(7)
-                                    .font(.body)
+            SectionView(header: "Upcoming products",
+                        disableDestination: true,
+                        variant: .plain,
+                        destination: {EmptyView()},
+                        content: {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("TCG products that have been anounced and which we have a tenative release date for.")
+                        .font(.body)
+                        .padding(.bottom)
+                    
+                    if !isDataLoaded {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        ForEach(events, id: \.name) { event in
+                            HStack(alignment: .top, spacing: 10) {
+                                DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(event.name)
+                                        .lineLimit(2)
+                                        .font(.headline)
+                                        .fontWeight(.bold)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    Text(LocalizedStringKey(event.notes))
+                                        .lineLimit(7)
+                                        .font(.body)
+                                }
                             }
+                            Divider()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 5)
                         }
-                        Divider()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.vertical, 5)
+                        .onAppear {
+                            canLoadNextView = true
+                        }
                     }
                 }
-            }
-            .frame(maxWidth: .infinity)
-            .onAppear {
-                fetchData()
-            }
-        })
+                .frame(maxWidth: .infinity)
+                .onAppear {
+                    fetchData()
+                }
+            })
     }
 }
 
 struct UpcomingTCGProducts_Previews: PreviewProvider {
     static var previews: some View {
-        ScrollView {
-            UpcomingTCGProducts()
-                .padding(.horizontal)
-        }
+        @State var isDataLoaded = false
+        
+        UpcomingTCGProducts(canLoadNextView: $isDataLoaded)
+            .padding(.horizontal)
     }
 }
