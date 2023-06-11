@@ -32,49 +32,51 @@ struct UpcomingTCGProducts: View {
     }
     
     var body: some View {
-            SectionView(header: "Upcoming products",
-                        disableDestination: true,
-                        variant: .plain,
-                        destination: {EmptyView()},
-                        content: {
+        SectionView(header: "Upcoming products",
+                    disableDestination: true,
+                    variant: .plain,
+                    destination: {EmptyView()},
+                    content: {
+            if !isDataLoaded {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+            } else {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("TCG products that have been anounced and which we have a tenative release date for.")
                         .font(.body)
                         .padding(.bottom)
                     
-                    if !isDataLoaded {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                    } else {
-                        ForEach(events, id: \.name) { event in
-                            HStack(alignment: .top, spacing: 10) {
-                                DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
-                                
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(event.name)
-                                        .lineLimit(2)
-                                        .font(.headline)
-                                        .fontWeight(.bold)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text(LocalizedStringKey(event.notes))
-                                        .lineLimit(7)
-                                        .font(.body)
-                                }
+                    ForEach(events, id: \.name) { event in
+                        HStack(alignment: .top, spacing: 10) {
+                            DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(event.name)
+                                    .lineLimit(2)
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Text(LocalizedStringKey(event.notes))
+                                    .lineLimit(7)
+                                    .font(.body)
                             }
-                            Divider()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 5)
                         }
-                        .onAppear {
-                            canLoadNextView = true
-                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        
+                        Divider()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 5)
+                    }
+                    .onAppear {
+                        canLoadNextView = true
                     }
                 }
-                .frame(maxWidth: .infinity)
-                .onAppear {
-                    fetchData()
-                }
-            })
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        })
+        .onAppear {
+            fetchData()
+        }
     }
 }
 

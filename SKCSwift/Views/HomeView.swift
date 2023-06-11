@@ -15,7 +15,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 40) {
+                VStack(spacing: 40) {
                     DBStatsView()
                     CardOfTheDayView()
                     UpcomingTCGProducts(canLoadNextView: $isTCGProductsInfoLoaded)
