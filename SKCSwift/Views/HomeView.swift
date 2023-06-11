@@ -16,8 +16,10 @@ struct HomeView: View {
                 VStack(spacing: 40) {
                     DBStatsView()
                     CardOfTheDayView()
-                    UpcomingTCGProducts()
-                    YouTubeUploadsView()
+                    ScrollView {
+                        UpcomingTCGProducts()
+                        YouTubeUploadsView()
+                    }
                 }
                 .padding(.horizontal)
             }

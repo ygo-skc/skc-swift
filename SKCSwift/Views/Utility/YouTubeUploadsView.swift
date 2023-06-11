@@ -40,7 +40,7 @@ struct YouTubeUploadsView: View {
                     destination: {EmptyView()},
                     content: {
             LazyVStack(alignment: .leading, spacing: 5) {
-                Text("Did you know I make YouTube videos? Keep tabs of TCG news, watch the best unboxings on YouTube and watch me play Master Duel. Don't forget to sub.")
+                Text("Did you know I make YouTube videos? Keep tabs of TCG news, watch the best unboxings on YouTube and also watch some dope Master Duel replays. Don't forget to sub.")
                     .font(.body)
                     .padding(.bottom)
                 
