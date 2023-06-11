@@ -65,6 +65,8 @@ struct YouTubeUploadsView: View {
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                         }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        
                         Divider()
                     }
                 }

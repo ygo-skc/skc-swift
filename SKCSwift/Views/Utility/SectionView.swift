@@ -31,7 +31,7 @@ struct SectionView<Destination: View, Content: View>: View {
                 .buttonStyle(PlainButtonStyle())
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 }
 
