@@ -157,5 +157,10 @@ struct CardSuggestionsViewModel_Previews: PreviewProvider {
     static var previews: some View {
         CardSuggestionsView(cardID: "11502550")
             .padding(.horizontal)
+        
+        ScrollView {
+            CardSuggestionsView(cardID: "38033121")
+                .padding(.horizontal)
+        }
     }
 }
