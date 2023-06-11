@@ -18,7 +18,7 @@ struct ContentView: View {
                 }
             BannedContent()
                 .tabItem {
-                    Image(systemName: "xmark.square")
+                    Image(systemName: "xmark.circle")
                 }
             CardSearchView()
                 .tabItem {
