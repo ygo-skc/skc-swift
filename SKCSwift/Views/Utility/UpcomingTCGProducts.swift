@@ -41,7 +41,7 @@ struct UpcomingTCGProducts: View {
                 ProgressView()
                     .frame(maxWidth: .infinity)
             } else {
-                LazyVStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text("TCG products that have been anounced and which we have a tenative release date for.")
                         .font(.body)
                         .padding(.bottom)
