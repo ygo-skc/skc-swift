@@ -49,11 +49,11 @@ struct UpcomingTCGProducts: View {
                     ForEach(events, id: \.name) { event in
                         UpcomingTCGProduct(event: event)
                     }
-                    .onAppear {
-                        canLoadNextView = true
-                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onAppear {
+                    canLoadNextView = true
+                }
             }
         })
         .onAppear {
