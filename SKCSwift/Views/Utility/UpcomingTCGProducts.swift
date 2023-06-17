@@ -13,7 +13,7 @@ struct UpcomingTCGProducts: View {
     @State private var isDataLoaded = false
     @State private var events = [Event]()
     
-    func fetchData() {
+    private func fetchData() {
         if isDataLoaded {
             return
         }
@@ -41,19 +41,19 @@ struct UpcomingTCGProducts: View {
                 ProgressView()
                     .frame(maxWidth: .infinity)
             } else {
-                LazyVStack(alignment: .leading, spacing: 5) {
-                    Text("TCG products that have been anounced and which we have a tenative release date for.")
-                        .font(.body)
-                        .padding(.bottom)
-                    
-                    ForEach(events, id: \.name) { event in
-                        UpcomingTCGProduct(event: event)
+                    LazyVStack(alignment: .leading, spacing: 5) {
+                        Text("TCG products that have been anounced and which we have a tenative release date for.")
+                            .font(.body)
+                            .padding(.bottom)
+                        
+                        ForEach(events, id: \.name) { event in
+                            UpcomingTCGProduct(event: event)
+                        }
                     }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .onAppear {
-                    canLoadNextView = true
-                }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .onAppear {
+                        canLoadNextView = true
+                    }
             }
         })
         .onAppear {
@@ -63,7 +63,7 @@ struct UpcomingTCGProducts: View {
 }
 
 
-struct UpcomingTCGProduct: View {
+private struct UpcomingTCGProduct: View {
     var event: Event
     
     var body: some View {
@@ -84,8 +84,8 @@ struct UpcomingTCGProduct: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.vertical, 5)
                 }
-            .frame(maxWidth: .infinity)
         }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

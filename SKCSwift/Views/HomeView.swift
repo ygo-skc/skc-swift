@@ -26,6 +26,7 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             }
+            .frame(maxHeight: .infinity)
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
         }
