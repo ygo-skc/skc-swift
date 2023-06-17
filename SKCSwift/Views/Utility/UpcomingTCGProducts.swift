@@ -41,19 +41,19 @@ struct UpcomingTCGProducts: View {
                 ProgressView()
                     .frame(maxWidth: .infinity)
             } else {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("TCG products that have been anounced and which we have a tenative release date for.")
-                            .font(.body)
-                            .padding(.bottom)
-                        
-                        ForEach(events, id: \.name) { event in
-                            UpcomingTCGProduct(event: event)
-                        }
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("TCG products that have been anounced and which we have a tenative release date for.")
+                        .font(.body)
+                        .padding(.bottom)
+                    
+                    ForEach(events, id: \.name) { event in
+                        UpcomingTCGProduct(event: event)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .onAppear {
-                        canLoadNextView = true
-                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onAppear {
+                    canLoadNextView = true
+                }
             }
         })
         .onAppear {
@@ -67,25 +67,25 @@ private struct UpcomingTCGProduct: View {
     var event: Event
     
     var body: some View {
-            HStack(alignment: .top, spacing: 10) {
-                DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
+        HStack(alignment: .top, spacing: 10) {
+            DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                Text(event.name)
+                    .lineLimit(2)
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(LocalizedStringKey(event.notes))
+                    .lineLimit(7)
+                    .font(.body)
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(event.name)
-                        .lineLimit(2)
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(LocalizedStringKey(event.notes))
-                        .lineLimit(7)
-                        .font(.body)
-                    
-                    Divider()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 5)
-                }
+                Divider()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 5)
+            }
         }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
     }
 }
 
