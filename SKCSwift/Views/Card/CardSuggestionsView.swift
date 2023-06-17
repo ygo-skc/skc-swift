@@ -66,7 +66,7 @@ struct CardSuggestionsView: View {
                     variant: .plain,
                     destination: {EmptyView()},
                     content: {
-            LazyVStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 5) {
                 if isSuggestionDataLoaded || isSupportDataLoaded {
                     Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
                         .fontWeight(.light)
@@ -97,9 +97,21 @@ struct CardSuggestionsView: View {
     }
 }
 
+private extension SuggestionView {
+    struct HeightPreferenceKey: PreferenceKey {
+        static let defaultValue: CGFloat = 0
+        
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = max(value, nextValue())
+        }
+    }
+}
+
 private struct SuggestionView: View {
     var header: String
     var references: [CardReference]
+    
+    @State private var height: CGFloat = 0.0
     
     var body: some View {
         if (!references.isEmpty) {
@@ -111,10 +123,22 @@ private struct SuggestionView: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
                     ForEach(references, id: \.card.cardID) { suggestion in
-                        SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
+                        VStack {
+                            SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
+                        }
+                        .background(GeometryReader { geometry in
+                            Color.clear.preference(
+                                key: HeightPreferenceKey.self,
+                                value: geometry.size.height
+                            )
+                        })
+                        .onPreferenceChange(HeightPreferenceKey.self) {
+                            height = $0
+                        }
                     }
                 }
             }
+            .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, -16)
             
             Divider()
@@ -123,9 +147,21 @@ private struct SuggestionView: View {
     }
 }
 
+private extension SupportView {
+    struct HeightPreferenceKey: PreferenceKey {
+        static let defaultValue: CGFloat = 0
+        
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = max(value, nextValue())
+        }
+    }
+}
+
 private struct SupportView: View {
     var header: String
     var references: [Card]
+    
+    @State private var height: CGFloat = 0.0
     
     var body: some View {
         if (!references.isEmpty) {
@@ -137,14 +173,26 @@ private struct SupportView: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
                     ForEach(references, id: \.cardID) { card in
-                        NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
-                            YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
-                                .contentShape(Rectangle())
+                        VStack {
+                            NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
+                                YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
+                                    .contentShape(Rectangle())
+                            })
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        .background(GeometryReader { geometry in
+                            Color.clear.preference(
+                                key: HeightPreferenceKey.self,
+                                value: geometry.size.height
+                            )
                         })
-                        .buttonStyle(PlainButtonStyle())
+                        .onPreferenceChange(HeightPreferenceKey.self) {
+                            height = $0
+                        }
                     }
                 }
             }
+            .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, -16)
             
             Divider()
