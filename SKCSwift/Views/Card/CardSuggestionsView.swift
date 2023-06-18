@@ -10,14 +10,14 @@ import SwiftUI
 struct CardSuggestionsView: View {
     var cardID: String
     
-    @State private(set) var hasSelfReference: Bool = false
-    @State private(set) var namedMaterials: [CardReference] = [CardReference]()
-    @State private(set) var namedReferences: [CardReference] = [CardReference]()
-    @State private(set) var isSuggestionDataLoaded = false
+    @State var hasSelfReference: Bool = false
+    @State var namedMaterials: [CardReference] = [CardReference]()
+    @State var namedReferences: [CardReference] = [CardReference]()
+    @State var isSuggestionDataLoaded = false
     
-    @State private(set) var referencedBy: [Card] = [Card]()
-    @State private(set) var materialFor: [Card] = [Card]()
-    @State private(set) var isSupportDataLoaded = false
+    @State var referencedBy: [Card] = [Card]()
+    @State var materialFor: [Card] = [Card]()
+    @State var isSupportDataLoaded = false
     
     private func loadSuggestions() {
         if isSuggestionDataLoaded {
@@ -78,10 +78,10 @@ struct CardSuggestionsView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.bottom)
                     } else {
-                        SuggestionView(header: "Named Materials", references: namedMaterials)
-                        SuggestionView(header: "Named References", references: namedReferences)
-                        SupportView(header: "Referenced By", references: referencedBy)
-                        SupportView(header: "Material For", references: materialFor)
+                        SuggestionCarouselView(header: "Named Materials", subHeader: "Cards that can be used as summoning material", references: namedMaterials)
+                        SuggestionCarouselView(header: "Named References", subHeader: "Cards found in card text - non materials", references: namedReferences)
+                        SupportCarouselView(header: "Material For", subHeader: "Cards that can be summoned using this card as material", references: materialFor)
+                        SupportCarouselView(header: "Referenced By", subHeader: "Cards that reference this card - excludes ED cards that reference this card as a summoning material", references: referencedBy)
                     }
                 } else {
                     ProgressView()
@@ -97,18 +97,17 @@ struct CardSuggestionsView: View {
     }
 }
 
-private extension SuggestionView {
-    struct HeightPreferenceKey: PreferenceKey {
-        static let defaultValue: CGFloat = 0
-        
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = max(value, nextValue())
-        }
+private struct SuggestionnHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 
-private struct SuggestionView: View {
+private struct SuggestionCarouselView: View {
     var header: String
+    var subHeader: String
     var references: [CardReference]
     
     @State private var height: CGFloat = 0.0
@@ -117,48 +116,38 @@ private struct SuggestionView: View {
         if (!references.isEmpty) {
             Text(header)
                 .font(.title3)
-                .fontWeight(.medium)
+                .fontWeight(.bold)
+            Text(subHeader)
+                .font(.callout)
+                .fontWeight(.thin)
                 .padding(.bottom)
             
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
                     ForEach(references, id: \.card.cardID) { suggestion in
-                        VStack {
-                            SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
-                        }
-                        .background(GeometryReader { geometry in
-                            Color.clear.preference(
-                                key: HeightPreferenceKey.self,
-                                value: geometry.size.height
-                            )
-                        })
-                        .onPreferenceChange(HeightPreferenceKey.self) {
-                            height = $0
-                        }
+                        SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
+                            .background(GeometryReader { geometry in
+                                Color.clear.preference(
+                                    key: SuggestionnHeightPreferenceKey.self,
+                                    value: geometry.size.height
+                                )
+                            })
+                            .onPreferenceChange(SuggestionnHeightPreferenceKey.self) {
+                                height = $0
+                            }
                     }
                 }
             }
             .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, -16)
-            
-            Divider()
-                .padding(.top)
+            .padding(.bottom, 20)
         }
     }
 }
 
-private extension SupportView {
-    struct HeightPreferenceKey: PreferenceKey {
-        static let defaultValue: CGFloat = 0
-        
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = max(value, nextValue())
-        }
-    }
-}
-
-private struct SupportView: View {
+private struct SupportCarouselView: View {
     var header: String
+    var subHeader: String
     var references: [Card]
     
     @State private var height: CGFloat = 0.0
@@ -167,36 +156,36 @@ private struct SupportView: View {
         if (!references.isEmpty) {
             Text(header)
                 .font(.title3)
-                .fontWeight(.medium)
+                .fontWeight(.bold)
+            Text(subHeader)
+                .font(.callout)
+                .fontWeight(.thin)
                 .padding(.bottom)
             
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
                     ForEach(references, id: \.cardID) { card in
-                        VStack {
-                            NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
-                                YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
-                                    .contentShape(Rectangle())
-                            })
-                            .buttonStyle(PlainButtonStyle())
-                        }
+                        NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
+                            YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
+                                .contentShape(Rectangle())
+                        })
+                        .buttonStyle(PlainButtonStyle())
                         .background(GeometryReader { geometry in
                             Color.clear.preference(
-                                key: HeightPreferenceKey.self,
+                                key: SuggestionnHeightPreferenceKey.self,
                                 value: geometry.size.height
                             )
                         })
-                        .onPreferenceChange(HeightPreferenceKey.self) {
+                        .onPreferenceChange(SuggestionnHeightPreferenceKey.self) {
                             height = $0
                         }
+                        
                     }
                 }
             }
             .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, -16)
-            
-            Divider()
-                .padding(.top)
+            .padding(.bottom, 20)
         }
     }
 }
