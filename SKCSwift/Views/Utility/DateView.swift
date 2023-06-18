@@ -9,10 +9,10 @@ import SwiftUI
 
 
 struct DateView: View {
-    private var month: String
-    private var day: String
-    private var year: String
-    private var variant: DateViewVariant
+    private let month: String
+    private let day: String
+    private let year: String
+    private let variant: DateViewVariant
     
     init(date: String, formatter: DateFormatter = Dates.yyyyMMdd_DateFormatter, variant: DateViewVariant = .normal) {
         self.variant = variant
@@ -42,7 +42,7 @@ struct DateView: View {
 }
 
 private struct DateViewParentModifier: ViewModifier {
-    var variant: DateViewVariant
+    let variant: DateViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -59,7 +59,7 @@ private struct DateViewParentModifier: ViewModifier {
 }
 
 private struct DateViewMonthModifier: ViewModifier {
-    var variant: DateViewVariant
+    let variant: DateViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -78,7 +78,7 @@ private struct DateViewMonthModifier: ViewModifier {
 }
 
 private struct DateViewDayModifier: ViewModifier {
-    var variant: DateViewVariant
+    let variant: DateViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -95,7 +95,7 @@ private struct DateViewDayModifier: ViewModifier {
 }
 
 private struct DateViewYearModifier: ViewModifier {
-    var variant: DateViewVariant
+    let variant: DateViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {

@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct YGOCardView: View {
-    var card: Card
-    var isDataLoaded: Bool
-    var variant: YGOCardViewVariant
+    let card: Card
+    let isDataLoaded: Bool
+    let variant: YGOCardViewVariant
     
-    private var width: CGFloat
+    private let width: CGFloat
     private let imageSize: CGFloat
     private let imageUrl: URL
     

@@ -8,21 +8,20 @@
 import SwiftUI
 
 struct YouTubeUploadsView: View {
-    var parentWidth = UIScreen.main.bounds.width
-    
     @State private var videos = [YouTubeVideos]()
     @State private var isDataLoaded = false
     
     private let SKC_CHANNEL_ID = "UCBZ_1wWyLQI3SV9IgLbyiNQ"
-    let UPLOAD_IMG_WIDTH: CGFloat
-    let UPLOAD_IMG_HEIGHT: CGFloat
+    private let UPLOAD_IMG_WIDTH: CGFloat
+    private let UPLOAD_IMG_HEIGHT: CGFloat
     
     init()  {
+        let parentWidth = UIScreen.main.bounds.width
         UPLOAD_IMG_WIDTH = parentWidth * 0.35
-        UPLOAD_IMG_HEIGHT = parentWidth * 0.28
+        UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.7
     }
     
-    func fetchData() {
+    private func fetchData() {
         if isDataLoaded {
             return
         }
@@ -56,18 +55,7 @@ struct YouTubeUploadsView: View {
                         .padding(.bottom)
                     
                     ForEach(videos, id: \.id) { video in
-                        HStack(spacing: 20)  {
-                            RoundedRectImage(width: UPLOAD_IMG_WIDTH, height: UPLOAD_IMG_HEIGHT, imageUrl: URL(string: video.thumbnailUrl)!, cornerRadius: 10)
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(video.title)
-                                    .font(.callout)
-                                    .fontWeight(.regular)
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        
-                        Divider()
+                        YouTubeUploadView(title: video.title, uploadUrl: video.url, thumbnailUrl: "https://img.youtube.com/vi/\(video.id)/maxresdefault.jpg", thumbnailWidth: UPLOAD_IMG_WIDTH, thumbnailHeight: UPLOAD_IMG_HEIGHT)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -79,9 +67,51 @@ struct YouTubeUploadsView: View {
     }
 }
 
+struct YouTubeUploadView: View {
+    var title: String
+    var uploadUrl: String
+    var thumbnailUrl: String
+    var thumbnailWidth: CGFloat
+    var thumbnailHeight: CGFloat
+    
+    var body: some View {
+        VStack {
+            HStack(spacing: 15)  {
+                RoundedRectImage(width: thumbnailWidth, height: thumbnailHeight, imageUrl: URL(string: thumbnailUrl)!, cornerRadius: 8)
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(title)
+                        .font(.callout)
+                        .fontWeight(.regular)
+                }
+                .frame(alignment: .topLeading)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if let url = URL(string: uploadUrl) {
+                UIApplication.shared.open(url)
+            }
+        }
+    }
+}
+
 struct YouTubeUploadsView_Previews: PreviewProvider {
     static var previews: some View {
-        YouTubeUploadsView()
-            .padding(.horizontal)
+        ScrollView {
+            YouTubeUploadsView()
+                .padding(.horizontal)
+        }
+        .frame(maxHeight: .infinity)
+        .previewDisplayName("YouTube Uploads Feed")
+        
+        YouTubeUploadView(
+            title: "Maze of Memories!", uploadUrl: "https://www.youtube.com/watch?v=gonORZrOd68",
+            thumbnailUrl: "https://img.youtube.com/vi/NI4awGRwIDs/maxresdefault.jpg", thumbnailWidth: 150, thumbnailHeight: 150 * 0.75
+        )
+        .padding(.horizontal)
+        .previewDisplayName("YouTube Upload")
     }
 }
