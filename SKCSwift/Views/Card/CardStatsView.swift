@@ -8,20 +8,21 @@
 import SwiftUI
 
 struct CardStatsView: View {
-    var cardName: String
-    var cardColor: String
-    var monsterType: String?
-    var cardEffect: String
-    var monsterAssociation: MonsterAssociation?
-    var cardID: String
-    var cardAttribute: String
-    var monsterAttack: String
-    var monsterDefense: String
-    
-    var variant: YGOCardViewVariant
-    
-    private var attribute: Attribute?
     private static let nilStat = "?"
+    
+    let cardName: String
+    let cardColor: String
+    let monsterType: String?
+    let cardEffect: String
+    let monsterAssociation: MonsterAssociation?
+    let cardID: String
+    let cardAttribute: String
+    let monsterAttack: String
+    let monsterDefense: String
+    
+    let variant: YGOCardViewVariant
+    
+    private let attribute: Attribute?
     
     init(card: Card, variant: YGOCardViewVariant = .normal) {
         self.cardName = card.cardName
@@ -86,7 +87,11 @@ struct CardStatsView: View {
             .padding(.horizontal, 5.0)
             .padding(.vertical, 10.0)
         }
-        .background(cardColorUI(cardColor: cardColor))
+        .if(cardColor.starts(with: "Pendulum")) {
+            $0.background(cardColorGradient(cardColor: cardColor))
+        } else: {
+            $0.background(cardColorUI(cardColor: cardColor))
+        }
         .cornerRadius(15)
         .frame(
             maxWidth: .infinity,

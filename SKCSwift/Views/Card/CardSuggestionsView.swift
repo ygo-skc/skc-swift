@@ -119,7 +119,7 @@ private struct SuggestionCarouselView: View {
                 .fontWeight(.bold)
             Text(subHeader)
                 .font(.callout)
-                .fontWeight(.thin)
+                .fontWeight(.light)
                 .padding(.bottom)
             
             ScrollView(.horizontal) {
@@ -159,7 +159,7 @@ private struct SupportCarouselView: View {
                 .fontWeight(.bold)
             Text(subHeader)
                 .font(.callout)
-                .fontWeight(.thin)
+                .fontWeight(.light)
                 .padding(.bottom)
             
             ScrollView(.horizontal) {
