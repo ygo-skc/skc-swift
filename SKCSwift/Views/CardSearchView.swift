@@ -39,9 +39,7 @@ struct CardSearchView: View {
             
             List(cardSearchViewModel.searchResults) { sr in
                 Section(header: HStack{
-                    Circle()
-                        .foregroundColor(cardColorUI(cardColor: sr.section))
-                        .frame(width: 15)
+                    CardColorIndicator(cardColor: sr.section)
                     Text(sr.section)
                 }
                     .font(.headline)

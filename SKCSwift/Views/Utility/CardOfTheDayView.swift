@@ -52,9 +52,7 @@ struct CardOfTheDayView: View {
                             }
                             
                             HStack {
-                                Circle()
-                                    .foregroundColor(cardColorUI(cardColor: card.cardColor))
-                                    .frame(width: 10)
+                                CardColorIndicator(cardColor: card.cardColor, variant: .small)
                                 Text(card.cardColor)
                                     .font(.headline)
                                     .fontWeight(.regular)

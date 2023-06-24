@@ -36,3 +36,8 @@ enum YGOCardViewVariant {
     case normal
     case condensed
 }
+
+enum CardColorIndicatorVariant {
+    case small
+    case regular
+}
