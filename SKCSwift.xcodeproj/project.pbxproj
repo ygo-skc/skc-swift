@@ -11,7 +11,6 @@
 		1F0F993D29F8972600AA9F69 /* CardOfTheDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */; };
 		1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */; };
 		1F0F994429F8A4E400AA9F69 /* CardSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994329F8A4E400AA9F69 /* CardSearchViewModel.swift */; };
-		1F0F994829F8A82500AA9F69 /* CardDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994729F8A82500AA9F69 /* CardDataViewModel.swift */; };
 		1F1A3AC529871EE600B69892 /* CardSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1A3AC429871EE600B69892 /* CardSuggestionsView.swift */; };
 		1F1C1D3A2A3539C600E73D67 /* HATEOAS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1C1D392A3539C600E73D67 /* HATEOAS.swift */; };
 		1F1C1D3D2A353B1800E73D67 /* BanListDatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1C1D3C2A353B1800E73D67 /* BanListDatesView.swift */; };
@@ -84,7 +83,6 @@
 		1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDay.swift; sourceTree = "<group>"; };
 		1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDayView.swift; sourceTree = "<group>"; };
 		1F0F994329F8A4E400AA9F69 /* CardSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSearchViewModel.swift; sourceTree = "<group>"; };
-		1F0F994729F8A82500AA9F69 /* CardDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDataViewModel.swift; sourceTree = "<group>"; };
 		1F1A3AC429871EE600B69892 /* CardSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestionsView.swift; sourceTree = "<group>"; };
 		1F1C1D392A3539C600E73D67 /* HATEOAS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATEOAS.swift; sourceTree = "<group>"; };
 		1F1C1D3C2A353B1800E73D67 /* BanListDatesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BanListDatesView.swift; sourceTree = "<group>"; };
@@ -168,7 +166,6 @@
 			isa = PBXGroup;
 			children = (
 				1F0F994329F8A4E400AA9F69 /* CardSearchViewModel.swift */,
-				1F0F994729F8A82500AA9F69 /* CardDataViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -482,7 +479,6 @@
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
 				1FBE069829FDBD2B00EA85A4 /* UpcomingTCGProducts.swift in Sources */,
 				1FB9824429FC728B00679D81 /* Number.swift in Sources */,
-				1F0F994829F8A82500AA9F69 /* CardDataViewModel.swift in Sources */,
 				1F601D08297DFD52007E1E0C /* DeckList.swift in Sources */,
 				1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */,
 				DE63448E2A4545C20016BC43 /* View.swift in Sources */,

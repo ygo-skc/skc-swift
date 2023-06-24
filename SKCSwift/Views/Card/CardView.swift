@@ -8,25 +8,57 @@
 import SwiftUI
 
 struct CardView: View {
-    var cardID: String
+    let cardID: String
     
-    @ObservedObject private var model: CardInformationViewModel
+    @State private var cardData: Card = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
+    @State private var isDataLoaded = false
     
     init(cardID: String) {
         self.cardID = cardID
-        self.model = CardInformationViewModel(cardID: cardID)
+    }
+    
+    private func fetchData() {
+        if isDataLoaded {
+            return
+        }
+        request(url: cardInfoURL(cardID: self.cardID)) { (result: Result<Card, Error>) -> Void in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let card):
+                    cardData = card
+                    isDataLoaded = true
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
+    }
+    
+    private func getProducts() -> [Product] {
+        return cardData.foundIn ?? [Product]()
+    }
+    
+    private func getBanList(format: BanListFormat) -> [BanList] {
+        switch format {
+        case .tcg:
+            return cardData.restrictedIn?.TCG ?? [BanList]()
+        case .md:
+            return cardData.restrictedIn?.MD ?? [BanList]()
+        case .dl:
+            return cardData.restrictedIn?.DL ?? [BanList]()
+        }
     }
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 40) {
-                YGOCardView(card: model.cardData, isDataLoaded: model.isDataLoaded)
-                if (model.isDataLoaded) {
+                YGOCardView(card: cardData, isDataLoaded: isDataLoaded)
+                if (isDataLoaded) {
                     RelatedContentView(
-                        cardName: model.cardData.cardName,
-                        products: model.getProducts(),
-                        tcgBanLists: model.getBanList(format: BanListFormat.tcg),
-                        mdBanLists: model.getBanList(format: BanListFormat.md), dlBanLists: model.getBanList(format: BanListFormat.dl)
+                        cardName: cardData.cardName,
+                        products: getProducts(),
+                        tcgBanLists: getBanList(format: BanListFormat.tcg),
+                        mdBanLists: getBanList(format: BanListFormat.md), dlBanLists: getBanList(format: BanListFormat.dl)
                     )
                     .padding(.horizontal)
                     CardSuggestionsView(cardID: cardID)
@@ -34,7 +66,7 @@ struct CardView: View {
                 }
             }
             .onAppear {
-                model.fetchData()
+                fetchData()
             }
             .frame(maxHeight: .infinity)
         }

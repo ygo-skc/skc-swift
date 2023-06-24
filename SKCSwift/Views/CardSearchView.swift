@@ -48,7 +48,6 @@ struct CardSearchView: View {
                             NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
                                 CardSearchResultView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                             })
-                            
                         }
                     }
             }
