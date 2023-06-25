@@ -10,11 +10,12 @@ import SwiftUI
 struct CardView: View {
     let cardID: String
     
-    @State private var cardData: Card = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
+    @State private var cardData: Card
     @State private var isDataLoaded = false
     
     init(cardID: String) {
         self.cardID = cardID
+        self.cardData = Card(cardID: cardID, cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
     }
     
     private func fetchData() {
@@ -65,7 +66,7 @@ struct CardView: View {
                         .padding(.horizontal)
                 }
             }
-            .onAppear {
+            .task(priority: .high) {
                 fetchData()
             }
             .frame(maxHeight: .infinity)

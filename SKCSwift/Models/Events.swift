@@ -10,7 +10,7 @@ struct Events: Codable {
     var events: [Event]
 }
 
-struct Event: Codable {
+struct Event: Codable, Equatable {
     var name: String
     var notes: String
     var location: String

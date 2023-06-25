@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct YouTubeUploadsView: View {
+    @Binding private var isDataInvalidated: Bool
+    
     @State private var videos = [YouTubeVideos]()
     @State private var isDataLoaded = false
     
@@ -15,25 +17,28 @@ struct YouTubeUploadsView: View {
     private let UPLOAD_IMG_WIDTH: CGFloat
     private let UPLOAD_IMG_HEIGHT: CGFloat
     
-    init()  {
+    init(isDataInvalidated: Binding<Bool> = .constant(false))  {
+        self._isDataInvalidated = isDataInvalidated
         let parentWidth = UIScreen.main.bounds.width
         UPLOAD_IMG_WIDTH = parentWidth * 0.35
-        UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.7
+        UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.65
     }
     
     private func fetchData() {
-        if isDataLoaded {
-            return
-        }
-        
-        request(url: ytUploadsURL(ytChannelId: SKC_CHANNEL_ID)) { (result: Result<YouTubeUploads, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let uploadData):
-                    self.videos = uploadData.videos
-                    self.isDataLoaded = true
-                case .failure(let error):
-                    print(error)
+        if !isDataLoaded || isDataInvalidated {
+            request(url: ytUploadsURL(ytChannelId: SKC_CHANNEL_ID)) { (result: Result<YouTubeUploads, Error>) -> Void in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let uploadData):
+                        if self.videos != uploadData.videos {
+                            self.videos = uploadData.videos
+                        }
+                        
+                        self.isDataLoaded = true
+                        self.isDataInvalidated = false
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
             }
         }
@@ -61,7 +66,10 @@ struct YouTubeUploadsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         })
-        .onAppear {
+        .task(priority: .background) {
+            fetchData()
+        }
+        .onChange(of: $isDataInvalidated.wrappedValue) { _ in
             fetchData()
         }
     }

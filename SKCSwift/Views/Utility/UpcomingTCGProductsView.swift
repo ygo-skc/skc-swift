@@ -7,25 +7,33 @@
 
 import SwiftUI
 
-struct UpcomingTCGProducts: View {
+struct UpcomingTCGProductsView: View {
     @Binding var canLoadNextView: Bool
+    @Binding private var isDataInvalidated: Bool
     
     @State private var isDataLoaded = false
     @State private var events = [Event]()
     
+    init(canLoadNextView: Binding<Bool>, isDataInvalidated: Binding<Bool> = .constant(false)) {
+        self._canLoadNextView = canLoadNextView
+        self._isDataInvalidated = isDataInvalidated
+    }
+    
     private func fetchData() {
-        if isDataLoaded {
-            return
-        }
-        
-        request(url: upcomingEventsURL()) { (result: Result<Events, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let upcomingProducts):
-                    self.events = upcomingProducts.events
-                    self.isDataLoaded = true
-                case .failure(let error):
-                    print(error)
+        if !isDataLoaded || isDataInvalidated {
+            request(url: upcomingEventsURL()) { (result: Result<Events, Error>) -> Void in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let upcomingProducts):
+                        if self.events != upcomingProducts.events {
+                            self.events = upcomingProducts.events
+                        }
+                        
+                        self.isDataLoaded = true
+                        self.isDataInvalidated = false
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
             }
         }
@@ -56,7 +64,10 @@ struct UpcomingTCGProducts: View {
                 }
             }
         })
-        .onAppear {
+        .task(priority: .background) {
+            fetchData()
+        }
+        .onChange(of: $isDataInvalidated.wrappedValue) { _ in
             fetchData()
         }
     }
@@ -68,7 +79,7 @@ private struct UpcomingTCGProduct: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            DateView(date: event.eventDate, formatter: Dates.iso_DateFormatter, variant: .condensed)
+            DateView(date: event.eventDate, formatter: Dates.isoDateFormatter, variant: .condensed)
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(event.name)
@@ -89,11 +100,11 @@ private struct UpcomingTCGProduct: View {
     }
 }
 
-struct UpcomingTCGProducts_Previews: PreviewProvider {
+struct UpcomingTCGProductsView_Previews: PreviewProvider {
     static var previews: some View {
         @State var isDataLoaded = false
         
-        UpcomingTCGProducts(canLoadNextView: $isDataLoaded)
+        UpcomingTCGProductsView(canLoadNextView: $isDataLoaded)
             .padding(.horizontal)
     }
 }

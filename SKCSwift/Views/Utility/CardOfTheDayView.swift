@@ -8,23 +8,33 @@
 import SwiftUI
 
 struct CardOfTheDayView: View {
-    @State private(set) var date: String = ""
-    @State private(set) var card: Card = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
-    @State private(set) var isDataLoaded = false
+    @Binding private var isDataInvalidated: Bool
+    
+    @State private var date: String = ""
+    @State private var card: Card = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
+    @State private var isDataLoaded = false
+    
+    init(isDataInvalidated: Binding<Bool> = .constant(false)) {
+        self._isDataInvalidated = isDataInvalidated
+    }
     
     func fetchData() {
-        if isDataLoaded {
-            return
-        }
-        request(url: cardOfTheDayURL()) { (result: Result<CardOfTheDay, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let cardOfTheyDay):
-                    self.date = cardOfTheyDay.date
-                    self.card = cardOfTheyDay.card
-                    self.isDataLoaded = true
-                case .failure(let error):
-                    print(error)
+        if !isDataLoaded || isDataInvalidated {
+            self.isDataInvalidated = false
+            
+            request(url: cardOfTheDayURL()) { (result: Result<CardOfTheDay, Error>) -> Void in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let cardOfTheyDay):
+                        if self.date != cardOfTheyDay.date {
+                            self.date = cardOfTheyDay.date
+                            self.card = cardOfTheyDay.card
+                        }
+                        self.isDataLoaded = true
+                        self.isDataInvalidated = false
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
             }
         }
@@ -71,7 +81,10 @@ struct CardOfTheDayView: View {
                 .contentShape(Rectangle())
             }
         )
-        .onAppear{
+        .task(priority: .background) {
+            fetchData()
+        }
+        .onChange(of: $isDataInvalidated.wrappedValue) { _ in
             fetchData()
         }
     }

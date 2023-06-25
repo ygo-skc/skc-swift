@@ -12,7 +12,7 @@ struct YouTubeUploads: Codable {
     var total: Int
 }
 
-struct YouTubeVideos: Codable {
+struct YouTubeVideos: Codable, Equatable {
     var id: String
     var title: String
     var description: String

@@ -14,14 +14,14 @@ struct DateView: View {
     private let year: String
     private let variant: DateViewVariant
     
-    init(date: String, formatter: DateFormatter = Dates.yyyyMMdd_DateFormatter, variant: DateViewVariant = .normal) {
+    init(date: String, formatter: DateFormatter = Dates.yyyyMMddDateFormatter, variant: DateViewVariant = .normal) {
         self.variant = variant
         
         let date = formatter.date(from: date)!
         
-        self.month = Dates.gmt_Calendar.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
-        self.day = String(Dates.gmt_Calendar.component(.day, from: date))
-        self.year = String(Dates.gmt_Calendar.component(.year, from: date))
+        self.month = Dates.gmtCalendar.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
+        self.day = String(Dates.gmtCalendar.component(.day, from: date))
+        self.year = String(Dates.gmtCalendar.component(.year, from: date))
     }
     
     var body: some View {

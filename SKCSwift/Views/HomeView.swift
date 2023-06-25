@@ -8,17 +8,42 @@
 import SwiftUI
 
 struct HomeView: View {
-    let screenWidth = UIScreen.main.bounds.width - 10
+    private let screenWidth = UIScreen.main.bounds.width - 10
     
     @State private var isTCGProductsInfoLoaded = false
+    
+    @State private var isDBStatsDataInvalidated = false
+    @State private var isCardOfTheDayDataInvalidated = false
+    @State private var isUpcomingTCGProductsInvalidated = false
+    @State private var isYouTubeUploadsInvalidated = false
+    
+    @State private var lastRefresh = Date()
+    
+    func refresh() async {
+        if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 0 {
+            isDBStatsDataInvalidated = true
+            isCardOfTheDayDataInvalidated = true
+            isUpcomingTCGProductsInvalidated = true
+            
+            if isTCGProductsInfoLoaded {
+                isYouTubeUploadsInvalidated = true
+            }
+            
+            //            while dbStatsDataInvalidated == true || cardOfTheDayDataInvalidated == true {
+            //                sleep(1)
+            //            }
+            
+            lastRefresh = Date()
+        }
+    }
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 40) {
-                    DBStatsView()
-                    CardOfTheDayView()
-                    UpcomingTCGProducts(canLoadNextView: $isTCGProductsInfoLoaded)
+                    DBStatsView(isDataInvalidated: $isDBStatsDataInvalidated)
+                    CardOfTheDayView(isDataInvalidated: $isCardOfTheDayDataInvalidated)
+                    UpcomingTCGProductsView(canLoadNextView: $isTCGProductsInfoLoaded)
                     
                     if isTCGProductsInfoLoaded {
                         YouTubeUploadsView()
@@ -29,6 +54,9 @@ struct HomeView: View {
             .frame(maxHeight: .infinity)
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
+            .refreshable {
+                await refresh()
+            }
         }
     }
 }

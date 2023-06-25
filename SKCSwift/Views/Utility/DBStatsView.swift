@@ -8,21 +8,28 @@
 import SwiftUI
 
 struct DBStatsView: View {
-    @State private(set) var stats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
-    @State private(set) var isDataLoaded = false
+    @Binding private var isDataInvalidated: Bool
+    
+    @State var stats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
+    @State var isDataLoaded = false
+    
+    init(isDataInvalidated: Binding<Bool> = .constant(false)) {
+        self._isDataInvalidated = isDataInvalidated
+    }
     
     func fetchData() {
-        if isDataLoaded {
-            return
-        }
-        request(url: dbStatsURL()) { (result: Result<SKCDatabaseStats, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let stats):
-                    self.stats = stats
-                    self.isDataLoaded = true
-                case .failure(let error):
-                    print(error)
+        if !isDataLoaded || isDataInvalidated {
+            self.isDataInvalidated = false
+            
+            request(url: dbStatsURL()) { (result: Result<SKCDatabaseStats, Error>) -> Void in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let stats):
+                        self.stats = stats
+                        self.isDataLoaded = true
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
             }
         }
@@ -57,7 +64,10 @@ struct DBStatsView: View {
                     maxWidth: .infinity
                 )
             }
-            .onAppear {
+            .task(priority: .background) {
+                fetchData()
+            }
+            .onChange(of: $isDataInvalidated.wrappedValue) { _ in
                 fetchData()
             }
         })
