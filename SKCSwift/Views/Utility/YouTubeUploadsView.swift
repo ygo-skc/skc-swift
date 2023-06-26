@@ -13,12 +13,13 @@ struct YouTubeUploadsView: View {
     @State private var videos = [YouTubeVideos]()
     @State private var isDataLoaded = false
     
-    private let SKC_CHANNEL_ID = "UCBZ_1wWyLQI3SV9IgLbyiNQ"
+    private static let SKC_CHANNEL_ID = "UCBZ_1wWyLQI3SV9IgLbyiNQ"
     private let UPLOAD_IMG_WIDTH: CGFloat
     private let UPLOAD_IMG_HEIGHT: CGFloat
     
     init(isDataInvalidated: Binding<Bool> = .constant(false))  {
         self._isDataInvalidated = isDataInvalidated
+        
         let parentWidth = UIScreen.main.bounds.width
         UPLOAD_IMG_WIDTH = parentWidth * 0.35
         UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.65
@@ -26,7 +27,7 @@ struct YouTubeUploadsView: View {
     
     private func fetchData() {
         if !isDataLoaded || isDataInvalidated {
-            request(url: ytUploadsURL(ytChannelId: SKC_CHANNEL_ID)) { (result: Result<YouTubeUploads, Error>) -> Void in
+            request(url: ytUploadsURL(ytChannelId: YouTubeUploadsView.SKC_CHANNEL_ID)) { (result: Result<YouTubeUploads, Error>) -> Void in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let uploadData):

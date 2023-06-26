@@ -20,7 +20,7 @@ struct HomeView: View {
     @State private var lastRefresh = Date()
     
     func refresh() async {
-        if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 0 {
+        if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5 {
             isDBStatsDataInvalidated = true
             isCardOfTheDayDataInvalidated = true
             isUpcomingTCGProductsInvalidated = true
@@ -43,10 +43,10 @@ struct HomeView: View {
                 VStack(spacing: 40) {
                     DBStatsView(isDataInvalidated: $isDBStatsDataInvalidated)
                     CardOfTheDayView(isDataInvalidated: $isCardOfTheDayDataInvalidated)
-                    UpcomingTCGProductsView(canLoadNextView: $isTCGProductsInfoLoaded)
+                    UpcomingTCGProductsView(canLoadNextView: $isTCGProductsInfoLoaded, isDataInvalidated: $isUpcomingTCGProductsInvalidated)
                     
                     if isTCGProductsInfoLoaded {
-                        YouTubeUploadsView()
+                        YouTubeUploadsView(isDataInvalidated: $isYouTubeUploadsInvalidated)
                     }
                 }
                 .padding(.horizontal)

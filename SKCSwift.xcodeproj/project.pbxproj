@@ -249,6 +249,7 @@
 		1F3C10AC29673F1900EE4EBE /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				1F045FBD2A467D3400CC82A4 /* CardColorIndicator.swift */,
 				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F86EC47296A0055004F4F1B /* DateView.swift */,
 				1FB9823D29FA117800679D81 /* DBStatsView.swift */,
@@ -259,7 +260,6 @@
 				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
 				1FBE069729FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift */,
 				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
-				1F045FBD2A467D3400CC82A4 /* CardColorIndicator.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";

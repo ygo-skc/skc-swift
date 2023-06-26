@@ -67,7 +67,7 @@ struct CardSuggestionsView: View {
                     destination: {EmptyView()},
                     content: {
             VStack(alignment: .leading, spacing: 5) {
-                if isSuggestionDataLoaded || isSupportDataLoaded {
+                if isSuggestionDataLoaded && isSupportDataLoaded {
                     Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
                         .fontWeight(.light)
                         .padding(.bottom)
