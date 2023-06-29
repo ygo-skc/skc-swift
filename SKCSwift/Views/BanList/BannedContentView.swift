@@ -11,7 +11,7 @@ struct BannedContent: View {
     
     @State private var offset: CGFloat = 0
     
-    private let height: CGFloat = 200
+    private let height: CGFloat = 120
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
@@ -54,7 +54,6 @@ struct BannedContent: View {
                     )
             }
         }
-        .ignoresSafeArea(.all, edges: .bottom)
     }
 }
 
@@ -63,9 +62,9 @@ private struct BottomSheet: View {
     var body: some View {
         VStack(alignment: .leading) {
             Capsule()
-                .fill(.gray.opacity(0.5))
+                .fill(.gray.opacity(0.7))
                 .frame(width: 50, height: 5)
-                .padding(.top)
+                .padding(.top, 8)
                 .padding(.bottom, 5)
                 .frame(maxWidth: .infinity)
             BanListDatesView()
