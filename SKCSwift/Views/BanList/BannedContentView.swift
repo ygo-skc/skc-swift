@@ -10,41 +10,44 @@ import SwiftUI
 struct BannedContent: View {
     
     @State private var offset: CGFloat = 0
-    
-    private let height: CGFloat = 120
+    @State private var bottomSheetHeight: CGFloat = 0
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
             GeometryReader { reader in
-                VStack {
+                let frameHeight = reader.frame(in: .global).height
+                let frameMidX = reader.frame(in: .global).midX
+                
+                VStack(alignment: .leading) {
                     Text("YOO")
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.horizontal)
                 BottomSheet()
-                    .offset(y: reader.frame(in: .global).height - height)
+                    .offset(y: reader.frame(in: .global).height - bottomSheetHeight)
                     .offset(y: offset)
                     .gesture(DragGesture().onChanged { value in
-                        if value.startLocation.y > reader.frame(in: .global).midX {
-                            if value.translation.height < 0 && offset > (-reader.frame(in: .global).height + height) {
+                        if value.startLocation.y > frameMidX {
+                            if value.translation.height < 0 && offset > (-frameHeight + bottomSheetHeight) {
                                 offset = value.translation.height
                             }
-                        } else if value.startLocation.y < reader.frame(in: .global).midX {
+                        } else if value.startLocation.y < frameMidX {
                             if value.translation.height > 0 && offset < 0 {
-                                offset = (-reader.frame(in: .global).height + height) + value.translation.height
+                                offset = (-frameHeight + bottomSheetHeight) + value.translation.height
                             }
                         }
                     }
                         .onEnded{ value in
                             withAnimation(.linear(duration: 0.18)) {
-                                if value.startLocation.y > reader.frame(in: .global).midX {
-                                    if -value.translation.height > reader.frame(in: .global).midX {
-                                        offset = (-reader.frame(in: .global).height) + height
+                                if value.startLocation.y > frameMidX {
+                                    if -value.translation.height > frameMidX {
+                                        offset = (-frameHeight) + bottomSheetHeight
                                     } else {
                                         offset = 0
                                     }
-                                } else if value.startLocation.y < reader.frame(in: .global).midX {
-                                    if value.translation.height < reader.frame(in: .global).midX {
-                                        offset = (-reader.frame(in: .global).height) + height
+                                } else if value.startLocation.y < frameMidX {
+                                    if value.translation.height < frameMidX {
+                                        offset = (-frameHeight) + bottomSheetHeight
                                     } else {
                                         offset = 0
                                     }
@@ -52,6 +55,9 @@ struct BannedContent: View {
                             }
                         }
                     )
+                    .onPreferenceChange(BanListDatesBottomViewMinHeightPreferenceKey.self) {
+                        bottomSheetHeight = $0
+                    }
             }
         }
     }
@@ -64,7 +70,7 @@ private struct BottomSheet: View {
             Capsule()
                 .fill(.gray.opacity(0.7))
                 .frame(width: 50, height: 5)
-                .padding(.top, 8)
+                .padding(.top)
                 .padding(.bottom, 5)
                 .frame(maxWidth: .infinity)
             BanListDatesView()
@@ -73,6 +79,7 @@ private struct BottomSheet: View {
         .background(BlurView(style: .systemMaterial))
         .cornerRadius(15)
         .shadow(radius: 3)
+        .ignoresSafeArea(.all, edges: .bottom)
     }
 }
 

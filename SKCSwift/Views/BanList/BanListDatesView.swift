@@ -18,22 +18,22 @@ struct BanListDatesView: View {
     private static let formats: [BanListFormat] = [.tcg, .md, .dl]
     
     private func fetchData() {
-            request(url: banListDatesURL(format: "\(format)")) { (result: Result<BanListDates, Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let dates):
-                        self.dates = dates.banListDates
-                        self.currentBanListPosition = 0
-                        self.isDataLoaded = true
-                    case .failure(let error):
-                        print(error)
-                    }
+        request(url: banListDatesURL(format: "\(format)")) { (result: Result<BanListDates, Error>) -> Void in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let dates):
+                    self.dates = dates.banListDates
+                    self.currentBanListPosition = 0
+                    self.isDataLoaded = true
+                case .failure(let error):
+                    print(error)
                 }
             }
+        }
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text("Format")
                     .font(.title3)
@@ -41,7 +41,7 @@ struct BanListDatesView: View {
                     .foregroundColor(.secondary)
                     .padding(.trailing)
                 ForEach(BanListDatesView.formats, id: \.rawValue) { f in
-                    TabButton(format: f, animmation: animation, selected: $format)
+                    TabButton(selected: $format, value: f, animmation: animation)
                     if BanListDatesView.formats.last != f {
                         Spacer()
                     }
@@ -55,9 +55,17 @@ struct BanListDatesView: View {
                     .foregroundColor(.secondary)
                     .padding(.trailing)
                 if isDataLoaded {
-                    Text(dates[currentBanListPosition].effectiveDate)
-                    + Text(" - ")
-                    + Text((currentBanListPosition - 1 < 0) ? "???" : dates[currentBanListPosition - 1].effectiveDate)
+                    Spacer()
+                    InlineDateView(date: dates[currentBanListPosition].effectiveDate)
+                    Image(systemName: "arrowshape.right.fill")
+                    if currentBanListPosition == 0 {
+                        Text("Present")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                    } else {
+                        InlineDateView(date: dates[currentBanListPosition - 1].effectiveDate)
+                    }
+                    Spacer()
                 } else {
                     PlaceholderView(width: 75, height: 20, radius: 5)
                 }
@@ -70,40 +78,20 @@ struct BanListDatesView: View {
         }
         .onChange(of: $format.wrappedValue) { _ in
             fetchData()
-        }
+        }.background(GeometryReader { geometry in
+            Color.clear.preference(
+                key: BanListDatesBottomViewMinHeightPreferenceKey.self,
+                value: geometry.size.height
+            )
+        })
     }
 }
 
-
-private struct TabButton: View {
-    var format: BanListFormat
-    var animmation: Namespace.ID
-    @Binding var selected: BanListFormat
+struct BanListDatesBottomViewMinHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
     
-    var body: some View {
-        Button(action: {
-            withAnimation(.spring(response: 0.2)) {selected = format}
-        })
-        {
-            Text(format.rawValue)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(selected == format ? .white : .primary)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 10)
-                .if(selected == format) {
-                    $0.background {
-                        Color.accentColor
-                            .clipShape(Capsule())
-                            .matchedGeometryEffect(id: "Tab", in: animmation)
-                    }
-                } else: {
-                    $0.background {
-                        Color.gray.opacity(0.3)
-                        .clipShape(Capsule())
-                    }
-                }
-        }
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 
