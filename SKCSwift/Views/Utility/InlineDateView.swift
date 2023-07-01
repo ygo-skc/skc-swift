@@ -24,7 +24,7 @@ struct InlineDateView: View {
         HStack(spacing: 0) {
             Text(month)
                 .padding(.horizontal, 10)
-                .padding(.vertical, 4)
+                .padding(.vertical, 3)
                 .background(Color("pink_red"))
                 .font(.subheadline)
                 .fontWeight(.heavy)
