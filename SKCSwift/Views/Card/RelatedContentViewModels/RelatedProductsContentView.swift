@@ -61,7 +61,7 @@ private struct ProductListItemViewModel: View {
     
     var body: some View {
         HStack(spacing: 15) {
-            DateView(date: product.productReleaseDate)
+            CalendarDateView(date: product.productReleaseDate)
             
             VStack(alignment: .leading, spacing: 5) {
                 Text(product.productName)

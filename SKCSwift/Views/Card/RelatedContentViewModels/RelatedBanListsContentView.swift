@@ -60,7 +60,7 @@ private struct BanListItemViewModel: View {
     
     var body: some View {
         HStack(spacing: 5) {
-            DateView(date: banListInstance.banListDate, variant: .condensed)
+            CalendarDateView(date: banListInstance.banListDate, variant: .condensed)
                 .padding(.trailing, 10)
             Circle()
                 .foregroundColor(banStatusColor(status: banListInstance.banStatus))
