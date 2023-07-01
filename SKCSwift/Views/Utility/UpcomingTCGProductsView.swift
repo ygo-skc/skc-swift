@@ -79,7 +79,7 @@ private struct UpcomingTCGProduct: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            DateView(date: event.eventDate, formatter: Dates.isoDateFormatter, variant: .condensed)
+            CalendarDateView(date: event.eventDate, formatter: Dates.isoDateFormatter, variant: .condensed)
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(event.name)
