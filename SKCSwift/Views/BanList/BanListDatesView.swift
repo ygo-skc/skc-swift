@@ -39,7 +39,7 @@ struct BanListDatesView: View {
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
-                Spacer()
+                    .padding(.trailing)
                 ForEach(BanListDatesView.formats, id: \.rawValue) { f in
                     TabButton(format: f, animmation: animation, selected: $format)
                     if BanListDatesView.formats.last != f {
@@ -49,11 +49,11 @@ struct BanListDatesView: View {
             }
             
             HStack {
-                Text("Date Range")
+                Text("Range")
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.secondary)
-                Spacer()
+                    .padding(.trailing)
                 if isDataLoaded {
                     Text(dates[currentBanListPosition].effectiveDate)
                     + Text(" - ")

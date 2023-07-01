@@ -72,6 +72,7 @@ private struct BottomSheet: View {
         .frame(maxHeight: .infinity, alignment: .topLeading)
         .background(BlurView(style: .systemMaterial))
         .cornerRadius(15)
+        .shadow(radius: 3)
     }
 }
 
