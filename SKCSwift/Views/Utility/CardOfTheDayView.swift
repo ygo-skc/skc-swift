@@ -48,24 +48,20 @@ struct CardOfTheDayView: View {
             content: {
                 HStack(alignment: .top, spacing: 20) {
                     RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
-                    VStack(alignment: .leading, spacing: 3) {
+                    VStack(alignment: .leading, spacing: 5) {
                         if isDataLoaded {
+                            InlineDateView(date: date)
                             Text(card.cardName)
                                 .lineLimit(2)
                                 .font(.headline)
                                 .fontWeight(.bold)
                             
-                            if let monsterType = card.monsterType {
-                                Text(monsterType)
-                                    .font(.headline)
-                                    .fontWeight(.regular)
-                            }
-                            
                             HStack {
                                 CardColorIndicator(cardColor: card.cardColor, variant: .small)
-                                Text(card.cardColor)
-                                    .font(.headline)
-                                    .fontWeight(.regular)
+                                if let monsterType = card.monsterType {
+                                    Text(monsterType)
+                                        .font(.headline)
+                                }
                             }
                         } else {
                             PlaceholderView(width: 200, height: 18, radius: 5)

@@ -40,9 +40,10 @@
 		1F8212022961FF0100238EE1 /* SKCSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */; };
 		1F8212042961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */; };
 		1F86EC3F29688821004F4F1B /* AttributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC3E29688821004F4F1B /* AttributeView.swift */; };
-		1F86EC48296A0055004F4F1B /* DateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC47296A0055004F4F1B /* DateView.swift */; };
+		1F86EC48296A0055004F4F1B /* CalendarDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC47296A0055004F4F1B /* CalendarDateView.swift */; };
 		1F8BFA0B2A01CCEE008A66D1 /* YGOCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */; };
 		1F962B2B2967D065007974DA /* RoundedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageView.swift */; };
+		1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D78F2A507F3C0033150D /* InlineDateView.swift */; };
 		1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA249FE29809DC500C04B79 /* RelatedContentView.swift */; };
 		1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */; };
 		1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A062980A63700C04B79 /* SuggestedCardView.swift */; };
@@ -116,9 +117,10 @@
 		1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITests.swift; sourceTree = "<group>"; };
 		1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1F86EC3E29688821004F4F1B /* AttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeView.swift; sourceTree = "<group>"; };
-		1F86EC47296A0055004F4F1B /* DateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateView.swift; sourceTree = "<group>"; };
+		1F86EC47296A0055004F4F1B /* CalendarDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDateView.swift; sourceTree = "<group>"; };
 		1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YGOCardView.swift; sourceTree = "<group>"; };
 		1F962B2A2967D065007974DA /* RoundedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageView.swift; sourceTree = "<group>"; };
+		1F96D78F2A507F3C0033150D /* InlineDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineDateView.swift; sourceTree = "<group>"; };
 		1FA249FE29809DC500C04B79 /* RelatedContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContentView.swift; sourceTree = "<group>"; };
 		1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedProductsContentView.swift; sourceTree = "<group>"; };
 		1FA24A062980A63700C04B79 /* SuggestedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedCardView.swift; sourceTree = "<group>"; };
@@ -251,7 +253,7 @@
 			children = (
 				1F045FBD2A467D3400CC82A4 /* CardColorIndicator.swift */,
 				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
-				1F86EC47296A0055004F4F1B /* DateView.swift */,
+				1F86EC47296A0055004F4F1B /* CalendarDateView.swift */,
 				1FB9823D29FA117800679D81 /* DBStatsView.swift */,
 				1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */,
 				1F962B2A2967D065007974DA /* RoundedImageView.swift */,
@@ -260,6 +262,7 @@
 				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
 				1FBE069729FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift */,
 				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
+				1F96D78F2A507F3C0033150D /* InlineDateView.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -473,6 +476,7 @@
 				1F21FF6C2977BC2D00B4451A /* Color.swift in Sources */,
 				1FBE069A29FDBE8000EA85A4 /* Events.swift in Sources */,
 				1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */,
+				1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */,
 				1F39328B2A34CA4800BD0DD2 /* YouTubeUploads.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsView.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
@@ -511,7 +515,7 @@
 				1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */,
 				1F0F993D29F8972600AA9F69 /* CardOfTheDay.swift in Sources */,
 				1F1A3AC529871EE600B69892 /* CardSuggestionsView.swift in Sources */,
-				1F86EC48296A0055004F4F1B /* DateView.swift in Sources */,
+				1F86EC48296A0055004F4F1B /* CalendarDateView.swift in Sources */,
 				1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

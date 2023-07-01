@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct DateView: View {
+struct CalendarDateView: View {
     private let month: String
     private let day: String
     private let year: String
@@ -27,11 +27,8 @@ struct DateView: View {
     var body: some View {
         VStack {
             Text(month)
-                .frame(maxWidth: .infinity)
-                .background(Color("pink_red"))
                 .modifier(DateViewMonthModifier(variant: variant))
             Text(day)
-                .padding(.top, -8)
                 .modifier(DateViewDayModifier(variant: variant))
             Text(year)
                 .modifier(DateViewYearModifier(variant: variant))
@@ -65,14 +62,16 @@ private struct DateViewMonthModifier: ViewModifier {
         switch(variant) {
         case .normal:
             content
+                .frame(maxWidth: .infinity)
+                .background(Color("pink_red"))
                 .font(.headline)
                 .foregroundColor(Color(.white))
-                .padding(.vertical, 0)
         case .condensed:
             content
+                .frame(maxWidth: .infinity)
+                .background(Color("pink_red"))
                 .font(.subheadline)
                 .foregroundColor(Color(.white))
-                .padding(.vertical, 0)
         }
     }
 }
@@ -84,10 +83,12 @@ private struct DateViewDayModifier: ViewModifier {
         switch(variant) {
         case .normal:
             content
+                .padding(.top, -8)
                 .font(.title3)
                 .fontWeight(.bold)
         case .condensed:
             content
+                .padding(.top, -8)
                 .font(.subheadline)
                 .fontWeight(.bold)
         }
@@ -111,46 +112,44 @@ private struct DateViewYearModifier: ViewModifier {
 
 struct DateView_Previews: PreviewProvider {
     static var previews: some View {
-        // Groups are needed as you can only have a max of 10 subviews, groups allow us to spread the views.
-        
-        DateView(date: "2022-01-31", variant: .condensed)
+        CalendarDateView(date: "2022-01-31", variant: .condensed)
             .previewDisplayName("Condensed")
         
         Group {
-            DateView(date: "2022-01-31")
+            CalendarDateView(date: "2022-01-31")
                 .previewDisplayName("January")
-            DateView(date: "2022-02-18")
+            CalendarDateView(date: "2022-02-18")
                 .previewDisplayName("Febuary")
-            DateView(date: "2022-03-18")
+            CalendarDateView(date: "2022-03-18")
                 .previewDisplayName("March")
-            DateView(date: "2022-04-18")
+            CalendarDateView(date: "2022-04-18")
                 .previewDisplayName("April")
         }
         
         Group {
-            DateView(date: "2022-05-18")
+            CalendarDateView(date: "2022-05-18")
                 .previewDisplayName("May")
-            DateView(date: "2022-06-18")
+            CalendarDateView(date: "2022-06-18")
                 .previewDisplayName("June")
-            DateView(date: "2022-07-18")
+            CalendarDateView(date: "2022-07-18")
                 .previewDisplayName("July")
-            DateView(date: "2022-08-18")
+            CalendarDateView(date: "2022-08-18")
                 .previewDisplayName("August")
         }
         
         Group {
-            DateView(date: "2022-09-18")
+            CalendarDateView(date: "2022-09-18")
                 .previewDisplayName("Septemeber")
-            DateView(date: "2022-10-18")
+            CalendarDateView(date: "2022-10-18")
                 .previewDisplayName("October")
-            DateView(date: "2022-11-18")
+            CalendarDateView(date: "2022-11-18")
                 .previewDisplayName("November")
-            DateView(date: "2022-12-31")
+            CalendarDateView(date: "2022-12-31")
                 .previewDisplayName("December")
         }
         
         Group {
-            DateView(date: "2022-09-18")
+            CalendarDateView(date: "2022-09-18")
                 .previewDisplayName("Dark Theme")
                 .preferredColorScheme(.dark)
         }
