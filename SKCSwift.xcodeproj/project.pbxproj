@@ -44,6 +44,7 @@
 		1F8BFA0B2A01CCEE008A66D1 /* YGOCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */; };
 		1F962B2B2967D065007974DA /* RoundedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageView.swift */; };
 		1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D78F2A507F3C0033150D /* InlineDateView.swift */; };
+		1F96D7962A50E8830033150D /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D7952A50E8830033150D /* TabButton.swift */; };
 		1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA249FE29809DC500C04B79 /* RelatedContentView.swift */; };
 		1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */; };
 		1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A062980A63700C04B79 /* SuggestedCardView.swift */; };
@@ -121,6 +122,7 @@
 		1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YGOCardView.swift; sourceTree = "<group>"; };
 		1F962B2A2967D065007974DA /* RoundedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageView.swift; sourceTree = "<group>"; };
 		1F96D78F2A507F3C0033150D /* InlineDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineDateView.swift; sourceTree = "<group>"; };
+		1F96D7952A50E8830033150D /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
 		1FA249FE29809DC500C04B79 /* RelatedContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContentView.swift; sourceTree = "<group>"; };
 		1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedProductsContentView.swift; sourceTree = "<group>"; };
 		1FA24A062980A63700C04B79 /* SuggestedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedCardView.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				1FBE069729FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift */,
 				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
 				1F96D78F2A507F3C0033150D /* InlineDateView.swift */,
+				1F96D7952A50E8830033150D /* TabButton.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -503,6 +506,7 @@
 				1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */,
 				1F3C10AA29673E1200EE4EBE /* CardView.swift in Sources */,
 				1FB93906296503AE00BF0CBA /* DataTasks.swift in Sources */,
+				1F96D7962A50E8830033150D /* TabButton.swift in Sources */,
 				1FB939042965029B00BF0CBA /* Product.swift in Sources */,
 				1F30FE70296B729400B80816 /* SearchResults.swift in Sources */,
 				1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */,
