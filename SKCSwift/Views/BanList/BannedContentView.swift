@@ -24,7 +24,7 @@ struct BannedContent: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(.horizontal)
                 BottomSheet()
-                    .offset(y: reader.frame(in: .global).height - bottomSheetHeight)
+                    .offset(y: frameHeight - bottomSheetHeight)
                     .offset(y: offset)
                     .gesture(DragGesture().onChanged { value in
                         if value.startLocation.y > frameMidX {
@@ -56,7 +56,7 @@ struct BannedContent: View {
                         }
                     )
                     .onPreferenceChange(BanListDatesBottomViewMinHeightPreferenceKey.self) {
-                        bottomSheetHeight = $0
+                        bottomSheetHeight = $0 + 20
                     }
             }
         }
@@ -67,13 +67,7 @@ struct BannedContent: View {
 private struct BottomSheet: View {
     var body: some View {
         VStack(alignment: .leading) {
-            Capsule()
-                .fill(.gray.opacity(0.7))
-                .frame(width: 50, height: 5)
-                .padding(.top)
-                .padding(.bottom, 5)
-                .frame(maxWidth: .infinity)
-            BanListDatesView()
+            BanListGlanceView()
         }
         .frame(maxHeight: .infinity, alignment: .topLeading)
         .background(BlurView(style: .systemMaterial))

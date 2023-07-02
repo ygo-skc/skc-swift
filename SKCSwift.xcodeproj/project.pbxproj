@@ -45,6 +45,8 @@
 		1F962B2B2967D065007974DA /* RoundedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageView.swift */; };
 		1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D78F2A507F3C0033150D /* InlineDateView.swift */; };
 		1F96D7962A50E8830033150D /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D7952A50E8830033150D /* TabButton.swift */; };
+		1F96D7982A50EE1F0033150D /* BanListFormatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D7972A50EE1F0033150D /* BanListFormatsView.swift */; };
+		1F96D79A2A50F1910033150D /* BanListGlanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D7992A50F1910033150D /* BanListGlanceView.swift */; };
 		1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA249FE29809DC500C04B79 /* RelatedContentView.swift */; };
 		1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */; };
 		1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A062980A63700C04B79 /* SuggestedCardView.swift */; };
@@ -123,6 +125,8 @@
 		1F962B2A2967D065007974DA /* RoundedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageView.swift; sourceTree = "<group>"; };
 		1F96D78F2A507F3C0033150D /* InlineDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineDateView.swift; sourceTree = "<group>"; };
 		1F96D7952A50E8830033150D /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
+		1F96D7972A50EE1F0033150D /* BanListFormatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BanListFormatsView.swift; sourceTree = "<group>"; };
+		1F96D7992A50F1910033150D /* BanListGlanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BanListGlanceView.swift; sourceTree = "<group>"; };
 		1FA249FE29809DC500C04B79 /* RelatedContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContentView.swift; sourceTree = "<group>"; };
 		1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedProductsContentView.swift; sourceTree = "<group>"; };
 		1FA24A062980A63700C04B79 /* SuggestedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedCardView.swift; sourceTree = "<group>"; };
@@ -179,6 +183,8 @@
 			children = (
 				1F1C1D3C2A353B1800E73D67 /* BanListDatesView.swift */,
 				1F1C1D3E2A353C1400E73D67 /* BannedContentView.swift */,
+				1F96D7972A50EE1F0033150D /* BanListFormatsView.swift */,
+				1F96D7992A50F1910033150D /* BanListGlanceView.swift */,
 			);
 			path = BanList;
 			sourceTree = "<group>";
@@ -478,6 +484,7 @@
 				1F1C1D3D2A353B1800E73D67 /* BanListDatesView.swift in Sources */,
 				1F21FF6C2977BC2D00B4451A /* Color.swift in Sources */,
 				1FBE069A29FDBE8000EA85A4 /* Events.swift in Sources */,
+				1F96D7982A50EE1F0033150D /* BanListFormatsView.swift in Sources */,
 				1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */,
 				1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */,
 				1F39328B2A34CA4800BD0DD2 /* YouTubeUploads.swift in Sources */,
@@ -500,6 +507,7 @@
 				1F045FBE2A467D3400CC82A4 /* CardColorIndicator.swift in Sources */,
 				1F32565229635936001AACF1 /* Card.swift in Sources */,
 				1F1C1D3F2A353C1400E73D67 /* BannedContentView.swift in Sources */,
+				1F96D79A2A50F1910033150D /* BanListGlanceView.swift in Sources */,
 				1FB9824229FB4A8A00679D81 /* SKCDatabaseStats.swift in Sources */,
 				1F3256592963E116001AACF1 /* MonsterAssociationView.swift in Sources */,
 				1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */,

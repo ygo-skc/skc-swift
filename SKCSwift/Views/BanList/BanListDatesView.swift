@@ -8,14 +8,10 @@
 import SwiftUI
 
 struct BanListDatesView: View {
+    @Binding var format: BanListFormat
     @State private var dates = [BanListDate]()
     @State private var isDataLoaded = false
     @State private var currentBanListPosition = 0
-    @State private var format: BanListFormat = .tcg
-    
-    @Namespace private var animation
-    
-    private static let formats: [BanListFormat] = [.tcg, .md, .dl]
     
     private func fetchData() {
         request(url: banListDatesURL(format: "\(format)")) { (result: Result<BanListDates, Error>) -> Void in
@@ -33,57 +29,43 @@ struct BanListDatesView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            HStack {
-                Text("Format")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.secondary)
-                    .padding(.trailing)
-                ForEach(BanListDatesView.formats, id: \.rawValue) { f in
-                    TabButton(selected: $format, value: f, animmation: animation)
-                    if BanListDatesView.formats.last != f {
-                        Spacer()
-                    }
-                }
-            }
+        HStack {
+            Text("Range")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(.secondary)
+                .padding(.trailing)
             
-            HStack {
-                Text("Range")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.secondary)
-                    .padding(.trailing)
-                if isDataLoaded {
-                    Spacer()
-                    InlineDateView(date: dates[currentBanListPosition].effectiveDate)
-                    Image(systemName: "arrowshape.right.fill")
-                    if currentBanListPosition == 0 {
-                        Text("Present")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                    } else {
-                        InlineDateView(date: dates[currentBanListPosition - 1].effectiveDate)
-                    }
-                    Spacer()
+            Spacer()
+            if isDataLoaded {
+                InlineDateView(date: dates[currentBanListPosition].effectiveDate)
+            }
+            else {
+                PlaceholderView(width: 60, height: 18, radius: 5)
+            }
+            Image(systemName: "arrowshape.right.fill")
+                .padding(.horizontal)
+            if isDataLoaded {
+                if currentBanListPosition == 0 {
+                    Text("Present")
+                        .font(.headline)
+                        .fontWeight(.bold)
                 } else {
-                    PlaceholderView(width: 75, height: 20, radius: 5)
+                    InlineDateView(date: dates[currentBanListPosition - 1].effectiveDate)
                 }
             }
+            else {
+                PlaceholderView(width: 60, height: 18, radius: 5)
+            }
+            Spacer()
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-        .padding(.horizontal)
         .task(priority: .background) {
             fetchData()
         }
         .onChange(of: $format.wrappedValue) { _ in
+            self.isDataLoaded = false
             fetchData()
-        }.background(GeometryReader { geometry in
-            Color.clear.preference(
-                key: BanListDatesBottomViewMinHeightPreferenceKey.self,
-                value: geometry.size.height
-            )
-        })
+        }
     }
 }
 
@@ -95,11 +77,9 @@ struct BanListDatesBottomViewMinHeightPreferenceKey: PreferenceKey {
     }
 }
 
-struct BanListDatesView_Previews: PreviewProvider {
-    static var previews: some View {
-        ScrollView {
-            BanListDatesView()
-                .padding(.horizontal)
-        }
-    }
-}
+//struct BanListDatesView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        BanListDatesView()
+//            .padding(.horizontal)
+//    }
+//}
