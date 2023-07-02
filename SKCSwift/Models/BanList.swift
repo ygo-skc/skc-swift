@@ -26,4 +26,5 @@ struct BanListDates: Codable {
 struct BanListDate: Codable {
     var format: String
     var effectiveDate: String
+    var _links: BanListDateHLink
 }
