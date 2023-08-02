@@ -10,13 +10,7 @@ import SwiftUI
 struct CardStatsView: View {
     private static let nilStat = "?"
     
-    let cardName: String
-    let cardColor: String
-    let monsterType: String?
-    let cardEffect: String
-    let monsterAssociation: MonsterAssociation?
-    let cardID: String
-    let cardAttribute: String
+    let card: Card
     let monsterAttack: String
     let monsterDefense: String
     
@@ -25,44 +19,38 @@ struct CardStatsView: View {
     private let attribute: Attribute?
     
     init(card: Card, variant: YGOCardViewVariant = .normal) {
-        self.cardName = card.cardName
-        self.cardColor = card.cardColor
-        self.monsterType = card.monsterType
-        self.cardEffect = card.cardEffect
-        self.monsterAssociation = card.monsterAssociation
-        self.cardID = card.cardID
-        self.cardAttribute = card.cardAttribute
+        self.card = card
         
         self.variant = variant
         
-        let nilDefStat = (cardColor == "Link") ? "—" : CardStatsView.nilStat  // override missing stat for certain edge cases
+        let nilDefStat = (card.cardColor == "Link") ? "—" : CardStatsView.nilStat  // override missing stat for certain edge cases
         self.monsterAttack = (card.monsterAttack == nil) ? CardStatsView.nilStat : String(card.monsterAttack!)
         self.monsterDefense = (card.monsterDefense == nil) ? nilDefStat : String(card.monsterDefense!)
         
-        self.attribute = Attribute(rawValue: cardAttribute)
+        self.attribute = Attribute(rawValue: card.cardAttribute)
     }
     
     var body: some View {
         VStack {
             VStack(spacing: 5)  {
-                Text(cardName)
+                Text(card.cardName)
                     .modifier(CardNameModifier(variant: variant))
                     .foregroundColor(.white)
                 
-                if (monsterAssociation != nil && attribute != nil) {
-                    MonsterAssociationView(monsterAssociation: monsterAssociation!, attribute: attribute!)
+                if (card.monsterAssociation != nil && attribute != nil) {
+                    MonsterAssociationView(monsterAssociation: card.monsterAssociation!, attribute: attribute!)
                 }
                 
                 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text((monsterType != nil) ? monsterType! : "Spell")
+                    Text(card.cardType())
                         .modifier(MonsterTypeModifier(variant: variant))
                     
-                    Text(replaceHTMLEntities(subject: cardEffect))
+                    Text(replaceHTMLEntities(subject: card.cardEffect))
                         .modifier(CardEffectModifier(variant: variant))
                     
                     HStack {
-                        Text(cardID)
+                        Text(card.cardID)
                             .modifier(CardIdModifier(variant: variant))
                             .fontWeight(.light)
                         
@@ -75,7 +63,7 @@ struct CardStatsView: View {
                                 .modifier(MonsterAttackDefenseModifier(variant: variant))
                                 .foregroundColor(.blue)
                         }
-                        .modifier(MonsterAttackDefenseContainerModifier(cardType: (cardColor == "Spell" || cardColor == "Trap") ? .non_monster : .monster))
+                        .modifier(MonsterAttackDefenseContainerModifier(cardType: (card.cardColor == "Spell" || card.cardColor == "Trap") ? .non_monster : .monster))
                         
                     }
                     .padding(.top, 1)
@@ -87,10 +75,10 @@ struct CardStatsView: View {
             .padding(.horizontal, 5.0)
             .padding(.vertical, 10.0)
         }
-        .if(cardColor.starts(with: "Pendulum")) {
-            $0.background(cardColorGradient(cardColor: cardColor))
+        .if(card.isPendulum()) {
+            $0.background(cardColorGradient(cardColor: card.cardColor))
         } else: {
-            $0.background(cardColorUI(cardColor: cardColor))
+            $0.background(cardColorUI(cardColor: card.cardColor))
         }
         .cornerRadius(15)
         .frame(

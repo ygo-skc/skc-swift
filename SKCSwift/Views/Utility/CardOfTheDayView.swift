@@ -58,10 +58,8 @@ struct CardOfTheDayView: View {
                             
                             HStack {
                                 CardColorIndicator(cardColor: card.cardColor, variant: .small)
-                                if let monsterType = card.monsterType {
-                                    Text(monsterType)
-                                        .font(.headline)
-                                }
+                                Text(card.cardType())
+                                    .font(.headline)
                             }
                         } else {
                             PlaceholderView(width: 200, height: 18, radius: 5)

@@ -25,4 +25,12 @@ struct Card: Codable {
     var monsterDefense: Int?
     var restrictedIn: BanListsForCard?
     var foundIn: [Product]?
+    
+    func isPendulum() -> Bool {
+        return cardColor.starts(with: "Pendulum")
+    }
+    
+    func cardType() -> String {
+        return (monsterType != nil) ? monsterType! : cardAttribute
+    }
 }
