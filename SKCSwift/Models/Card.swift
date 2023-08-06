@@ -26,11 +26,26 @@ struct Card: Codable {
     var restrictedIn: BanListsForCard?
     var foundIn: [Product]?
     
+    private static let nilStat = "?"
+    private static let linkDefStat = "-"
+    
     func isPendulum() -> Bool {
         return cardColor.starts(with: "Pendulum")
     }
     
     func cardType() -> String {
         return (monsterType != nil) ? monsterType! : cardAttribute
+    }
+    
+    func atk() -> String {
+        return     (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!)
+    }
+    
+    func def() -> String {
+        if cardColor == "Link" {
+            return Card.linkDefStat
+        }
+        
+        return (monsterDefense == nil) ? Card.nilStat : String(monsterDefense!)
     }
 }

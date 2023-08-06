@@ -8,12 +8,7 @@
 import SwiftUI
 
 struct CardStatsView: View {
-    private static let nilStat = "?"
-    
     let card: Card
-    let monsterAttack: String
-    let monsterDefense: String
-    
     let variant: YGOCardViewVariant
     
     private let attribute: Attribute?
@@ -22,11 +17,7 @@ struct CardStatsView: View {
         self.card = card
         
         self.variant = variant
-        
-        let nilDefStat = (card.cardColor == "Link") ? "—" : CardStatsView.nilStat  // override missing stat for certain edge cases
-        self.monsterAttack = (card.monsterAttack == nil) ? CardStatsView.nilStat : String(card.monsterAttack!)
-        self.monsterDefense = (card.monsterDefense == nil) ? nilDefStat : String(card.monsterDefense!)
-        
+                
         self.attribute = Attribute(rawValue: card.cardAttribute)
     }
     
@@ -56,10 +47,10 @@ struct CardStatsView: View {
                         
                         Spacer()
                         HStack(spacing: 15) {
-                            Text(monsterAttack)
+                            Text(card.atk())
                                 .modifier(MonsterAttackDefenseModifier(variant: variant))
                                 .foregroundColor(.red)
-                            Text(monsterDefense)
+                            Text(card.def())
                                 .modifier(MonsterAttackDefenseModifier(variant: variant))
                                 .foregroundColor(.blue)
                         }
