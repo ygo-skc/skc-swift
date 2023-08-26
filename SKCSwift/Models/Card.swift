@@ -38,7 +38,7 @@ struct Card: Codable {
     }
     
     func atk() -> String {
-        return     (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!)
+        return (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!)
     }
     
     func def() -> String {

@@ -17,7 +17,7 @@ struct CardStatsView: View {
         self.card = card
         
         self.variant = variant
-                
+        
         self.attribute = Attribute(rawValue: card.cardAttribute)
     }
     
