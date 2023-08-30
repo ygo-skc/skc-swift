@@ -6,7 +6,7 @@
 //
 
 enum Attribute: String {
-    case dark = "Dark", light = "Light", earth = "Earth", wind = "Wind", water = "Water", fire = "Fire"
+    case dark = "Dark", light = "Light", earth = "Earth", wind = "Wind", water = "Water", fire = "Fire", divine = "Divine", spell = "Spell", trap = "Trap", unknown
 }
 
 enum BanListFormat: String {

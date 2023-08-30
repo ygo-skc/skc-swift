@@ -13,28 +13,40 @@ struct AttributeView: View {
     private static let ICON_SIZE = 30.0
     
     var body: some View {
-        Image(attribute
-            .rawValue.lowercased()
-        )
-        .resizable()
-        .frame(width: AttributeView.ICON_SIZE, height: AttributeView.ICON_SIZE)
-        .cornerRadius(AttributeView.ICON_SIZE)
+        if (attribute == .unknown) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .resizable()
+                .frame(width: AttributeView.ICON_SIZE - 5, height: AttributeView.ICON_SIZE - 5)
+        } else {
+            Image(attribute.rawValue.lowercased())
+                .resizable()
+                .frame(width: AttributeView.ICON_SIZE, height: AttributeView.ICON_SIZE)
+                .cornerRadius(AttributeView.ICON_SIZE)
+        }
     }
 }
 
 struct AttributeView_Previews: PreviewProvider {
     static var previews: some View {
-        AttributeView(attribute: Attribute(rawValue: "Light")!)
+        AttributeView(attribute: .light)
             .previewDisplayName("Light")
-        AttributeView(attribute: Attribute(rawValue: "Dark")!)
+        AttributeView(attribute: .dark)
             .previewDisplayName("Dark")
-        AttributeView(attribute: Attribute(rawValue: "Earth")!)
+        AttributeView(attribute: .earth)
             .previewDisplayName("Earth")
-        AttributeView(attribute: Attribute(rawValue: "Wind")!)
+        AttributeView(attribute: .wind)
             .previewDisplayName("Wind")
-        AttributeView(attribute: Attribute(rawValue: "Fire")!)
+        AttributeView(attribute: .fire)
             .previewDisplayName("Fire")
-        AttributeView(attribute: Attribute(rawValue: "Water")!)
+        AttributeView(attribute: .water)
             .previewDisplayName("Water")
+        AttributeView(attribute: .divine)
+            .previewDisplayName("Divine")
+        AttributeView(attribute: .spell)
+            .previewDisplayName("Spell")
+        AttributeView(attribute: .trap)
+            .previewDisplayName("Trap")
+        AttributeView(attribute: .unknown)
+            .previewDisplayName("Attribute cannot be determined")
     }
 }

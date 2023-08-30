@@ -11,14 +11,14 @@ struct CardStatsView: View {
     let card: Card
     let variant: YGOCardViewVariant
     
-    private let attribute: Attribute?
+    private let attribute: Attribute
     
     init(card: Card, variant: YGOCardViewVariant = .normal) {
         self.card = card
         
         self.variant = variant
         
-        self.attribute = Attribute(rawValue: card.cardAttribute)
+        self.attribute = Attribute(rawValue: card.cardAttribute) ?? .unknown
     }
     
     var body: some View {
@@ -28,8 +28,8 @@ struct CardStatsView: View {
                     .modifier(CardNameModifier(variant: variant))
                     .foregroundColor(.white)
                 
-                if (card.monsterAssociation != nil && attribute != nil) {
-                    MonsterAssociationView(monsterAssociation: card.monsterAssociation!, attribute: attribute!)
+                if (card.monsterAssociation != nil) {
+                    MonsterAssociationView(monsterAssociation: card.monsterAssociation!, attribute: attribute)
                 }
                 
                 
