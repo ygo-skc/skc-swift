@@ -77,9 +77,9 @@ struct BanListDatesBottomViewMinHeightPreferenceKey: PreferenceKey {
     }
 }
 
-//struct BanListDatesView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        BanListDatesView()
-//            .padding(.horizontal)
-//    }
-//}
+struct BanListDatesView_Previews: PreviewProvider {
+    static var previews: some View {
+        @State var selectedFormat: BanListFormat = .tcg
+        BanListDatesView(format: $selectedFormat)
+    }
+}
