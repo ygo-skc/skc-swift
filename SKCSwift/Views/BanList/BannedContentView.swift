@@ -14,29 +14,21 @@ struct BannedContent: View {
         SegmentedView(mainContent: {
             Text("YOO")
         }) {
-            BanListGlanceView()
+            VStack(alignment: .center, spacing: 20) {
+                Capsule()
+                    .fill(.gray.opacity(0.7))
+                    .frame(width: 50, height: 5)
+                    .padding(.top, 5)
+                BanListFormatsView(selectedFormat: $format)
+                BanListDatesView(format: $format)
+            }
+            .background(GeometryReader { geometry in
+                Color.clear.preference(
+                    key: BottomSheetMinHeightPreferenceKey.self,
+                    value: geometry.size.height
+                )
+            })
         }
-    }
-}
-
-private struct BanListGlanceView: View {
-    @State private var format: BanListFormat = .tcg
-    
-    var body: some View {
-        VStack(alignment: .center, spacing: 20) {
-            Capsule()
-                .fill(.gray.opacity(0.7))
-                .frame(width: 50, height: 5)
-                .padding(.top, 5)
-            BanListFormatsView(selectedFormat: $format)
-            BanListDatesView(format: $format)
-        }
-        .background(GeometryReader { geometry in
-            Color.clear.preference(
-                key: BanListDatesBottomViewMinHeightPreferenceKey.self,
-                value: geometry.size.height
-            )
-        })
     }
 }
 

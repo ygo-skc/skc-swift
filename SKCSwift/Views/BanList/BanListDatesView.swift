@@ -69,14 +69,6 @@ struct BanListDatesView: View {
     }
 }
 
-struct BanListDatesBottomViewMinHeightPreferenceKey: PreferenceKey {
-    static let defaultValue: CGFloat = 0
-    
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
-    }
-}
-
 struct BanListDatesView_Previews: PreviewProvider {
     static var previews: some View {
         @State var selectedFormat: BanListFormat = .tcg
