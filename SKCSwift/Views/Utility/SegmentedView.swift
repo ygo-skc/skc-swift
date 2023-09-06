@@ -23,7 +23,19 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
                 
                 
                 BottomSheet(frameHeight: frameHeight, frameMidX: frameMidX) {
-                    sheetContent()
+                    VStack(alignment: .center, spacing: 20) {
+                        Capsule()
+                            .fill(.gray.opacity(0.7))
+                            .frame(width: 50, height: 5)
+                            .padding(.top, 5)
+                        sheetContent()
+                    }
+                    .background(GeometryReader { geometry in
+                        Color.clear.preference(
+                            key: BottomSheetMinHeightPreferenceKey.self,
+                            value: geometry.size.height
+                        )
+                    })
                 }
             }
         }
@@ -82,10 +94,11 @@ private struct BottomSheet<SheetContent: View>: View {
                 bottomSheetHeight = $0 + 20
             }
         
+        
     }
 }
 
-struct BottomSheetMinHeightPreferenceKey: PreferenceKey {
+private struct BottomSheetMinHeightPreferenceKey: PreferenceKey {
     static let defaultValue: CGFloat = 0
     
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {

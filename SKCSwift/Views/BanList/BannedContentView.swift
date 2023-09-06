@@ -14,20 +14,10 @@ struct BannedContent: View {
         SegmentedView(mainContent: {
             Text("YOO")
         }) {
-            VStack(alignment: .center, spacing: 20) {
-                Capsule()
-                    .fill(.gray.opacity(0.7))
-                    .frame(width: 50, height: 5)
-                    .padding(.top, 5)
+            VStack {
                 BanListFormatsView(selectedFormat: $format)
                 BanListDatesView(format: $format)
             }
-            .background(GeometryReader { geometry in
-                Color.clear.preference(
-                    key: BottomSheetMinHeightPreferenceKey.self,
-                    value: geometry.size.height
-                )
-            })
         }
     }
 }
