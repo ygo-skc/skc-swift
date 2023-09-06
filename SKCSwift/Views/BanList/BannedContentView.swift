@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct BannedContent: View {
-    @State private var format: BanListFormat = .tcg
+    @State private var chosenFormat: BanListFormat = .tcg
+    @State private var chosenDateRange: Int = 0
+    @State private var banListDates = [BanListDate]()
     
     var body: some View {
         SegmentedView(mainContent: {
             Text("YOO")
         }) {
-            VStack {
-                BanListFormatsView(selectedFormat: $format)
-                BanListDatesView(format: $format)
-            }
+            BanListOptionsView(chosenFormat: $chosenFormat, chosenDateRange: $chosenDateRange, banListDates: $banListDates)
         }
     }
 }
