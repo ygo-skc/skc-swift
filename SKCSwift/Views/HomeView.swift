@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct HomeView: View {
-    private let screenWidth = UIScreen.main.bounds.width - 10
-    
     @State private var isTCGProductsInfoLoaded = false
     
     @State private var isDBStatsDataInvalidated = false
@@ -20,7 +18,7 @@ struct HomeView: View {
     @State private var lastRefresh = Date()
     
     func refresh() async {
-        if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5 {
+        if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) < 5 {
             isDBStatsDataInvalidated = true
             isCardOfTheDayDataInvalidated = true
             isUpcomingTCGProductsInvalidated = true
@@ -29,10 +27,10 @@ struct HomeView: View {
                 isYouTubeUploadsInvalidated = true
             }
             
-            //            while dbStatsDataInvalidated == true || cardOfTheDayDataInvalidated == true {
-            //                sleep(1)
-            //            }
             
+            while(isDBStatsDataInvalidated && isCardOfTheDayDataInvalidated && isUpcomingTCGProductsInvalidated) {
+                try? await Task.sleep(for: .milliseconds(500))
+            }
             lastRefresh = Date()
         }
     }
