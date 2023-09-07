@@ -18,7 +18,7 @@ struct HomeView: View {
     @State private var lastRefresh = Date()
     
     func refresh() async {
-        if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) < 5 {
+        if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5 {
             isDBStatsDataInvalidated = true
             isCardOfTheDayDataInvalidated = true
             isUpcomingTCGProductsInvalidated = true
