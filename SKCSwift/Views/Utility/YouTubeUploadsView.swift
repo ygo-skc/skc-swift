@@ -20,8 +20,7 @@ struct YouTubeUploadsView: View {
     init(isDataInvalidated: Binding<Bool> = .constant(false))  {
         self._isDataInvalidated = isDataInvalidated
         
-        let parentWidth = UIScreen.main.bounds.width
-        UPLOAD_IMG_WIDTH = parentWidth * 0.35
+        UPLOAD_IMG_WIDTH = 175
         UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.65
     }
     
