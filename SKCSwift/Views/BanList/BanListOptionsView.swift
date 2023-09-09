@@ -51,26 +51,10 @@ private struct BanListDatesView: View {
                 .padding(.trailing)
             
             Spacer()
-            if isDataLoaded && !banListDates.isEmpty {
-                InlineDateView(date: banListDates[chosenDateRange].effectiveDate)
-            }
-            else {
-                PlaceholderView(width: 70, height: 16, radius: 5)
-            }
+            ChosenDateView(isDataLoaded: isDataLoaded, chosenDateRange: chosenDateRange, banListDates: banListDates)
             Image(systemName: "arrowshape.right.fill")
                 .padding(.horizontal)
-            if isDataLoaded && !banListDates.isEmpty {
-                if chosenDateRange == 0 {
-                    Text("Present")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                } else {
-                    InlineDateView(date: banListDates[chosenDateRange - 1].effectiveDate)
-                }
-            }
-            else {
-                PlaceholderView(width: 70, height: 16, radius: 5)
-            }
+            ChosenDateView(isDataLoaded: isDataLoaded, chosenDateRange: chosenDateRange - 1, banListDates: banListDates)
             Spacer()
         }
         .task(priority: .background) {
@@ -79,6 +63,28 @@ private struct BanListDatesView: View {
         .onChange(of: $chosenFormat.wrappedValue) { _ in
             self.isDataLoaded = false
             fetchData()
+        }
+    }
+}
+
+
+private struct ChosenDateView: View {
+    let isDataLoaded: Bool
+    let chosenDateRange: Int
+    let banListDates: [BanListDate]
+    
+    var body: some View {
+        if isDataLoaded && !banListDates.isEmpty {
+            if chosenDateRange == -1 {
+                Text("Present")
+                    .font(.headline)
+                    .fontWeight(.bold)
+            } else {
+                InlineDateView(date: banListDates[chosenDateRange].effectiveDate)
+            }
+        }
+        else {
+            PlaceholderView(width: 70, height: 16, radius: 5)
         }
     }
 }
