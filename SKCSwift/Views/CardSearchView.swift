@@ -12,56 +12,52 @@ struct CardSearchView: View {
     
     var body: some View {
         NavigationStack {
-            if (!cardSearchViewModel.isFetching && !cardSearchViewModel.searchText.isEmpty && cardSearchViewModel.searchResults.isEmpty) {
-                VStack {
-                    Spacer()
-                    Text("Nothing found in database")
-                        .font(.title2)
-                }
-                .padding(.horizontal)
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .center
-                )
-            } else if (cardSearchViewModel.searchText.isEmpty) {
-                VStack(alignment: .leading) {
-                    Text("Suggestions")
-                        .font(.title2)
-                }
-                .padding(.all)
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity,
-                    alignment: .topLeading
-                )
-            }
-            
-            List(cardSearchViewModel.searchResults) { sr in
-                Section(header: HStack{
-                    CardColorIndicator(cardColor: sr.section)
-                    Text(sr.section)
-                }
-                    .font(.headline)
-                    .fontWeight(.black) ) {
-                        ForEach(sr.results, id: \.cardID) { card in
-                            NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
-                                CardSearchResultView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                            })
+            VStack {
+                if (!cardSearchViewModel.searchResults.isEmpty) {
+                    List(cardSearchViewModel.searchResults) { sr in
+                        Section(header: HStack{
+                            CardColorIndicator(cardColor: sr.section)
+                            Text(sr.section)
+                        }
+                            .font(.headline)
+                            .fontWeight(.black) ) {
+                                ForEach(sr.results, id: \.cardID) { card in
+                                    NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
+                                        CardSearchResultView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                    })
+                                }
+                            }
+                    }
+                    .listStyle(.plain)
+                    .ignoresSafeArea(.keyboard)
+                } else {
+                    VStack {
+                        if (!cardSearchViewModel.isFetching && !cardSearchViewModel.searchText.isEmpty) {
+                            Text("Nothing found in database")
+                                .font(.title2)
+                                .frame(
+                                    maxWidth: .infinity,
+                                    maxHeight: .infinity,
+                                    alignment: .center
+                                )
+                        } else {
+                            Text("Trending")
+                                .font(.title2)
                         }
                     }
+                    .padding(.horizontal)
+                }
             }
-            .listStyle(.plain)
             .navigationTitle("Search")
-            .searchable(text: $cardSearchViewModel.searchText, prompt: "Search for card...")
-            .disableAutocorrection(true)
-            .onChange(of: cardSearchViewModel.searchText, perform: cardSearchViewModel.newSearchSubject)
             .frame(
                 maxWidth: .infinity,
-                maxHeight: .infinity
+                maxHeight: .infinity,
+                alignment: .topLeading
             )
-            .ignoresSafeArea(.keyboard)
         }
+        .searchable(text: $cardSearchViewModel.searchText, prompt: "Search for card...")
+        .onChange(of: cardSearchViewModel.searchText, perform: cardSearchViewModel.newSearchSubject)
+        .disableAutocorrection(true)
         .scrollDismissesKeyboard(.immediately)
     }
 }
