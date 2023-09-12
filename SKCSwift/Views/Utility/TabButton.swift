@@ -18,7 +18,7 @@ struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
         })
         {
             Text(value.rawValue)
-                .font(.subheadline)
+                .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(selected == value ? .white : .primary)
                 .padding(.vertical, 5)

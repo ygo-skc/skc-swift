@@ -26,14 +26,15 @@ struct InlineDateView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 3)
                 .background(Color("pink_red"))
-                .font(.subheadline)
-                .fontWeight(.heavy)
+                .font(.caption)
+                .fontWeight(.black)
                 .foregroundColor(Color(.white))
             Group {
                 Text("\(day), ")
                     .fontWeight(.semibold)
                 + Text(year)
             }
+            .font(.caption2)
             .foregroundColor(.primary)
             .padding(.horizontal, 8)
         }
