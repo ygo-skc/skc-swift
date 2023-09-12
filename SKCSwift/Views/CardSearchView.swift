@@ -28,6 +28,7 @@ struct CardSearchView: View {
                                 }
                             }
                     }
+                    .scrollDismissesKeyboard(.immediately)
                     .listStyle(.plain)
                     .ignoresSafeArea(.keyboard)
                 } else {
@@ -58,7 +59,6 @@ struct CardSearchView: View {
         .searchable(text: $cardSearchViewModel.searchText, prompt: "Search for card...")
         .onChange(of: cardSearchViewModel.searchText, perform: cardSearchViewModel.newSearchSubject)
         .disableAutocorrection(true)
-        .scrollDismissesKeyboard(.immediately)
     }
 }
 
