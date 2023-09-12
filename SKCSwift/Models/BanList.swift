@@ -18,12 +18,12 @@ struct BanListsForCard: Codable {
     var DL: [BanList]?
 }
 
-struct BanListDates: Codable {
+struct BanListDates: Codable, Hashable {
     var banListDates: [BanListDate]
     var _links: HLink
 }
 
-struct BanListDate: Codable {
+struct BanListDate: Codable, Hashable {
     var format: String
     var effectiveDate: String
     var _links: BanListDateHLink

@@ -26,17 +26,20 @@ private struct BanListDatesView: View {
     @Binding var banListDates: [BanListDate]
     
     @State private var isDataLoaded = false
+    @State private var showDateSelectorSheet = false
     
     private func fetchData() {
-        request(url: banListDatesURL(format: "\(chosenFormat)")) { (result: Result<BanListDates, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let dates):
-                    self.banListDates = dates.banListDates
-                    self.chosenDateRange = 0
-                    self.isDataLoaded = true
-                case .failure(let error):
-                    print(error)
+        if !isDataLoaded {
+            request(url: banListDatesURL(format: "\(chosenFormat)")) { (result: Result<BanListDates, Error>) -> Void in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let dates):
+                        self.banListDates = dates.banListDates
+                        self.chosenDateRange = 0
+                        self.isDataLoaded = true
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
             }
         }
@@ -45,17 +48,21 @@ private struct BanListDatesView: View {
     var body: some View {
         HStack {
             Text("Range")
-                .font(.title3)
+                .font(.headline)
                 .fontWeight(.bold)
                 .foregroundColor(.secondary)
-                .padding(.trailing)
             
-            Spacer()
-            ChosenDateView(isDataLoaded: isDataLoaded, chosenDateRange: chosenDateRange, banListDates: banListDates)
-            Image(systemName: "arrowshape.right.fill")
-                .padding(.horizontal)
-            ChosenDateView(isDataLoaded: isDataLoaded, chosenDateRange: chosenDateRange - 1, banListDates: banListDates)
-            Spacer()
+            Button() {
+                showDateSelectorSheet.toggle()
+            } label: {
+                if !banListDates.isEmpty {
+                    BanListDateRangeView(fromDate: banListDates[chosenDateRange].effectiveDate, toDate: (chosenDateRange == 0) ? nil : banListDates[chosenDateRange - 1].effectiveDate)
+                }
+            }
+            .buttonStyle(.bordered)
+            .tint(Color.accentColor)
+            .foregroundColor(.black)
+            .frame(maxWidth: .infinity)
         }
         .task(priority: .background) {
             fetchData()
@@ -64,31 +71,128 @@ private struct BanListDatesView: View {
             self.isDataLoaded = false
             fetchData()
         }
+        .popover(isPresented: $showDateSelectorSheet) {
+            BanListDateRangePicker(chosenDateRange: $chosenDateRange, showDateSelectorSheet: $showDateSelectorSheet, banListDates: banListDates)
+        }
     }
 }
 
+private func getYear(banListDate: String) -> String {
+    return String(banListDate.split(separator: "-", maxSplits: 1)[0])
+}
 
-private struct ChosenDateView: View {
-    let isDataLoaded: Bool
-    let chosenDateRange: Int
-    let banListDates: [BanListDate]
+private struct BanListDateRangePicker: View {
+    @State private var chosenYear: String
+    @Binding private var chosenDateRange: Int
+    @Binding private var showDateSelectorSheet: Bool
+    
+    private let banListDates: [BanListDate]
+    
+    private var banListEffectiveDatesByYear = [String:[String]]()
+    private var banListEffectiveDatesByInd = [String:Int]()
+    private let yearsSortedDesc: [String]
+    
+    init(chosenDateRange: Binding<Int>, showDateSelectorSheet: Binding<Bool>, banListDates: [BanListDate]) {
+        self._chosenDateRange = chosenDateRange
+        self._showDateSelectorSheet = showDateSelectorSheet
+        
+        self.banListDates = banListDates
+        
+        
+        for (ind, banList) in banListDates.enumerated() {
+            let banListDate = banList.effectiveDate
+            banListEffectiveDatesByInd[banListDate] = ind
+            banListEffectiveDatesByYear[getYear(banListDate: banListDate), default: [String]()].append(banListDate)
+        }
+        
+        yearsSortedDesc = Array(banListEffectiveDatesByYear.keys).sorted(by: >)
+        chosenYear = getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate)
+    }
     
     var body: some View {
-        if isDataLoaded && !banListDates.isEmpty {
-            if chosenDateRange == -1 {
-                Text("Present")
-                    .font(.headline)
-                    .fontWeight(.bold)
-            } else {
-                InlineDateView(date: banListDates[chosenDateRange].effectiveDate)
+        VStack(alignment: .leading) {
+            Group {
+                Text("Choose Ban List")
+                    .font(.title2)
+                    .bold()
+                    .padding(.top)
+                
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(yearsSortedDesc, id: \.self) { year in
+                            Button() {
+                                chosenYear = year
+                            } label: {
+                                Text(year)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            ScrollView {
+                LazyVStack {
+                    ForEach(banListEffectiveDatesByYear[chosenYear]!, id: \.self) { year in
+                        Button() {
+                            chosenDateRange = banListEffectiveDatesByInd[year]!
+                            showDateSelectorSheet = false
+                        } label: {
+                            HStack {
+                                BanListDateRangeView(fromDate: year, toDate: (banListEffectiveDatesByInd[year] == 0) ? nil : banListDates[banListEffectiveDatesByInd[year]! - 1].effectiveDate)
+                                Spacer()
+                                Circle()
+                                    .frame(width: 20, height: 20)
+                                    .if(chosenDateRange == banListEffectiveDatesByInd[year]) {
+                                        $0.foregroundColor(Color.accentColor)
+                                    } else: {
+                                        $0.foregroundColor(.secondary.opacity(0.7))
+                                    }
+                            }
+                            .padding(.vertical, 5)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.horizontal)
+                }
             }
         }
-        else {
-            PlaceholderView(width: 70, height: 16, radius: 5)
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
+        .frame(maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+
+private struct BanListDateRangeView: View {
+    let fromDate: String
+    let toDate: String?
+    
+    var body: some View {
+        HStack {
+            ChosenBanListDateView(date: fromDate)
+            Image(systemName: "arrowshape.right.fill")
+                .foregroundColor(.primary)
+            ChosenBanListDateView(date: toDate)
         }
     }
 }
 
+
+private struct ChosenBanListDateView: View {
+    let date: String?
+    
+    var body: some View {
+        if date != nil {
+            InlineDateView(date: date!)
+        } else {
+            Text("Present")
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(.primary)
+        }
+    }
+}
 
 struct BanListFormatsView: View {
     @Binding var chosenFormat: BanListFormat
@@ -100,7 +204,7 @@ struct BanListFormatsView: View {
     var body: some View {
         HStack {
             Text("Format")
-                .font(.title3)
+                .font(.headline)
                 .fontWeight(.bold)
                 .foregroundColor(.secondary)
                 .padding(.trailing)

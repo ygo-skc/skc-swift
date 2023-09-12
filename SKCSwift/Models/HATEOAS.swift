@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct HLink: Codable {
+struct HLink: Codable, Hashable {
     var `self`: HSelf
 }
 
-struct BanListDateHLink: Codable {
+struct BanListDateHLink: Codable, Hashable {
     var banListContent: HSelf
     var banListNewContent: HSelf
     var banListRemovedContent: HSelf
@@ -22,6 +22,6 @@ struct BanListDateHLink: Codable {
     }
 }
 
-struct HSelf: Codable {
+struct HSelf: Codable, Hashable {
     var href: String
 }
