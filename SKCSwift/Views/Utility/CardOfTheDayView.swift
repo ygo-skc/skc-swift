@@ -53,8 +53,8 @@ struct CardOfTheDayView: View {
                             InlineDateView(date: date)
                             Text(card.cardName)
                                 .lineLimit(2)
-                                .font(.headline)
-                                .fontWeight(.bold)
+                                .font(.title3)
+                                .fontWeight(.semibold)
                             
                             HStack {
                                 CardColorIndicator(cardColor: card.cardColor, variant: .small)

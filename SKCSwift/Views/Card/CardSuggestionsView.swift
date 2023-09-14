@@ -69,12 +69,10 @@ struct CardSuggestionsView: View {
             VStack(alignment: .leading, spacing: 5) {
                 if isSuggestionDataLoaded && isSupportDataLoaded {
                     Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
-                        .fontWeight(.light)
                         .padding(.bottom)
                     if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
-                        Text("Nothing here 🤔")
-                            .font(.headline)
-                            .fontWeight(.regular)
+                        Text("Nothing to suggest 🤔")
+                            .font(.title3)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.bottom)
                     } else {
@@ -115,11 +113,10 @@ private struct SuggestionCarouselView: View {
     var body: some View {
         if (!references.isEmpty) {
             Text(header)
-                .font(.title3)
-                .fontWeight(.bold)
+                .font(.headline)
+                .fontWeight(.heavy)
+                
             Text(subHeader)
-                .font(.callout)
-                .fontWeight(.light)
                 .padding(.bottom)
             
             ScrollView(.horizontal) {
@@ -155,11 +152,10 @@ private struct SupportCarouselView: View {
     var body: some View {
         if (!references.isEmpty) {
             Text(header)
-                .font(.title3)
-                .fontWeight(.bold)
+                .font(.headline)
+                .fontWeight(.heavy)
+            
             Text(subHeader)
-                .font(.callout)
-                .fontWeight(.light)
                 .padding(.bottom)
             
             ScrollView(.horizontal) {

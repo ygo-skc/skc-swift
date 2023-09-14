@@ -18,14 +18,13 @@ struct SuggestedCardView: View {
                     RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
                     
                     Text("\(occurrence) Reference(s)")
-                        .font(.headline)
-                        .fontWeight(.regular)
+                        .font(.subheadline)
                 }
                 
                 CardStatsView(card: card, variant: .condensed)
             }
             .contentShape(Rectangle())
-            .frame(width: 250)
+            .frame(width: 220)
         })
         .buttonStyle(PlainButtonStyle())
     }

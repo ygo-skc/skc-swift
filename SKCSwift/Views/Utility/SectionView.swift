@@ -19,7 +19,7 @@ struct SectionView<Destination: View, Content: View>: View {
         VStack(alignment: .leading, spacing: (variant == .styled) ? 5 : 10) {
             Text(header)
                 .font(.title2)
-                .fontWeight(.heavy)
+                .fontWeight(.bold)
             if disableDestination {
                 content()
                     .modifier(SectionContentViewModifier(variant: variant))

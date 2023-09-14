@@ -105,13 +105,13 @@ private struct MonsterTypeModifier: ViewModifier {
         switch(variant) {
         case .normal:
             content
-                .font(.headline)
+                .font(.body)
                 .fontWeight(.medium)
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 1.0)
         case .condensed:
             content
-                .font(.subheadline)
+                .font(.footnote)
                 .fontWeight(.medium)
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 1.0)
@@ -132,9 +132,9 @@ private struct CardEffectModifier: ViewModifier {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
         case .condensed:
             content
-                .font(.callout)
-                .lineLimit(3, reservesSpace: true)
+                .font(.footnote)
                 .fontWeight(.light)
+                .lineLimit(3, reservesSpace: true)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
         }
@@ -151,7 +151,7 @@ private struct CardIdModifier: ViewModifier {
                 .font(.callout)
         case .condensed:
             content
-                .font(.footnote)
+                .font(.caption)
         }
     }
 }
@@ -167,7 +167,7 @@ private struct MonsterAttackDefenseModifier: ViewModifier {
                 .fontWeight(.bold)
         case .condensed:
             content
-                .font(.footnote)
+                .font(.caption)
                 .fontWeight(.bold)
         }
     }

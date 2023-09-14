@@ -50,7 +50,7 @@ private struct BanListDatesView: View {
             Text("Range")
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundColor(.secondary)
+                .padding(.trailing)
             
             Button() {
                 showDateSelectorSheet.toggle()
@@ -206,7 +206,6 @@ struct BanListFormatsView: View {
             Text("Format")
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundColor(.secondary)
                 .padding(.trailing)
             ForEach(BanListFormatsView.formats, id: \.rawValue) { format in
                 TabButton(selected: $chosenFormat, value: format, animmation: animation)

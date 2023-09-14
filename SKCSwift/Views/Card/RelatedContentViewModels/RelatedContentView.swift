@@ -44,8 +44,7 @@ private struct RelatedContentSectionHeaderViewModel: View {
     
     var body: some View {
         Text(header)
-            .font(.title3)
-            .fontWeight(.medium)
+            .font(.headline)
     }
 }
 
@@ -173,7 +172,8 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
         } label: {
             HStack {
                 Text(text)
-                    .font(.headline)
+                    .font(.subheadline)
+                    .bold()
                 Image(systemName: "chevron.right")
             }
         }

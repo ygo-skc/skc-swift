@@ -27,7 +27,7 @@ struct InlineDateView: View {
                 .padding(.vertical, 3)
                 .background(Color("pink_red"))
                 .font(.caption)
-                .fontWeight(.black)
+                .fontWeight(.semibold)
                 .foregroundColor(Color(.white))
             Group {
                 Text("\(day), ")

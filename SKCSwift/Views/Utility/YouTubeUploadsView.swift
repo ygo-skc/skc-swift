@@ -21,7 +21,7 @@ struct YouTubeUploadsView: View {
         self._isDataInvalidated = isDataInvalidated
         
         UPLOAD_IMG_WIDTH = 175
-        UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.65
+        UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.6
     }
     
     private func fetchData() {

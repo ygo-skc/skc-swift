@@ -42,10 +42,11 @@ struct DBStatsView: View {
                     content: {
             VStack(alignment: .leading, spacing: 5) {
                 Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
+                    .padding(.bottom)
                     .font(.body)
                 
                 Text("DB Stats")
-                    .font(.title2)
+                    .font(.title3)
                     .frame(
                         minWidth: 0,
                         maxWidth: .infinity,
@@ -90,7 +91,7 @@ private struct DBStatView: View {
             }
             Text(stat)
                 .font(.headline)
-                .fontWeight(.heavy)
+                .fontWeight(.bold)
         }
     }
 }
