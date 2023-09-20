@@ -75,10 +75,7 @@ struct CardOfTheDayView: View {
                 .contentShape(Rectangle())
             }
         )
-        .task(priority: .background) {
-            fetchData()
-        }
-        .onChange(of: $isDataInvalidated.wrappedValue) { _ in
+        .onChange(of: $isDataInvalidated.wrappedValue, initial: true) {
             fetchData()
         }
     }

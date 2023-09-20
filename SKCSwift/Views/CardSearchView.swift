@@ -57,7 +57,9 @@ struct CardSearchView: View {
             )
         }
         .searchable(text: $cardSearchViewModel.searchText, prompt: "Search for card...")
-        .onChange(of: cardSearchViewModel.searchText, perform: cardSearchViewModel.newSearchSubject)
+        .onChange(of: cardSearchViewModel.searchText, initial: false) { _, newValue in
+            cardSearchViewModel.newSearchSubject(value: newValue)
+        }
         .disableAutocorrection(true)
     }
 }

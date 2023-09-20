@@ -66,10 +66,7 @@ struct YouTubeUploadsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         })
-        .task(priority: .background) {
-            fetchData()
-        }
-        .onChange(of: $isDataInvalidated.wrappedValue) { _ in
+        .onChange(of: $isDataInvalidated.wrappedValue, initial: true) {
             fetchData()
         }
     }

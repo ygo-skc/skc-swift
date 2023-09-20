@@ -64,10 +64,7 @@ private struct BanListDatesView: View {
             .foregroundColor(.black)
             .frame(maxWidth: .infinity)
         }
-        .task(priority: .background) {
-            fetchData()
-        }
-        .onChange(of: $chosenFormat.wrappedValue) { _ in
+        .onChange(of: $chosenFormat.wrappedValue, initial: true) {
             self.isDataLoaded = false
             fetchData()
         }
