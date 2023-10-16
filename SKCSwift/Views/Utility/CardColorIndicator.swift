@@ -40,5 +40,6 @@ private struct CardColorIndicatorModifier: ViewModifier {
 struct CardColorIndicator_Previews: PreviewProvider {
     static var previews: some View {
         CardColorIndicator(cardColor: "Effect")
+        CardColorIndicator(cardColor: "Pendulum-Effect")
     }
 }

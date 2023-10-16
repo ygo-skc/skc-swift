@@ -50,17 +50,17 @@ func cardColorUI(cardColor: String) -> Color {
 func cardColorGradient(cardColor: String) -> LinearGradient {
     switch cardColor {
     case "Pendulum-Normal":
-        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: Color("normal"), location: 0.4), Gradient.Stop(color: Color("spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
+        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: cardColorUI(cardColor: "Normal"), location: 0.4), Gradient.Stop(color: cardColorUI(cardColor: "Spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
     case "Pendulum-Effect":
-        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: Color("effect"), location: 0.4), Gradient.Stop(color: Color("spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
+        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: cardColorUI(cardColor: "Effect"), location: 0.4), Gradient.Stop(color: cardColorUI(cardColor: "Spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
     case "Pendulum-Ritual":
-        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: Color("ritual"), location: 0.4), Gradient.Stop(color: Color("spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
+        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: cardColorUI(cardColor: "Ritual"), location: 0.4), Gradient.Stop(color: cardColorUI(cardColor: "Spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
     case "Pendulum-Fusion":
-        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: Color("fusion"), location: 0.4), Gradient.Stop(color: Color("spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
+        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: cardColorUI(cardColor: "Fusion"), location: 0.4), Gradient.Stop(color: cardColorUI(cardColor: "Spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
     case "Pendulum-Synchro":
-        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: Color("synchro"), location: 0.4), Gradient.Stop(color: Color("spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
+        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: cardColorUI(cardColor: "Synchro"), location: 0.4), Gradient.Stop(color: cardColorUI(cardColor: "Spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
     case "Pendulum-Xyz":
-        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: Color("xyz"), location: 0.4), Gradient.Stop(color: Color("spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
+        return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: cardColorUI(cardColor: "Xyz"), location: 0.4), Gradient.Stop(color: cardColorUI(cardColor: "Spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
     default:
         return LinearGradient(gradient: Gradient(colors: [.white, .white]), startPoint: .top, endPoint: .bottom)
     }
