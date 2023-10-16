@@ -65,9 +65,6 @@ struct DBStatsView: View {
                     maxWidth: .infinity
                 )
             }
-            .task(priority: .background) {
-                fetchData()
-            }
             .onChange(of: $isDataInvalidated.wrappedValue, initial: true) {
                 fetchData()
             }

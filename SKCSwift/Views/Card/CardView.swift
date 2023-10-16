@@ -71,6 +71,7 @@ struct CardView: View {
             }
             .frame(maxHeight: .infinity)
         }
+        .scrollIndicators(.hidden)
         .navigationTitle("Card")
     }
 }

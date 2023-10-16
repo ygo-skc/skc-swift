@@ -33,7 +33,7 @@ struct CalendarDateView: View {
             Text(year)
                 .modifier(DateViewYearModifier(variant: variant))
         }
-        .background(Color("gray"))
+        .background(Color("date_gray"))
         .modifier(DateViewParentModifier(variant: variant))
     }
 }

@@ -72,7 +72,7 @@ struct CardSuggestionsView: View {
                         .padding(.bottom)
                     if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
                         Text("Nothing to suggest 🤔")
-                            .font(.title3)
+                            .font(.subheadline)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.bottom)
                     } else {

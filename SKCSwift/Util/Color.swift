@@ -25,23 +25,23 @@ func banStatusColor(status: String) -> Color {
 func cardColorUI(cardColor: String) -> Color {
     switch cardColor {
     case "Normal":
-        return Color("normal")
+        return Color("normal_ygo_card")
     case "Effect":
-        return Color("effect")
+        return Color("effect_ygo_card")
     case "Ritual":
-        return Color("ritual")
+        return Color("ritual_ygo_card")
     case "Fusion":
-        return Color("fusion")
+        return Color("fusion_ygo_card")
     case "Synchro":
-        return Color("synchro")
+        return Color("synchro_ygo_card")
     case "Xyz":
-        return Color("xyz")
+        return Color("xyz_ygo_card")
     case "Link":
-        return Color("link")
+        return Color("link_ygo_card")
     case "Spell":
-        return Color("spell")
+        return Color("spell_ygo_card")
     case "Trap":
-        return Color("trap")
+        return Color("trap_ygo_card")
     default:
         return .gray
     }
