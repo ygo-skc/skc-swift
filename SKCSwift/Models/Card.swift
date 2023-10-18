@@ -49,3 +49,8 @@ struct Card: Codable {
         return (monsterDefense == nil) ? Card.nilStat : String(monsterDefense!)
     }
 }
+
+// used as convenience when working with NavigationDestination
+struct CardValue: Hashable {
+    var cardID: String
+}

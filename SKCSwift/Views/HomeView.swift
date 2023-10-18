@@ -17,7 +17,9 @@ struct HomeView: View {
     
     @State private var lastRefresh = Date()
     
-    func refresh() async {
+    @State private var navigationPath = NavigationPath()
+    
+    private func refresh() async {
         if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5 {
             isDBStatsDataInvalidated = true
             isCardOfTheDayDataInvalidated = true
@@ -35,8 +37,17 @@ struct HomeView: View {
         }
     }
     
+    private func handleURL(_ url: URL) -> OpenURLAction.Result {
+        let path = url.relativePath
+        if path.contains("/card/") {
+            navigationPath.append(CardValue(cardID: path.replacingOccurrences(of: "/card/", with: "")))
+            return .handled
+        }
+        return .systemAction
+    }
+    
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             ScrollView {
                 VStack(spacing: 40) {
                     DBStatsView(isDataInvalidated: $isDBStatsDataInvalidated)
@@ -49,6 +60,10 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             }
+            .navigationDestination(for: CardValue.self) { card in
+                CardSearchLinkDestination(cardID: card.cardID)
+            }
+            .environment(\.openURL, OpenURLAction(handler: handleURL))
             .frame(maxHeight: .infinity)
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)

@@ -22,7 +22,7 @@ struct CardSearchView: View {
                             .font(.headline)
                             .fontWeight(.black) ) {
                                 ForEach(sr.results, id: \.cardID) { card in
-                                    NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
+                                    NavigationLink(value: CardValue(cardID: card.cardID), label: {
                                         CardSearchResultView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                     })
                                 }
@@ -48,6 +48,9 @@ struct CardSearchView: View {
                     }
                     .padding(.horizontal)
                 }
+            }
+            .navigationDestination(for: CardValue.self) { card in
+                CardSearchLinkDestination(cardID: card.cardID)
             }
             .navigationTitle("Search")
             .frame(

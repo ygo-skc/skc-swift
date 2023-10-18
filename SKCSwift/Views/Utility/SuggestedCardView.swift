@@ -12,7 +12,7 @@ struct SuggestedCardView: View {
     var occurrence: Int
     
     var body: some View {
-        NavigationLink(destination: CardSearchLinkDestination(cardID: card.cardID), label: {
+        NavigationLink(value: CardValue(cardID: card.cardID), label: {
             VStack {
                 HStack(spacing: 20) {
                     RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
