@@ -41,3 +41,12 @@ enum CardColorIndicatorVariant {
     case small
     case regular
 }
+
+enum YGOCardImageVariant {
+    case round
+    case rounded_corner
+}
+
+enum ImageSize: String {
+    case tiny = "tn", extra_small = "x-sm", small = "small", medium = "md", large = "lg", original = "original"
+}

@@ -47,7 +47,7 @@ struct CardOfTheDayView: View {
             destination: {CardSearchLinkDestination(cardID: card.cardID)},
             content: {
                 HStack(alignment: .top, spacing: 20) {
-                    RoundedImageView(radius: 90, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
+                    YGOCardImage(height: 90, imgSize: .tiny, cardID: card.cardID)
                     VStack(alignment: .leading, spacing: 5) {
                         if isDataLoaded {
                             InlineDateView(date: date)
@@ -81,8 +81,8 @@ struct CardOfTheDayView: View {
     }
 }
 
-struct CardOfTheDayView_Previews: PreviewProvider {
-    static var previews: some View {
-        CardOfTheDayView()
-    }
+
+#Preview {
+    CardOfTheDayView()
 }
+

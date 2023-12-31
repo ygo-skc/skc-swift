@@ -15,7 +15,7 @@ struct SuggestedCardView: View {
         NavigationLink(value: CardValue(cardID: card.cardID), label: {
             VStack {
                 HStack(spacing: 20) {
-                    RoundedImageView(radius: 100, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(card.cardID).jpg")!)
+                    YGOCardImage(height: 90.0, imgSize: .tiny, cardID: card.cardID, variant: .round)
                     
                     Text("\(occurrence) Reference(s)")
                         .font(.subheadline)
@@ -30,16 +30,14 @@ struct SuggestedCardView: View {
     }
 }
 
-struct SuggestedCardViewModel_Preview: PreviewProvider {
-    static var previews: some View {
-        SuggestedCardView(
-            card: Card(
-                cardID: "40044918",
-                cardName: "Elemental HERO Stratos",
-                cardColor: "Effect",
-                cardAttribute: "Wind",
-                cardEffect: "Draw 2",
-                monsterType: "Warrior/Effect"
-            ), occurrence: 1)
-    }
+#Preview {    
+    SuggestedCardView(
+        card: Card(
+            cardID: "40044918",
+            cardName: "Elemental HERO Stratos",
+            cardColor: "Effect",
+            cardAttribute: "Wind",
+            cardEffect: "Draw 2",
+            monsterType: "Warrior/Effect"
+        ), occurrence: 1)
 }

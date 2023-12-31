@@ -24,6 +24,7 @@
 		1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */; };
 		1F39328B2A34CA4800BD0DD2 /* YouTubeUploads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39328A2A34CA4800BD0DD2 /* YouTubeUploads.swift */; };
 		1F39328D2A34CC3600BD0DD2 /* YouTubeUploadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */; };
+		1F3B51052B41EC6F002D79D8 /* YGOCardImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3B51042B41EC6F002D79D8 /* YGOCardImage.swift */; };
 		1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A7296739F500EE4EBE /* APIURLs.swift */; };
 		1F3C10AA29673E1200EE4EBE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A929673E1200EE4EBE /* CardView.swift */; };
 		1F601D06297DFBFC007E1E0C /* CardSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */; };
@@ -100,6 +101,7 @@
 		1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectImage.swift; sourceTree = "<group>"; };
 		1F39328A2A34CA4800BD0DD2 /* YouTubeUploads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeUploads.swift; sourceTree = "<group>"; };
 		1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YouTubeUploadsView.swift; sourceTree = "<group>"; };
+		1F3B51042B41EC6F002D79D8 /* YGOCardImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YGOCardImage.swift; sourceTree = "<group>"; };
 		1F3C10A7296739F500EE4EBE /* APIURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLs.swift; sourceTree = "<group>"; };
 		1F3C10A929673E1200EE4EBE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestions.swift; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
 				1F96D78F2A507F3C0033150D /* InlineDateView.swift */,
 				1F96D7952A50E8830033150D /* TabButton.swift */,
+				1F3B51042B41EC6F002D79D8 /* YGOCardImage.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -478,6 +481,7 @@
 				1F0F994429F8A4E400AA9F69 /* CardSearchViewModel.swift in Sources */,
 				1F7655302964CB2D00512EF1 /* PlaceholderView.swift in Sources */,
 				1F68DA382988C22B00541E81 /* RelatedBanListsContentView.swift in Sources */,
+				1F3B51052B41EC6F002D79D8 /* YGOCardImage.swift in Sources */,
 				1F1C1D3D2A353B1800E73D67 /* BanListOptionsView.swift in Sources */,
 				1F21FF6C2977BC2D00B4451A /* Color.swift in Sources */,
 				1FBE069A29FDBE8000EA85A4 /* Events.swift in Sources */,
@@ -697,7 +701,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -732,7 +736,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

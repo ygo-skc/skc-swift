@@ -76,12 +76,9 @@ struct CardSearchLinkDestination: View {
     }
 }
 
-struct SearchCardViewModel_Previews: PreviewProvider {
-    static var previews: some View {
-        CardSearchView()
-    }
+#Preview("Card Search View") {
+    CardSearchView()
 }
-
 
 private struct CardSearchResultView: View {
     var cardID: String
@@ -90,7 +87,7 @@ private struct CardSearchResultView: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            RoundedImageView(radius: 60, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/tn/\(cardID).jpg")!)
+            YGOCardImage(height: 60, imgSize: .tiny, cardID: cardID)
             VStack(alignment: .leading) {
                 Text(cardName)
                     .fontWeight(.bold)
@@ -108,9 +105,10 @@ private struct CardSearchResultView: View {
     }
 }
 
-struct CardSearchResultView_Previews: PreviewProvider {
-    static var previews: some View {
-        CardSearchResultView(cardID: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
-        CardSearchResultView(cardID: "08949584", cardName: "A HERO Lives")
-    }
+#Preview("Card Search Result") {
+    CardSearchResultView(cardID: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
+}
+
+#Preview("Card Search Result - IMG DNE") {
+    CardSearchResultView(cardID: "08949584", cardName: "A HERO Lives")
 }

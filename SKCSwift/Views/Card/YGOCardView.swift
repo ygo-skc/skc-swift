@@ -14,7 +14,6 @@ struct YGOCardView: View {
     
     private let width: CGFloat
     private let imageSize: CGFloat
-    private let imageUrl: URL
     
     init(card: Card, isDataLoaded: Bool, variant: YGOCardViewVariant = .normal) {
         self.card = card
@@ -23,12 +22,11 @@ struct YGOCardView: View {
         
         self.width = (variant == .normal) ?  UIScreen.main.bounds.width : 220
         self.imageSize = (variant == .normal) ? width - 60 : width - 30
-        self.imageUrl = (variant == .normal) ? URL(string: "https://images.thesupremekingscastle.com/cards/lg/\(card.cardID).jpg")! : URL(string: "https://images.thesupremekingscastle.com/cards/x-sm/\(card.cardID).jpg")!
     }
     
     var body: some View {
         VStack(spacing: 5) {
-            RoundedRectImage(width: imageSize, height: imageSize, imageUrl: imageUrl)
+            YGOCardImage(height: imageSize, imgSize: .medium, cardID: card.cardID, variant: .rounded_corner)
             
             if (isDataLoaded) {
                 CardStatsView(card: card, variant: variant)
@@ -40,17 +38,15 @@ struct YGOCardView: View {
     }
 }
 
-struct YGOCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        YGOCardView(
-            card: Card(
-                cardID: "40044918",
-                cardName: "Elemental HERO Stratos",
-                cardColor: "Effect",
-                cardAttribute: "Wind",
-                cardEffect: "Draw 2",
-                monsterType: "Warrior/Effect"
-            ), isDataLoaded: true
-        )
-    }
+#Preview {
+    YGOCardView(
+        card: Card(
+            cardID: "40044918",
+            cardName: "Elemental HERO Stratos",
+            cardColor: "Effect",
+            cardAttribute: "Wind",
+            cardEffect: "Draw 2",
+            monsterType: "Warrior/Effect"
+        ), isDataLoaded: true
+    )
 }
