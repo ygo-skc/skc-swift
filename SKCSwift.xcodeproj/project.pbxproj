@@ -43,7 +43,6 @@
 		1F86EC3F29688821004F4F1B /* AttributeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC3E29688821004F4F1B /* AttributeView.swift */; };
 		1F86EC48296A0055004F4F1B /* CalendarDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F86EC47296A0055004F4F1B /* CalendarDateView.swift */; };
 		1F8BFA0B2A01CCEE008A66D1 /* YGOCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */; };
-		1F962B2B2967D065007974DA /* RoundedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F962B2A2967D065007974DA /* RoundedImageView.swift */; };
 		1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D78F2A507F3C0033150D /* InlineDateView.swift */; };
 		1F96D7962A50E8830033150D /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D7952A50E8830033150D /* TabButton.swift */; };
 		1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA249FE29809DC500C04B79 /* RelatedContentView.swift */; };
@@ -123,7 +122,6 @@
 		1F86EC3E29688821004F4F1B /* AttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeView.swift; sourceTree = "<group>"; };
 		1F86EC47296A0055004F4F1B /* CalendarDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDateView.swift; sourceTree = "<group>"; };
 		1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YGOCardView.swift; sourceTree = "<group>"; };
-		1F962B2A2967D065007974DA /* RoundedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedImageView.swift; sourceTree = "<group>"; };
 		1F96D78F2A507F3C0033150D /* InlineDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineDateView.swift; sourceTree = "<group>"; };
 		1F96D7952A50E8830033150D /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
 		1FA249FE29809DC500C04B79 /* RelatedContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContentView.swift; sourceTree = "<group>"; };
@@ -263,7 +261,6 @@
 				1F86EC47296A0055004F4F1B /* CalendarDateView.swift */,
 				1FB9823D29FA117800679D81 /* DBStatsView.swift */,
 				1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */,
-				1F962B2A2967D065007974DA /* RoundedImageView.swift */,
 				1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */,
 				1FB9823B29F9D27900679D81 /* SectionView.swift */,
 				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
@@ -520,7 +517,6 @@
 				1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */,
 				1F1C1D3A2A3539C600E73D67 /* HATEOAS.swift in Sources */,
 				1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */,
-				1F962B2B2967D065007974DA /* RoundedImageView.swift in Sources */,
 				1F6687E02967904400C8555D /* CardSearchView.swift in Sources */,
 				1F6687E2296798E700C8555D /* HomeView.swift in Sources */,
 				1F8BFA0B2A01CCEE008A66D1 /* YGOCardView.swift in Sources */,
