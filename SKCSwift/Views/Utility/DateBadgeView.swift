@@ -8,18 +8,18 @@
 import SwiftUI
 
 
-struct CalendarDateView: View {
+struct DateBadgeView: View {
     private let month: String
     private let day: String
     private let year: String
-    private let variant: DateViewVariant
+    private let variant: DateBadgeViewVariant
     
-    init(date: String, formatter: DateFormatter = Dates.yyyyMMddDateFormatter, variant: DateViewVariant = .normal) {
+    init(date: String, formatter: DateFormatter = Dates.yyyyMMddDateFormatter, variant: DateBadgeViewVariant = .normal) {
         self.variant = variant
         
         let date = formatter.date(from: date)!
         
-        self.month = Dates.gmtCalendar.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
+        self.month = Dates.gmtCalendar.shortMonthSymbols[Dates.gmtCalendar.component(.month, from: date) - 1]
         self.day = String(Dates.gmtCalendar.component(.day, from: date))
         self.year = String(Dates.gmtCalendar.component(.year, from: date))
     }
@@ -39,7 +39,7 @@ struct CalendarDateView: View {
 }
 
 private struct DateViewParentModifier: ViewModifier {
-    let variant: DateViewVariant
+    let variant: DateBadgeViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -56,7 +56,7 @@ private struct DateViewParentModifier: ViewModifier {
 }
 
 private struct DateViewMonthModifier: ViewModifier {
-    let variant: DateViewVariant
+    let variant: DateBadgeViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -77,7 +77,7 @@ private struct DateViewMonthModifier: ViewModifier {
 }
 
 private struct DateViewDayModifier: ViewModifier {
-    let variant: DateViewVariant
+    let variant: DateBadgeViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -96,7 +96,7 @@ private struct DateViewDayModifier: ViewModifier {
 }
 
 private struct DateViewYearModifier: ViewModifier {
-    let variant: DateViewVariant
+    let variant: DateBadgeViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -110,48 +110,61 @@ private struct DateViewYearModifier: ViewModifier {
     }
 }
 
-struct DateView_Previews: PreviewProvider {
-    static var previews: some View {
-        CalendarDateView(date: "2022-01-31", variant: .condensed)
-            .previewDisplayName("Condensed")
-        
-        Group {
-            CalendarDateView(date: "2022-01-31")
-                .previewDisplayName("January")
-            CalendarDateView(date: "2022-02-18")
-                .previewDisplayName("Febuary")
-            CalendarDateView(date: "2022-03-18")
-                .previewDisplayName("March")
-            CalendarDateView(date: "2022-04-18")
-                .previewDisplayName("April")
-        }
-        
-        Group {
-            CalendarDateView(date: "2022-05-18")
-                .previewDisplayName("May")
-            CalendarDateView(date: "2022-06-18")
-                .previewDisplayName("June")
-            CalendarDateView(date: "2022-07-18")
-                .previewDisplayName("July")
-            CalendarDateView(date: "2022-08-18")
-                .previewDisplayName("August")
-        }
-        
-        Group {
-            CalendarDateView(date: "2022-09-18")
-                .previewDisplayName("Septemeber")
-            CalendarDateView(date: "2022-10-18")
-                .previewDisplayName("October")
-            CalendarDateView(date: "2022-11-18")
-                .previewDisplayName("November")
-            CalendarDateView(date: "2022-12-31")
-                .previewDisplayName("December")
-        }
-        
-        Group {
-            CalendarDateView(date: "2022-09-18")
-                .previewDisplayName("Dark Theme")
-                .preferredColorScheme(.dark)
-        }
-    }
+
+#Preview("Condensed") {
+    DateBadgeView(date: "2022-01-31", variant: .condensed)
 }
+
+#Preview("Jan") {
+    DateBadgeView(date: "2022-01-01")
+}
+
+#Preview("Feb") {
+    DateBadgeView(date: "2022-02-01")
+}
+
+#Preview("Mar") {
+    DateBadgeView(date: "2022-03-18")
+}
+
+#Preview("Apr") {
+    DateBadgeView(date: "2022-04-18")
+}
+
+#Preview("May") {
+    DateBadgeView(date: "2022-05-18")
+}
+
+#Preview("Jun") {
+    DateBadgeView(date: "2022-06-18")
+}
+
+#Preview("Jul") {
+    DateBadgeView(date: "2022-07-18")
+}
+
+#Preview("Aug") {
+    DateBadgeView(date: "2022-08-18")
+}
+
+#Preview("Sept") {
+    DateBadgeView(date: "2022-09-18")
+}
+
+#Preview("Oct") {
+    DateBadgeView(date: "2022-10-18")
+}
+
+#Preview("Nov") {
+    DateBadgeView(date: "2022-11-18")
+}
+
+#Preview("Dec") {
+    DateBadgeView(date: "2022-12-18")
+}
+
+#Preview("Dark Theme") {
+    DateBadgeView(date: "2022-09-18")
+        .preferredColorScheme(.dark)
+}
+

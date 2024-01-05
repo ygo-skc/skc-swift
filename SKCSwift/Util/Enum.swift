@@ -27,7 +27,7 @@ enum SectionViewVariant {
     case styled
 }
 
-enum DateViewVariant {
+enum DateBadgeViewVariant {
     case normal
     case condensed
 }

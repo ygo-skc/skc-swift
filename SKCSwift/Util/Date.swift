@@ -13,7 +13,7 @@ enum ConversionFromSeconds: Double {
 
 struct Dates {
     static let yyyyMMddDateFormatter = configure(format: "yyyy-MM-dd")
-    static let isoDateFormatter = configure(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    static let isoDateFormatter = configure(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", abbreviation: "UTC-5")
     
     /// Use this calendar object to work with Date objects without converting to devices Timezone. This would mean that the Date being used / retrieved from DB is also using GMT TimeZone.
     static let gmtCalendar = {
@@ -22,10 +22,10 @@ struct Dates {
         return c
     }()
     
-    private static func configure(format: String) -> DateFormatter {
+    private static func configure(format: String, abbreviation: String = "GMT") -> DateFormatter {
         let f = DateFormatter()
         f.dateFormat = format
-        f.timeZone = TimeZone(abbreviation: "UTC-5")
+        f.timeZone = TimeZone(abbreviation: abbreviation)
         return f
     }
 }
