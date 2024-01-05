@@ -76,7 +76,7 @@ private struct UpcomingTCGProduct: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            DateBadgeView(date: event.eventDate, formatter: Dates.isoDateFormatter, variant: .condensed)
+            DateBadgeView(date: event.eventDate, dateFormat: Dates.isoChicago, variant: .condensed)
             
             VStack(alignment: .leading, spacing: 8) {
                 Text(event.name)

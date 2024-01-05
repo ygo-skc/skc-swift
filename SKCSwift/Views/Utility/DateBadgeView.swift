@@ -14,14 +14,11 @@ struct DateBadgeView: View {
     private let year: String
     private let variant: DateBadgeViewVariant
     
-    init(date: String, formatter: DateFormatter = Dates.yyyyMMddDateFormatter, variant: DateBadgeViewVariant = .normal) {
+    init(date: String, dateFormat: (formatter: DateFormatter, calendar: Calendar) = Dates.yyyyMMddGMT, variant: DateBadgeViewVariant = .normal) {
         self.variant = variant
         
-        let date = formatter.date(from: date)!
-        
-        self.month = Dates.gmtCalendar.shortMonthSymbols[Dates.gmtCalendar.component(.month, from: date) - 1]
-        self.day = String(Dates.gmtCalendar.component(.day, from: date))
-        self.year = String(Dates.gmtCalendar.component(.year, from: date))
+        let date = dateFormat.formatter.date(from: date)!
+        (self.month, self.day, self.year) = date.getMonthDayAndYear(calendar: dateFormat.calendar)
     }
     
     var body: some View {

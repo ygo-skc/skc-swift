@@ -12,12 +12,9 @@ struct InlineDateView: View {
     private let day: String
     private let year: String
     
-    init(date: String, formatter: DateFormatter = Dates.yyyyMMddDateFormatter) {
-        let date = formatter.date(from: date)!
-        
-        self.month = Dates.gmtCalendar.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
-        self.day = String(Dates.gmtCalendar.component(.day, from: date))
-        self.year = String(Dates.gmtCalendar.component(.year, from: date))
+    init(date: String, dateFormat: (formatter: DateFormatter, calendar: Calendar) = Dates.yyyyMMddGMT) {
+        let date = dateFormat.formatter.date(from: date)!
+        (self.month, self.day, self.year) = date.getMonthDayAndYear(calendar: dateFormat.calendar)
     }
     
     var body: some View {
@@ -43,9 +40,6 @@ struct InlineDateView: View {
     }
 }
 
-struct InlineDateView_Previews: PreviewProvider {
-    static var previews: some View {
-        InlineDateView(date: "2022-01-31")
-            .previewDisplayName("Inline")
-    }
+#Preview("Inline") {
+    InlineDateView(date: "2022-01-31")
 }
