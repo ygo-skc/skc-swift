@@ -21,7 +21,7 @@ struct YGOCardView: View {
         self.variant = variant
         
         self.width = (variant == .normal) ?  UIScreen.main.bounds.width : 220
-        self.imageSize = (variant == .normal) ? width - 60 : width - 30
+        self.imageSize = (variant == .normal) ? width - 60 : width
     }
     
     var body: some View {
@@ -48,5 +48,18 @@ struct YGOCardView: View {
             cardEffect: "Draw 2",
             monsterType: "Warrior/Effect"
         ), isDataLoaded: true
+    )
+}
+#Preview("Condensed") {
+    YGOCardView(
+        card: Card(
+            cardID: "40044918",
+            cardName: "Elemental HERO Stratos",
+            cardColor: "Effect",
+            cardAttribute: "Wind",
+            cardEffect: "Draw 2",
+            monsterType: "Warrior/Effect"
+        ), isDataLoaded: true,
+        variant: .condensed
     )
 }
