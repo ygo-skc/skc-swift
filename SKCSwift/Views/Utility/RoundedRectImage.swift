@@ -14,14 +14,21 @@ struct RoundedRectImage: View {
     var cornerRadius = 50.0
     
     var body: some View {
-        AsyncImage(url: imageUrl) { image in
-            image
-                .resizable()
-                .frame(width: width, height: height)
-                .cornerRadius(cornerRadius)
-        } placeholder: {
-            PlaceholderView(width: width, height: height, radius: cornerRadius)
-        }.frame(width: width, height: height)
+        
+        AsyncImage(url: imageUrl, transaction: Transaction(animation: .easeInOut)) { phase in
+            switch phase {
+            case .empty:
+                PlaceholderView(width: width, height: height, radius: cornerRadius)
+            case .success(let image):
+                image
+                    .resizable()
+                    .frame(width: width, height: height)
+                    .cornerRadius(cornerRadius)
+            default:
+                PlaceholderView(width: width, height: height, radius: cornerRadius)
+            }
+        }
+        .frame(width: width, height: height)
     }
 }
 

@@ -43,16 +43,6 @@ struct YGOCardImage: View {
                     .resizable()
                     .frame(width: height, height: height)
                     .cornerRadius(radius)
-            case .failure:
-                AsyncImage(url: fallbackUrl) { image in
-                    
-                    image
-                        .resizable()
-                        .frame(width: height, height: height)
-                        .cornerRadius(radius)
-                } placeholder: {
-                    PlaceholderView(width: height, height: height, radius: radius)
-                }
             default:
                 AsyncImage(url: fallbackUrl) { image in
                     
