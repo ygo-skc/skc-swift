@@ -48,6 +48,14 @@ struct CardOfTheDayView: View {
             content: {
                 HStack(alignment: .top, spacing: 20) {
                     YGOCardImage(height: 90, imgSize: .tiny, cardID: card.cardID)
+                        .overlay(
+                            Circle()
+                                .if(card.cardColor.starts(with: "Pendulum")) {
+                                    $0.stroke(cardColorGradient(cardColor: card.cardColor), lineWidth: 5)
+                                } else: {
+                                    $0.stroke(cardColorUI(cardColor: card.cardColor), lineWidth: 5)
+                                }
+                        )
                     VStack(alignment: .leading, spacing: 5) {
                         if isDataLoaded {
                             InlineDateView(date: date)
@@ -56,11 +64,8 @@ struct CardOfTheDayView: View {
                                 .font(.title3)
                                 .fontWeight(.semibold)
                             
-                            HStack {
-                                CardColorIndicator(cardColor: card.cardColor, variant: .small)
-                                Text(card.cardType())
-                                    .font(.headline)
-                            }
+                            Text(card.cardType())
+                                .font(.headline)
                         } else {
                             PlaceholderView(width: 200, height: 18, radius: 5)
                             PlaceholderView(width: 120, height: 18, radius: 5)
