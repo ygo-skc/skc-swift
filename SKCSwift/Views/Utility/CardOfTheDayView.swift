@@ -44,7 +44,7 @@ struct CardOfTheDayView: View {
         SectionView(
             header: "Card of the day",
             content: {
-                NavigationLink(value: CardValue(cardID: card.cardID), label: {
+                NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                     HStack(alignment: .top, spacing: 20) {
                         YGOCardImage(height: 90, imgSize: .tiny, cardID: card.cardID)
                             .overlay(

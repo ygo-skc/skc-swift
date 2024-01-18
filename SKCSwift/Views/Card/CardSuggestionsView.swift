@@ -159,7 +159,7 @@ private struct SupportCarouselView: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
                     ForEach(references, id: \.cardID) { card in
-                        NavigationLink(value: CardValue(cardID: card.cardID), label: {
+                        NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                             YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
                                 .contentShape(Rectangle())
                         })

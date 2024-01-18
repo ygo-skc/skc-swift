@@ -53,4 +53,5 @@ struct Card: Codable {
 // used as convenience when working with NavigationDestination
 struct CardValue: Hashable {
     var cardID: String
+    var cardName: String
 }

@@ -40,7 +40,7 @@ struct HomeView: View {
     private func handleURL(_ url: URL) -> OpenURLAction.Result {
         let path = url.relativePath
         if path.contains("/card/") {
-            navigationPath.append(CardValue(cardID: path.replacingOccurrences(of: "/card/", with: "")))
+            navigationPath.append(CardValue(cardID: path.replacingOccurrences(of: "/card/", with: ""), cardName: ""))
             return .handled
         }
         return .systemAction
@@ -61,7 +61,7 @@ struct HomeView: View {
                 .padding(.horizontal)
             }
             .navigationDestination(for: CardValue.self) { card in
-                CardSearchLinkDestination(cardID: card.cardID)
+                CardSearchLinkDestination(cardValue: card)
             }
             .environment(\.openURL, OpenURLAction(handler: handleURL))
             .frame(maxHeight: .infinity)

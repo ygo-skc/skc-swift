@@ -12,7 +12,7 @@ struct SuggestedCardView: View {
     var occurrence: Int
     
     var body: some View {
-        NavigationLink(value: CardValue(cardID: card.cardID), label: {
+        NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
             VStack {
                 HStack(spacing: 20) {
                     YGOCardImage(height: 90.0, imgSize: .tiny, cardID: card.cardID, variant: .round)
