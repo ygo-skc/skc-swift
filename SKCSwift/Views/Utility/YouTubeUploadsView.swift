@@ -46,9 +46,7 @@ struct YouTubeUploadsView: View {
     
     var body: some View {
         SectionView(header: "YouTube videos",
-                    disableDestination: true,
                     variant: .plain,
-                    destination: {EmptyView()},
                     content: {
             if !isDataLoaded {
                 ProgressView()

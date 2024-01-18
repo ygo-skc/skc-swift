@@ -41,9 +41,7 @@ struct UpcomingTCGProductsView: View {
     
     var body: some View {
         SectionView(header: "Upcoming products",
-                    disableDestination: true,
                     variant: .plain,
-                    destination: {EmptyView()},
                     content: {
             if !isDataLoaded {
                 ProgressView()

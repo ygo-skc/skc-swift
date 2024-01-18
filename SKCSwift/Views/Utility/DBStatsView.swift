@@ -37,8 +37,6 @@ struct DBStatsView: View {
     
     var body: some View {
         SectionView(header: "Content",
-                    disableDestination: true,
-                    destination: {EmptyView()},
                     content: {
             VStack(alignment: .leading, spacing: 5) {
                 Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
@@ -93,8 +91,6 @@ private struct DBStatView: View {
     }
 }
 
-struct DBStatsView_Previews: PreviewProvider {
-    static var previews: some View {
-        DBStatsView()
-    }
+#Preview {
+    DBStatsView()
 }

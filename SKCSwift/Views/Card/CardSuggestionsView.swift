@@ -62,9 +62,7 @@ struct CardSuggestionsView: View {
     
     var body: some View {
         SectionView(header: "Suggestions",
-                    disableDestination: true,
                     variant: .plain,
-                    destination: {EmptyView()},
                     content: {
             VStack(alignment: .leading, spacing: 5) {
                 if isSuggestionDataLoaded && isSupportDataLoaded {
@@ -115,7 +113,7 @@ private struct SuggestionCarouselView: View {
             Text(header)
                 .font(.headline)
                 .fontWeight(.heavy)
-                
+            
             Text(subHeader)
                 .padding(.bottom)
             
@@ -186,14 +184,16 @@ private struct SupportCarouselView: View {
     }
 }
 
-struct CardSuggestionsViewModel_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview("Air Neos Suggestions") {
+    ScrollView {
         CardSuggestionsView(cardID: "11502550")
             .padding(.horizontal)
-        
-        ScrollView {
-            CardSuggestionsView(cardID: "38033121")
-                .padding(.horizontal)
-        }
+    }
+}
+
+#Preview("Dark Magician Girl Suggestions") {
+    ScrollView {
+        CardSuggestionsView(cardID: "38033121")
+            .padding(.horizontal)
     }
 }

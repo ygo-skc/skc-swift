@@ -7,12 +7,10 @@
 
 import SwiftUI
 
-struct SectionView<Destination: View, Content: View>: View {
+struct SectionView<Content: View>: View {
     var header: String
-    var disableDestination: Bool
     var variant: SectionViewVariant = .styled
     
-    @ViewBuilder var destination: () -> Destination
     @ViewBuilder var content: () -> Content
     
     var body: some View {
@@ -20,16 +18,8 @@ struct SectionView<Destination: View, Content: View>: View {
             Text(header)
                 .font(.title2)
                 .fontWeight(.bold)
-            if disableDestination {
-                content()
-                    .modifier(SectionContentViewModifier(variant: variant))
-            } else {
-                NavigationLink(destination: destination, label: {
-                    content()
-                        .modifier(SectionContentViewModifier(variant: variant))
-                })
-                .buttonStyle(PlainButtonStyle())
-            }
+            content()
+                .modifier(SectionContentViewModifier(variant: variant))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
@@ -54,31 +44,25 @@ private struct SectionContentViewModifier: ViewModifier {
     }
 }
 
-struct SectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        SectionView(
-            header: "Header",
-            disableDestination: true,
-            destination: {EmptyView()},
-            content: {
-                VStack {
-                    Text("Yo")
-                }}
-        )
-        .padding(.horizontal)
-        .previewDisplayName("Styled")
-        
-        SectionView(
-            header: "Header",
-            disableDestination: true,
-            variant: .plain,
-            destination: {EmptyView()},
-            content: {
-                VStack {
-                    Text("This is some text!")
-                }}
-        )
-        .padding(.horizontal)
-        .previewDisplayName("Plain")
-    }
+#Preview("Styled") {
+    SectionView(
+        header: "Header",
+        content: {
+            VStack {
+                Text("Yo")
+            }}
+    )
+    .padding(.horizontal)
+}
+
+#Preview("Plain") {
+    SectionView(
+        header: "Header",
+        variant: .plain,
+        content: {
+            VStack {
+                Text("This is some text!")
+            }}
+    )
+    .padding(.horizontal)
 }

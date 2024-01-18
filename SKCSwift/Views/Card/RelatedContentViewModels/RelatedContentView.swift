@@ -18,9 +18,7 @@ struct RelatedContentView: View {
     
     var body: some View {
         SectionView(header: "Explore",
-                    disableDestination: true,
                     variant: .plain,
-                    destination: {EmptyView()},
                     content: {
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .top, spacing: 15) {
@@ -183,64 +181,63 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
     }
 }
 
-struct RelatedContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        RelatedContentView(cardName: "Elemental HERO Stratos",
-                           products: [
-                            Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector", productReleaseDate: "2022-03-11",
-                                    productContent: [
-                                        ProductContent(productPosition: "015", rarities: ["Duel Terminal Normal Parallel Rare", "Common"])
-                                    ]
-                                   )
-                           ],
-                           tcgBanLists: [
-                            BanList(banListDate: "2019-07-15", cardID: "40044918", banStatus: "Semi-Limited", format: "TCG"),
-                            BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG"),
-                            BanList(banListDate: "2019-01-28", cardID: "40044918", banStatus: "Limited", format: "TCG")
-                           ],
-                           mdBanLists: [],
-                           dlBanLists: []
-        )
-        .previewDisplayName("Stratos")
-        
-        RelatedContentView(cardName: "Elemental HERO Liquid Soldier",
-                           products: [
-                            Product(productId: "LDS3", productLocale: "EN", productName: "Legendary Duelists: Season 3", productType: "Set", productSubType: "Reprint", productReleaseDate: "2022-07-22",
-                                    productContent: [
-                                        ProductContent(productPosition: "103", rarities: ["Secret Rare"])
-                                    ]
-                                   ),
-                            Product(productId: "LED6", productLocale: "EN", productName: "Legendary Duelists: Magical Hero", productType: "Pack", productSubType: "Legendary Duelists", productReleaseDate: "2020-01-17",
-                                    productContent: [
-                                        ProductContent(productPosition: "013", rarities: ["Ultra Rare"])
-                                    ]
-                                   )
-                           ],
-                           tcgBanLists: [],
-                           mdBanLists: [],
-                           dlBanLists: [
-                            BanList(banListDate: "2022-12-26", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
-                            BanList(banListDate: "2022-12-08", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
-                            BanList(banListDate: "2022-09-28", cardID: "59392529", banStatus: "Limited 2", format: "DL")
-                           ]
-        )
-        .previewDisplayName("Liquid Boi")
-        
-        RelatedContentView(cardName: "Monster Reborn",
-                           products: [],
-                           tcgBanLists: [
-                            BanList(banListDate: "2022-12-01", cardID: "83764718", banStatus: "Limited", format: "TCG"),
-                            BanList(banListDate: "2022-10-03", cardID: "83764718", banStatus: "Limited", format: "TCG")
-                           ],
-                           mdBanLists: [
-                            BanList(banListDate: "2023-01-10", cardID: "83764718", banStatus: "Limited", format: "MD")
-                           ],
-                           dlBanLists: [
-                            BanList(banListDate: "2022-12-26", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
-                            BanList(banListDate: "2022-12-08", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
-                            BanList(banListDate: "2022-09-28", cardID: "83764718", banStatus: "Limited 1", format: "DL")
-                           ]
-        )
-        .previewDisplayName("Liquid Boi")
-    }
+#Preview("Stratos") {
+    RelatedContentView(cardName: "Elemental HERO Stratos",
+                       products: [
+                        Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector", productReleaseDate: "2022-03-11",
+                                productContent: [
+                                    ProductContent(productPosition: "015", rarities: ["Duel Terminal Normal Parallel Rare", "Common"])
+                                ]
+                               )
+                       ],
+                       tcgBanLists: [
+                        BanList(banListDate: "2019-07-15", cardID: "40044918", banStatus: "Semi-Limited", format: "TCG"),
+                        BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG"),
+                        BanList(banListDate: "2019-01-28", cardID: "40044918", banStatus: "Limited", format: "TCG")
+                       ],
+                       mdBanLists: [],
+                       dlBanLists: []
+    )
+}
+
+#Preview("Liquid Boi") {
+    RelatedContentView(cardName: "Elemental HERO Liquid Soldier",
+                       products: [
+                        Product(productId: "LDS3", productLocale: "EN", productName: "Legendary Duelists: Season 3", productType: "Set", productSubType: "Reprint", productReleaseDate: "2022-07-22",
+                                productContent: [
+                                    ProductContent(productPosition: "103", rarities: ["Secret Rare"])
+                                ]
+                               ),
+                        Product(productId: "LED6", productLocale: "EN", productName: "Legendary Duelists: Magical Hero", productType: "Pack", productSubType: "Legendary Duelists", productReleaseDate: "2020-01-17",
+                                productContent: [
+                                    ProductContent(productPosition: "013", rarities: ["Ultra Rare"])
+                                ]
+                               )
+                       ],
+                       tcgBanLists: [],
+                       mdBanLists: [],
+                       dlBanLists: [
+                        BanList(banListDate: "2022-12-26", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
+                        BanList(banListDate: "2022-12-08", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
+                        BanList(banListDate: "2022-09-28", cardID: "59392529", banStatus: "Limited 2", format: "DL")
+                       ]
+    )
+}
+
+#Preview("Monster Reborn") {
+    RelatedContentView(cardName: "Monster Reborn",
+                       products: [],
+                       tcgBanLists: [
+                        BanList(banListDate: "2022-12-01", cardID: "83764718", banStatus: "Limited", format: "TCG"),
+                        BanList(banListDate: "2022-10-03", cardID: "83764718", banStatus: "Limited", format: "TCG")
+                       ],
+                       mdBanLists: [
+                        BanList(banListDate: "2023-01-10", cardID: "83764718", banStatus: "Limited", format: "MD")
+                       ],
+                       dlBanLists: [
+                        BanList(banListDate: "2022-12-26", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
+                        BanList(banListDate: "2022-12-08", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
+                        BanList(banListDate: "2022-09-28", cardID: "83764718", banStatus: "Limited 1", format: "DL")
+                       ]
+    )
 }

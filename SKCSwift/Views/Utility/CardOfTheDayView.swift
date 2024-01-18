@@ -43,41 +43,43 @@ struct CardOfTheDayView: View {
     var body: some View {
         SectionView(
             header: "Card of the day",
-            disableDestination: !isDataLoaded,
-            destination: {CardSearchLinkDestination(cardID: card.cardID)},
             content: {
-                HStack(alignment: .top, spacing: 20) {
-                    YGOCardImage(height: 90, imgSize: .tiny, cardID: card.cardID)
-                        .overlay(
-                            Circle()
-                                .if(card.cardColor.starts(with: "Pendulum")) {
-                                    $0.stroke(cardColorGradient(cardColor: card.cardColor), lineWidth: 5)
-                                } else: {
-                                    $0.stroke(cardColorUI(cardColor: card.cardColor), lineWidth: 5)
-                                }
-                        )
-                    VStack(alignment: .leading, spacing: 5) {
-                        if isDataLoaded {
-                            InlineDateView(date: date)
-                            Text(card.cardName)
-                                .lineLimit(2)
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                            
-                            Text(card.cardType())
-                                .font(.headline)
-                        } else {
-                            PlaceholderView(width: 200, height: 18, radius: 5)
-                            PlaceholderView(width: 120, height: 18, radius: 5)
-                            PlaceholderView(width: 60, height: 18, radius: 5)
+                NavigationLink(value: CardValue(cardID: card.cardID), label: {
+                    HStack(alignment: .top, spacing: 20) {
+                        YGOCardImage(height: 90, imgSize: .tiny, cardID: card.cardID)
+                            .overlay(
+                                Circle()
+                                    .if(card.cardColor.starts(with: "Pendulum")) {
+                                        $0.stroke(cardColorGradient(cardColor: card.cardColor), lineWidth: 5)
+                                    } else: {
+                                        $0.stroke(cardColorUI(cardColor: card.cardColor), lineWidth: 5)
+                                    }
+                            )
+                        VStack(alignment: .leading, spacing: 5) {
+                            if isDataLoaded {
+                                InlineDateView(date: date)
+                                Text(card.cardName)
+                                    .lineLimit(2)
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                
+                                Text(card.cardType())
+                                    .font(.headline)
+                            } else {
+                                PlaceholderView(width: 200, height: 18, radius: 5)
+                                PlaceholderView(width: 120, height: 18, radius: 5)
+                                PlaceholderView(width: 60, height: 18, radius: 5)
+                            }
                         }
+                        .frame(
+                            maxWidth: .infinity,
+                            alignment: .topLeading
+                        )
                     }
-                    .frame(
-                        maxWidth: .infinity,
-                        alignment: .topLeading
-                    )
-                }
-                .contentShape(Rectangle())
+                    .contentShape(Rectangle())
+                })
+                .buttonStyle(PlainButtonStyle())
+                .disabled(!isDataLoaded)
             }
         )
         .onChange(of: $isDataInvalidated.wrappedValue, initial: true) {
