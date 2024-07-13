@@ -49,7 +49,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack(path: $navigationPath) {
             ScrollView {
-                VStack(spacing: 40) {
+                VStack(spacing: 30) {
                     DBStatsView(isDataInvalidated: $isDBStatsDataInvalidated)
                     CardOfTheDayView(isDataInvalidated: $isCardOfTheDayDataInvalidated)
                     UpcomingTCGProductsView(canLoadNextView: $isTCGProductsInfoLoaded, isDataInvalidated: $isUpcomingTCGProductsInvalidated)

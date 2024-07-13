@@ -52,7 +52,7 @@ struct CardView: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 40) {
+            LazyVStack(spacing: 30) {
                 YGOCardView(card: cardData, isDataLoaded: isDataLoaded)
                 if (isDataLoaded) {
                     RelatedContentView(
