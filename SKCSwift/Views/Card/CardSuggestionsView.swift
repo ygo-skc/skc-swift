@@ -15,8 +15,8 @@ struct CardSuggestionsView: View {
     @State var namedReferences: [CardReference] = [CardReference]()
     @State var isSuggestionDataLoaded = false
     
-    @State var referencedBy: [Card] = [Card]()
-    @State var materialFor: [Card] = [Card]()
+    @State var referencedBy: [CardReference] = [CardReference]()
+    @State var materialFor: [CardReference] = [CardReference]()
     @State var isSupportDataLoaded = false
     
     private func loadSuggestions() {
@@ -143,7 +143,7 @@ private struct SuggestionCarouselView: View {
 private struct SupportCarouselView: View {
     var header: String
     var subHeader: String
-    var references: [Card]
+    var references: [CardReference]
     
     @State private var height: CGFloat = 0.0
     
@@ -158,7 +158,8 @@ private struct SupportCarouselView: View {
             
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 15) {
-                    ForEach(references, id: \.cardID) { card in
+                    ForEach(references, id: \.card.cardID) { reference in
+                        let card = reference.card
                         NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                             YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
                                 .contentShape(Rectangle())

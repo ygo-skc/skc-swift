@@ -21,6 +21,6 @@ struct CardSuggestions: Codable {
 
 struct CardSupport: Codable {
     var card: Card
-    var referencedBy: [Card]
-    var materialFor: [Card]
+    var referencedBy: [CardReference]
+    var materialFor: [CardReference]
 }
