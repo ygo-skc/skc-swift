@@ -50,6 +50,7 @@ struct YGOCardView: View {
         ), isDataLoaded: true
     )
 }
+
 #Preview("Condensed") {
     YGOCardView(
         card: Card(

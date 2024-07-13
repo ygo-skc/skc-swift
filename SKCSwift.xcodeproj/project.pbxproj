@@ -241,11 +241,9 @@
 		1F3C10AB29673ED000EE4EBE /* Card */ = {
 			isa = PBXGroup;
 			children = (
-				1F86EC3E29688821004F4F1B /* AttributeView.swift */,
-				1F32565A2963E195001AACF1 /* CardStatsView.swift */,
+				DEDF9C162C433AC9005ACE80 /* Components */,
 				1F1A3AC429871EE600B69892 /* CardSuggestionsView.swift */,
 				1F3C10A929673E1200EE4EBE /* CardView.swift */,
-				1F3256582963E116001AACF1 /* MonsterAssociationView.swift */,
 				1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */,
 				1FA24A0029809F3200C04B79 /* RelatedContentViewModels */,
 			);
@@ -343,6 +341,16 @@
 				1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */,
 			);
 			path = RelatedContentViewModels;
+			sourceTree = "<group>";
+		};
+		DEDF9C162C433AC9005ACE80 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				1F86EC3E29688821004F4F1B /* AttributeView.swift */,
+				1F3256582963E116001AACF1 /* MonsterAssociationView.swift */,
+				1F32565A2963E195001AACF1 /* CardStatsView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

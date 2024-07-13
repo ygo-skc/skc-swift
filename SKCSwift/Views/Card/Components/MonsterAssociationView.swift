@@ -40,25 +40,6 @@ struct MonsterAssociationView: View {
     }
 }
 
-struct MonsterAssociationView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 10), attribute: Attribute(rawValue: "Light")!)
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 1), attribute: Attribute(rawValue: "Dark")!)
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 2), attribute: Attribute(rawValue: "Wind")!)
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 3), attribute: Attribute(rawValue: "Earth")!)
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 4), attribute: Attribute(rawValue: "Water")!)
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 4), attribute: Attribute(rawValue: "Fire")!)
-            
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(rank: 4), attribute: Attribute(rawValue: "Fire")!)
-            
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 4, scaleRating: 10), attribute: Attribute(rawValue: "Water")!)
-            
-            MonsterAssociationView(monsterAssociation: MonsterAssociation(linkRating: 4, linkArrows: ["↙️", "⬇️", "↘️", "⬆️"]), attribute: Attribute(rawValue: "Fire")!)
-        }
-    }
-}
-
 private struct LevelAssociationView: View {
     var level: Int
     
@@ -70,12 +51,6 @@ private struct LevelAssociationView: View {
             Text("x\(level)")
                 .fontWeight(.semibold)
         }
-    }
-}
-
-struct LevelAssociationViewModel_Previews: PreviewProvider {
-    static var previews: some View {
-        LevelAssociationView(level: 10)
     }
 }
 
@@ -107,18 +82,6 @@ private struct RankAssociationView: View {
     }
 }
 
-private struct RankAssociationViewModel_Previews: PreviewProvider {
-    static var previews: some View {
-        RankAssociationView(rank: 4)
-    }
-}
-
-private struct PendulumAssociationView_Previews: PreviewProvider {
-    static var previews: some View {
-        PendulumAssociationView(pendScale: 4)
-    }
-}
-
 private struct LinkAssociationView: View {
     var linkRating: Int
     var linkArrows: String
@@ -136,8 +99,35 @@ private struct LinkAssociationView: View {
     }
 }
 
-struct LinkAssociationViewModel_Previews: PreviewProvider {
-    static var previews: some View {
-        LinkAssociationView(linkRating: 4, linkArrows: ["↙️","↘️"])
+#Preview("Monster Association") {
+    VStack {
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 10), attribute: Attribute(rawValue: "Light")!)
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 1), attribute: Attribute(rawValue: "Dark")!)
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 2), attribute: Attribute(rawValue: "Wind")!)
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 3), attribute: Attribute(rawValue: "Earth")!)
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 4), attribute: Attribute(rawValue: "Water")!)
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 4), attribute: Attribute(rawValue: "Fire")!)
+        
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(rank: 4), attribute: Attribute(rawValue: "Fire")!)
+        
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(level: 4, scaleRating: 10), attribute: Attribute(rawValue: "Water")!)
+        
+        MonsterAssociationView(monsterAssociation: MonsterAssociation(linkRating: 4, linkArrows: ["↙️", "⬇️", "↘️", "⬆️"]), attribute: Attribute(rawValue: "Fire")!)
     }
+}
+
+#Preview("Level Association") {
+    LevelAssociationView(level: 10)
+}
+
+#Preview("Rank Association") {
+    RankAssociationView(rank: 4)
+}
+
+#Preview("Pendulum Association") {
+    PendulumAssociationView(pendScale: 4)
+}
+
+#Preview("Link Association") {
+    LinkAssociationView(linkRating: 4, linkArrows: ["↙️","↘️"])
 }
