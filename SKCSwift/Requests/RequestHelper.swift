@@ -12,7 +12,7 @@ struct RequestHelpers {
     static let decoder = JSONDecoder()
 }
 let GET: StaticString = "GET"
-let CLIENT_ID: StaticString = "skc-swift"
+let CLIENT_ID: StaticString = "SKCSwift"
 
 func baseRequest(url: URL) -> URLRequest {
     var request = URLRequest(url: url)
