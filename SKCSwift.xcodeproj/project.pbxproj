@@ -241,10 +241,12 @@
 		1F3C10AB29673ED000EE4EBE /* Card */ = {
 			isa = PBXGroup;
 			children = (
-				DEDF9C162C433AC9005ACE80 /* Components */,
+				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F1A3AC429871EE600B69892 /* CardSuggestionsView.swift */,
 				1F3C10A929673E1200EE4EBE /* CardView.swift */,
+				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
 				1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */,
+				DEDF9C162C433AC9005ACE80 /* Components */,
 				1FA24A0029809F3200C04B79 /* RelatedContentViewModels */,
 			);
 			path = Card;
@@ -254,7 +256,6 @@
 			isa = PBXGroup;
 			children = (
 				1F045FBD2A467D3400CC82A4 /* CardColorIndicator.swift */,
-				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F86EC47296A0055004F4F1B /* DateBadgeView.swift */,
 				1FB9823D29FA117800679D81 /* DBStatsView.swift */,
 				1F96D78F2A507F3C0033150D /* InlineDateView.swift */,
@@ -262,10 +263,8 @@
 				1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */,
 				1FB9823B29F9D27900679D81 /* SectionView.swift */,
 				1FEA1BC12AA7FC4E000341F4 /* SegmentedView.swift */,
-				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
 				1F96D7952A50E8830033150D /* TabButton.swift */,
 				1FBE069729FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift */,
-				1F3B51042B41EC6F002D79D8 /* YGOCardImage.swift */,
 				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
 			);
 			path = Utility;
@@ -349,6 +348,7 @@
 				1F86EC3E29688821004F4F1B /* AttributeView.swift */,
 				1F3256582963E116001AACF1 /* MonsterAssociationView.swift */,
 				1F32565A2963E195001AACF1 /* CardStatsView.swift */,
+				1F3B51042B41EC6F002D79D8 /* YGOCardImage.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
