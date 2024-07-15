@@ -10,14 +10,14 @@ import SwiftUI
 struct CardSuggestionsView: View {
     var cardID: String
     
-    @State var hasSelfReference: Bool = false
-    @State var namedMaterials: [CardReference] = [CardReference]()
-    @State var namedReferences: [CardReference] = [CardReference]()
-    @State var isSuggestionDataLoaded = false
+    @State private var hasSelfReference: Bool = false
+    @State private var namedMaterials: [CardReference] = [CardReference]()
+    @State private var namedReferences: [CardReference] = [CardReference]()
+    @State private var isSuggestionDataLoaded = false
     
-    @State var referencedBy: [CardReference] = [CardReference]()
-    @State var materialFor: [CardReference] = [CardReference]()
-    @State var isSupportDataLoaded = false
+    @State private var referencedBy: [CardReference] = [CardReference]()
+    @State private var materialFor: [CardReference] = [CardReference]()
+    @State private var isSupportDataLoaded = false
     
     private func loadSuggestions() {
         if isSuggestionDataLoaded {

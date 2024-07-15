@@ -220,9 +220,9 @@ struct BanListOptionsView_Previews: PreviewProvider {
     }
     
     private struct _BanListOptionsView : View {
-        @State var chosenFormat: BanListFormat = .tcg
-        @State var chosenDateRange: Int = 0
-        @State var banListDates = [BanListDate]()
+        @State private var chosenFormat: BanListFormat = .tcg
+        @State private var chosenDateRange: Int = 0
+        @State private var banListDates = [BanListDate]()
         
         var body: some View {
             BanListOptionsView(chosenFormat: $chosenFormat, chosenDateRange: $chosenDateRange, banListDates: $banListDates)
@@ -236,7 +236,7 @@ struct BanListFormatsView_Previews: PreviewProvider {
     }
     
     private struct _BanListFormatsView : View {
-        @State var chosenFormat: BanListFormat = .tcg
+        @State private var chosenFormat: BanListFormat = .tcg
         
         var body: some View {
             BanListFormatsView(chosenFormat: $chosenFormat)
@@ -250,9 +250,9 @@ struct BanListDatesView_Previews: PreviewProvider {
     }
     
     private struct _BanListDatesView : View {
-        @State var chosenFormat: BanListFormat = .tcg
-        @State var chosenDateRange: Int = 0
-        @State var banListDates = [BanListDate]()
+        @State private var chosenFormat: BanListFormat = .tcg
+        @State private var chosenDateRange: Int = 0
+        @State private var banListDates = [BanListDate]()
         
         var body: some View {
             BanListDatesView(chosenFormat: $chosenFormat, chosenDateRange: $chosenDateRange, banListDates: $banListDates)

@@ -10,8 +10,8 @@ import SwiftUI
 struct DBStatsView: View {
     @Binding private var isDataInvalidated: Bool
     
-    @State var stats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
-    @State var isDataLoaded = false
+    @State private var stats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
+    @State private var isDataLoaded = false
     
     init(isDataInvalidated: Binding<Bool> = .constant(false)) {
         self._isDataInvalidated = isDataInvalidated
