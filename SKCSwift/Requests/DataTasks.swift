@@ -17,19 +17,19 @@ private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bo
     }
     
     if let httpResponse = response as? HTTPURLResponse {
-        if httpResponse.statusCode == 200 {
+        let code = httpResponse.statusCode
+        if code <= 201 {
             return false
         }
-        if httpResponse.statusCode == 404 {
-            print("404 status for url \(url.absoluteString).")
-        }
+        
+        print("Encountered status code \(code) while calling \(url.absoluteString).")
         return true
     }
     
     return false
 }
 
-func request<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  Void {
+func request<T: Codable>(url: URL, _ priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  Void {
     _ = requestTask(url: url, completion)
 }
 
@@ -50,7 +50,7 @@ func requestTask<T: Codable>(url: URL, priority: Float = 1, _ completion: @escap
         }
     })
     
-    dataTask.priority = 1
+    dataTask.priority = priority
     dataTask.resume()
     return dataTask
 }

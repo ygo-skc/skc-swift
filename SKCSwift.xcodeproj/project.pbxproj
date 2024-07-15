@@ -247,7 +247,7 @@
 				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
 				1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */,
 				DEDF9C162C433AC9005ACE80 /* Components */,
-				1FA24A0029809F3200C04B79 /* RelatedContentViewModels */,
+				1FA24A0029809F3200C04B79 /* RelatedContent */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -332,14 +332,14 @@
 			path = SKCSwiftUITests;
 			sourceTree = "<group>";
 		};
-		1FA24A0029809F3200C04B79 /* RelatedContentViewModels */ = {
+		1FA24A0029809F3200C04B79 /* RelatedContent */ = {
 			isa = PBXGroup;
 			children = (
 				1FA249FE29809DC500C04B79 /* RelatedContentView.swift */,
 				1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */,
 				1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */,
 			);
-			path = RelatedContentViewModels;
+			path = RelatedContent;
 			sourceTree = "<group>";
 		};
 		DEDF9C162C433AC9005ACE80 /* Components */ = {
