@@ -42,8 +42,13 @@ struct CardSearchView: View {
                                     alignment: .center
                                 )
                         } else {
-                            Text("Trending")
-                                .font(.title2)
+                            SectionView(header: "Trending",
+                                        variant: .plain,
+                                        content: {
+                                VStack(alignment: .leading, spacing: 5) {
+                                }
+                                .frame(maxHeight: .infinity)
+                            })
                         }
                     }
                     .padding(.horizontal)

@@ -229,7 +229,6 @@
 		1F32565529636BA2001AACF1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				1F6687DF2967904400C8555D /* CardSearchView.swift */,
 				1F6687E1296798E700C8555D /* HomeView.swift */,
 				1F1C1D3B2A353AFB00E73D67 /* BanList */,
 				1F3C10AB29673ED000EE4EBE /* Card */,
@@ -241,6 +240,7 @@
 		1F3C10AB29673ED000EE4EBE /* Card */ = {
 			isa = PBXGroup;
 			children = (
+				1F6687DF2967904400C8555D /* CardSearchView.swift */,
 				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F1A3AC429871EE600B69892 /* CardSuggestionsView.swift */,
 				1F3C10A929673E1200EE4EBE /* CardView.swift */,
