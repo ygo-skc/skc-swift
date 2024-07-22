@@ -5,8 +5,6 @@
 //  Created by Javi Gomez on 6/10/23.
 //
 
-import Foundation
-
 struct HLink: Codable, Hashable {
     var `self`: HSelf
 }

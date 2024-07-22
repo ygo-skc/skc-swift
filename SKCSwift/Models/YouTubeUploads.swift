@@ -5,8 +5,6 @@
 //  Created by Javi Gomez on 6/10/23.
 //
 
-import Foundation
-
 struct YouTubeUploads: Codable {
     var videos: [YouTubeVideos]
     var total: Int
