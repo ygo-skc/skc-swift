@@ -29,10 +29,13 @@ struct TrendingView: View {
         }
     }
     
-    
     var body: some View {
-        ForEach(trendingData.metrics, id: \.resource.cardID) { x in
-            Text(x.resource.cardID)
+        LazyVStack{
+            ForEach(trendingData.metrics, id: \.resource.cardID) { metric in
+                CardRowView(cardID: metric.resource.cardID, cardName: metric.resource.cardName, monsterType: metric.resource.monsterType)
+            }
+        }.task(priority: .high) {
+            fetchData()
         }
     }
 }

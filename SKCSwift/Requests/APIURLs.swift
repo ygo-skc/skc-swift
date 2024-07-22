@@ -99,7 +99,7 @@ func cardOfTheDayURL() -> URL {
 func trendingUrl(resource: TrendingResouceType) -> URL {
     let components = baseURLComponents(
         host: SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT.description, resource.rawValue)
+        path: String(format: SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT.description, resource.rawValue)
     )
     return createURL(components: components)
 }

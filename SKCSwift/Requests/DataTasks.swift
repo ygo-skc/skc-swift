@@ -43,7 +43,6 @@ func requestTask<T: Codable>(url: URL, priority: Float = 1, _ completion: @escap
         if let body = body, hasErrors == false {
             do {
                 let body = try RequestHelpers.decoder.decode(T.self, from: body)
-                print(body)
                 completion(.success(body))
             } catch {
                 print("An error ocurred while decoding output from http request \(error.localizedDescription)")

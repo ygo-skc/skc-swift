@@ -45,10 +45,9 @@ struct CardSearchView: View {
                             SectionView(header: "Trending",
                                         variant: .plain,
                                         content: {
-                                VStack(alignment: .leading, spacing: 5) {
+                                ScrollView{
                                     TrendingView()
-                                }
-                                .frame(maxHeight: .infinity)
+                                }.frame(maxHeight: .infinity, alignment: .topLeading)
                             })
                         }
                     }
