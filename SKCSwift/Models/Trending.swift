@@ -5,7 +5,6 @@
 //  Created by Javi Gomez on 7/22/24.
 //
 
-
 struct TrendingMetric: Codable {
     var resource: Card
     var occurrences: Int

@@ -282,10 +282,10 @@
 		1F8211DA2961FF0000238EE1 = {
 			isa = PBXGroup;
 			children = (
+				1F8211E42961FF0000238EE1 /* Products */,
 				1F8211E52961FF0000238EE1 /* SKCSwift */,
 				1F8211F62961FF0100238EE1 /* SKCSwiftTests */,
 				1F8212002961FF0100238EE1 /* SKCSwiftUITests */,
-				1F8211E42961FF0000238EE1 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
