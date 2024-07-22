@@ -50,3 +50,7 @@ enum YGOCardImageVariant {
 enum ImageSize: String {
     case tiny = "tn", extra_small = "x-sm", small = "small", medium = "md", large = "lg", original = "original"
 }
+
+enum TrendingResouceType: String {
+    case card = "card", product = "product"
+}
