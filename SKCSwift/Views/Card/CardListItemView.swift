@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct CardRowView: View {
+struct CardListItemView: View {
     var cardID: String
     var cardName: String
     var monsterType: String?
@@ -21,8 +21,8 @@ struct CardRowView: View {
                     .fontWeight(.bold)
                     .font(.subheadline)
                     .lineLimit(2)
-                if monsterType != nil {
-                    Text(monsterType!)
+                if let monsterType {
+                    Text(monsterType)
                         .fontWeight(.light)
                         .font(.callout)
                         .lineLimit(2)
@@ -34,9 +34,9 @@ struct CardRowView: View {
 }
 
 #Preview("Card Search Result") {
-    CardRowView(cardID: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
+    CardListItemView(cardID: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
 }
 
 #Preview("Card Search Result - IMG DNE") {
-    CardRowView(cardID: "08949584", cardName: "A HERO Lives")
+    CardListItemView(cardID: "08949584", cardName: "A HERO Lives")
 }

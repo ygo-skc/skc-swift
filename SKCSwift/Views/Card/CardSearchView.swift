@@ -23,7 +23,7 @@ struct CardSearchView: View {
                             .fontWeight(.black) ) {
                                 ForEach(sr.results, id: \.cardID) { card in
                                     NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                        CardRowView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                        CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                     })
                                 }
                             }

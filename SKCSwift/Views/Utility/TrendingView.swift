@@ -60,7 +60,7 @@ struct TrendingView: View {
                                     HStack {
                                         TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                         VStack {
-                                            CardRowView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                            CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                             Divider()
                                         }
                                         .padding(.leading, 5)
@@ -75,7 +75,7 @@ struct TrendingView: View {
                                 HStack {
                                     TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                     VStack {
-                                        ProductRowView(product: product)
+                                        ProductListItemView(product: product)
                                         Divider()
                                     }
                                     .padding(.leading, 5)
