@@ -68,7 +68,7 @@ private struct ProductListItemViewModel: View {
                     .lineLimit(2)
                     .font(.subheadline)
                     .fontWeight(.heavy)
-                Text("\(product.productId)-\(product.productLocale)\(product.productContent[0].productPosition)")
+                Text("\(product.productId)-\(product.productLocale)\(product.productContent![0].productPosition)")
                     .frame(alignment: .trailing)
                     .font(.subheadline)
                     .fontWeight(.light)
@@ -76,7 +76,7 @@ private struct ProductListItemViewModel: View {
                     Text("Rarities")
                         .font(.callout)
                         .fontWeight(.medium)
-                    Text(product.productContent[0].rarities.joined(separator: ", "))
+                    Text(product.productContent![0].rarities.joined(separator: ", "))
                         .font(.callout)
                 }
             }

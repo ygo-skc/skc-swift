@@ -6,13 +6,8 @@
 //
 
 struct Product: Codable {
-    var productId: String
-    var productLocale: String
-    var productName: String
-    var productType: String
-    var productSubType: String
-    var productReleaseDate: String
-    var productContent: [ProductContent]
+    let productId, productLocale, productName, productType, productSubType, productReleaseDate: String
+    let productContent: [ProductContent]?
 }
 
 struct ProductContent: Codable {

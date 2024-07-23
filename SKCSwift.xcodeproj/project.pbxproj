@@ -65,6 +65,7 @@
 		DEC099B12C4DD05E00A8B797 /* CardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B02C4DD05E00A8B797 /* CardRowView.swift */; };
 		DEC099B32C4F0CCD00A8B797 /* TrendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */; };
 		DEC099B72C4F0F8F00A8B797 /* Trending.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B62C4F0F8F00A8B797 /* Trending.swift */; };
+		DEC099BA2C505BC400A8B797 /* ProductRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B92C505BC400A8B797 /* ProductRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -147,6 +148,7 @@
 		DEC099B02C4DD05E00A8B797 /* CardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardRowView.swift; sourceTree = "<group>"; };
 		DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingView.swift; sourceTree = "<group>"; };
 		DEC099B62C4F0F8F00A8B797 /* Trending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trending.swift; sourceTree = "<group>"; };
+		DEC099B92C505BC400A8B797 /* ProductRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,6 +238,7 @@
 		1F32565529636BA2001AACF1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				DEC099B82C505B8A00A8B797 /* Product */,
 				1F6687E1296798E700C8555D /* HomeView.swift */,
 				1F1C1D3B2A353AFB00E73D67 /* BanList */,
 				1F3C10AB29673ED000EE4EBE /* Card */,
@@ -349,6 +352,14 @@
 				1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */,
 			);
 			path = RelatedContent;
+			sourceTree = "<group>";
+		};
+		DEC099B82C505B8A00A8B797 /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				DEC099B92C505BC400A8B797 /* ProductRowView.swift */,
+			);
+			path = Product;
 			sourceTree = "<group>";
 		};
 		DEDF9C162C433AC9005ACE80 /* Components */ = {
@@ -505,6 +516,7 @@
 				1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */,
 				1F39328B2A34CA4800BD0DD2 /* YouTubeUploads.swift in Sources */,
 				1F32565B2963E195001AACF1 /* CardStatsView.swift in Sources */,
+				DEC099BA2C505BC400A8B797 /* ProductRowView.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
 				1FBE069829FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift in Sources */,

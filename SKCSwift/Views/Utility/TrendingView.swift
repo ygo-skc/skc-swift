@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct TrendingView: View {
-    @State private var cardTrendingData: [TrendingMetric]?
+    @State private var cardTrendingData: [TrendingMetric<Card>]?
+    @State private var productTrendingData: [TrendingMetric<Product>]?
+    @State private var focusedTrend: TrendingResouceType = .product
     @State private var isDataLoaded = false
     @State private var lastRefresh = Date()
     
@@ -19,11 +21,23 @@ struct TrendingView: View {
             }
         }
         
-        request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending, Error>) -> Void in
+        request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending<Card>, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let trending):
                     cardTrendingData = trending.metrics
+                    isDataLoaded = true
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        }
+        
+        request(url: trendingUrl(resource: .product), priority: 0.2) { (result: Result<Trending<Product>, Error>) -> Void in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let trending):
+                    productTrendingData = trending.metrics
                     isDataLoaded = true
                 case .failure(let error):
                     print(error)
@@ -37,22 +51,36 @@ struct TrendingView: View {
             SectionView(header: "Trending",
                         variant: .plain,
                         content: {
-                if isDataLoaded, let tm = cardTrendingData {
+                if isDataLoaded {
                     LazyVStack{
-                        ForEach(tm, id: \.resource.cardID) { m in
-                            let card = m.resource
-                            NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
+                        if focusedTrend == .card, let tm = cardTrendingData {
+                            ForEach(tm, id: \.resource.cardID) { m in
+                                let card = m.resource
+                                NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                    HStack {
+                                        TrendChangeView(trendChange: m.change)
+                                        VStack {
+                                            CardRowView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                            Divider()
+                                        }
+                                        .padding(.leading, 5)
+                                    }
+                                    .contentShape(Rectangle())
+                                })
+                                .buttonStyle(.plain)
+                            }
+                        } else if focusedTrend == .product, let tm = productTrendingData {
+                            ForEach(tm, id: \.resource.productId) { m in
+                                let product = m.resource
                                 HStack {
                                     TrendChangeView(trendChange: m.change)
                                     VStack {
-                                        CardRowView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                        ProductRowView(product: product)
                                         Divider()
                                     }
                                     .padding(.leading, 5)
                                 }
-                                .contentShape(Rectangle())
-                            })
-                            .buttonStyle(.plain)
+                            }
                         }
                     }
                 } else {
