@@ -89,13 +89,13 @@ private struct TrendChangeView: View {
     init(trendChange: Int) {
         self.trendChange = trendChange
         if trendChange > 0 {
-            trendColor = .green
+            trendColor = .mint
             trendImage = "chart.line.uptrend.xyaxis"
         } else if trendChange < 0 {
-            trendColor = .red
+            trendColor = .pinkRed
             trendImage = "chart.line.downtrend.xyaxis"
         } else {
-            trendColor = .yellow
+            trendColor = .normalYgoCard
             trendImage = "chart.line.flattrend.xyaxis"
         }
     }
@@ -113,4 +113,16 @@ private struct TrendChangeView: View {
 
 #Preview {
     TrendingView()
+}
+
+#Preview("Trend Change Positive") {
+    TrendChangeView(trendChange: 1)
+}
+
+#Preview("Trend Change Negative") {
+    TrendChangeView(trendChange: -1)
+}
+
+#Preview("Trend Change Neutral") {
+    TrendChangeView(trendChange: 0)
 }
