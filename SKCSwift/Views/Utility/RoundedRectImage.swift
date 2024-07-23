@@ -22,6 +22,7 @@ struct RoundedRectImage: View {
             case .success(let image):
                 image
                     .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: width, height: height)
                     .cornerRadius(cornerRadius)
             default:

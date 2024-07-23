@@ -14,9 +14,7 @@ struct TrendingView: View {
     
     private func fetchData() {
         if isDataLoaded{
-            if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5 {
-                isDataLoaded = false    //refresh data
-            } else {
+            if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) < 5 {
                 return
             }
         }

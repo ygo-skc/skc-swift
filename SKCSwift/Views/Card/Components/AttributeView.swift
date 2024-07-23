@@ -16,10 +16,12 @@ struct AttributeView: View {
         if (attribute == .unknown) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: AttributeView.ICON_SIZE - 5, height: AttributeView.ICON_SIZE - 5)
         } else {
             Image(attribute.rawValue.lowercased())
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: AttributeView.ICON_SIZE, height: AttributeView.ICON_SIZE)
                 .cornerRadius(AttributeView.ICON_SIZE)
         }

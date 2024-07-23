@@ -47,6 +47,7 @@ private struct LevelAssociationView: View {
         HStack {
             Image("card_level")
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: ICON_SIZE, height: ICON_SIZE)
             Text("x\(level)")
                 .fontWeight(.semibold)
@@ -61,6 +62,7 @@ private struct PendulumAssociationView: View {
         HStack {
             Image("pend_scale")
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: ICON_SIZE, height: ICON_SIZE)
             Text("x\(pendScale)")
                 .fontWeight(.semibold)
@@ -75,6 +77,7 @@ private struct RankAssociationView: View {
         HStack {
             Image("card_rank")
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: ICON_SIZE, height: ICON_SIZE)
             Text("x\(rank)")
                 .fontWeight(.semibold)

@@ -41,13 +41,14 @@ struct YGOCardImage: View {
             case .success(let image):
                 image
                     .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: height, height: height)
                     .cornerRadius(radius)
             default:
                 AsyncImage(url: fallbackUrl) { image in
-                    
                     image
                         .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: height, height: height)
                         .cornerRadius(radius)
                 } placeholder: {
