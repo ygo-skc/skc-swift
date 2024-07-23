@@ -29,8 +29,8 @@ private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bo
     return false
 }
 
-func request<T: Codable>(url: URL, _ priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  Void {
-    _ = requestTask(url: url, completion)
+func request<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  Void {
+    _ = requestTask(url: url, priority: priority, completion)
 }
 
 func requestTask<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  URLSessionDataTask {

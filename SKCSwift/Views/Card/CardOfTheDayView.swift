@@ -22,7 +22,7 @@ struct CardOfTheDayView: View {
         if !isDataLoaded || isDataInvalidated {
             self.isDataInvalidated = false
             
-            request(url: cardOfTheDayURL()) { (result: Result<CardOfTheDay, Error>) -> Void in
+            request(url: cardOfTheDayURL(), priority: 0.25) { (result: Result<CardOfTheDay, Error>) -> Void in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let cardOfTheyDay):

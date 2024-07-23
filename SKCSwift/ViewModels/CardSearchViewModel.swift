@@ -26,7 +26,7 @@ class CardSearchViewModel: ObservableObject {
             self.task = nil
         } else {
             isFetching = true
-            task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)), { (result: Result<[Card], Error>) -> Void in
+            task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)), priority: 0.45, { (result: Result<[Card], Error>) -> Void in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let cards):

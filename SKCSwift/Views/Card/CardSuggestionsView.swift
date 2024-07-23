@@ -24,7 +24,7 @@ struct CardSuggestionsView: View {
             return
         }
         
-        request(url: cardSuggestionsURL(cardID: cardID)) { (result: Result<CardSuggestions, Error>) -> Void in
+        request(url: cardSuggestionsURL(cardID: cardID), priority: 0.2) { (result: Result<CardSuggestions, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let suggestions):
@@ -45,7 +45,7 @@ struct CardSuggestionsView: View {
             return
         }
         
-        request(url: cardSupportURL(cardID: cardID)) { (result: Result<CardSupport, Error>) -> Void in
+        request(url: cardSupportURL(cardID: cardID), priority: 0.2) { (result: Result<CardSupport, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let support):

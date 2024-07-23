@@ -26,7 +26,7 @@ struct YouTubeUploadsView: View {
     
     private func fetchData() {
         if !isDataLoaded || isDataInvalidated {
-            request(url: ytUploadsURL(ytChannelId: YouTubeUploadsView.SKC_CHANNEL_ID)) { (result: Result<YouTubeUploads, Error>) -> Void in
+            request(url: ytUploadsURL(ytChannelId: YouTubeUploadsView.SKC_CHANNEL_ID), priority: 0.0) { (result: Result<YouTubeUploads, Error>) -> Void in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let uploadData):

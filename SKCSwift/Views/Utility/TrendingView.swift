@@ -21,7 +21,7 @@ struct TrendingView: View {
             }
         }
         
-        request(url: trendingUrl(resource: .card)) { (result: Result<Trending, Error>) -> Void in
+        request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending, Error>) -> Void in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let trending):

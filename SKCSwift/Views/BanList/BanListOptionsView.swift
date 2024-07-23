@@ -30,7 +30,7 @@ private struct BanListDatesView: View {
     
     private func fetchData() {
         if !isDataLoaded {
-            request(url: banListDatesURL(format: "\(chosenFormat)")) { (result: Result<BanListDates, Error>) -> Void in
+            request(url: banListDatesURL(format: "\(chosenFormat)"), priority: 0.4) { (result: Result<BanListDates, Error>) -> Void in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let dates):

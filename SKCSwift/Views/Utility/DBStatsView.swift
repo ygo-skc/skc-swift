@@ -21,7 +21,7 @@ struct DBStatsView: View {
         if !isDataLoaded || isDataInvalidated {
             self.isDataInvalidated = false
             
-            request(url: dbStatsURL()) { (result: Result<SKCDatabaseStats, Error>) -> Void in
+            request(url: dbStatsURL(), priority: 0.3) { (result: Result<SKCDatabaseStats, Error>) -> Void in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let stats):
