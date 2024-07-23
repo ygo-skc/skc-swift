@@ -58,7 +58,7 @@ struct TrendingView: View {
                                 let card = m.resource
                                 NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                                     HStack {
-                                        TrendChangeView(trendChange: m.change)
+                                        TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                         VStack {
                                             CardRowView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                             Divider()
@@ -73,7 +73,7 @@ struct TrendingView: View {
                             ForEach(tm, id: \.resource.productId) { m in
                                 let product = m.resource
                                 HStack {
-                                    TrendChangeView(trendChange: m.change)
+                                    TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                     VStack {
                                         ProductRowView(product: product)
                                         Divider()
@@ -107,13 +107,15 @@ struct TrendingView: View {
 
 
 private struct TrendChangeView: View {
-    var trendChange: Int
+    var trendChange, hits: Int
     
     private let trendColor: Color
     private let trendImage: String
     
-    init(trendChange: Int) {
+    init(trendChange: Int, hits: Int) {
         self.trendChange = trendChange
+        self.hits = hits
+        
         if trendChange > 0 {
             trendColor = .mint
             trendImage = "chart.line.uptrend.xyaxis"
@@ -128,12 +130,19 @@ private struct TrendChangeView: View {
     
     
     var body: some View {
-        Text("\(trendChange)")
-            .foregroundColor(trendColor)
-            .font(.title3)
-        Image(systemName: trendImage)
-            .foregroundColor(trendColor)
-            .font(.title3)
+        VStack {
+            HStack {
+                Text("\(trendChange)")
+                    .foregroundColor(trendColor)
+                    .font(.title3)
+                Image(systemName: trendImage)
+                    .foregroundColor(trendColor)
+                    .font(.title3)
+            }
+            Text("\(hits) Hits")
+                .foregroundColor(trendColor)
+                .font(.footnote)
+        }
     }
 }
 
@@ -142,13 +151,13 @@ private struct TrendChangeView: View {
 }
 
 #Preview("Trend Change Positive") {
-    TrendChangeView(trendChange: 1)
+    TrendChangeView(trendChange: 1, hits: 1040)
 }
 
 #Preview("Trend Change Negative") {
-    TrendChangeView(trendChange: -1)
+    TrendChangeView(trendChange: -1, hits: 100203)
 }
 
 #Preview("Trend Change Neutral") {
-    TrendChangeView(trendChange: 0)
+    TrendChangeView(trendChange: 0, hits: 10)
 }
