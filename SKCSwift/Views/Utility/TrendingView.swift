@@ -10,7 +10,7 @@ import SwiftUI
 struct TrendingView: View {
     @State private var cardTrendingData: [TrendingMetric<Card>]?
     @State private var productTrendingData: [TrendingMetric<Product>]?
-    @State private var focusedTrend: TrendingResouceType = .product
+    @State private var focusedTrend: TrendingResouceType = .card
     @State private var isDataLoaded = false
     @State private var lastRefresh = Date()
     
@@ -53,6 +53,14 @@ struct TrendingView: View {
                         content: {
                 if isDataLoaded {
                     LazyVStack{
+                        Picker("Select Trend Type", selection: $focusedTrend) {
+                            ForEach(TrendingResouceType.allCases, id: \.self) { type in
+                                Text(type.rawValue.capitalized).tag(type)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.bottom)
+                        
                         if focusedTrend == .card, let tm = cardTrendingData {
                             ForEach(tm, id: \.resource.cardID) { m in
                                 let card = m.resource
