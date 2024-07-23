@@ -26,7 +26,7 @@ struct SuggestedCardView: View {
             .contentShape(Rectangle())
             .frame(width: 220)
         })
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
     }
 }
 

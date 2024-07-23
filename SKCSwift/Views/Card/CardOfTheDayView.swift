@@ -78,7 +78,7 @@ struct CardOfTheDayView: View {
                     }
                     .contentShape(Rectangle())
                 })
-                .buttonStyle(PlainButtonStyle())
+                .buttonStyle(.plain)
                 .disabled(!isDataLoaded)
             }
         )

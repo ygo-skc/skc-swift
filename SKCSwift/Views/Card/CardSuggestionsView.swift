@@ -164,7 +164,7 @@ private struct SupportCarouselView: View {
                             YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
                                 .contentShape(Rectangle())
                         })
-                        .buttonStyle(PlainButtonStyle())
+                        .buttonStyle(.plain)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(
                                 key: SuggestionnHeightPreferenceKey.self,

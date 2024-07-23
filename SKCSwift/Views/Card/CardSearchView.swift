@@ -33,25 +33,16 @@ struct CardSearchView: View {
                     .ignoresSafeArea(.keyboard)
                 } else {
                     VStack {
-                        if (!cardSearchViewModel.isFetching && !cardSearchViewModel.searchText.isEmpty) {
-                            Text("Nothing found in database")
+                        !cardSearchViewModel.isFetching && !cardSearchViewModel.searchText.isEmpty ?
+                            AnyView(Text("Nothing found in database")
+                                .padding(.horizontal)
                                 .font(.title2)
                                 .frame(
                                     maxWidth: .infinity,
                                     maxHeight: .infinity,
                                     alignment: .center
-                                )
-                        } else {
-                            SectionView(header: "Trending",
-                                        variant: .plain,
-                                        content: {
-                                ScrollView{
-                                    TrendingView()
-                                }.frame(maxHeight: .infinity, alignment: .topLeading)
-                            })
-                        }
+                                )) : AnyView(TrendingView())
                     }
-                    .padding(.horizontal)
                 }
             }
             .navigationDestination(for: CardValue.self) { card in
