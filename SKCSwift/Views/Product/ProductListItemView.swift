@@ -18,7 +18,7 @@ struct ProductListItemView: View {
             .padding(.trailing, 3)
             VStack(alignment: .leading) {
                 InlineDateView(date: product.productReleaseDate)
-                Text("\(product.productId)")
+                Text(product.productIDWithContentTotal())
                     .frame(alignment: .trailing)
                     .font(.subheadline)
                     .fontWeight(.light)
@@ -43,5 +43,5 @@ struct ProductListItemView: View {
 
 #Preview {
     ProductListItemView(product: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
-                                         productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-02-09", productContent: []))
+                                         productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-02-09", productTotal: 100))
 }
