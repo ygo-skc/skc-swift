@@ -140,15 +140,17 @@ private struct TrendChangeView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("\(trendChange)")
-                    .foregroundColor(trendColor)
-                    .font(.title3)
+                Text("\(trendChange)"
+                    .padding(toLength: 2, withPad: " ", startingAt: 0)
+                )
+                .font(.title3)
                 Image(systemName: trendImage)
                     .foregroundColor(trendColor)
                     .font(.title3)
+                    .fontWeight(.bold)
             }
             Text("\(hits) Hits")
-                .foregroundColor(trendColor)
+                .foregroundColor(.secondary)
                 .font(.footnote)
         }
     }
