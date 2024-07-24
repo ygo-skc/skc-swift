@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct ProductListItemView: View {
-    var product: Product
+    let product: Product
     
     var body: some View {
         HStack(alignment: .top) {
             RoundedRectImage(width: 50, height: 90,
-                             imageUrl: URL(string: "https://images.thesupremekingscastle.com/products/x-sm/\(product.productId).png")!,
+                             imageUrl: URL(string: "https://images.thesupremekingscastle.com/products/tn/\(product.productId).png")!,
                              cornerRadius: 0)
             .padding(.trailing, 3)
             VStack(alignment: .leading) {

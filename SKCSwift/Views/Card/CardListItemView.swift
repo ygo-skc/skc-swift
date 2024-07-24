@@ -9,9 +9,9 @@ import SwiftUI
 
 
 struct CardListItemView: View {
-    var cardID: String
-    var cardName: String
-    var monsterType: String?
+    let cardID: String
+    let cardName: String
+    let monsterType: String?
     
     var body: some View {
         HStack(alignment: .top) {
@@ -30,6 +30,12 @@ struct CardListItemView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+extension CardListItemView {
+    init(cardID: String, cardName: String) {
+        self.init(cardID: cardID, cardName: cardName, monsterType: nil)
     }
 }
 

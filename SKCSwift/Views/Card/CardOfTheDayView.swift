@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardOfTheDayView: View {
+struct CardOfTheDayView: View, Equatable {
     @Binding private var isDataInvalidated: Bool
     
     @State private var date: String = ""
@@ -38,6 +38,10 @@ struct CardOfTheDayView: View {
                 }
             }
         }
+    }
+    
+    static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
+        return lhs.card.cardID == rhs.card.cardID
     }
     
     var body: some View {

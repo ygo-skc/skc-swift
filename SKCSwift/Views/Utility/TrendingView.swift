@@ -115,22 +115,25 @@ struct TrendingView: View {
 
 
 private struct TrendChangeView: View {
-    var trendChange, hits: Int
+    let trendChange: String
+    let hits: Int
     
     private let trendColor: Color
     private let trendImage: String
     
     init(trendChange: Int, hits: Int) {
-        self.trendChange = trendChange
         self.hits = hits
         
         if trendChange > 0 {
+            self.trendChange = "+\(trendChange)".padding(toLength: 3, withPad: " ", startingAt: 0)
             trendColor = .mint
             trendImage = "chart.line.uptrend.xyaxis"
         } else if trendChange < 0 {
+            self.trendChange = "\(trendChange)".padding(toLength: 3, withPad: " ", startingAt: 0)
             trendColor = .pinkRed
             trendImage = "chart.line.downtrend.xyaxis"
         } else {
+            self.trendChange = "±\(trendChange)".padding(toLength: 3, withPad: " ", startingAt: 0)
             trendColor = .normalYgoCard
             trendImage = "chart.line.flattrend.xyaxis"
         }
@@ -139,15 +142,15 @@ private struct TrendChangeView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                Text("\(trendChange)"
-                    .padding(toLength: 2, withPad: " ", startingAt: 0)
-                )
-                .font(.title3)
+            HStack(spacing: 0.5) {
                 Image(systemName: trendImage)
                     .foregroundColor(trendColor)
-                    .font(.title3)
-                    .fontWeight(.bold)
+                    .font(.title)
+                    .fontWeight(.medium)
+                Text(trendChange)
+                    .foregroundColor(.secondary)
+                    .fontWeight(.medium)
+                    .font(.system(.title3, design: .monospaced))
             }
             Text("\(hits) Hits")
                 .foregroundColor(.secondary)
