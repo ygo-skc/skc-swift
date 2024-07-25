@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct DateBadgeView: View {
+struct DateBadgeView: View, Equatable {
     private let month: String
     private let day: String
     private let year: String

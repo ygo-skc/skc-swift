@@ -191,6 +191,7 @@ private struct ChosenBanListDateView: View {
     var body: some View {
         if date != nil {
             InlineDateView(date: date!)
+                .equatable()
         } else {
             Text("Present")
                 .font(.caption)

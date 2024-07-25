@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct InlineDateView: View {
+struct InlineDateView: View, Equatable {
     private let month: String
     private let day: String
     private let year: String

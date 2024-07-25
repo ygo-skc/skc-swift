@@ -17,6 +17,7 @@ struct CardSearchView: View {
                     List(cardSearchViewModel.searchResults) { sr in
                         Section(header: HStack{
                             CardColorIndicator(cardColor: sr.section)
+                                .equatable()
                             Text(sr.section)
                         }
                             .font(.headline)

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct CardColorIndicator: View {
-    var cardColor: String
-    var variant: CardColorIndicatorVariant = .regular
+struct CardColorIndicator: View, Equatable {
+    let cardColor: String
+    let variant: CardColorIndicatorVariant = .regular
     
     var body: some View {
         Circle()

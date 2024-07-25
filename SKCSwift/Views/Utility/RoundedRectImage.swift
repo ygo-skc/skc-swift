@@ -7,14 +7,13 @@
 
 import SwiftUI
 
-struct RoundedRectImage: View {
-    var width: CGFloat
-    var height: CGFloat
-    var imageUrl: URL
+struct RoundedRectImage: View, Equatable {
+    let width: CGFloat
+    let height: CGFloat
+    let imageUrl: URL
     var cornerRadius = 50.0
     
     var body: some View {
-        
         AsyncImage(url: imageUrl, transaction: Transaction(animation: .easeInOut)) { phase in
             switch phase {
             case .empty:

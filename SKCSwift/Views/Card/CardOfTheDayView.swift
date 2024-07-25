@@ -62,6 +62,7 @@ struct CardOfTheDayView: View, Equatable {
                         VStack(alignment: .leading, spacing: 5) {
                             if isDataLoaded {
                                 InlineDateView(date: date)
+                                    .equatable()
                                 Text(card.cardName)
                                     .lineLimit(2)
                                     .font(.title3)

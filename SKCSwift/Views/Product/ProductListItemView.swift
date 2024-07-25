@@ -15,9 +15,11 @@ struct ProductListItemView: View {
             RoundedRectImage(width: 50, height: 90,
                              imageUrl: URL(string: "https://images.thesupremekingscastle.com/products/tn/\(product.productId).png")!,
                              cornerRadius: 0)
+            .equatable()
             .padding(.trailing, 3)
             VStack(alignment: .leading) {
                 InlineDateView(date: product.productReleaseDate)
+                    .equatable()
                     .padding(.bottom, 2)
                 Text(product.productIDWithContentTotal())
                     .frame(alignment: .trailing)

@@ -61,6 +61,7 @@ private struct BanListItemViewModel: View {
     var body: some View {
         HStack(spacing: 5) {
             DateBadgeView(date: banListInstance.banListDate, variant: .condensed)
+                .equatable()
                 .padding(.trailing, 10)
             Circle()
                 .foregroundColor(banStatusColor(status: banListInstance.banStatus))
