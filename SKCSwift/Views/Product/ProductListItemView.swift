@@ -18,6 +18,7 @@ struct ProductListItemView: View {
             .padding(.trailing, 3)
             VStack(alignment: .leading) {
                 InlineDateView(date: product.productReleaseDate)
+                    .padding(.bottom, 2)
                 Text(product.productIDWithContentTotal())
                     .frame(alignment: .trailing)
                     .font(.subheadline)
