@@ -113,14 +113,14 @@
 		1F6687E1296798E700C8555D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedBanListsContentView.swift; sourceTree = "<group>"; };
 		1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
-		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SKCSwift.app; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwift.app"; sourceTree = "<absolute>"; };
 		1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftApp.swift; sourceTree = "<group>"; };
 		1F8211E82961FF0000238EE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		1F8211EA2961FF0100238EE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1F8211ED2961FF0100238EE1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		1F8211F32961FF0100238EE1 /* SKCSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F8211F32961FF0100238EE1 /* SKCSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SKCSwiftTests.xctest; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwift.app/PlugIns/SKCSwiftTests.xctest"; sourceTree = "<absolute>"; };
 		1F8211F72961FF0100238EE1 /* SKCSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftTests.swift; sourceTree = "<group>"; };
-		1F8211FD2961FF0100238EE1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F8211FD2961FF0100238EE1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SKCSwiftUITests.xctest; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwiftUITests-Runner.app/PlugIns/SKCSwiftUITests.xctest"; sourceTree = "<absolute>"; };
 		1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITests.swift; sourceTree = "<group>"; };
 		1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1F86EC3E29688821004F4F1B /* AttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeView.swift; sourceTree = "<group>"; };
@@ -285,21 +285,10 @@
 		1F8211DA2961FF0000238EE1 = {
 			isa = PBXGroup;
 			children = (
-				1F8211E42961FF0000238EE1 /* Products */,
 				1F8211E52961FF0000238EE1 /* SKCSwift */,
 				1F8211F62961FF0100238EE1 /* SKCSwiftTests */,
 				1F8212002961FF0100238EE1 /* SKCSwiftUITests */,
 			);
-			sourceTree = "<group>";
-		};
-		1F8211E42961FF0000238EE1 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1F8211E32961FF0000238EE1 /* SKCSwift.app */,
-				1F8211F32961FF0100238EE1 /* SKCSwiftTests.xctest */,
-				1F8211FD2961FF0100238EE1 /* SKCSwiftUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		1F8211E52961FF0000238EE1 /* SKCSwift */ = {
@@ -461,7 +450,7 @@
 				Base,
 			);
 			mainGroup = 1F8211DA2961FF0000238EE1;
-			productRefGroup = 1F8211E42961FF0000238EE1 /* Products */;
+			productRefGroup = 1F8211DA2961FF0000238EE1;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
