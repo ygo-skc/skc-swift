@@ -10,9 +10,11 @@ import SwiftUI
 struct CardOfTheDayView: View, Equatable {
     @Binding private var isDataInvalidated: Bool
     
-    @State private var date: String = ""
-    @State private var card: Card = Card(cardID: "", cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
+    @State private var date: String?
+    @State private var card: Card?
     @State private var isDataLoaded = false
+    
+    private static let IMAGE_SIZE: CGFloat = 90
     
     init(isDataInvalidated: Binding<Bool> = .constant(false)) {
         self._isDataInvalidated = isDataInvalidated
@@ -41,26 +43,30 @@ struct CardOfTheDayView: View, Equatable {
     }
     
     static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
-        return lhs.card.cardID == rhs.card.cardID
+        return lhs.card?.cardID == rhs.card?.cardID
     }
     
     var body: some View {
         SectionView(
             header: "Card of the day",
             content: {
-                NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
+                NavigationLink(value: CardValue(cardID: card?.cardID ?? "", cardName: card?.cardName ?? ""), label: {
                     HStack(alignment: .top, spacing: 20) {
-                        YGOCardImage(height: 90, imgSize: .tiny, cardID: card.cardID)
-                            .overlay(
-                                Circle()
-                                    .if(card.cardColor.starts(with: "Pendulum")) {
-                                        $0.stroke(cardColorGradient(cardColor: card.cardColor), lineWidth: 5)
-                                    } else: {
-                                        $0.stroke(cardColorUI(cardColor: card.cardColor), lineWidth: 5)
-                                    }
-                            )
+                        if let card {
+                            YGOCardImage(height: CardOfTheDayView.IMAGE_SIZE, imgSize: .tiny, cardID: card.cardID)
+                                .overlay(
+                                    Circle()
+                                        .if(card.cardColor.starts(with: "Pendulum")) {
+                                            $0.stroke(cardColorGradient(cardColor: card.cardColor), lineWidth: 5)
+                                        } else: {
+                                            $0.stroke(cardColorUI(cardColor: card.cardColor), lineWidth: 5)
+                                        }
+                                )
+                        } else {
+                            PlaceholderView(width: CardOfTheDayView.IMAGE_SIZE, height: CardOfTheDayView.IMAGE_SIZE, radius: CardOfTheDayView.IMAGE_SIZE)
+                        }
                         VStack(alignment: .leading, spacing: 5) {
-                            if isDataLoaded {
+                            if isDataLoaded, let card, let date {
                                 InlineDateView(date: date)
                                     .equatable()
                                 Text(card.cardName)

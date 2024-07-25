@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
-struct YGOCardImage: View {
+struct YGOCardImage: View, Equatable {
     var height: CGFloat
     var imgSize: ImageSize
     var cardID: String
@@ -34,7 +35,7 @@ struct YGOCardImage: View {
     }
     
     var body: some View {
-        AsyncImage(url: imgUrl, transaction: Transaction(animation: .easeInOut)) { phase in
+        CachedAsyncImage(url: imgUrl, transaction: Transaction(animation: .easeInOut)) { phase in
             switch phase {
             case .empty:
                 PlaceholderView(width: height, height: height, radius: radius)
@@ -45,7 +46,7 @@ struct YGOCardImage: View {
                     .frame(width: height, height: height)
                     .cornerRadius(radius)
             default:
-                AsyncImage(url: fallbackUrl) { image in
+                CachedAsyncImage(url: fallbackUrl) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)

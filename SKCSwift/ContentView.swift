@@ -33,3 +33,7 @@ struct CardInfo_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+extension URLCache {
+    static let imageCache = URLCache(memoryCapacity: 30 * 1024 * 1024, diskCapacity: 100 * 1024 * 1024)
+}

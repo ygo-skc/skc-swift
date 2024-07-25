@@ -61,6 +61,7 @@
 		1FE8C9BF2978CED9005AD924 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C9BE2978CED9005AD924 /* Enum.swift */; };
 		1FE8C9C12978ED3F005AD924 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C9C02978ED3F005AD924 /* Text.swift */; };
 		1FEA1BC22AA7FC4E000341F4 /* SegmentedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEA1BC12AA7FC4E000341F4 /* SegmentedView.swift */; };
+		DE4CAF5E2C52E5E7000FF167 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = DE4CAF5D2C52E5E7000FF167 /* CachedAsyncImage */; };
 		DE63448E2A4545C20016BC43 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63448D2A4545C20016BC43 /* View.swift */; };
 		DEC099B12C4DD05E00A8B797 /* CardListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B02C4DD05E00A8B797 /* CardListItemView.swift */; };
 		DEC099B32C4F0CCD00A8B797 /* TrendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */; };
@@ -141,8 +142,8 @@
 		1FE8C9BE2978CED9005AD924 /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
 		1FE8C9C02978ED3F005AD924 /* Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
 		1FEA1BC12AA7FC4E000341F4 /* SegmentedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedView.swift; sourceTree = "<group>"; };
+		DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE63448D2A4545C20016BC43 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
-		DEB0B2342C520CB7006D70D1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SKCSwift.app; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwift.app"; sourceTree = "<absolute>"; };
 		DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEC099B02C4DD05E00A8B797 /* CardListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardListItemView.swift; sourceTree = "<group>"; };
@@ -156,6 +157,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE4CAF5E2C52E5E7000FF167 /* CachedAsyncImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,6 +292,7 @@
 				1F8212002961FF0100238EE1 /* SKCSwiftUITests */,
 				DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */,
 				DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */,
+				DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -380,8 +383,11 @@
 			dependencies = (
 			);
 			name = SKCSwift;
+			packageProductDependencies = (
+				DE4CAF5D2C52E5E7000FF167 /* CachedAsyncImage */,
+			);
 			productName = SKCSwift;
-			productReference = DEB0B2342C520CB7006D70D1 /* SKCSwift.app */;
+			productReference = DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1F8211F22961FF0100238EE1 /* SKCSwiftTests */ = {
@@ -452,6 +458,9 @@
 				Base,
 			);
 			mainGroup = 1F8211DA2961FF0000238EE1;
+			packageReferences = (
+				DE4CAF5C2C52E5E7000FF167 /* XCRemoteSwiftPackageReference "SwiftUI-CachedAsyncImage" */,
+			);
 			productRefGroup = 1F8211DA2961FF0000238EE1;
 			projectDirPath = "";
 			projectRoot = "";
@@ -886,6 +895,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DE4CAF5C2C52E5E7000FF167 /* XCRemoteSwiftPackageReference "SwiftUI-CachedAsyncImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lorenzofiamingo/SwiftUI-CachedAsyncImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DE4CAF5D2C52E5E7000FF167 /* CachedAsyncImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE4CAF5C2C52E5E7000FF167 /* XCRemoteSwiftPackageReference "SwiftUI-CachedAsyncImage" */;
+			productName = CachedAsyncImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1F8211DB2961FF0000238EE1 /* Project object */;
 }

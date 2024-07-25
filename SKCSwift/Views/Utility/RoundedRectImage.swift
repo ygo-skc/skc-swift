@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct RoundedRectImage: View, Equatable {
     let width: CGFloat
@@ -14,7 +15,7 @@ struct RoundedRectImage: View, Equatable {
     var cornerRadius = 50.0
     
     var body: some View {
-        AsyncImage(url: imageUrl, transaction: Transaction(animation: .easeInOut)) { phase in
+        CachedAsyncImage(url: imageUrl, transaction: Transaction(animation: .easeInOut)) { phase in
             switch phase {
             case .empty:
                 PlaceholderView(width: width, height: height, radius: cornerRadius)
