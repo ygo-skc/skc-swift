@@ -88,6 +88,7 @@ private struct BanListDateRangePicker: View {
     private var banListEffectiveDatesByYear = [String:[String]]()
     private var banListEffectiveDatesByInd = [String:Int]()
     private let yearsSortedDesc: [String]
+    private let numYears: Int
     
     init(chosenDateRange: Binding<Int>, showDateSelectorSheet: Binding<Bool>, banListDates: [BanListDate]) {
         self._chosenDateRange = chosenDateRange
@@ -103,6 +104,7 @@ private struct BanListDateRangePicker: View {
         }
         
         yearsSortedDesc = Array(banListEffectiveDatesByYear.keys).sorted(by: >)
+        numYears = yearsSortedDesc.count
         chosenYear = getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate)
     }
     
@@ -112,19 +114,26 @@ private struct BanListDateRangePicker: View {
                 Text("Choose Ban List")
                     .font(.title2)
                     .bold()
-                    .padding(.top)
+                    .padding(.vertical)
                 
-                ScrollView(.horizontal) {
-                    HStack {
-                        ForEach(yearsSortedDesc, id: \.self) { year in
-                            Button() {
-                                chosenYear = year
-                            } label: {
-                                Text(year)
-                            }
-                        }
+                Text("Recent")
+                    .font(.title3)
+                Picker("List Year", selection: $chosenYear) {
+                    ForEach(yearsSortedDesc[0 ..< numYears / 2], id: \.self) { year in
+                        Text(year).tag(year)
                     }
                 }
+                .pickerStyle(.palette)
+                
+                Text("Older")
+                    .font(.title3)
+                Picker("List Year", selection: $chosenYear) {
+                    ForEach(yearsSortedDesc[numYears / 2 ..< yearsSortedDesc.count], id: \.self) { year in
+                        Text(year).tag(year)
+                    }
+                }
+                .pickerStyle(.palette)
+                .padding(.bottom)
             }
             .padding(.horizontal)
             
