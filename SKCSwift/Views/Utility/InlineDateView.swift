@@ -23,15 +23,15 @@ struct InlineDateView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 3)
                 .background(Color("pink_red"))
-                .font(.caption)
+                .font(.system(.caption, design: .monospaced))
                 .fontWeight(.semibold)
                 .foregroundColor(Color(.white))
             Group {
-                Text("\(day), ")
+                Text("\(day),".padding(toLength: 3, withPad: " ", startingAt: 0))
                     .fontWeight(.semibold)
                 + Text(year)
             }
-            .font(.caption2)
+            .font(.system(.caption2, design: .monospaced))
             .foregroundColor(.primary)
             .padding(.horizontal, 8)
         }
