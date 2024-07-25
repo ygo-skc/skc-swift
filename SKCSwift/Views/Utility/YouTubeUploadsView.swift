@@ -14,14 +14,9 @@ struct YouTubeUploadsView: View {
     @State private var isDataLoaded = false
     
     private static let SKC_CHANNEL_ID = "UCBZ_1wWyLQI3SV9IgLbyiNQ"
-    private let UPLOAD_IMG_WIDTH: CGFloat
-    private let UPLOAD_IMG_HEIGHT: CGFloat
     
     init(isDataInvalidated: Binding<Bool> = .constant(false))  {
         self._isDataInvalidated = isDataInvalidated
-        
-        UPLOAD_IMG_WIDTH = 175
-        UPLOAD_IMG_HEIGHT = UPLOAD_IMG_WIDTH * 0.6
     }
     
     private func fetchData() {
@@ -58,7 +53,8 @@ struct YouTubeUploadsView: View {
                         .padding(.bottom)
                     
                     ForEach(videos, id: \.id) { video in
-                        YouTubeUploadView(title: video.title, uploadUrl: video.url, thumbnailUrl: "https://img.youtube.com/vi/\(video.id)/maxresdefault.jpg", thumbnailWidth: UPLOAD_IMG_WIDTH, thumbnailHeight: UPLOAD_IMG_HEIGHT)
+                        YouTubeUploadView(videoID: video.id, title: video.title, uploadUrl: video.url)
+                            .equatable()
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -70,19 +66,30 @@ struct YouTubeUploadsView: View {
     }
 }
 
-struct YouTubeUploadView: View {
-    var title: String
-    var uploadUrl: String
-    var thumbnailUrl: String
-    var thumbnailWidth: CGFloat
-    var thumbnailHeight: CGFloat
+private struct YouTubeUploadView: View, Equatable {
+    let videoTitle: String
+    let videoURI: String
+    
+    private var videoThumbnailUrl: URL
+    
+    init(videoID: String, title: String, uploadUrl: String) {
+        self.videoTitle = title
+        self.videoURI = uploadUrl
+        
+        self.videoThumbnailUrl = URL(string: String(format: YouTubeUploadView.THUMBNAIL_URI_TEMPLATE, videoID))!
+    }
+    
+    private static let UPLOAD_IMG_WIDTH: CGFloat = 175
+    private static let UPLOAD_IMG_HEIGHT: CGFloat = YouTubeUploadView.UPLOAD_IMG_WIDTH * 0.6
+    private static let THUMBNAIL_URI_TEMPLATE = "https://img.youtube.com/vi/%@/mqdefault.jpg"
     
     var body: some View {
         VStack {
             HStack(spacing: 15)  {
-                RoundedRectImage(width: thumbnailWidth, height: thumbnailHeight, imageUrl: URL(string: thumbnailUrl)!, cornerRadius: 8)
+                RoundedRectImage(width: YouTubeUploadView.UPLOAD_IMG_WIDTH, height: YouTubeUploadView.UPLOAD_IMG_HEIGHT, imageUrl: videoThumbnailUrl, cornerRadius: 8)
+                    .equatable()
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(title)
+                    Text(videoTitle)
                         .font(.callout)
                         .fontWeight(.regular)
                 }
@@ -94,7 +101,7 @@ struct YouTubeUploadView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            if let url = URL(string: uploadUrl) {
+            if let url = URL(string: videoURI) {
                 UIApplication.shared.open(url)
             }
         }
@@ -110,10 +117,7 @@ struct YouTubeUploadsView_Previews: PreviewProvider {
         .frame(maxHeight: .infinity)
         .previewDisplayName("YouTube Uploads Feed")
         
-        YouTubeUploadView(
-            title: "Maze of Memories!", uploadUrl: "https://www.youtube.com/watch?v=gonORZrOd68",
-            thumbnailUrl: "https://img.youtube.com/vi/NI4awGRwIDs/maxresdefault.jpg", thumbnailWidth: 150, thumbnailHeight: 150 * 0.75
-        )
+        YouTubeUploadView(videoID: "NI4awGRwIDs", title: "Maze of Memories!", uploadUrl: "https://www.youtube.com/watch?v=gonORZrOd68")
         .padding(.horizontal)
         .previewDisplayName("YouTube Upload")
     }
