@@ -113,14 +113,11 @@
 		1F6687E1296798E700C8555D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedBanListsContentView.swift; sourceTree = "<group>"; };
 		1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
-		1F8211E32961FF0000238EE1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SKCSwift.app; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwift.app"; sourceTree = "<absolute>"; };
 		1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftApp.swift; sourceTree = "<group>"; };
 		1F8211E82961FF0000238EE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		1F8211EA2961FF0100238EE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1F8211ED2961FF0100238EE1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		1F8211F32961FF0100238EE1 /* SKCSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SKCSwiftTests.xctest; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwift.app/PlugIns/SKCSwiftTests.xctest"; sourceTree = "<absolute>"; };
 		1F8211F72961FF0100238EE1 /* SKCSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftTests.swift; sourceTree = "<group>"; };
-		1F8211FD2961FF0100238EE1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = SKCSwiftUITests.xctest; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwiftUITests-Runner.app/PlugIns/SKCSwiftUITests.xctest"; sourceTree = "<absolute>"; };
 		1F8212012961FF0100238EE1 /* SKCSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITests.swift; sourceTree = "<group>"; };
 		1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1F86EC3E29688821004F4F1B /* AttributeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeView.swift; sourceTree = "<group>"; };
@@ -145,6 +142,9 @@
 		1FE8C9C02978ED3F005AD924 /* Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
 		1FEA1BC12AA7FC4E000341F4 /* SegmentedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedView.swift; sourceTree = "<group>"; };
 		DE63448D2A4545C20016BC43 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		DEB0B2342C520CB7006D70D1 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = SKCSwift.app; path = "/Users/rtomyj/offline-docs/skc/skc-swift/build/Debug-iphoneos/SKCSwift.app"; sourceTree = "<absolute>"; };
+		DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEC099B02C4DD05E00A8B797 /* CardListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardListItemView.swift; sourceTree = "<group>"; };
 		DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingView.swift; sourceTree = "<group>"; };
 		DEC099B62C4F0F8F00A8B797 /* Trending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trending.swift; sourceTree = "<group>"; };
@@ -288,6 +288,8 @@
 				1F8211E52961FF0000238EE1 /* SKCSwift */,
 				1F8211F62961FF0100238EE1 /* SKCSwiftTests */,
 				1F8212002961FF0100238EE1 /* SKCSwiftUITests */,
+				DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */,
+				DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */,
 			);
 			sourceTree = "<group>";
 		};
@@ -379,7 +381,7 @@
 			);
 			name = SKCSwift;
 			productName = SKCSwift;
-			productReference = 1F8211E32961FF0000238EE1 /* SKCSwift.app */;
+			productReference = DEB0B2342C520CB7006D70D1 /* SKCSwift.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1F8211F22961FF0100238EE1 /* SKCSwiftTests */ = {
@@ -397,7 +399,7 @@
 			);
 			name = SKCSwiftTests;
 			productName = SKCSwiftTests;
-			productReference = 1F8211F32961FF0100238EE1 /* SKCSwiftTests.xctest */;
+			productReference = DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1F8211FC2961FF0100238EE1 /* SKCSwiftUITests */ = {
@@ -415,7 +417,7 @@
 			);
 			name = SKCSwiftUITests;
 			productName = SKCSwiftUITests;
-			productReference = 1F8211FD2961FF0100238EE1 /* SKCSwiftUITests.xctest */;
+			productReference = DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
