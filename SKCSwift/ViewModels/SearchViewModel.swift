@@ -7,12 +7,12 @@
 
 import Foundation
 
-class CardSearchViewModel: ObservableObject {
+class SearchViewModel: ObservableObject {
     @Published private(set) var searchResults = [SearchResults]()
     @Published private(set) var searchResultsIds = [String]()
-    @Published var searchText = ""
     @Published private(set) var isFetching = false
     @Published private(set) var task: URLSessionDataTask?
+    @Published var searchText = ""
     
     func newSearchSubject(value: String) {
         if (isFetching) {

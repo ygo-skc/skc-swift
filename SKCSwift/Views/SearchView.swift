@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct SearchView: View {
-    @StateObject private var cardSearchViewModel = CardSearchViewModel()
+    @StateObject private var searchViewModel = SearchViewModel()
+    @StateObject private var trendingViewModel = TrendingViewModel()
     
     var body: some View {
         NavigationStack {
             VStack {
-                if (!cardSearchViewModel.searchResults.isEmpty) {
-                    List(cardSearchViewModel.searchResults) { sr in
+                if (!searchViewModel.searchResults.isEmpty) {
+                    List(searchViewModel.searchResults) { sr in
                         Section(header: HStack{
                             CardColorIndicator(cardColor: sr.section)
                                 .equatable()
@@ -33,13 +34,16 @@ struct SearchView: View {
                     .listStyle(.plain)
                     .ignoresSafeArea(.keyboard)
                 } else {
-                    if !cardSearchViewModel.isFetching && !cardSearchViewModel.searchText.isEmpty {
+                    if !searchViewModel.isFetching && !searchViewModel.searchText.isEmpty {
                         Text("Nothing found in database")
                             .font(.title2)
                             .frame(alignment: .center)
-                    } else if cardSearchViewModel.searchText.isEmpty {
+                    } else if searchViewModel.searchText.isEmpty {
                         ScrollView() {
-                            TrendingView()
+                            TrendingView(cardTrendingData: trendingViewModel.cards,
+                                         productTrendingData: trendingViewModel.products,
+                                         isDataLoaded: trendingViewModel.isDataLoaded,
+                                         focusedTrend: $trendingViewModel.focusedTrend)
                                 .equatable()
                                 .modifier(ParentViewModifier())
                         }
@@ -50,10 +54,13 @@ struct SearchView: View {
                 CardSearchLinkDestination(cardValue: card)
             }
             .navigationTitle("Search")
+            .task(priority: .low) {
+                trendingViewModel.fetchTrendingData()
+            }
         }
-        .searchable(text: $cardSearchViewModel.searchText, prompt: "Search for card...")
-        .onChange(of: cardSearchViewModel.searchText, initial: false) { _, newValue in
-            cardSearchViewModel.newSearchSubject(value: newValue)
+        .searchable(text: $searchViewModel.searchText, prompt: "Search for card...")
+        .onChange(of: searchViewModel.searchText, initial: false) { _, newValue in
+            searchViewModel.newSearchSubject(value: newValue)
         }
         .disableAutocorrection(true)
     }

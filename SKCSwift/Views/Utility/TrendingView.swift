@@ -8,46 +8,13 @@
 import SwiftUI
 
 struct TrendingView: View, Equatable {
-    @State private var cardTrendingData: [TrendingMetric<Card>]?
-    @State private var productTrendingData: [TrendingMetric<Product>]?
-    @State private var focusedTrend: TrendingResouceType = .card
-    @State private var isDataLoaded = false
-    @State private var lastRefresh = Date()
+    var cardTrendingData: [TrendingMetric<Card>]?
+    var productTrendingData: [TrendingMetric<Product>]?
+    var isDataLoaded: Bool
+    @Binding var focusedTrend: TrendingResouceType
     
     static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
-        lhs.cardTrendingData?.count == rhs.productTrendingData?.count && lhs.productTrendingData?.count == rhs.productTrendingData?.count
-    }
-    
-    private func fetchData() {
-        if isDataLoaded{
-            if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) < 5 {
-                return
-            }
-        }
-        
-        request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending<Card>, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let trending):
-                    cardTrendingData = trending.metrics
-                    isDataLoaded = true
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-        
-        request(url: trendingUrl(resource: .product), priority: 0.2) { (result: Result<Trending<Product>, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let trending):
-                    productTrendingData = trending.metrics
-                    isDataLoaded = true
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
+        lhs.isDataLoaded == rhs.isDataLoaded && lhs.focusedTrend == rhs.focusedTrend
     }
     
     var body: some View {
@@ -102,9 +69,6 @@ struct TrendingView: View, Equatable {
                 }
             }
         })
-        .task(priority: .low) {
-            fetchData()
-        }
     }
 }
 
@@ -155,7 +119,19 @@ private struct TrendChangeView: View, Equatable {
 }
 
 #Preview {
-    TrendingView()
+    struct Preview: View {
+        @State var t = TrendingResouceType.card
+        var body: some View {
+            TrendingView(cardTrendingData: [
+                TrendingMetric(resource: Card(cardID: "40044918", cardName: "Elemental HERO Stratos", cardColor: "Effect",
+                                              cardAttribute: "Wind", cardEffect: "Draw 2", monsterType: "Warrior/Effect"), occurrences: 45, change: 3)],
+                         productTrendingData: [
+                            TrendingMetric(resource: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
+                                                             productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-03-03", productTotal: 101), occurrences: 23, change: -4)],
+                         isDataLoaded: true, focusedTrend: $t)
+        }
+    }
+    return Preview()
 }
 
 #Preview("Trend Change Positive") {
