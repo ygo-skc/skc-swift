@@ -14,6 +14,7 @@ struct YGOCardView: View {
     
     private let width: CGFloat
     private let imageSize: CGFloat
+    private let imageSizeVariant: ImageSize
     
     init(card: Card, isDataLoaded: Bool, variant: YGOCardViewVariant = .normal) {
         self.card = card
@@ -22,11 +23,12 @@ struct YGOCardView: View {
         
         self.width = (variant == .normal) ?  UIScreen.main.bounds.width : 220
         self.imageSize = (variant == .normal) ? width - 60 : width
+        self.imageSizeVariant = (variant == .normal) ? .medium : .extra_small
     }
     
     var body: some View {
         VStack(spacing: 5) {
-            YGOCardImage(height: imageSize, imgSize: .medium, cardID: card.cardID, variant: .rounded_corner)
+            YGOCardImage(height: imageSize, imgSize: imageSizeVariant, cardID: card.cardID, variant: .rounded_corner)
             
             if (isDataLoaded) {
                 CardStatsView(card: card, variant: variant)
