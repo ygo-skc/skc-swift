@@ -55,15 +55,16 @@ struct CardView: View {
             LazyVStack(spacing: 30) {
                 YGOCardView(card: cardData, isDataLoaded: isDataLoaded)
                 if (isDataLoaded) {
-                    RelatedContentView(
-                        cardName: cardData.cardName,
-                        products: getProducts(),
-                        tcgBanLists: getBanList(format: BanListFormat.tcg),
-                        mdBanLists: getBanList(format: BanListFormat.md), dlBanLists: getBanList(format: BanListFormat.dl)
-                    )
-                    .padding(.horizontal)
-                    CardSuggestionsView(cardID: cardID)
-                        .padding(.horizontal)
+                    Group {
+                        RelatedContentView(
+                            cardName: cardData.cardName,
+                            products: getProducts(),
+                            tcgBanLists: getBanList(format: BanListFormat.tcg),
+                            mdBanLists: getBanList(format: BanListFormat.md), dlBanLists: getBanList(format: BanListFormat.dl)
+                        )
+                        CardSuggestionsView(cardID: cardID)
+                    }
+                    .modifier(ParentViewModifier())
                 }
             }
             .task(priority: .high) {

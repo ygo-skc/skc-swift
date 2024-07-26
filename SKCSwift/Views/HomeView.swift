@@ -64,7 +64,7 @@ struct HomeView: View, Equatable {
                         YouTubeUploadsView(isDataInvalidated: $isYouTubeUploadsInvalidated)
                     }
                 }
-                .padding(.horizontal)
+                .modifier(ParentViewModifier())
             }
             .navigationDestination(for: CardValue.self) { card in
                 CardSearchLinkDestination(cardValue: card)
@@ -72,7 +72,6 @@ struct HomeView: View, Equatable {
             .environment(\.openURL, OpenURLAction(handler: handleURL))
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
-            .modifier(ParentViewModifier())
             .refreshable {
                 await refresh()
             }

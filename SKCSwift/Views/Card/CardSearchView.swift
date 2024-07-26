@@ -35,15 +35,13 @@ struct CardSearchView: View {
                 } else {
                     if !cardSearchViewModel.isFetching && !cardSearchViewModel.searchText.isEmpty {
                         Text("Nothing found in database")
-                            .padding(.horizontal)
                             .font(.title2)
-                            .frame(
-                                maxWidth: .infinity,
-                                maxHeight: .infinity,
-                                alignment: .center
-                            )
+                            .frame(alignment: .center)
                     } else if cardSearchViewModel.searchText.isEmpty {
-                        TrendingView()
+                        ScrollView() {
+                            TrendingView()
+                                .modifier(ParentViewModifier())
+                        }
                     }
                 }
             }
@@ -51,11 +49,6 @@ struct CardSearchView: View {
                 CardSearchLinkDestination(cardValue: card)
             }
             .navigationTitle("Search")
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
         }
         .searchable(text: $cardSearchViewModel.searchText, prompt: "Search for card...")
         .onChange(of: cardSearchViewModel.searchText, initial: false) { _, newValue in

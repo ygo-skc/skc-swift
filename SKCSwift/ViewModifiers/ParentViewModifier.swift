@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-struct ParentViewModifier: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct ParentViewModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
+            .padding(.horizontal)
     }
-}
-
-#Preview {
-    ParentViewModifier()
 }
