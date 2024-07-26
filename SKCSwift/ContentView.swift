@@ -20,7 +20,7 @@ struct ContentView: View, Equatable {
                 .tabItem {
                     Image(systemName: "xmark.circle")
                 }
-            CardSearchView()
+            SearchView()
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                 }

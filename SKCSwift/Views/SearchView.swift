@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardSearchView: View {
+struct SearchView: View {
     @StateObject private var cardSearchViewModel = CardSearchViewModel()
     
     var body: some View {
@@ -40,6 +40,7 @@ struct CardSearchView: View {
                     } else if cardSearchViewModel.searchText.isEmpty {
                         ScrollView() {
                             TrendingView()
+                                .equatable()
                                 .modifier(ParentViewModifier())
                         }
                     }
@@ -69,5 +70,5 @@ struct CardSearchLinkDestination: View {
 }
 
 #Preview("Card Search View") {
-    CardSearchView()
+    SearchView()
 }
