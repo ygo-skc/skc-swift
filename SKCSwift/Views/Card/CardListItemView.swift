@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct CardListItemView: View {
+struct CardListItemView: View, Equatable {
     let cardID: String
     let cardName: String
     let monsterType: String?

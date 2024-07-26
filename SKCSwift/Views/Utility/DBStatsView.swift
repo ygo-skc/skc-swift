@@ -59,7 +59,6 @@ struct DBStatsView: View {
                     .padding(.horizontal)
                 }
                 .frame(
-                    minWidth: 0,
                     maxWidth: .infinity
                 )
             }

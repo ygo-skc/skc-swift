@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct HomeView: View, Equatable {
     @State private var isTCGProductsInfoLoaded = false
     
     @State private var isDBStatsDataInvalidated = false
@@ -18,6 +18,12 @@ struct HomeView: View {
     @State private var lastRefresh = Date()
     
     @State private var navigationPath = NavigationPath()
+    
+    static func == (lhs: HomeView, rhs: HomeView) -> Bool {
+        lhs.isTCGProductsInfoLoaded == rhs.isTCGProductsInfoLoaded && lhs.isDBStatsDataInvalidated == rhs.isDBStatsDataInvalidated
+        && lhs.isCardOfTheDayDataInvalidated == rhs.isCardOfTheDayDataInvalidated && lhs.isUpcomingTCGProductsInvalidated == rhs.isUpcomingTCGProductsInvalidated
+        && lhs.isYouTubeUploadsInvalidated == rhs.isYouTubeUploadsInvalidated
+    }
     
     private func refresh() async {
         if lastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5 {
@@ -31,7 +37,7 @@ struct HomeView: View {
             
             
             while(isDBStatsDataInvalidated && isCardOfTheDayDataInvalidated && isUpcomingTCGProductsInvalidated) {
-                try? await Task.sleep(for: .milliseconds(500))
+                try? await Task.sleep(for: .milliseconds(250))
             }
             lastRefresh = Date()
         }
@@ -64,9 +70,9 @@ struct HomeView: View {
                 CardSearchLinkDestination(cardValue: card)
             }
             .environment(\.openURL, OpenURLAction(handler: handleURL))
-            .frame(maxHeight: .infinity)
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
+            .modifier(ParentViewModifier())
             .refreshable {
                 await refresh()
             }

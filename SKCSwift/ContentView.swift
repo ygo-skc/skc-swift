@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ContentView: View, Equatable {
     private let screenWidth = UIScreen.main.bounds.width - 15
     
     var body: some View {
