@@ -5,7 +5,7 @@
 //  Created by Javi Gomez on 1/2/23.
 //
 
-struct MonsterAssociation: Codable {
+struct MonsterAssociation: Codable, Equatable {
     var level: Int?
     var rank: Int?
     var scaleRating: Int?
@@ -13,7 +13,7 @@ struct MonsterAssociation: Codable {
     var linkArrows: [String]?
 }
 
-struct Card: Codable {
+struct Card: Codable, Equatable {
     var cardID: String
     var cardName: String
     var cardColor: String

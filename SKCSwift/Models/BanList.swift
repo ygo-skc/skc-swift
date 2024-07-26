@@ -5,14 +5,14 @@
 //  Created by Javi Gomez on 1/3/23.
 //
 
-struct BanList: Codable {
+struct BanList: Codable, Equatable {
     var banListDate: String
     var cardID: String
     var banStatus: String
     var format: String
 }
 
-struct BanListsForCard: Codable {
+struct BanListsForCard: Codable, Equatable {
     var TCG: [BanList]?
     var MD: [BanList]?
     var DL: [BanList]?

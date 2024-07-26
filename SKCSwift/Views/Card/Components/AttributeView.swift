@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AttributeView: View {
+struct AttributeView: View, Equatable {
     var attribute: Attribute
     
     private static let ICON_SIZE = 30.0

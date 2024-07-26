@@ -7,12 +7,16 @@
 
 import SwiftUI
 
-struct TrendingView: View {
+struct TrendingView: View, Equatable {
     @State private var cardTrendingData: [TrendingMetric<Card>]?
     @State private var productTrendingData: [TrendingMetric<Product>]?
     @State private var focusedTrend: TrendingResouceType = .card
     @State private var isDataLoaded = false
     @State private var lastRefresh = Date()
+    
+    static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
+        lhs.cardTrendingData?.count == rhs.productTrendingData?.count && lhs.productTrendingData?.count == rhs.productTrendingData?.count
+    }
     
     private func fetchData() {
         if isDataLoaded{
@@ -47,66 +51,57 @@ struct TrendingView: View {
     }
     
     var body: some View {
-        ScrollView(content: {
-            SectionView(header: "Trending",
-                        variant: .plain,
-                        content: {
-                if isDataLoaded {
-                    LazyVStack{
-                        Picker("Select Trend Type", selection: $focusedTrend) {
-                            ForEach(TrendingResouceType.allCases, id: \.self) { type in
-                                Text(type.rawValue.capitalized).tag(type)
-                            }
+        SectionView(header: "Trending",
+                    variant: .plain,
+                    content: {
+            if isDataLoaded {
+                LazyVStack{
+                    Picker("Select Trend Type", selection: $focusedTrend) {
+                        ForEach(TrendingResouceType.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
                         }
-                        .pickerStyle(.segmented)
-                        .padding(.bottom)
-                        
-                        if focusedTrend == .card, let tm = cardTrendingData {
-                            ForEach(tm, id: \.resource.cardID) { m in
-                                let card = m.resource
-                                NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                    HStack {
-                                        TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                        VStack {
-                                            CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                                            Divider()
-                                        }
-                                        .padding(.leading, 5)
-                                    }
-                                    .contentShape(Rectangle())
-                                })
-                                .buttonStyle(.plain)
-                            }
-                        } else if focusedTrend == .product, let tm = productTrendingData {
-                            ForEach(tm, id: \.resource.productId) { m in
-                                let product = m.resource
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.bottom)
+                    
+                    if focusedTrend == .card, let tm = cardTrendingData {
+                        ForEach(tm, id: \.resource.cardID) { m in
+                            let card = m.resource
+                            NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                                 HStack {
                                     TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                     VStack {
-                                        ProductListItemView(product: product)
+                                        CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                         Divider()
                                     }
                                     .padding(.leading, 5)
                                 }
+                                .contentShape(Rectangle())
+                            })
+                            .buttonStyle(.plain)
+                        }
+                    } else if focusedTrend == .product, let tm = productTrendingData {
+                        ForEach(tm, id: \.resource.productId) { m in
+                            let product = m.resource
+                            HStack {
+                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
+                                VStack {
+                                    ProductListItemView(product: product)
+                                    Divider()
+                                }
+                                .padding(.leading, 5)
                             }
                         }
                     }
-                } else {
-                    HStack {
-                        Spacer()
-                        ProgressView()
-                        Spacer()
-                    }
                 }
-            })
-            .padding(.horizontal)
+            } else {
+                HStack {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                }
+            }
         })
-        .frame(
-            maxWidth: .infinity,
-            maxHeight: .infinity,
-            alignment: .topLeading
-        )
-        .scrollDismissesKeyboard(.immediately)
         .task(priority: .low) {
             fetchData()
         }
@@ -114,7 +109,7 @@ struct TrendingView: View {
 }
 
 
-private struct TrendChangeView: View {
+private struct TrendChangeView: View, Equatable {
     let trendChange: String
     let hits: Int
     

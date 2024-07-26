@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardStatsView: View {
+struct CardStatsView: View, Equatable {
     let card: Card
     let variant: YGOCardViewVariant
     

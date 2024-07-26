@@ -10,7 +10,7 @@ import SwiftUI
 
 private let ICON_SIZE = 30.0
 
-struct MonsterAssociationView: View {
+struct MonsterAssociationView: View, Equatable {
     var monsterAssociation: MonsterAssociation
     var attribute: Attribute
     
@@ -40,7 +40,7 @@ struct MonsterAssociationView: View {
     }
 }
 
-private struct LevelAssociationView: View {
+private struct LevelAssociationView: View, Equatable {
     var level: Int
     
     var body: some View {
@@ -55,7 +55,7 @@ private struct LevelAssociationView: View {
     }
 }
 
-private struct PendulumAssociationView: View {
+private struct PendulumAssociationView: View, Equatable {
     var pendScale: Int
     
     var body: some View {
@@ -70,7 +70,7 @@ private struct PendulumAssociationView: View {
     }
 }
 
-private struct RankAssociationView: View {
+private struct RankAssociationView: View, Equatable {
     var rank: Int
     
     var body: some View {
@@ -85,7 +85,7 @@ private struct RankAssociationView: View {
     }
 }
 
-private struct LinkAssociationView: View {
+private struct LinkAssociationView: View, Equatable {
     var linkRating: Int
     var linkArrows: String
     

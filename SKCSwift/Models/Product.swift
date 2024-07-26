@@ -5,7 +5,7 @@
 //  Created by Javi Gomez on 1/3/23.
 //
 
-struct Product: Codable {
+struct Product: Codable, Equatable {
     let productId, productLocale, productName, productType, productSubType, productReleaseDate: String
     let productTotal: Int?
     let productContent: [ProductContent]?
@@ -18,7 +18,7 @@ struct Product: Codable {
     }
 }
 
-struct ProductContent: Codable {
+struct ProductContent: Codable, Equatable {
     var productPosition: String
     var rarities: [String]
 }
