@@ -162,6 +162,7 @@ private struct SupportCarouselView: View {
                         let card = reference.card
                         NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                             YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
+                                .equatable()
                                 .contentShape(Rectangle())
                         })
                         .buttonStyle(.plain)

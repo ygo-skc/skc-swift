@@ -22,6 +22,7 @@ struct SuggestedCardView: View {
                 }
                 
                 CardStatsView(card: card, variant: .condensed)
+                    .equatable()
             }
             .contentShape(Rectangle())
             .frame(width: 220)

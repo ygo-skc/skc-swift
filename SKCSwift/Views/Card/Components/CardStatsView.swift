@@ -30,6 +30,7 @@ struct CardStatsView: View, Equatable {
                 
                 if (card.monsterAssociation != nil) {
                     MonsterAssociationView(monsterAssociation: card.monsterAssociation!, attribute: attribute)
+                        .equatable()
                 }
                 
                 

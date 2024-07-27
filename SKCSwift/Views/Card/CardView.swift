@@ -54,6 +54,7 @@ struct CardView: View {
         ScrollView {
             LazyVStack(spacing: 30) {
                 YGOCardView(card: cardData, isDataLoaded: isDataLoaded)
+                    .equatable()
                 if (isDataLoaded) {
                     Group {
                         RelatedContentView(

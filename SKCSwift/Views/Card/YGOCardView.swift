@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct YGOCardView: View {
+struct YGOCardView: View, Equatable {
     let card: Card
     let isDataLoaded: Bool
     let variant: YGOCardViewVariant
@@ -32,6 +32,7 @@ struct YGOCardView: View {
             
             if (isDataLoaded) {
                 CardStatsView(card: card, variant: variant)
+                    .equatable()
             } else {
                 PlaceholderView(width: width, height: 250, radius: 10)
             }

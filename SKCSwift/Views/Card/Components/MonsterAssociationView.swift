@@ -19,6 +19,7 @@ struct MonsterAssociationView: View, Equatable {
             Spacer()
             HStack {
                 AttributeView(attribute: attribute)
+                    .equatable()
                 
                 if (monsterAssociation.level != nil) {
                     LevelAssociationView(level: monsterAssociation.level!)
