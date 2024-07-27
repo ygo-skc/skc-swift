@@ -40,8 +40,8 @@ struct SearchView: View {
                             .frame(alignment: .center)
                     } else if searchViewModel.searchText.isEmpty {
                         ScrollView() {
-                            TrendingView(cardTrendingData: trendingViewModel.cards,
-                                         productTrendingData: trendingViewModel.products,
+                            TrendingView(cardTrendingData: trendingViewModel.cards ?? [],
+                                         productTrendingData: trendingViewModel.products ?? [],
                                          isDataLoaded: trendingViewModel.isDataLoaded,
                                          focusedTrend: $trendingViewModel.focusedTrend)
                                 .equatable()

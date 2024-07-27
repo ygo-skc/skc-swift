@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct TrendingView: View, Equatable {
-    var cardTrendingData: [TrendingMetric<Card>]?
-    var productTrendingData: [TrendingMetric<Product>]?
+    var cardTrendingData: [TrendingMetric<Card>]
+    var productTrendingData: [TrendingMetric<Product>]
     var isDataLoaded: Bool
     @Binding var focusedTrend: TrendingResouceType
     
     static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
         lhs.isDataLoaded == rhs.isDataLoaded && lhs.focusedTrend == rhs.focusedTrend
+        && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID })
+        && lhs.productTrendingData.elementsEqual(rhs.productTrendingData, by: { $0.resource.productId == $1.resource.productId })
     }
     
     var body: some View {
@@ -31,8 +33,8 @@ struct TrendingView: View, Equatable {
                     .pickerStyle(.segmented)
                     .padding(.bottom)
                     
-                    if focusedTrend == .card, let tm = cardTrendingData {
-                        ForEach(tm, id: \.resource.cardID) { m in
+                    if focusedTrend == .card {
+                        ForEach(cardTrendingData, id: \.resource.cardID) { m in
                             let card = m.resource
                             NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                                 HStack {
@@ -47,8 +49,8 @@ struct TrendingView: View, Equatable {
                             })
                             .buttonStyle(.plain)
                         }
-                    } else if focusedTrend == .product, let tm = productTrendingData {
-                        ForEach(tm, id: \.resource.productId) { m in
+                    } else if focusedTrend == .product {
+                        ForEach(productTrendingData, id: \.resource.productId) { m in
                             let product = m.resource
                             HStack {
                                 TrendChangeView(trendChange: m.change, hits: m.occurrences)
