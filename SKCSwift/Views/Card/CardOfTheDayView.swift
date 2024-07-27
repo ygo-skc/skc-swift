@@ -55,7 +55,8 @@ struct CardOfTheDayView: View, Equatable {
                 NavigationLink(value: CardValue(cardID: card?.cardID ?? "", cardName: card?.cardName ?? ""), label: {
                     HStack(alignment: .top, spacing: 20) {
                         if let card {
-                            YGOCardImage(height: CardOfTheDayView.IMAGE_SIZE, imgSize: .tiny, cardID: card.cardID)
+                            CardImage(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny)
+                                .equatable()
                                 .overlay(
                                     Circle()
                                         .if(card.cardColor.starts(with: "Pendulum")) {

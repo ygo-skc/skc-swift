@@ -12,11 +12,9 @@ struct ProductListItemView: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            RoundedRectImage(width: 50, height: 90,
-                             imageUrl: URL(string: "https://images.thesupremekingscastle.com/products/tn/\(product.productId).png")!,
-                             cornerRadius: 0)
-            .equatable()
-            .padding(.trailing, 3)
+            ProductImage(width: 50, productID: product.productId, imgSize: .tiny)
+                .equatable()
+                .padding(.trailing, 3)
             VStack(alignment: .leading) {
                 InlineDateView(date: product.productReleaseDate)
                     .equatable()

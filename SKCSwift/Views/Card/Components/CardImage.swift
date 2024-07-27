@@ -8,18 +8,18 @@
 import SwiftUI
 import CachedAsyncImage
 
-struct YGOCardImage: View, Equatable {
-    var height: CGFloat
-    var imgSize: ImageSize
-    var cardID: String
-    var variant: YGOCardImageVariant
+struct CardImage: View, Equatable {
+    private let length: CGFloat
+    private let imgSize: ImageSize
+    private let cardID: String
+    private let variant: YGOCardImageVariant
     private var imgUrl: URL
     
     private let fallbackUrl: URL
     private let radius: CGFloat
     
-    init(height: CGFloat, imgSize: ImageSize, cardID: String, variant: YGOCardImageVariant = .round) {
-        self.height = height
+    init(length: CGFloat, cardID: String, imgSize: ImageSize, variant: YGOCardImageVariant = .round) {
+        self.length = length
         self.variant = variant
         self.imgSize = imgSize
         self.cardID = cardID
@@ -28,9 +28,9 @@ struct YGOCardImage: View, Equatable {
         self.fallbackUrl = URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/default-card-image.jpg")!
         
         if variant == .round {
-            self.radius = height
+            self.radius = length
         } else {
-            self.radius = height / 10
+            self.radius = length / 10
         }
     }
     
@@ -38,37 +38,37 @@ struct YGOCardImage: View, Equatable {
         CachedAsyncImage(url: imgUrl, transaction: Transaction(animation: .easeInOut)) { phase in
             switch phase {
             case .empty:
-                PlaceholderView(width: height, height: height, radius: radius)
+                PlaceholderView(width: length, height: length, radius: radius)
             case .success(let image):
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: height, height: height)
+                    .frame(width: length, height: length)
                     .cornerRadius(radius)
             default:
                 CachedAsyncImage(url: fallbackUrl) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: height, height: height)
+                        .frame(width: length, height: length)
                         .cornerRadius(radius)
                 } placeholder: {
-                    PlaceholderView(width: height, height: height, radius: radius)
+                    PlaceholderView(width: length, height: length, radius: radius)
                 }
             }
         }
-        .frame(width: height, height: height)
+        .frame(width: length, height: length)
     }
 }
 
 #Preview("Rounded") {
-    YGOCardImage(height: 60.0, imgSize: .tiny, cardID: "73146473", variant: .round)
+    CardImage(length: 60.0, cardID: "73146473", imgSize: .tiny, variant: .round)
 }
 
 #Preview("Rounded Corner") {
-    YGOCardImage(height: 240.0, imgSize: .medium, cardID: "73146473", variant: .rounded_corner)
+    CardImage(length: 240.0, cardID: "73146473", imgSize: .medium, variant: .rounded_corner)
 }
 
 #Preview("Rounded Corner - IMG DNE") {
-    YGOCardImage(height: 240.0, imgSize: .medium, cardID: "73146474", variant: .rounded_corner)
+    CardImage(length: 240.0, cardID: "73146473", imgSize: .medium, variant: .rounded_corner)
 }

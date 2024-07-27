@@ -15,7 +15,8 @@ struct SuggestedCardView: View {
         NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
             VStack {
                 HStack(spacing: 20) {
-                    YGOCardImage(height: 90.0, imgSize: .tiny, cardID: card.cardID, variant: .round)
+                    CardImage(length: 90.0, cardID: card.cardID, imgSize: .tiny, variant: .round)
+                        .equatable()
                     
                     Text("\(occurrence) Reference(s)")
                         .font(.subheadline)

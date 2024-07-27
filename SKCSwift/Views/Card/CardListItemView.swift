@@ -15,7 +15,8 @@ struct CardListItemView: View, Equatable {
     
     var body: some View {
         HStack(alignment: .top) {
-            YGOCardImage(height: 60, imgSize: .tiny, cardID: cardID)
+            CardImage(length: 60, cardID: cardID, imgSize: .tiny)
+                .equatable()
             VStack(alignment: .leading) {
                 Text(cardName)
                     .fontWeight(.bold)

@@ -28,7 +28,8 @@ struct YGOCardView: View, Equatable {
     
     var body: some View {
         VStack(spacing: 5) {
-            YGOCardImage(height: imageSize, imgSize: imageSizeVariant, cardID: card.cardID, variant: .rounded_corner)
+            CardImage(length: imageSize, cardID: card.cardID, imgSize: imageSizeVariant, variant: .rounded_corner)
+                .equatable()
             
             if (isDataLoaded) {
                 CardStatsView(card: card, variant: variant)
