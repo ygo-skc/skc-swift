@@ -22,18 +22,20 @@ struct UpcomingTCGProductsView: View {
     private func fetchData() {
         if !isDataLoaded || isDataInvalidated {
             request(url: upcomingEventsURL(), priority: 0.2) { (result: Result<Events, Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let upcomingProducts):
-                        if self.events != upcomingProducts.events {
+                switch result {
+                case .success(let upcomingProducts):
+                    if self.events != upcomingProducts.events {
+                        DispatchQueue.main.async {
                             self.events = upcomingProducts.events
                         }
-                        
+                    }
+                    
+                    DispatchQueue.main.async {
                         self.isDataLoaded = true
                         self.isDataInvalidated = false
-                    case .failure(let error):
-                        print(error)
                     }
+                case .failure(let error):
+                    print(error)
                 }
             }
         }

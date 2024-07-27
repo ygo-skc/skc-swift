@@ -22,18 +22,20 @@ struct YouTubeUploadsView: View {
     private func fetchData() {
         if !isDataLoaded || isDataInvalidated {
             request(url: ytUploadsURL(ytChannelId: YouTubeUploadsView.SKC_CHANNEL_ID), priority: 0.0) { (result: Result<YouTubeUploads, Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let uploadData):
-                        if self.videos != uploadData.videos {
+                switch result {
+                case .success(let uploadData):
+                    if self.videos != uploadData.videos {
+                        DispatchQueue.main.async {
                             self.videos = uploadData.videos
                         }
-                        
+                    }
+                    
+                    DispatchQueue.main.async {
                         self.isDataLoaded = true
                         self.isDataInvalidated = false
-                    case .failure(let error):
-                        print(error)
                     }
+                case .failure(let error):
+                    print(error)
                 }
             }
         }
@@ -118,7 +120,7 @@ struct YouTubeUploadsView_Previews: PreviewProvider {
         .previewDisplayName("YouTube Uploads Feed")
         
         YouTubeUploadView(videoID: "NI4awGRwIDs", title: "Maze of Memories!", uploadUrl: "https://www.youtube.com/watch?v=gonORZrOd68")
-        .padding(.horizontal)
-        .previewDisplayName("YouTube Upload")
+            .padding(.horizontal)
+            .previewDisplayName("YouTube Upload")
     }
 }

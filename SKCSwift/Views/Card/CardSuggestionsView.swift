@@ -25,17 +25,17 @@ struct CardSuggestionsView: View {
         }
         
         request(url: cardSuggestionsURL(cardID: cardID), priority: 0.2) { (result: Result<CardSuggestions, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let suggestions):
+            switch result {
+            case .success(let suggestions):
+                DispatchQueue.main.async {
                     self.hasSelfReference = suggestions.hasSelfReference
                     self.namedMaterials = suggestions.namedMaterials
                     self.namedReferences = suggestions.namedReferences
                     
                     self.isSuggestionDataLoaded = true
-                case .failure(let error):
-                    print(error)
                 }
+            case .failure(let error):
+                print(error)
             }
         }
     }
@@ -46,16 +46,16 @@ struct CardSuggestionsView: View {
         }
         
         request(url: cardSupportURL(cardID: cardID), priority: 0.2) { (result: Result<CardSupport, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let support):
+            switch result {
+            case .success(let support):
+                DispatchQueue.main.async {
                     self.referencedBy = support.referencedBy
                     self.materialFor = support.materialFor
                     
                     self.isSupportDataLoaded = true
-                case .failure(let error):
-                    print(error)
                 }
+            case .failure(let error):
+                print(error)
             }
         }
     }

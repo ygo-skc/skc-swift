@@ -16,49 +16,54 @@ class SearchViewModel: ObservableObject {
     
     func newSearchSubject(value: String) {
         if (isFetching) {
-            task?.cancel()
+            Task(priority: .background) {
+                task?.cancel()
+            }
         }
         
         if (value == "") {
-            self.searchResults = []
-            self.searchResultsIds = []
-            self.isFetching = false
-            self.task = nil
+            Task(priority: .background) {
+                self.task = nil
+                await self.updateState(searchResults: [], searchResultsIds: [])
+            }
         } else {
             isFetching = true
             task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)), priority: 0.45, { (result: Result<[Card], Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let cards):
-                        var results = [String: [Card]]()
-                        var sections = [String]()
-                        var searchResultsIds = [String]()
-                        
-                        cards.forEach { card in
-                            let section = card.cardColor
-                            if results[section] == nil {
-                                results[section] = []
-                                sections.append(section)
-                            }
-                            results[section]!.append(card)
-                            searchResultsIds.append(card.cardID)
+                switch result {
+                case .success(let cards):
+                    var results = [String: [Card]]()
+                    var sections = [String]()
+                    var searchResultsIds = [String]()
+                    
+                    cards.forEach { card in
+                        let section = card.cardColor
+                        if results[section] == nil {
+                            results[section] = []
+                            sections.append(section)
                         }
-                        
-                        if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
-                            var searchResults = [SearchResults]()
-                            for (section) in sections {
-                                searchResults.append(SearchResults(section: section, results: results[section]!))
-                            }
-                            
-                            self.searchResults = searchResults
-                            self.searchResultsIds = searchResultsIds
-                        }
-                    case .failure: break    // TODO add error screen for appropriate error response
+                        results[section]!.append(card)
+                        searchResultsIds.append(card.cardID)
                     }
                     
-                    self.isFetching = false
+                    if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
+                        var searchResults = [SearchResults]()
+                        for (section) in sections {
+                            searchResults.append(SearchResults(section: section, results: results[section]!))
+                        }
+                        Task(priority: .background) { [searchResults, searchResultsIds] in
+                            await self.updateState(searchResults: searchResults, searchResultsIds: searchResultsIds)
+                        }
+                    }
+                case .failure: break    // TODO add error screen for appropriate error response
                 }
             })
         }
+    }
+    
+    @MainActor
+    func updateState(searchResults: [SearchResults], searchResultsIds: [String]) {
+        self.searchResults = searchResults
+        self.searchResultsIds = searchResultsIds
+        self.isFetching = false
     }
 }

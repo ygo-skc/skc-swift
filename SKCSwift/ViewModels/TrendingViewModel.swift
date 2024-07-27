@@ -20,30 +20,29 @@ class TrendingViewModel: ObservableObject {
                 return
             }
         }
+        self.trendingDataLastRefresh = Date()
         
         request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending<Card>, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let trending):
+            switch result {
+            case .success(let trending):
+                DispatchQueue.main.async {
                     self.cards = trending.metrics
                     self.isDataLoaded = true
-                    self.trendingDataLastRefresh = Date()
-                case .failure(let error):
-                    print(error)
                 }
+            case .failure(let error):
+                print(error)
             }
         }
         
         request(url: trendingUrl(resource: .product), priority: 0.2) { (result: Result<Trending<Product>, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let trending):
+            switch result {
+            case .success(let trending):
+                DispatchQueue.main.async {
                     self.products = trending.metrics
                     self.isDataLoaded = true
-                    self.trendingDataLastRefresh = Date()
-                case .failure(let error):
-                    print(error)
                 }
+            case .failure(let error):
+                print(error)
             }
         }
     }

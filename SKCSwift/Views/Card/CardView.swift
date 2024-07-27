@@ -23,14 +23,14 @@ struct CardView: View {
             return
         }
         request(url: cardInfoURL(cardID: self.cardID), priority: 0.4) { (result: Result<Card, Error>) -> Void in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let card):
+            switch result {
+            case .success(let card):
+                DispatchQueue.main.async {
                     cardData = card
                     isDataLoaded = true
-                case .failure(let error):
-                    print(error)
                 }
+            case .failure(let error):
+                print(error)
             }
         }
     }

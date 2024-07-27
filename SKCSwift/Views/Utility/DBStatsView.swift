@@ -22,14 +22,14 @@ struct DBStatsView: View {
             self.isDataInvalidated = false
             
             request(url: dbStatsURL(), priority: 0.3) { (result: Result<SKCDatabaseStats, Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let stats):
+                switch result {
+                case .success(let stats):
+                    DispatchQueue.main.async {
                         self.stats = stats
                         self.isDataLoaded = true
-                    case .failure(let error):
-                        print(error)
                     }
+                case .failure(let error):
+                    print(error)
                 }
             }
         }

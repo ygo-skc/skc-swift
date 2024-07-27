@@ -31,15 +31,15 @@ private struct BanListDatesView: View {
     private func fetchData() {
         if !isDataLoaded {
             request(url: banListDatesURL(format: "\(chosenFormat)"), priority: 0.4) { (result: Result<BanListDates, Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let dates):
+                switch result {
+                case .success(let dates):
+                    DispatchQueue.main.async {
                         self.banListDates = dates.banListDates
                         self.chosenDateRange = 0
                         self.isDataLoaded = true
-                    case .failure(let error):
-                        print(error)
                     }
+                case .failure(let error):
+                    print(error)
                 }
             }
         }

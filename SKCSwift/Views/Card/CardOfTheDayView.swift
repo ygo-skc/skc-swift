@@ -25,18 +25,20 @@ struct CardOfTheDayView: View, Equatable {
             self.isDataInvalidated = false
             
             request(url: cardOfTheDayURL(), priority: 0.25) { (result: Result<CardOfTheDay, Error>) -> Void in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let cardOfTheyDay):
-                        if self.date != cardOfTheyDay.date {
+                switch result {
+                case .success(let cardOfTheyDay):
+                    if self.date != cardOfTheyDay.date {
+                        DispatchQueue.main.async {
                             self.date = cardOfTheyDay.date
                             self.card = cardOfTheyDay.card
                         }
+                    }
+                    DispatchQueue.main.async {
                         self.isDataLoaded = true
                         self.isDataInvalidated = false
-                    case .failure(let error):
-                        print(error)
                     }
+                case .failure(let error):
+                    print(error)
                 }
             }
         }
