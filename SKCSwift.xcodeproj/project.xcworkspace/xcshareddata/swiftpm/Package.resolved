@@ -1,10 +1,10 @@
 {
-  "originHash" : "4aff4b95977888066bc68c019927ec2c8d3eaef46bf20ed8504a52ddffbcc8a4",
+  "originHash" : "d84e3856bb7f70982a9430d07414ec741af47418ccacd0c9f550e7d2b8eedd2d",
   "pins" : [
     {
-      "identity" : "swiftui-cachedasyncimage",
+      "identity" : "swiftui-cached-async-image",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/lorenzofiamingo/SwiftUI-CachedAsyncImage",
+      "location" : "https://github.com/lorenzofiamingo/swiftui-cached-async-image",
       "state" : {
         "revision" : "467a3d17479887943ab917a379e62bbaff60ac8a",
         "version" : "2.1.1"

@@ -61,7 +61,6 @@
 		1FE8C9BF2978CED9005AD924 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C9BE2978CED9005AD924 /* Enum.swift */; };
 		1FE8C9C12978ED3F005AD924 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE8C9C02978ED3F005AD924 /* Text.swift */; };
 		1FEA1BC22AA7FC4E000341F4 /* SegmentedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FEA1BC12AA7FC4E000341F4 /* SegmentedView.swift */; };
-		DE4CAF5E2C52E5E7000FF167 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = DE4CAF5D2C52E5E7000FF167 /* CachedAsyncImage */; };
 		DE59153B2C5426290069E32F /* ParentViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE59153A2C5426290069E32F /* ParentViewModifier.swift */; };
 		DE63448E2A4545C20016BC43 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63448D2A4545C20016BC43 /* View.swift */; };
 		DE825C682C54650300600FD2 /* TrendingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE825C672C54650300600FD2 /* TrendingViewModel.swift */; };
@@ -69,6 +68,7 @@
 		DEC099B32C4F0CCD00A8B797 /* TrendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */; };
 		DEC099B72C4F0F8F00A8B797 /* Trending.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B62C4F0F8F00A8B797 /* Trending.swift */; };
 		DEC099BA2C505BC400A8B797 /* ProductListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B92C505BC400A8B797 /* ProductListItemView.swift */; };
+		DEDE9F442C55AED7009E834C /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = DEDE9F432C55AED7009E834C /* CachedAsyncImage */; };
 		DEEAC4EA2C557D32007342E7 /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEAC4E92C557D32007342E7 /* ProductImage.swift */; };
 /* End PBXBuildFile section */
 
@@ -163,7 +163,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE4CAF5E2C52E5E7000FF167 /* CachedAsyncImage in Frameworks */,
+				DEDE9F442C55AED7009E834C /* CachedAsyncImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,7 +401,7 @@
 			);
 			name = SKCSwift;
 			packageProductDependencies = (
-				DE4CAF5D2C52E5E7000FF167 /* CachedAsyncImage */,
+				DEDE9F432C55AED7009E834C /* CachedAsyncImage */,
 			);
 			productName = SKCSwift;
 			productReference = DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */;
@@ -476,7 +476,7 @@
 			);
 			mainGroup = 1F8211DA2961FF0000238EE1;
 			packageReferences = (
-				DE4CAF5C2C52E5E7000FF167 /* XCRemoteSwiftPackageReference "SwiftUI-CachedAsyncImage" */,
+				DEDE9F422C55AED7009E834C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
 			);
 			productRefGroup = 1F8211DA2961FF0000238EE1;
 			projectDirPath = "";
@@ -917,9 +917,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		DE4CAF5C2C52E5E7000FF167 /* XCRemoteSwiftPackageReference "SwiftUI-CachedAsyncImage" */ = {
+		DEDE9F422C55AED7009E834C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/lorenzofiamingo/SwiftUI-CachedAsyncImage";
+			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-cached-async-image";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.1.1;
@@ -928,9 +928,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		DE4CAF5D2C52E5E7000FF167 /* CachedAsyncImage */ = {
+		DEDE9F432C55AED7009E834C /* CachedAsyncImage */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DE4CAF5C2C52E5E7000FF167 /* XCRemoteSwiftPackageReference "SwiftUI-CachedAsyncImage" */;
+			package = DEDE9F422C55AED7009E834C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
 			productName = CachedAsyncImage;
 		};
 /* End XCSwiftPackageProductDependency section */

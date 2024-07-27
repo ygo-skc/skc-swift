@@ -10,12 +10,10 @@ import SwiftUI
 struct TrendingView: View, Equatable {
     var cardTrendingData: [TrendingMetric<Card>]
     var productTrendingData: [TrendingMetric<Product>]
-    var isDataLoaded: Bool
     @Binding var focusedTrend: TrendingResouceType
     
     static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
-        lhs.isDataLoaded == rhs.isDataLoaded && lhs.focusedTrend == rhs.focusedTrend
-        && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID })
+        lhs.focusedTrend == rhs.focusedTrend && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID })
         && lhs.productTrendingData.elementsEqual(rhs.productTrendingData, by: { $0.resource.productId == $1.resource.productId })
     }
     
@@ -23,51 +21,43 @@ struct TrendingView: View, Equatable {
         SectionView(header: "Trending",
                     variant: .plain,
                     content: {
-            if isDataLoaded {
-                LazyVStack{
-                    Picker("Select Trend Type", selection: $focusedTrend) {
-                        ForEach(TrendingResouceType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
-                        }
+            LazyVStack{
+                Picker("Select Trend Type", selection: $focusedTrend) {
+                    ForEach(TrendingResouceType.allCases, id: \.self) { type in
+                        Text(type.rawValue.capitalized).tag(type)
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.bottom)
-                    
-                    if focusedTrend == .card {
-                        ForEach(cardTrendingData, id: \.resource.cardID) { m in
-                            let card = m.resource
-                            NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                HStack {
-                                    TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                    VStack {
-                                        CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                                        Divider()
-                                    }
-                                    .padding(.leading, 5)
-                                }
-                                .contentShape(Rectangle())
-                            })
-                            .buttonStyle(.plain)
-                        }
-                    } else if focusedTrend == .product {
-                        ForEach(productTrendingData, id: \.resource.productId) { m in
-                            let product = m.resource
+                }
+                .pickerStyle(.segmented)
+                .padding(.bottom)
+                
+                if focusedTrend == .card {
+                    ForEach(cardTrendingData, id: \.resource.cardID) { m in
+                        let card = m.resource
+                        NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
                             HStack {
                                 TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                 VStack {
-                                    ProductListItemView(product: product)
+                                    CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                     Divider()
                                 }
                                 .padding(.leading, 5)
                             }
+                            .contentShape(Rectangle())
+                        })
+                        .buttonStyle(.plain)
+                    }
+                } else if focusedTrend == .product {
+                    ForEach(productTrendingData, id: \.resource.productId) { m in
+                        let product = m.resource
+                        HStack {
+                            TrendChangeView(trendChange: m.change, hits: m.occurrences)
+                            VStack {
+                                ProductListItemView(product: product)
+                                Divider()
+                            }
+                            .padding(.leading, 5)
                         }
                     }
-                }
-            } else {
-                HStack {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
                 }
             }
         })
@@ -129,8 +119,7 @@ private struct TrendChangeView: View, Equatable {
                                               cardAttribute: "Wind", cardEffect: "Draw 2", monsterType: "Warrior/Effect"), occurrences: 45, change: 3)],
                          productTrendingData: [
                             TrendingMetric(resource: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
-                                                             productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-03-03", productTotal: 101), occurrences: 23, change: -4)],
-                         isDataLoaded: true, focusedTrend: $t)
+                                                             productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-03-03", productTotal: 101), occurrences: 23, change: -4)], focusedTrend: $t)
         }
     }
     return Preview()

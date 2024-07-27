@@ -40,12 +40,19 @@ struct SearchView: View {
                             .frame(alignment: .center)
                     } else if searchViewModel.searchText.isEmpty {
                         ScrollView() {
-                            TrendingView(cardTrendingData: trendingViewModel.cards ?? [],
-                                         productTrendingData: trendingViewModel.products ?? [],
-                                         isDataLoaded: trendingViewModel.isDataLoaded,
-                                         focusedTrend: $trendingViewModel.focusedTrend)
+                            if trendingViewModel.isDataLoaded {
+                                TrendingView(cardTrendingData: trendingViewModel.cards ?? [],
+                                             productTrendingData: trendingViewModel.products ?? [],
+                                             focusedTrend: $trendingViewModel.focusedTrend)
                                 .equatable()
                                 .modifier(ParentViewModifier())
+                            } else {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                            }
                         }
                     }
                 }
