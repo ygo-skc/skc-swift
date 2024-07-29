@@ -9,17 +9,16 @@ import SwiftUI
 
 struct YouTubeUploadsView: View, Equatable {
     let videos: [YouTubeVideos]?
-
+    
     var body: some View {
         SectionView(header: "YouTube videos",
                     variant: .plain,
                     content: {
             if let videos {
+                Text("Did you know I make YouTube videos? Keep tabs of TCG news, watch the best unboxings on YouTube and also watch some dope Master Duel replays. Don't forget to sub.")
+                    .font(.body)
+                
                 LazyVStack(alignment: .leading, spacing: 5) {
-                    Text("Did you know I make YouTube videos? Keep tabs of TCG news, watch the best unboxings on YouTube and also watch some dope Master Duel replays. Don't forget to sub.")
-                        .font(.body)
-                        .padding(.bottom)
-                    
                     ForEach(videos, id: \.id) { video in
                         YouTubeUploadView(videoID: video.id, title: video.title, uploadUrl: video.url)
                             .equatable()
@@ -61,18 +60,21 @@ private struct YouTubeUploadView: View, Equatable {
                         .font(.callout)
                         .fontWeight(.regular)
                 }
-                .frame(alignment: .topLeading)
+                .frame(maxHeight: .infinity, alignment: .topLeading)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Divider()
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if let url = URL(string: videoURI) {
-                UIApplication.shared.open(url)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                if let url = URL(string: videoURI) {
+                    UIApplication.shared.open(url)
+                }
             }
+            Divider()
+                .padding(.vertical, 2)
         }
+        .frame(height: YouTubeUploadView.UPLOAD_IMG_HEIGHT + 12)
+        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
     }
 }
 

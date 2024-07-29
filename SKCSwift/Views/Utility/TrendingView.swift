@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct TrendingView: View, Equatable {
-    var cardTrendingData: [TrendingMetric<Card>]
-    var productTrendingData: [TrendingMetric<Product>]
+    let cardTrendingData: [TrendingMetric<Card>]
+    let productTrendingData: [TrendingMetric<Product>]
     @Binding var focusedTrend: TrendingResouceType
     
     static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
@@ -21,15 +21,14 @@ struct TrendingView: View, Equatable {
         SectionView(header: "Trending",
                     variant: .plain,
                     content: {
-            LazyVStack{
-                Picker("Select Trend Type", selection: $focusedTrend) {
-                    ForEach(TrendingResouceType.allCases, id: \.self) { type in
-                        Text(type.rawValue.capitalized).tag(type)
-                    }
+            Picker("Select Trend Type", selection: $focusedTrend) {
+                ForEach(TrendingResouceType.allCases, id: \.self) { type in
+                    Text(type.rawValue.capitalized).tag(type)
                 }
-                .pickerStyle(.segmented)
-                .padding(.bottom)
-                
+            }
+            .pickerStyle(.segmented)
+            
+            LazyVStack{
                 if focusedTrend == .card {
                     ForEach(cardTrendingData, id: \.resource.cardID) { m in
                         let card = m.resource

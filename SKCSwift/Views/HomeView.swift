@@ -30,16 +30,11 @@ struct HomeView: View {
                         .equatable()
                     UpcomingTCGProductsView(events: homeViewModel.upcommingTCGProducts)
                         .equatable()
-                    
-                    if homeViewModel.upcommingTCGProducts != nil {
-                        YouTubeUploadsView(videos: homeViewModel.ytUploads)
-                            .equatable()
-                            .task(priority: .low) {
-                                if homeViewModel.ytUploads == nil {
-                                    homeViewModel.fetchYouTubeUploadsData()
-                                }
-                            }
-                    }
+                    YouTubeUploadsView(videos: homeViewModel.ytUploads)
+                        .equatable()
+                        .if(homeViewModel.ytUploads == nil) { view in
+                            view.hidden()
+                        }
                 }
                 .modifier(ParentViewModifier())
             }

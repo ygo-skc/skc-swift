@@ -53,6 +53,7 @@ class HomeViewModel: ObservableObject {
     func fetchUpcommingTCGProducts() {
         if upcommingTCGProducts == nil || self.isDataInvalidated(date: self.upcommingTCGProductsRefreshTimeStamp) {
             request(url: upcomingEventsURL(), priority: 0.2) { (result: Result<Events, Error>) -> Void in
+                self.fetchYouTubeUploadsData()
                 switch result {
                 case .success(let upcomingProducts):
                     self.upcommingTCGProductsRefreshTimeStamp = Date()
