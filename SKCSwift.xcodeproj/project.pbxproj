@@ -69,6 +69,7 @@
 		DEC099B72C4F0F8F00A8B797 /* Trending.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B62C4F0F8F00A8B797 /* Trending.swift */; };
 		DEC099BA2C505BC400A8B797 /* ProductListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B92C505BC400A8B797 /* ProductListItemView.swift */; };
 		DEDE9F442C55AED7009E834C /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = DEDE9F432C55AED7009E834C /* CachedAsyncImage */; };
+		DEDE9F462C5701CB009E834C /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDE9F452C5701CB009E834C /* HomeViewModel.swift */; };
 		DEEAC4EA2C557D32007342E7 /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEAC4E92C557D32007342E7 /* ProductImage.swift */; };
 /* End PBXBuildFile section */
 
@@ -155,6 +156,7 @@
 		DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingView.swift; sourceTree = "<group>"; };
 		DEC099B62C4F0F8F00A8B797 /* Trending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trending.swift; sourceTree = "<group>"; };
 		DEC099B92C505BC400A8B797 /* ProductListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListItemView.swift; sourceTree = "<group>"; };
+		DEDE9F452C5701CB009E834C /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		DEEAC4E92C557D32007342E7 /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -189,6 +191,7 @@
 			children = (
 				1F0F994329F8A4E400AA9F69 /* SearchViewModel.swift */,
 				DE825C672C54650300600FD2 /* TrendingViewModel.swift */,
+				DEDE9F452C5701CB009E834C /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -535,6 +538,7 @@
 				1F32565B2963E195001AACF1 /* CardStatsView.swift in Sources */,
 				DEC099BA2C505BC400A8B797 /* ProductListItemView.swift in Sources */,
 				1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */,
+				DEDE9F462C5701CB009E834C /* HomeViewModel.swift in Sources */,
 				1FB939082965043500BF0CBA /* BanList.swift in Sources */,
 				1FBE069829FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift in Sources */,
 				DEEAC4EA2C557D32007342E7 /* ProductImage.swift in Sources */,

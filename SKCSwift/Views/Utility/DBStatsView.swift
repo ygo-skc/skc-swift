@@ -7,33 +7,8 @@
 
 import SwiftUI
 
-struct DBStatsView: View {
-    @Binding private var isDataInvalidated: Bool
-    
-    @State private var stats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
-    @State private var isDataLoaded = false
-    
-    init(isDataInvalidated: Binding<Bool> = .constant(false)) {
-        self._isDataInvalidated = isDataInvalidated
-    }
-    
-    func fetchData() {
-        if !isDataLoaded || isDataInvalidated {
-            self.isDataInvalidated = false
-            
-            request(url: dbStatsURL(), priority: 0.3) { (result: Result<SKCDatabaseStats, Error>) -> Void in
-                switch result {
-                case .success(let stats):
-                    DispatchQueue.main.async {
-                        self.stats = stats
-                        self.isDataLoaded = true
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-    }
+struct DBStatsView: View, Equatable {
+    let stats: SKCDatabaseStats?
     
     var body: some View {
         SectionView(header: "Content",
@@ -52,9 +27,9 @@ struct DBStatsView: View {
                     )
                 HStack {
                     Group {
-                        DBStatView(count: stats.cardTotal.decimal, stat: "Cards", isDataLoaded: isDataLoaded)
-                        DBStatView(count: stats.banListTotal.decimal, stat: "Ban Lists", isDataLoaded: isDataLoaded)
-                        DBStatView(count: stats.productTotal.decimal, stat: "Products", isDataLoaded: isDataLoaded)
+                        DBStatView(count: stats?.cardTotal, stat: "Cards")
+                        DBStatView(count: stats?.banListTotal, stat: "Ban Lists")
+                        DBStatView(count: stats?.productTotal, stat: "Products")
                     }
                     .padding(.horizontal)
                 }
@@ -62,22 +37,23 @@ struct DBStatsView: View {
                     maxWidth: .infinity
                 )
             }
-            .onChange(of: $isDataInvalidated.wrappedValue, initial: true) {
-                fetchData()
-            }
         })
     }
 }
 
 
 private struct DBStatView: View {
-    var count: String
-    var stat: String
-    var isDataLoaded: Bool
+    let count: String?
+    let stat: String
+    
+    init(count: Int?, stat: String) {
+        self.count = count?.decimal
+        self.stat = stat
+    }
     
     var body: some View {
         VStack {
-            if isDataLoaded {
+            if let count {
                 Text(count)
                     .font(.title3)
             } else {
@@ -91,5 +67,9 @@ private struct DBStatView: View {
 }
 
 #Preview {
-    DBStatsView()
+    DBStatsView(stats: nil)
+}
+
+#Preview {
+    DBStatsView(stats: SKCDatabaseStats(productTotal: 100, cardTotal: 5000, banListTotal: 30))
 }

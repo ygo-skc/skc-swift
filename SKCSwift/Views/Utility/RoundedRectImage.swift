@@ -43,4 +43,3 @@ struct RoundedRectImage_Previews: PreviewProvider {
             .previewDisplayName("Pendulum")
     }
 }
-

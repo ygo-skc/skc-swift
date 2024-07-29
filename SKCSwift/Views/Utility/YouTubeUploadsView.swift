@@ -7,48 +7,14 @@
 
 import SwiftUI
 
-struct YouTubeUploadsView: View {
-    @Binding private var isDataInvalidated: Bool
-    
-    @State private var videos = [YouTubeVideos]()
-    @State private var isDataLoaded = false
-    
-    private static let SKC_CHANNEL_ID = "UCBZ_1wWyLQI3SV9IgLbyiNQ"
-    
-    init(isDataInvalidated: Binding<Bool> = .constant(false))  {
-        self._isDataInvalidated = isDataInvalidated
-    }
-    
-    private func fetchData() {
-        if !isDataLoaded || isDataInvalidated {
-            request(url: ytUploadsURL(ytChannelId: YouTubeUploadsView.SKC_CHANNEL_ID), priority: 0.0) { (result: Result<YouTubeUploads, Error>) -> Void in
-                switch result {
-                case .success(let uploadData):
-                    if self.videos != uploadData.videos {
-                        DispatchQueue.main.async {
-                            self.videos = uploadData.videos
-                        }
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.isDataLoaded = true
-                        self.isDataInvalidated = false
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-    }
-    
+struct YouTubeUploadsView: View, Equatable {
+    let videos: [YouTubeVideos]?
+
     var body: some View {
         SectionView(header: "YouTube videos",
                     variant: .plain,
                     content: {
-            if !isDataLoaded {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-            } else {
+            if let videos {
                 LazyVStack(alignment: .leading, spacing: 5) {
                     Text("Did you know I make YouTube videos? Keep tabs of TCG news, watch the best unboxings on YouTube and also watch some dope Master Duel replays. Don't forget to sub.")
                         .font(.body)
@@ -60,11 +26,11 @@ struct YouTubeUploadsView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
             }
         })
-        .onChange(of: $isDataInvalidated.wrappedValue, initial: true) {
-            fetchData()
-        }
     }
 }
 
@@ -110,17 +76,11 @@ private struct YouTubeUploadView: View, Equatable {
     }
 }
 
-struct YouTubeUploadsView_Previews: PreviewProvider {
-    static var previews: some View {
-        ScrollView {
-            YouTubeUploadsView()
-                .padding(.horizontal)
-        }
-        .frame(maxHeight: .infinity)
-        .previewDisplayName("YouTube Uploads Feed")
-        
-        YouTubeUploadView(videoID: "NI4awGRwIDs", title: "Maze of Memories!", uploadUrl: "https://www.youtube.com/watch?v=gonORZrOd68")
-            .padding(.horizontal)
-            .previewDisplayName("YouTube Upload")
-    }
+#Preview() {
+    YouTubeUploadsView(videos: nil)
+}
+
+#Preview() {
+    YouTubeUploadsView(videos: [YouTubeVideos(id: "z7VKxpoAJjA", title: "Best Opening EVAR!", description: "This is the best opening ever!",
+                                              publishedAt: "2024-08-23T05:00:00.000Z", thumbnailUrl: "", url: "https://www.youtube.com/watch?v=z7VKxpoAJjA")])
 }

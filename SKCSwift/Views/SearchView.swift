@@ -40,9 +40,9 @@ struct SearchView: View {
                             .frame(alignment: .center)
                     } else if searchViewModel.searchText.isEmpty {
                         ScrollView() {
-                            if trendingViewModel.isDataLoaded {
-                                TrendingView(cardTrendingData: trendingViewModel.cards ?? [],
-                                             productTrendingData: trendingViewModel.products ?? [],
+                            if let cards = trendingViewModel.cards, let products = trendingViewModel.products {
+                                TrendingView(cardTrendingData: cards,
+                                             productTrendingData: products,
                                              focusedTrend: $trendingViewModel.focusedTrend)
                                 .equatable()
                                 .modifier(ParentViewModifier())

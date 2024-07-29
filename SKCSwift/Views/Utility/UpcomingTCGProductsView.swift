@@ -7,71 +7,35 @@
 
 import SwiftUI
 
-struct UpcomingTCGProductsView: View {
-    @Binding var canLoadNextView: Bool
-    @Binding private var isDataInvalidated: Bool
-    
-    @State private var isDataLoaded = false
-    @State private var events = [Event]()
-    
-    init(canLoadNextView: Binding<Bool>, isDataInvalidated: Binding<Bool> = .constant(false)) {
-        self._canLoadNextView = canLoadNextView
-        self._isDataInvalidated = isDataInvalidated
-    }
-    
-    private func fetchData() {
-        if !isDataLoaded || isDataInvalidated {
-            request(url: upcomingEventsURL(), priority: 0.2) { (result: Result<Events, Error>) -> Void in
-                switch result {
-                case .success(let upcomingProducts):
-                    if self.events != upcomingProducts.events {
-                        DispatchQueue.main.async {
-                            self.events = upcomingProducts.events
-                        }
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.isDataLoaded = true
-                        self.isDataInvalidated = false
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-    }
+struct UpcomingTCGProductsView: View, Equatable {
+    let events: [Event]?
     
     var body: some View {
         SectionView(header: "Upcoming products",
                     variant: .plain,
                     content: {
-            if !isDataLoaded {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-            } else {
+            if let events {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("TCG products that have been anounced and which we have a tenative release date for.")
                         .font(.body)
                         .padding(.bottom)
                     
                     ForEach(events, id: \.name) { event in
-                        UpcomingTCGProduct(event: event)
+                        UpcomingTCGProductView(event: event)
+                            .equatable()
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .onAppear {
-                    canLoadNextView = true
-                }
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
             }
         })
-        .onChange(of: $isDataInvalidated.wrappedValue, initial: true) {
-            fetchData()
-        }
     }
 }
 
 
-private struct UpcomingTCGProduct: View {
+private struct UpcomingTCGProductView: View, Equatable {
     var event: Event
     
     var body: some View {
@@ -98,11 +62,7 @@ private struct UpcomingTCGProduct: View {
     }
 }
 
-struct UpcomingTCGProductsView_Previews: PreviewProvider {
-    static var previews: some View {
-        @State var isDataLoaded = false
-        
-        UpcomingTCGProductsView(canLoadNextView: $isDataLoaded)
-            .padding(.horizontal)
-    }
+#Preview() {
+    UpcomingTCGProductsView(events: [Event(name: "Xyz", notes: "Yoooo", location: "", eventDate: "2024-08-23T05:00:00.000Z", url: "https://youtube.com")])
+        .padding(.horizontal)
 }
