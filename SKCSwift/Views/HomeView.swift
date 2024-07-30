@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var homeViewModel = HomeViewModel()
+    @StateObject private var homeViewModel: HomeViewModel
     @State private var navigationPath = NavigationPath()
+    
+    init() {
+        _homeViewModel = StateObject(wrappedValue: HomeViewModel())
+    }
     
     private func handleURL(_ url: URL) -> OpenURLAction.Result {
         let path = url.relativePath

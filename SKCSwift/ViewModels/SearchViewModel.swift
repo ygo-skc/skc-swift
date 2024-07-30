@@ -8,11 +8,12 @@
 import Foundation
 
 class SearchViewModel: ObservableObject {
+    @Published var searchText = ""
     @Published private(set) var searchResults = [SearchResults]()
     @Published private(set) var searchResultsIds = [String]()
-    @Published private(set) var isFetching = false
-    @Published private(set) var task: URLSessionDataTask?
-    @Published var searchText = ""
+    
+    private var isFetching = false
+    private var task: URLSessionDataTask?
     
     func newSearchSubject(value: String) {
         if (isFetching) {
@@ -22,8 +23,9 @@ class SearchViewModel: ObservableObject {
         }
         
         if (value == "") {
+            self.task = nil
+            self.isFetching = false
             Task(priority: .background) {
-                self.task = nil
                 await self.updateState(searchResults: [], searchResultsIds: [])
             }
         } else {
@@ -50,6 +52,7 @@ class SearchViewModel: ObservableObject {
                         for (section) in sections {
                             searchResults.append(SearchResults(section: section, results: results[section]!))
                         }
+                        self.isFetching = false
                         Task(priority: .background) { [searchResults, searchResultsIds] in
                             await self.updateState(searchResults: searchResults, searchResultsIds: searchResultsIds)
                         }
@@ -64,6 +67,5 @@ class SearchViewModel: ObservableObject {
     func updateState(searchResults: [SearchResults], searchResultsIds: [String]) {
         self.searchResults = searchResults
         self.searchResultsIds = searchResultsIds
-        self.isFetching = false
     }
 }

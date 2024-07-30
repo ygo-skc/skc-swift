@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct SearchView: View {
-    @StateObject private var searchViewModel = SearchViewModel()
-    @StateObject private var trendingViewModel = TrendingViewModel()
+    @StateObject private var searchViewModel: SearchViewModel
+    @StateObject private var trendingViewModel: TrendingViewModel
+    
+    init() {
+        _searchViewModel = StateObject(wrappedValue: SearchViewModel())
+        _trendingViewModel = StateObject(wrappedValue: TrendingViewModel())
+    }
     
     var body: some View {
         NavigationStack {
@@ -34,18 +39,16 @@ struct SearchView: View {
                     .listStyle(.plain)
                     .ignoresSafeArea(.keyboard)
                 } else {
-                    if !searchViewModel.isFetching && !searchViewModel.searchText.isEmpty {
+                    if !searchViewModel.searchText.isEmpty && searchViewModel.searchResults.isEmpty {
                         Text("Nothing found in database")
                             .font(.title2)
                             .frame(alignment: .center)
                     } else if searchViewModel.searchText.isEmpty {
                         ScrollView() {
                             if let cards = trendingViewModel.cards, let products = trendingViewModel.products {
-                                TrendingView(cardTrendingData: cards,
-                                             productTrendingData: products,
-                                             focusedTrend: $trendingViewModel.focusedTrend)
-                                .equatable()
-                                .modifier(ParentViewModifier())
+                                TrendingView(cardTrendingData: cards, productTrendingData: products)
+                                    .equatable()
+                                    .modifier(ParentViewModifier())
                             } else {
                                 HStack {
                                     Spacer()
@@ -70,16 +73,6 @@ struct SearchView: View {
             searchViewModel.newSearchSubject(value: newValue)
         }
         .disableAutocorrection(true)
-    }
-}
-
-struct CardSearchLinkDestination: View {
-    var cardValue: CardValue
-    
-    var body: some View {
-        CardView(cardID: cardValue.cardID)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(cardValue.cardName)
     }
 }
 

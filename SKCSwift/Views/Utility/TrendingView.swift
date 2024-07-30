@@ -10,10 +10,12 @@ import SwiftUI
 struct TrendingView: View, Equatable {
     let cardTrendingData: [TrendingMetric<Card>]
     let productTrendingData: [TrendingMetric<Product>]
-    @Binding var focusedTrend: TrendingResouceType
+    
+    @State private var focusedTrend = TrendingResouceType.card
     
     static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
-        lhs.focusedTrend == rhs.focusedTrend && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID })
+        lhs.focusedTrend == rhs.focusedTrend
+        && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID })
         && lhs.productTrendingData.elementsEqual(rhs.productTrendingData, by: { $0.resource.productId == $1.resource.productId })
     }
     
@@ -110,18 +112,12 @@ private struct TrendChangeView: View, Equatable {
 }
 
 #Preview {
-    struct Preview: View {
-        @State var t = TrendingResouceType.card
-        var body: some View {
-            TrendingView(cardTrendingData: [
-                TrendingMetric(resource: Card(cardID: "40044918", cardName: "Elemental HERO Stratos", cardColor: "Effect",
-                                              cardAttribute: "Wind", cardEffect: "Draw 2", monsterType: "Warrior/Effect"), occurrences: 45, change: 3)],
-                         productTrendingData: [
-                            TrendingMetric(resource: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
-                                                             productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-03-03", productTotal: 101), occurrences: 23, change: -4)], focusedTrend: $t)
-        }
-    }
-    return Preview()
+    TrendingView(cardTrendingData: [
+        TrendingMetric(resource: Card(cardID: "40044918", cardName: "Elemental HERO Stratos", cardColor: "Effect",
+                                      cardAttribute: "Wind", cardEffect: "Draw 2", monsterType: "Warrior/Effect"), occurrences: 45, change: 3)],
+                 productTrendingData: [
+                    TrendingMetric(resource: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
+                                                     productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-03-03", productTotal: 101), occurrences: 23, change: -4)])
 }
 
 #Preview("Trend Change Positive") {
