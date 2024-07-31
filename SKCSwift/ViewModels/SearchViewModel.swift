@@ -8,28 +8,28 @@
 import Foundation
 
 class SearchViewModel: ObservableObject {
-    @Published var searchText = ""
-    @Published private(set) var searchResults = [SearchResults]()
-    @Published private(set) var searchResultsIds = [String]()
+    @Published private(set) var status = DataTaskStatus.pending
     
-    private var isFetching = false
+    private(set) var searchResults = [SearchResults]()
+    private(set) var searchResultsIds = [String]()
+    
     private var task: URLSessionDataTask?
     
     func newSearchSubject(value: String) {
-        if (isFetching) {
+        if let task {
             Task(priority: .background) {
-                task?.cancel()
+                task.cancel()
             }
         }
         
-        if (value == "") {
+        if value == "" {
             self.task = nil
-            self.isFetching = false
             Task(priority: .background) {
-                await self.updateState(searchResults: [], searchResultsIds: [])
+                self.searchResults = []
+                self.searchResultsIds = []
+                await self.updateState()
             }
         } else {
-            isFetching = true
             task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)), priority: 0.45, { (result: Result<[Card], Error>) -> Void in
                 switch result {
                 case .success(let cards):
@@ -52,9 +52,11 @@ class SearchViewModel: ObservableObject {
                         for (section) in sections {
                             searchResults.append(SearchResults(section: section, results: results[section]!))
                         }
-                        self.isFetching = false
-                        Task(priority: .background) { [searchResults, searchResultsIds] in
-                            await self.updateState(searchResults: searchResults, searchResultsIds: searchResultsIds)
+                        
+                        self.searchResults = searchResults
+                        self.searchResultsIds = searchResultsIds
+                        Task(priority: .background) {
+                            await self.updateState()
                         }
                     }
                 case .failure: break    // TODO add error screen for appropriate error response
@@ -64,8 +66,7 @@ class SearchViewModel: ObservableObject {
     }
     
     @MainActor
-    func updateState(searchResults: [SearchResults], searchResultsIds: [String]) {
-        self.searchResults = searchResults
-        self.searchResultsIds = searchResultsIds
+    func updateState() {
+        self.status = .done
     }
 }

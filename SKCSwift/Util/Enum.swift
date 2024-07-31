@@ -54,3 +54,7 @@ enum ImageSize: String {
 enum TrendingResouceType: String, Codable, CaseIterable {
     case card = "CARD", product = "PRODUCT"
 }
+
+enum DataTaskStatus: String, Codable, CaseIterable {
+    case pending, done, error
+}

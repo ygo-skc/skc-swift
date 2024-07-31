@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct SearchView: View {
+    @State private var searchText: String
     @StateObject private var searchViewModel: SearchViewModel
     @StateObject private var trendingViewModel: TrendingViewModel
     
     init() {
+        _searchText = State(initialValue: "")
         _searchViewModel = StateObject(wrappedValue: SearchViewModel())
         _trendingViewModel = StateObject(wrappedValue: TrendingViewModel())
     }
@@ -19,7 +21,7 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if (!searchViewModel.searchResults.isEmpty) {
+                if !searchViewModel.searchResults.isEmpty {
                     List(searchViewModel.searchResults) { sr in
                         Section(header: HStack{
                             CardColorIndicator(cardColor: sr.section)
@@ -39,11 +41,11 @@ struct SearchView: View {
                     .listStyle(.plain)
                     .ignoresSafeArea(.keyboard)
                 } else {
-                    if !searchViewModel.searchText.isEmpty && searchViewModel.searchResults.isEmpty {
+                    if !searchText.isEmpty && searchViewModel.searchResults.isEmpty {
                         Text("Nothing found in database")
                             .font(.title2)
                             .frame(alignment: .center)
-                    } else if searchViewModel.searchText.isEmpty {
+                    } else if searchText.isEmpty {
                         ScrollView() {
                             if let cards = trendingViewModel.cards, let products = trendingViewModel.products {
                                 TrendingView(cardTrendingData: cards, productTrendingData: products)
@@ -68,8 +70,8 @@ struct SearchView: View {
                 trendingViewModel.fetchTrendingData()
             }
         }
-        .searchable(text: $searchViewModel.searchText, prompt: "Search for card...")
-        .onChange(of: searchViewModel.searchText, initial: false) { _, newValue in
+        .searchable(text: $searchText, prompt: "Search for card...")
+        .onChange(of: searchText, initial: false) { _, newValue in
             searchViewModel.newSearchSubject(value: newValue)
         }
         .disableAutocorrection(true)
