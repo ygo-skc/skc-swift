@@ -28,16 +28,6 @@ struct ContentView: View, Equatable {
     }
 }
 
-struct CardSearchLinkDestination: View {
-    var cardValue: CardValue
-    
-    var body: some View {
-        CardView(cardID: cardValue.cardID)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(cardValue.cardName)
-    }
-}
-
 struct CardInfo_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()

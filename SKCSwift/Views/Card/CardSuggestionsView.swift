@@ -160,7 +160,7 @@ private struct SupportCarouselView: View {
                 LazyHStack(spacing: 15) {
                     ForEach(references, id: \.card.cardID) { reference in
                         let card = reference.card
-                        NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
+                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                             YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
                                 .equatable()
                                 .contentShape(Rectangle())

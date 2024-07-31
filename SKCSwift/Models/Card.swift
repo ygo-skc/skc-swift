@@ -51,7 +51,7 @@ struct Card: Codable, Equatable {
 }
 
 // used as convenience when working with NavigationDestination
-struct CardValue: Hashable {
+struct CardLinkDestinationValue: Hashable {
     var cardID: String
     var cardName: String
 }

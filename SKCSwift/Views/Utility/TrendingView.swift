@@ -34,7 +34,7 @@ struct TrendingView: View, Equatable {
                 if focusedTrend == .card {
                     ForEach(cardTrendingData, id: \.resource.cardID) { m in
                         let card = m.resource
-                        NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
+                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                             HStack {
                                 TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                 VStack {

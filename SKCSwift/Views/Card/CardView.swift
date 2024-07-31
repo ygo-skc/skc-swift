@@ -7,7 +7,17 @@
 
 import SwiftUI
 
-struct CardView: View {
+struct CardLinkDestinationView: View {
+    let cardLinkDestinationValue: CardLinkDestinationValue
+    
+    var body: some View {
+        CardView(cardID: cardLinkDestinationValue.cardID)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(cardLinkDestinationValue.cardName)
+    }
+}
+
+private struct CardView: View {
     let cardID: String
     
     @State private var cardData: Card

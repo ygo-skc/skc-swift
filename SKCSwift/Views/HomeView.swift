@@ -18,7 +18,7 @@ struct HomeView: View {
     private func handleURL(_ url: URL) -> OpenURLAction.Result {
         let path = url.relativePath
         if path.contains("/card/") {
-            navigationPath.append(CardValue(cardID: path.replacingOccurrences(of: "/card/", with: ""), cardName: ""))
+            navigationPath.append(CardLinkDestinationValue(cardID: path.replacingOccurrences(of: "/card/", with: ""), cardName: ""))
             return .handled
         }
         return .systemAction
@@ -42,8 +42,8 @@ struct HomeView: View {
                 }
                 .modifier(ParentViewModifier())
             }
-            .navigationDestination(for: CardValue.self) { card in
-                CardSearchLinkDestination(cardValue: card)
+            .navigationDestination(for: CardLinkDestinationValue.self) { card in
+                CardLinkDestinationView(cardLinkDestinationValue: card)
             }
             .environment(\.openURL, OpenURLAction(handler: handleURL))
             .navigationBarTitle("Home")

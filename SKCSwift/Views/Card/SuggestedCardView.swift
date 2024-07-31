@@ -12,7 +12,7 @@ struct SuggestedCardView: View {
     var occurrence: Int
     
     var body: some View {
-        NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
+        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
             VStack {
                 HStack(spacing: 20) {
                     CardImage(length: 90.0, cardID: card.cardID, imgSize: .tiny, variant: .round)

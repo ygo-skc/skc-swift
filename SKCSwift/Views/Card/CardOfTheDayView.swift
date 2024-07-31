@@ -20,7 +20,7 @@ struct CardOfTheDayView: View, Equatable {
         SectionView(
             header: "Card of the day",
             content: {
-                NavigationLink(value: CardValue(cardID: cardOfTheDay?.card.cardID ?? "", cardName: cardOfTheDay?.card.cardName ?? ""), label: {
+                NavigationLink(value: CardLinkDestinationValue(cardID: cardOfTheDay?.card.cardID ?? "", cardName: cardOfTheDay?.card.cardName ?? ""), label: {
                     HStack(alignment: .top, spacing: 20) {
                         if let card = cardOfTheDay?.card {
                             CardImage(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny)

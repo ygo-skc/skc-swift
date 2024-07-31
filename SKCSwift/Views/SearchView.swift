@@ -1,5 +1,5 @@
 //
-//  SearchCardViewModel.swift
+//  SearchView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 1/5/23.
@@ -29,7 +29,7 @@ struct SearchView: View {
                             .font(.headline)
                             .fontWeight(.black) ) {
                                 ForEach(sr.results, id: \.cardID) { card in
-                                    NavigationLink(value: CardValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                    NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                                         CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
                                     })
                                 }
@@ -60,8 +60,8 @@ struct SearchView: View {
                     }
                 }
             }
-            .navigationDestination(for: CardValue.self) { card in
-                CardSearchLinkDestination(cardValue: card)
+            .navigationDestination(for: CardLinkDestinationValue.self) { card in
+                CardLinkDestinationView(cardLinkDestinationValue: card)
             }
             .navigationTitle("Search")
             .task(priority: .low) {
