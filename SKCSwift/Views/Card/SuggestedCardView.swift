@@ -15,7 +15,7 @@ struct SuggestedCardView: View {
         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
             VStack {
                 HStack(spacing: 20) {
-                    CardImage(length: 90.0, cardID: card.cardID, imgSize: .tiny, variant: .round)
+                    CardImageView(length: 90.0, cardID: card.cardID, imgSize: .tiny, variant: .round)
                         .equatable()
                     
                     Text("\(occurrence) Reference(s)")

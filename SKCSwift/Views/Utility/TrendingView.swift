@@ -39,6 +39,7 @@ struct TrendingView: View, Equatable {
                                 TrendChangeView(trendChange: m.change, hits: m.occurrences)
                                 VStack {
                                     CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                        .equatable()
                                     Divider()
                                 }
                                 .padding(.leading, 5)

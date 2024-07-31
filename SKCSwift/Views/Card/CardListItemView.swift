@@ -15,7 +15,7 @@ struct CardListItemView: View, Equatable {
     
     var body: some View {
         HStack(alignment: .top) {
-            CardImage(length: 60, cardID: cardID, imgSize: .tiny)
+            CardImageView(length: 60, cardID: cardID, imgSize: .tiny)
                 .equatable()
             VStack(alignment: .leading) {
                 Text(cardName)

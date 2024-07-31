@@ -23,7 +23,7 @@ struct CardOfTheDayView: View, Equatable {
                 NavigationLink(value: CardLinkDestinationValue(cardID: cardOfTheDay?.card.cardID ?? "", cardName: cardOfTheDay?.card.cardName ?? ""), label: {
                     HStack(alignment: .top, spacing: 20) {
                         if let card = cardOfTheDay?.card {
-                            CardImage(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny)
+                            CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny)
                                 .equatable()
                                 .overlay(
                                     Circle()
