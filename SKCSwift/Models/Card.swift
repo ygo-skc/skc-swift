@@ -6,11 +6,33 @@
 //
 
 struct MonsterAssociation: Codable, Equatable {
-    var level: Int?
-    var rank: Int?
-    var scaleRating: Int?
-    var linkRating: Int?
-    var linkArrows: [String]?
+    let level: Int?
+    let rank: Int?
+    let scaleRating: Int?
+    let linkRating: Int?
+    let linkArrows: [String]?
+}
+
+extension MonsterAssociation {
+    init(level: Int) {
+        self.init(level: level, rank: nil, scaleRating: nil, linkRating: nil, linkArrows: nil)
+    }
+    
+    init(rank: Int) {
+        self.init(level: nil, rank: rank, scaleRating: nil, linkRating: nil, linkArrows: nil)
+    }
+    
+    init(level: Int, scaleRating: Int) {
+        self.init(level: level, rank: nil, scaleRating: scaleRating, linkRating: nil, linkArrows: nil)
+    }
+    
+    init(rank: Int, scaleRating: Int) {
+        self.init(level: nil, rank: rank, scaleRating: scaleRating, linkRating: nil, linkArrows: nil)
+    }
+    
+    init(linkRating: Int, linkArrows: [String]) {
+        self.init(level: nil, rank: nil, scaleRating: nil, linkRating: linkRating, linkArrows: linkArrows)
+    }
 }
 
 struct Card: Codable, Equatable {
