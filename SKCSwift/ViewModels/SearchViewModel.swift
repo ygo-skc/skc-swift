@@ -17,14 +17,14 @@ class SearchViewModel: ObservableObject {
     
     func newSearchSubject(value: String) {
         if let task {
-            Task(priority: .background) {
+            Task(priority: .userInitiated) {
                 task.cancel()
             }
         }
         
         if value == "" {
             self.task = nil
-            Task(priority: .background) {
+            Task(priority: .userInitiated) {
                 self.searchResults = []
                 self.searchResultsIds = []
                 await self.updateState()
@@ -55,7 +55,7 @@ class SearchViewModel: ObservableObject {
                         
                         self.searchResults = searchResults
                         self.searchResultsIds = searchResultsIds
-                        Task(priority: .background) {
+                        Task(priority: .userInitiated) {
                             await self.updateState()
                         }
                     }

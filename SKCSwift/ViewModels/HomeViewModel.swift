@@ -87,13 +87,16 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    func load() {
+        if dbStats == nil || cardOfTheDay == nil {
+            self.fetchDBStatsData()
+            self.fetchCardOfTheDayData()
+        }
+    }
+    
     func refresh() async {
         self.fetchDBStatsData()
         self.fetchCardOfTheDayData()
-        
-        if self.upcommingTCGProducts != nil {
-            self.fetchYouTubeUploadsData()
-        }
         
         repeat {
             try? await Task.sleep(for: .milliseconds(250))
