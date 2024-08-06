@@ -18,10 +18,18 @@ struct Product: Codable, Equatable {
     }
 }
 
-struct ProductContent: Codable, Equatable {
-    var card: Card?
-    var productPosition: String
-    var rarities: [String]
+struct ProductContent: Codable, Equatable, Identifiable {
+    let card: Card?
+    let productPosition: String
+    let rarities: [String]
+    
+    var id: String {
+        if let card {
+            return "\(card.cardID)|\(rarities.hashValue)"
+        } else {
+            return String(rarities.hashValue)
+        }
+    }
 }
 
 extension Product {
@@ -32,6 +40,14 @@ extension Product {
     init(productId: String, productLocale: String, productName: String, productType: String, productSubType: String, productReleaseDate: String, productContent: [ProductContent]) {
         self.init(productId: productId, productLocale: productLocale, productName: productName, productType: productType,
                   productSubType: productSubType, productReleaseDate: productReleaseDate, productTotal: productContent.count, productContent: productContent)
+    }
+}
+
+extension ProductContent {
+    init(productPosition: String, rarities: [String]) {
+        self.card = nil
+        self.productPosition = productPosition
+        self.rarities = rarities
     }
 }
 

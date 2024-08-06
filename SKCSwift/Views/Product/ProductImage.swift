@@ -35,7 +35,7 @@ struct ProductImage: View, Equatable {
         self.imgSize = imgSize
         self.productID = productID
         
-        self.imgUrl = URL(string: "https://images.thesupremekingscastle.com/products/tn/\(productID).png")!
+        self.imgUrl = URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!
         self.fallbackUrl = URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/default-product-image.png")!
     }
     

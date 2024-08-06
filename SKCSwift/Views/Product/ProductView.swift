@@ -23,7 +23,7 @@ struct ProductView: View {
     @State private var product: Product? = nil
     
     private func fetch() {
-        request(url: productInfoURL(productID: productID), priority: 0.2) { (result: Result<Product, Error>) -> Void in
+        request(url: productInfoURL(productID: productID), priority: 0.5) { (result: Result<Product, Error>) -> Void in
             switch result {
             case .success(let product):
                 DispatchQueue.main.async {
@@ -38,28 +38,16 @@ struct ProductView: View {
     var body: some View {
         ScrollView {
             VStack{
+                ProductImage(width: 150, productID: productID, imgSize: .small)
+                    .padding(.top)
                 if let product {
-                    HStack {
-                        ProductImage(width: 100, productID: product.productId, imgSize: .small)
-                            .padding(.trailing, 5)
-                        SectionView(header: "Product Info",
-                                    variant: .styled,
-                                    content: {
-                            VStack(alignment: .leading) {
-                                Text(product.productId)
-                                Text(product.productType)
-                                Text(product.productSubType)
-                                Text(product.productType)
-                                if let total = product.productTotal {
-                                    Text(String(total))
-                                }
-                            }
-                        })
-                    }
-                    .frame(alignment: .topLeading)
+                    Text(product.productId)
+                    Text("\(product.productType) | \(product.productSubType)")
+                    Text(product.productType)
+                        .padding(.bottom)
                     
                     if let content = product.productContent {
-                        ForEach(content, id: \.card?.cardID) { c in
+                        ForEach(content) { c in
                             if let card = c.card {
                                 LazyVStack {
                                     NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
@@ -73,12 +61,16 @@ struct ProductView: View {
                                     })
                                     .buttonStyle(.plain)
                                 }
+                                .frame(maxWidth: .infinity)
                             }
                         }
                     }
+                } else {
+                    ProgressView()
+                        .padding(.vertical)
                 }
             }
-            .modifier(ParentViewModifier())
+            .modifier(ParentViewModifier(alignment: .center))
             .onAppear {
                 fetch()
             }
