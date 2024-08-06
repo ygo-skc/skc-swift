@@ -6,14 +6,14 @@
 //
 
 struct Events: Codable {
-    var service: String
-    var events: [Event]
+    let service: String
+    let events: [Event]
 }
 
 struct Event: Codable, Equatable {
-    var name: String
-    var notes: String
-    var location: String
-    var eventDate: String
-    var url: String
+    let name: String
+    let notes: String
+    let location: String
+    let eventDate: String
+    let url: String
 }

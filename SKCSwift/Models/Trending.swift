@@ -6,12 +6,12 @@
 //
 
 struct TrendingMetric<R:Codable>: Codable {
-    var resource: R
-    var occurrences: Int
-    var change: Int
+    let resource: R
+    let occurrences: Int
+    let change: Int
 }
 
 struct Trending<R:Codable>: Codable {
-    var resourceName: TrendingResouceType
-    var metrics: [TrendingMetric<R>]
+    let resourceName: TrendingResouceType
+    let metrics: [TrendingMetric<R>]
 }

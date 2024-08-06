@@ -14,11 +14,11 @@ struct MonsterAssociation: Codable, Equatable {
 }
 
 struct Card: Codable, Equatable {
-    var cardID: String
-    var cardName: String
-    var cardColor: String
-    var cardAttribute: String
-    var cardEffect: String
+    let cardID: String
+    let cardName: String
+    let cardColor: String
+    let cardAttribute: String
+    let cardEffect: String
     var monsterType: String?
     var monsterAssociation: MonsterAssociation?
     var monsterAttack: Int?
@@ -52,6 +52,6 @@ struct Card: Codable, Equatable {
 
 // used as convenience when working with NavigationDestination
 struct CardLinkDestinationValue: Hashable {
-    var cardID: String
-    var cardName: String
+    let cardID: String
+    let cardName: String
 }

@@ -6,22 +6,22 @@
 //
 
 struct DeckContent: Codable {
-    var quantity: Int
-    var card: Card
+    let quantity: Int
+    let card: Card
 }
 
 struct DeckList: Codable {
-    var id: String
-    var name: String
-    var listContent: String
-    var videoUrl: String
-    var uniqueCards: [String]
-    var deckMascots: [String]
-    var numMainDeckCards: Int
-    var numExtraDeckCards: Int
-    var tags: [String]
-    var createdAt: String
-    var updatedAt: String
-    var mainDeck: [DeckContent]?
-    var extraDeck: [DeckContent]?
+    let id: String
+    let name: String
+    let listContent: String
+    let videoUrl: String
+    let uniqueCards: [String]
+    let deckMascots: [String]
+    let numMainDeckCards: Int
+    let numExtraDeckCards: Int
+    let tags: [String]
+    let createdAt: String
+    let updatedAt: String
+    let mainDeck: [DeckContent]?
+    let extraDeck: [DeckContent]?
 }

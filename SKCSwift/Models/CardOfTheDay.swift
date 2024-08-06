@@ -6,7 +6,7 @@
 //
 
 struct CardOfTheDay: Codable, Equatable {
-    var date: String
-    var version: Int
-    var card: Card
+    let date: String
+    let version: Int
+    let card: Card
 }

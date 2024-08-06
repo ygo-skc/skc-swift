@@ -8,7 +8,7 @@
 import Foundation
 
 struct SearchResults: Identifiable {
-    var id = UUID()
-    var section: String
-    var results: [Card]
+    let id = UUID()
+    let section: String
+    let results: [Card]
 }

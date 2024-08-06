@@ -6,15 +6,15 @@
 //
 
 struct YouTubeUploads: Codable {
-    var videos: [YouTubeVideos]
-    var total: Int
+    let videos: [YouTubeVideos]
+    let total: Int
 }
 
 struct YouTubeVideos: Codable, Equatable {
-    var id: String
-    var title: String
-    var description: String
-    var publishedAt: String
-    var thumbnailUrl: String
-    var url: String
+    let id: String
+    let title: String
+    let description: String
+    let publishedAt: String
+    let thumbnailUrl: String
+    let url: String
 }

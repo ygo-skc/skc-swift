@@ -6,7 +6,7 @@
 //
 
 struct SKCDatabaseStats: Codable, Equatable {
-    var productTotal: Int
-    var cardTotal: Int
-    var banListTotal: Int
+    let productTotal: Int
+    let cardTotal: Int
+    let banListTotal: Int
 }

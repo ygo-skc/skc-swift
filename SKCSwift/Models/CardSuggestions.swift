@@ -6,21 +6,21 @@
 //
 
 struct CardReference: Codable {
-    var occurrences: Int
-    var card: Card
+    let occurrences: Int
+    let card: Card
 }
 
 struct CardSuggestions: Codable {
-    var card: Card
-    var hasSelfReference: Bool
-    var namedMaterials: [CardReference]
-    var namedReferences: [CardReference]
-    var materialArchetypes: [String]
-    var referencedArchetypes: [String]
+    let card: Card
+    let hasSelfReference: Bool
+    let namedMaterials: [CardReference]
+    let namedReferences: [CardReference]
+    let materialArchetypes: [String]
+    let referencedArchetypes: [String]
 }
 
 struct CardSupport: Codable {
-    var card: Card
-    var referencedBy: [CardReference]
-    var materialFor: [CardReference]
+    let card: Card
+    let referencedBy: [CardReference]
+    let materialFor: [CardReference]
 }

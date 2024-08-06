@@ -6,25 +6,25 @@
 //
 
 struct BanList: Codable, Equatable {
-    var banListDate: String
-    var cardID: String
-    var banStatus: String
-    var format: String
+    let banListDate: String
+    let cardID: String
+    let banStatus: String
+    let format: String
 }
 
 struct BanListsForCard: Codable, Equatable {
-    var TCG: [BanList]?
-    var MD: [BanList]?
-    var DL: [BanList]?
+    let TCG: [BanList]?
+    let MD: [BanList]?
+    let DL: [BanList]?
 }
 
 struct BanListDates: Codable, Hashable {
-    var banListDates: [BanListDate]
-    var _links: HLink
+    let banListDates: [BanListDate]
+    let _links: HLink
 }
 
 struct BanListDate: Codable, Hashable {
-    var format: String
-    var effectiveDate: String
-    var _links: BanListDateHLink
+    let format: String
+    let effectiveDate: String
+    let _links: BanListDateHLink
 }

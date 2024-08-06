@@ -6,13 +6,13 @@
 //
 
 struct HLink: Codable, Hashable {
-    var `self`: HSelf
+    let `self`: HSelf
 }
 
 struct BanListDateHLink: Codable, Hashable {
-    var banListContent: HSelf
-    var banListNewContent: HSelf
-    var banListRemovedContent: HSelf
+    let banListContent: HSelf
+    let banListNewContent: HSelf
+    let banListRemovedContent: HSelf
     
     // allows decoding and encoding custom key names
     private enum CodingKeys : String, CodingKey {
@@ -21,5 +21,5 @@ struct BanListDateHLink: Codable, Hashable {
 }
 
 struct HSelf: Codable, Hashable {
-    var href: String
+    let href: String
 }
