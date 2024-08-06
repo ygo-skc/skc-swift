@@ -34,34 +34,38 @@ struct TrendingView: View, Equatable {
                 if focusedTrend == .card {
                     ForEach(cardTrendingData, id: \.resource.cardID) { m in
                         let card = m.resource
-                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                            HStack {
-                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                VStack {
-                                    CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
-                                        .equatable()
-                                    Divider()
+                        LazyVStack {
+                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                HStack {
+                                    TrendChangeView(trendChange: m.change, hits: m.occurrences)
+                                    VStack {
+                                        CardListItemView(cardID: card.cardID, cardName: card.cardName, monsterType: card.monsterType)
+                                            .equatable()
+                                        Divider()
+                                    }
+                                    .padding(.leading, 5)
                                 }
-                                .padding(.leading, 5)
-                            }
-                            .contentShape(Rectangle())
-                        })
+                                .contentShape(Rectangle())
+                            })
+                        }
                         .buttonStyle(.plain)
                     }
                 } else if focusedTrend == .product {
                     ForEach(productTrendingData, id: \.resource.productId) { m in
                         let product = m.resource
-                        NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                            HStack {
-                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                VStack {
-                                    ProductListItemView(product: product)
-                                    Divider()
+                        LazyVStack {
+                            NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
+                                HStack {
+                                    TrendChangeView(trendChange: m.change, hits: m.occurrences)
+                                    VStack {
+                                        ProductListItemView(product: product)
+                                        Divider()
+                                    }
+                                    .padding(.leading, 5)
                                 }
-                                .padding(.leading, 5)
-                            }
-                            .contentShape(Rectangle())
-                        })
+                                .contentShape(Rectangle())
+                            })
+                        }
                         .buttonStyle(.plain)
                     }
                 }
