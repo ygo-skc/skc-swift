@@ -21,7 +21,7 @@ struct SectionView<Content: View>: View {
             content()
                 .modifier(SectionContentViewModifier(variant: variant))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
