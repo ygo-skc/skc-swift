@@ -51,14 +51,18 @@ struct TrendingView: View, Equatable {
                 } else if focusedTrend == .product {
                     ForEach(productTrendingData, id: \.resource.productId) { m in
                         let product = m.resource
-                        HStack {
-                            TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                            VStack {
-                                ProductListItemView(product: product)
-                                Divider()
+                        NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
+                            HStack {
+                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
+                                VStack {
+                                    ProductListItemView(product: product)
+                                    Divider()
+                                }
+                                .padding(.leading, 5)
                             }
-                            .padding(.leading, 5)
-                        }
+                            .contentShape(Rectangle())
+                        })
+                        .buttonStyle(.plain)
                     }
                 }
             }

@@ -33,3 +33,9 @@ extension Product {
                   productSubType: productSubType, productReleaseDate: productReleaseDate, productTotal: productContent.count, productContent: productContent)
     }
 }
+
+// used as convenience when working with NavigationDestination
+struct ProductLinkDestinationValue: Hashable {
+    var productID: String
+    var productName: String
+}

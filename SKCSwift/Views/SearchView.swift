@@ -65,6 +65,9 @@ struct SearchView: View {
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
                 CardLinkDestinationView(cardLinkDestinationValue: card)
             }
+            .navigationDestination(for: ProductLinkDestinationValue.self) { product in
+                ProductLinkDestinationView(productLinkDestinationValue: product)
+            }
             .navigationTitle("Search")
             .task(priority: .low) {
                 trendingViewModel.fetchTrendingData()
