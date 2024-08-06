@@ -28,6 +28,7 @@ func baseRequest(url: URL) -> URLRequest {
 let SKC_API_BASE_URL: StaticString = "skc-ygo-api.com"
 let SKC_API_SEARCH_ENDPOINT: StaticString = "/api/v1/card/search"
 let SKC_API_CARD_INFORMATION_ENDPOINT: StaticString = "/api/v1/card/%@"
+let SKC_API_PRODUCT_INFORMATION_ENDPOINT: StaticString = "/api/v1/product/%@/en"
 let SKC_API_DB_STATS_ENDPOINT: StaticString = "/api/v1/stats"
 let SKC_API_BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
 

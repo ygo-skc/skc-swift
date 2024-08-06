@@ -37,6 +37,15 @@ func cardInfoURL(cardID: String) -> URL {
     return createURL(components: components)
 }
 
+func productInfoURL(productID: String) -> URL {
+    let components = baseURLComponents(
+        host: SKC_API_BASE_URL.description,
+        path: String(format: SKC_API_PRODUCT_INFORMATION_ENDPOINT.description, productID)
+    )
+    
+    return createURL(components: components)
+}
+
 func searchCardURL(cardName: String) -> URL {
     var components = baseURLComponents(
         host: SKC_API_BASE_URL.description,

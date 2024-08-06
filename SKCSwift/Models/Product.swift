@@ -19,6 +19,7 @@ struct Product: Codable, Equatable {
 }
 
 struct ProductContent: Codable, Equatable {
+    var card: Card?
     var productPosition: String
     var rarities: [String]
 }
