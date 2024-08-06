@@ -21,16 +21,24 @@ struct ProductView: View {
     let productID: String
     
     @State private var product: Product? = nil
+    @State private var releaseDate: String? = nil
     
     private func fetch() {
-        request(url: productInfoURL(productID: productID), priority: 0.5) { (result: Result<Product, Error>) -> Void in
-            switch result {
-            case .success(let product):
-                DispatchQueue.main.async {
-                    self.product = product
+        if product == nil {
+            request(url: productInfoURL(productID: productID), priority: 0.5) { (result: Result<Product, Error>) -> Void in
+                switch result {
+                case .success(let product):
+                    let dateFormat = Dates.yyyyMMddGMT
+                    let releaseDate = dateFormat.formatter.date(from: product.productReleaseDate)!
+                    let (month, day, year) =  releaseDate.getMonthDayAndYear(calendar: dateFormat.calendar)
+                    
+                    DispatchQueue.main.async {
+                        self.product = product
+                        self.releaseDate = "\(month), \(day) \(year)"
+                    }
+                case .failure(let error):
+                    print(error)
                 }
-            case .failure(let error):
-                print(error)
             }
         }
     }
@@ -41,9 +49,10 @@ struct ProductView: View {
                 ProductImage(width: 150, productID: productID, imgSize: .small)
                     .padding(.top)
                 if let product {
-                    Text(product.productId)
-                    Text("\(product.productType) | \(product.productSubType)")
-                    Text(product.productType)
+                    if let releaseDate {
+                        Text(releaseDate).fontWeight(.bold)
+                    }
+                    Text([productID, product.productType, product.productSubType].joined(separator: " | "))
                         .padding(.bottom)
                     
                     if let content = product.productContent {
