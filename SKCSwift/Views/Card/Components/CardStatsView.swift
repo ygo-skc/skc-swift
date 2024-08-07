@@ -28,11 +28,10 @@ struct CardStatsView: View, Equatable {
                     .modifier(CardNameModifier(variant: variant))
                     .foregroundColor(.white)
                 
-                if (card.monsterAssociation != nil) {
-                    MonsterAssociationView(monsterAssociation: card.monsterAssociation!, attribute: attribute)
+                if let association = card.monsterAssociation {
+                    MonsterAssociationView(monsterAssociation: association, attribute: attribute)
                         .equatable()
                 }
-                
                 
                 VStack(alignment: .leading, spacing: 5) {
                     Text(card.cardType())
@@ -90,7 +89,7 @@ private struct CardNameModifier: ViewModifier {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .lineLimit(1)
-        case .condensed:
+        case .condensed, .list_view:
             content
                 .font(.headline)
                 .fontWeight(.medium)
@@ -110,7 +109,7 @@ private struct MonsterTypeModifier: ViewModifier {
                 .fontWeight(.medium)
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 1.0)
-        case .condensed:
+        case .condensed, .list_view:
             content
                 .font(.footnote)
                 .fontWeight(.medium)
@@ -120,7 +119,7 @@ private struct MonsterTypeModifier: ViewModifier {
     }
 }
 
-private struct CardEffectModifier: ViewModifier {
+struct CardEffectModifier: ViewModifier {
     var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
@@ -138,6 +137,13 @@ private struct CardEffectModifier: ViewModifier {
                 .lineLimit(3, reservesSpace: true)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
+        case .list_view:
+            content
+                .font(.body)
+                .fontWeight(.light)
+                .lineLimit(3, reservesSpace: true)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
         }
     }
 }
@@ -150,7 +156,7 @@ private struct CardIdModifier: ViewModifier {
         case .normal:
             content
                 .font(.callout)
-        case .condensed:
+        case .condensed, .list_view:
             content
                 .font(.caption)
         }
@@ -166,7 +172,7 @@ private struct MonsterAttackDefenseModifier: ViewModifier {
             content
                 .font(.callout)
                 .fontWeight(.bold)
-        case .condensed:
+        case .condensed, .list_view:
             content
                 .font(.caption)
                 .fontWeight(.bold)

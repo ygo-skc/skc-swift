@@ -35,6 +35,7 @@ enum DateBadgeViewVariant {
 enum YGOCardViewVariant {
     case normal
     case condensed
+    case list_view
 }
 
 enum CardColorIndicatorVariant {
