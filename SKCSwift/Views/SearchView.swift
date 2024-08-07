@@ -23,11 +23,7 @@ struct SearchView: View {
             VStack {
                 if !searchViewModel.searchResults.isEmpty {
                     List(searchViewModel.searchResults) { sr in
-                        Section(header: HStack{
-                            CardColorIndicatorView(cardColor: sr.section)
-                                .equatable()
-                            Text(sr.section)
-                        }
+                        Section(header:  Text(sr.section)
                             .font(.headline)
                             .fontWeight(.black) ) {
                                 ForEach(sr.results, id: \.cardID) { card in
