@@ -24,7 +24,7 @@ struct SearchView: View {
                 if !searchViewModel.searchResults.isEmpty {
                     List(searchViewModel.searchResults) { sr in
                         Section(header: HStack{
-                            CardColorIndicator(cardColor: sr.section)
+                            CardColorIndicatorView(cardColor: sr.section)
                                 .equatable()
                             Text(sr.section)
                         }

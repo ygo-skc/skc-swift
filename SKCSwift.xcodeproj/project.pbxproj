@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F045FBE2A467D3400CC82A4 /* CardColorIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F045FBD2A467D3400CC82A4 /* CardColorIndicator.swift */; };
+		1F045FBE2A467D3400CC82A4 /* CardColorIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F045FBD2A467D3400CC82A4 /* CardColorIndicatorView.swift */; };
 		1F0F993D29F8972600AA9F69 /* CardOfTheDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */; };
 		1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */; };
 		1F0F994429F8A4E400AA9F69 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994329F8A4E400AA9F69 /* SearchViewModel.swift */; };
@@ -92,7 +92,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1F045FBD2A467D3400CC82A4 /* CardColorIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardColorIndicator.swift; sourceTree = "<group>"; };
+		1F045FBD2A467D3400CC82A4 /* CardColorIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardColorIndicatorView.swift; sourceTree = "<group>"; };
 		1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDay.swift; sourceTree = "<group>"; };
 		1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDayView.swift; sourceTree = "<group>"; };
 		1F0F994329F8A4E400AA9F69 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
@@ -280,7 +280,7 @@
 		1F3C10AC29673F1900EE4EBE /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				1F045FBD2A467D3400CC82A4 /* CardColorIndicator.swift */,
+				1F045FBD2A467D3400CC82A4 /* CardColorIndicatorView.swift */,
 				1F86EC47296A0055004F4F1B /* DateBadgeView.swift */,
 				1FB9823D29FA117800679D81 /* DBStatsView.swift */,
 				1F96D78F2A507F3C0033150D /* InlineDateView.swift */,
@@ -559,7 +559,7 @@
 				1FD83E1C2985B2E900E40822 /* Date.swift in Sources */,
 				1FB9823C29F9D27900679D81 /* SectionView.swift in Sources */,
 				1F86EC3F29688821004F4F1B /* AttributeView.swift in Sources */,
-				1F045FBE2A467D3400CC82A4 /* CardColorIndicator.swift in Sources */,
+				1F045FBE2A467D3400CC82A4 /* CardColorIndicatorView.swift in Sources */,
 				1F32565229635936001AACF1 /* Card.swift in Sources */,
 				1F1C1D3F2A353C1400E73D67 /* BannedContentView.swift in Sources */,
 				1FB9824229FB4A8A00679D81 /* SKCDatabaseStats.swift in Sources */,

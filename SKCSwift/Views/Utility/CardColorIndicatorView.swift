@@ -7,9 +7,14 @@
 
 import SwiftUI
 
-struct CardColorIndicator: View, Equatable {
+struct CardColorIndicatorView: View, Equatable {
     let cardColor: String
-    let variant: CardColorIndicatorVariant = .regular
+    let variant: CardColorIndicatorVariant
+    
+    init(cardColor: String, variant: CardColorIndicatorVariant) {
+        self.cardColor = cardColor
+        self.variant = variant
+    }
     
     var body: some View {
         Circle()
@@ -18,11 +23,17 @@ struct CardColorIndicator: View, Equatable {
             } else: {
                 $0.fill(cardColorUI(cardColor: cardColor))
             }
-            .modifier(CardColorIndicatorModifier(variant: variant))
+            .modifier(CardColorIndicatorViewModifier(variant: variant))
     }
 }
 
-private struct CardColorIndicatorModifier: ViewModifier {
+extension CardColorIndicatorView {
+    init(cardColor: String) {
+        self.init(cardColor: cardColor, variant: .regular)
+    }
+}
+
+private struct CardColorIndicatorViewModifier: ViewModifier {
     var variant: CardColorIndicatorVariant
     
     func body(content: Content) -> some View {
@@ -38,9 +49,9 @@ private struct CardColorIndicatorModifier: ViewModifier {
 }
 
 #Preview("Effect") {
-    CardColorIndicator(cardColor: "Effect")
+    CardColorIndicatorView(cardColor: "Effect")
 }
 
 #Preview("Pendulum Effect") {
-    CardColorIndicator(cardColor: "Pendulum-Effect")
+    CardColorIndicatorView(cardColor: "Pendulum-Effect")
 }

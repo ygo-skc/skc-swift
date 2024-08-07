@@ -13,9 +13,14 @@ struct CardListItemView: View, Equatable {
     
     var body: some View {
         HStack(alignment: .top) {
-            CardImageView(length: 65, cardID: card.cardID, imgSize: .tiny, cardColor: card.cardColor)
+            CardImageView(length: 65, cardID: card.cardID, imgSize: .tiny, variant: .rounded_corner)
                 .equatable()
-            AttributeView(attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown)
+            VStack {
+                CardColorIndicatorView(cardColor: card.cardColor, variant: .small)
+                    .equatable()
+                AttributeView(attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown)
+                    .equatable()
+            }
             VStack(alignment: .leading) {
                 Text(card.cardName)
                     .fontWeight(.bold)

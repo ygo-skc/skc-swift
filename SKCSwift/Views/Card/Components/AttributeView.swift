@@ -10,7 +10,7 @@ import SwiftUI
 struct AttributeView: View, Equatable {
     var attribute: Attribute
     
-    private static let ICON_SIZE = 30.0
+    private static let ICON_SIZE: CGFloat = 30.0
     
     var body: some View {
         if (attribute == .unknown) {
