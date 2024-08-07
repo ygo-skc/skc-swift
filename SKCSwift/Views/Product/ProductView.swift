@@ -53,10 +53,20 @@ struct ProductView: View {
                             if let card = c.card {
                                 LazyVStack {
                                     NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                        VStack {
-                                            CardListItemView(card: card)
-                                                .equatable()
-                                            Divider()
+                                        HStack {
+                                            VStack {
+                                                Group {
+                                                    Text(productID)
+                                                    Text(c.productPosition)
+                                                }
+                                                .font(.subheadline)
+                                            }
+                                            .padding(.trailing)
+                                            VStack {
+                                                CardListItemView(card: card)
+                                                    .equatable()
+                                                Divider()
+                                            }
                                         }
                                         .contentShape(Rectangle())
                                     })
