@@ -19,7 +19,7 @@ struct CardSuggestionsView: View {
     @State private var materialFor: [CardReference] = [CardReference]()
     @State private var isSupportDataLoaded = false
     
-    private func loadSuggestions() {
+    private func loadSuggestions() async {
         if isSuggestionDataLoaded {
             return
         }
@@ -40,7 +40,7 @@ struct CardSuggestionsView: View {
         }
     }
     
-    private func loadSupport() {
+    private func loadSupport() async {
         if isSupportDataLoaded {
             return
         }
@@ -85,9 +85,9 @@ struct CardSuggestionsView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .onAppear {
-                loadSuggestions()
-                loadSupport()
+            .task(priority: .userInitiated) {
+                await loadSuggestions()
+                await loadSupport()
             }
         })
     }

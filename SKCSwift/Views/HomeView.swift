@@ -52,7 +52,7 @@ struct HomeView: View {
                 await homeViewModel.refresh()
             }
             .task(priority: .low) {
-                homeViewModel.load()
+                await homeViewModel.load()
             }
         }
     }

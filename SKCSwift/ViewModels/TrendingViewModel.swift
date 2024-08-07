@@ -12,7 +12,7 @@ class TrendingViewModel: ObservableObject {
     @Published private(set) var products: [TrendingMetric<Product>]?
     private var trendingDataLastRefresh = Date()
     
-    func fetchTrendingData() {
+    func fetchTrendingData() async {
         if cards == nil || products == nil || trendingDataLastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5  {
             request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending<Card>, Error>) -> Void in
                 switch result {

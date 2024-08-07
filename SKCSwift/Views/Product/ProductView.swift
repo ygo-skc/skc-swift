@@ -22,7 +22,7 @@ struct ProductView: View {
     
     @State private var product: Product? = nil
     
-    private func fetch() {
+    private func fetch() async {
         if product == nil {
             request(url: productInfoURL(productID: productID), priority: 0.5) { (result: Result<Product, Error>) -> Void in
                 switch result {
@@ -81,8 +81,8 @@ struct ProductView: View {
                 }
             }
             .modifier(ParentViewModifier(alignment: .center))
-            .onAppear {
-                fetch()
+            .task(priority: .userInitiated) {
+                await fetch()
             }
         }
     }

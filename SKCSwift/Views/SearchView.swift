@@ -69,13 +69,15 @@ struct SearchView: View {
                 ProductLinkDestinationView(productLinkDestinationValue: product)
             }
             .navigationTitle("Search")
-            .task(priority: .low) {
-                trendingViewModel.fetchTrendingData()
+            .task(priority: .userInitiated) {
+                await trendingViewModel.fetchTrendingData()
             }
         }
         .searchable(text: $searchText, prompt: "Search for card...")
         .onChange(of: searchText, initial: false) { _, newValue in
-            searchViewModel.newSearchSubject(value: newValue)
+            Task {
+                await searchViewModel.newSearchSubject(value: newValue)
+            }
         }
         .disableAutocorrection(true)
     }

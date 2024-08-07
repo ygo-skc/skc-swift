@@ -87,7 +87,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    func load() {
+    func load() async {
         if dbStats == nil || cardOfTheDay == nil {
             self.fetchDBStatsData()
             self.fetchCardOfTheDayData()

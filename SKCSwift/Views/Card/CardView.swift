@@ -28,7 +28,7 @@ private struct CardView: View {
         self.cardData = Card(cardID: cardID, cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
     }
     
-    private func fetchData() {
+    private func fetchData() async {
         if isDataLoaded {
             return
         }
@@ -78,8 +78,8 @@ private struct CardView: View {
                     .modifier(ParentViewModifier())
                 }
             }
-            .task(priority: .high) {
-                fetchData()
+            .task(priority: .userInitiated) {
+                await fetchData()
             }
             .frame(maxHeight: .infinity)
         }

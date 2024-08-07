@@ -15,7 +15,7 @@ class SearchViewModel: ObservableObject {
     
     private var task: URLSessionDataTask?
     
-    func newSearchSubject(value: String) {
+    func newSearchSubject(value: String) async {
         if let task {
             Task(priority: .userInitiated) {
                 task.cancel()
