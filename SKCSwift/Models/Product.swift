@@ -16,6 +16,10 @@ struct Product: Codable, Equatable {
         }
         return productId
     }
+    
+    func productCategory() -> String {
+        return "\(productType) │ \(productSubType)"
+    }
 }
 
 extension Product {

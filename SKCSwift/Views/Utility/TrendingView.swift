@@ -63,8 +63,8 @@ struct TrendingView: View, Equatable {
                                 }
                                 .contentShape(Rectangle())
                             })
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -107,8 +107,7 @@ private struct TrendChangeView: View, Equatable {
                     .font(.title)
                     .fontWeight(.medium)
                 Text(trendChange)
-                    .foregroundColor(.secondary)
-                    .fontWeight(.medium)
+                    .fontWeight(.light)
                     .font(.system(.title3, design: .monospaced))
             }
             Text("\(hits) Hits")

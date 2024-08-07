@@ -12,29 +12,35 @@ struct CardListItemView: View, Equatable {
     let card: Card
     
     var body: some View {
-        HStack(alignment: .top) {
-            CardImageView(length: 65, cardID: card.cardID, imgSize: .tiny, variant: .rounded_corner)
-                .equatable()
-            VStack {
-                CardColorIndicatorView(cardColor: card.cardColor, variant: .small)
+        VStack(alignment: .leading) {
+            Text(card.cardName)
+                .fontWeight(.bold)
+                .font(.subheadline)
+                .lineLimit(1)
+                .padding(.bottom, -5)
+            
+            HStack(alignment: .top) {
+                CardImageView(length: 60, cardID: card.cardID, imgSize: .tiny, variant: .rounded_corner)
                     .equatable()
-                AttributeView(attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown)
-                    .equatable()
-            }
-            VStack(alignment: .leading) {
-                Text(card.cardName)
-                    .fontWeight(.bold)
-                    .font(.subheadline)
-                    .lineLimit(2)
-                if let monsterType = card.monsterType {
-                    Text(monsterType)
+                    .padding(.trailing, 3)
+                VStack(alignment: .leading) {
+                    HStack {
+                        CardColorIndicatorView(cardColor: card.cardColor)
+                            .equatable()
+                        AttributeView(attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown)
+                            .equatable()
+                    }
+                    
+                    Text(card.monsterType ?? card.cardColor)
                         .fontWeight(.light)
                         .font(.callout)
-                        .lineLimit(2)
+                        .lineLimit(1)
                 }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
             }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
     }
 }
 

@@ -11,34 +11,43 @@ struct ProductListItemView: View {
     let product: Product
     
     var body: some View {
-        HStack(alignment: .top) {
-            ProductImage(width: 50, productID: product.productId, imgSize: .tiny)
-                .equatable()
-                .padding(.trailing, 3)
-            VStack(alignment: .leading) {
-                InlineDateView(date: product.productReleaseDate)
+        VStack(alignment: .leading) {
+            Text(product.productName)
+                .fontWeight(.bold)
+                .font(.subheadline)
+                .lineLimit(1)
+                .padding(.bottom, -2)
+            
+            HStack(alignment: .top) {
+                ProductImage(width: 50, productID: product.productId, imgSize: .tiny)
                     .equatable()
-                    .padding(.bottom, 2)
-                Text(product.productIDWithContentTotal())
-                    .frame(alignment: .trailing)
-                    .font(.subheadline)
-                    .fontWeight(.light)
-                Text(product.productName)
-                    .fontWeight(.bold)
-                    .font(.subheadline)
-                    .lineLimit(2)
-                if let contents = product.productContent, !contents.isEmpty {
-                    HStack(alignment: .top) {
-                        Text("Rarities")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                        Text(contents[0].rarities.joined(separator: ", "))
-                            .font(.callout)
+                    .padding(.trailing, 3)
+                VStack(alignment: .leading) {
+                    InlineDateView(date: product.productReleaseDate)
+                        .equatable()
+                        .padding(.bottom, 2)
+                    Text(product.productIDWithContentTotal())
+                        .frame(alignment: .trailing)
+                        .font(.subheadline)
+                        .fontWeight(.light)
+                    Text(product.productCategory())
+                        .frame(alignment: .trailing)
+                        .font(.subheadline)
+
+                    if let contents = product.productContent, !contents.isEmpty {
+                        HStack(alignment: .top) {
+                            Text("Rarities")
+                                .font(.callout)
+                                .fontWeight(.medium)
+                            Text(contents[0].rarities.joined(separator: ", "))
+                                .font(.callout)
+                        }
                     }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
     }
 }
 
