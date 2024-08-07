@@ -9,20 +9,19 @@ import SwiftUI
 
 
 struct CardListItemView: View, Equatable {
-    let cardID: String
-    let cardName: String
-    let monsterType: String?
+    let card: Card
     
     var body: some View {
         HStack(alignment: .top) {
-            CardImageView(length: 60, cardID: cardID, imgSize: .tiny)
+            CardImageView(length: 65, cardID: card.cardID, imgSize: .tiny, cardColor: card.cardColor)
                 .equatable()
+            AttributeView(attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown)
             VStack(alignment: .leading) {
-                Text(cardName)
+                Text(card.cardName)
                     .fontWeight(.bold)
                     .font(.subheadline)
                     .lineLimit(2)
-                if let monsterType {
+                if let monsterType = card.monsterType {
                     Text(monsterType)
                         .fontWeight(.light)
                         .font(.callout)
@@ -34,16 +33,24 @@ struct CardListItemView: View, Equatable {
     }
 }
 
-extension CardListItemView {
-    init(cardID: String, cardName: String) {
-        self.init(cardID: cardID, cardName: cardName, monsterType: nil)
-    }
-}
-
 #Preview("Card Search Result") {
-    CardListItemView(cardID: "40044918", cardName: "Elemental HERO Stratos", monsterType: "Warrior/Effect")
+    CardListItemView(card: Card(
+        cardID: "40044918",
+        cardName: "Elemental HERO Stratos",
+        cardColor: "Effect",
+        cardAttribute: "Wind",
+        cardEffect: "Draw 2",
+        monsterType: "Warrior/Effect"
+    ))
 }
 
 #Preview("Card Search Result - IMG DNE") {
-    CardListItemView(cardID: "08949584", cardName: "A HERO Lives")
+    CardListItemView(card: Card(
+        cardID: "40044918",
+        cardName: "Elemental HERO Stratos",
+        cardColor: "Effect",
+        cardAttribute: "Wind",
+        cardEffect: "Draw 2",
+        monsterType: "Warrior/Effect"
+    ))
 }
