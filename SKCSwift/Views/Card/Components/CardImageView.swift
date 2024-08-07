@@ -10,28 +10,27 @@ import CachedAsyncImage
 
 struct CardImageView: View, Equatable {
     private let length: CGFloat
-    private let imgSize: ImageSize
     private let cardID: String
+    private let imgSize: ImageSize
     private let variant: YGOCardImageVariant
-    private var imgUrl: URL
+    private let cardColor: String?
+    private let imgUrl: URL
     
     private let fallbackUrl: URL
+    private let colorOverLayWidth: CGFloat
     private let radius: CGFloat
     
-    init(length: CGFloat, cardID: String, imgSize: ImageSize, variant: YGOCardImageVariant = .round) {
+    init(length: CGFloat, cardID: String, imgSize: ImageSize, cardColor: String?, variant: YGOCardImageVariant = .round) {
         self.length = length
         self.variant = variant
         self.imgSize = imgSize
         self.cardID = cardID
+        self.cardColor = cardColor
         self.imgUrl = URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!
         
         self.fallbackUrl = URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/default-card-image.jpg")!
-        
-        if variant == .round {
-            self.radius = length
-        } else {
-            self.radius = length / 10
-        }
+        self.colorOverLayWidth = length / 18
+        self.radius = (variant == .round) ? length : length / 10
     }
     
     var body: some View {
@@ -41,23 +40,42 @@ struct CardImageView: View, Equatable {
                 PlaceholderView(width: length, height: length, radius: radius)
             case .success(let image):
                 image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: length, height: length)
-                    .cornerRadius(radius)
+                    .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
             default:
                 CachedAsyncImage(url: fallbackUrl) { image in
                     image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: length, height: length)
-                        .cornerRadius(radius)
+                        .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
                 } placeholder: {
                     PlaceholderView(width: length, height: length, radius: radius)
                 }
             }
         }
         .frame(width: length, height: length)
+    }
+}
+
+extension CardImageView {
+    init(length: CGFloat, cardID: String, imgSize: ImageSize, variant: YGOCardImageVariant = .round) {
+        self.init(length: length, cardID: cardID, imgSize: imgSize, cardColor: nil, variant: variant)
+    }
+}
+
+private extension Image {
+    func cardImageViewModifier(length: CGFloat, radius: CGFloat, cardColor: String?, colorOverLayWidth: CGFloat) -> some View {
+        self
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: length, height: length)
+            .cornerRadius(radius)
+            .if(cardColor != nil) { view in
+                view.overlay(
+                    Circle()
+                        .if(cardColor!.starts(with: "Pendulum")) {
+                            $0.stroke(cardColorGradient(cardColor: cardColor!), lineWidth: colorOverLayWidth)
+                        } else: {
+                            $0.stroke(cardColorUI(cardColor: cardColor!), lineWidth: colorOverLayWidth)
+                        })
+            }
     }
 }
 

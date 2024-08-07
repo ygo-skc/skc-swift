@@ -23,16 +23,8 @@ struct CardOfTheDayView: View, Equatable {
                 NavigationLink(value: CardLinkDestinationValue(cardID: cardOfTheDay?.card.cardID ?? "", cardName: cardOfTheDay?.card.cardName ?? ""), label: {
                     HStack(alignment: .top, spacing: 20) {
                         if let card = cardOfTheDay?.card {
-                            CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny)
+                            CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny, cardColor: card.cardColor)
                                 .equatable()
-                                .overlay(
-                                    Circle()
-                                        .if(card.cardColor.starts(with: "Pendulum")) {
-                                            $0.stroke(cardColorGradient(cardColor: card.cardColor), lineWidth: 5)
-                                        } else: {
-                                            $0.stroke(cardColorUI(cardColor: card.cardColor), lineWidth: 5)
-                                        }
-                                )
                         } else {
                             PlaceholderView(width: CardOfTheDayView.IMAGE_SIZE, height: CardOfTheDayView.IMAGE_SIZE, radius: CardOfTheDayView.IMAGE_SIZE)
                         }
