@@ -46,35 +46,25 @@ struct ProductView: View {
                     InlineDateView(date: product.productReleaseDate)
                     Text([productID, product.productType, product.productSubType].joined(separator: " | "))
                         .font(.subheadline)
-                        .padding(.bottom)
                     
                     if let content = product.productContent {
-                        ForEach(content) { c in
-                            if let card = c.card {
-                                LazyVStack {
+                        LazyVStack {
+                            ForEach(content) { c in
+                                if let card = c.card {
                                     NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                        HStack {
+                                        GroupBox(label: Label("\(productID) | \(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
                                             VStack {
-                                                Group {
-                                                    Text(productID)
-                                                    Text(c.productPosition)
-                                                }
-                                                .font(.subheadline)
-                                            }
-                                            .padding(.trailing)
-                                            VStack {
-                                                CardListItemView(card: card)
+                                                CardListItemView(card: card, showEffect: true)
                                                     .equatable()
-                                                Divider()
                                             }
                                         }
                                         .contentShape(Rectangle())
                                     })
                                     .buttonStyle(.plain)
                                 }
-                                .frame(maxWidth: .infinity)
                             }
                         }
+                        .frame(maxWidth: .infinity)
                     }
                 } else {
                     ProgressView()

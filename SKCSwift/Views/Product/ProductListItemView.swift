@@ -14,9 +14,9 @@ struct ProductListItemView: View {
         VStack(alignment: .leading) {
             Text(product.productName)
                 .fontWeight(.bold)
-                .font(.subheadline)
+                .font(.headline)
                 .lineLimit(1)
-                .padding(.bottom, -2)
+                .padding(.bottom, 0)
             
             HStack(alignment: .top) {
                 ProductImage(width: 50, productID: product.productId, imgSize: .tiny)

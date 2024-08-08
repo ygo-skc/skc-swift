@@ -28,8 +28,8 @@ struct CardStatsView: View, Equatable {
                     .modifier(CardNameModifier(variant: variant))
                     .foregroundColor(.white)
                 
-                if let association = card.monsterAssociation {
-                    MonsterAssociationView(monsterAssociation: association, attribute: attribute)
+                if variant != .condensed {
+                    MonsterAssociationView(monsterAssociation: card.monsterAssociation, attribute: attribute)
                         .equatable()
                 }
                 
@@ -119,7 +119,7 @@ private struct MonsterTypeModifier: ViewModifier {
     }
 }
 
-struct CardEffectModifier: ViewModifier {
+private struct CardEffectModifier: ViewModifier {
     var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
@@ -139,7 +139,7 @@ struct CardEffectModifier: ViewModifier {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
         case .list_view:
             content
-                .font(.body)
+                .font(.footnote)
                 .fontWeight(.light)
                 .lineLimit(3, reservesSpace: true)
                 .multilineTextAlignment(.leading)
