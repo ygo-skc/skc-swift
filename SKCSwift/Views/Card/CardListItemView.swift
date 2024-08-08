@@ -12,11 +12,6 @@ struct CardListItemView: View, Equatable {
     let card: Card
     let showAllInfo: Bool
     
-    init(card: Card, showEffect: Bool) {
-        self.card = card
-        self.showAllInfo = showEffect
-    }
-    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -57,7 +52,7 @@ struct CardListItemView: View, Equatable {
 
 extension CardListItemView {
     init(card: Card) {
-        self.init(card: card, showEffect: false)
+        self.init(card: card, showAllInfo: false)
     }
 }
 

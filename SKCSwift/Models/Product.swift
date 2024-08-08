@@ -39,12 +39,6 @@ struct ProductContent: Codable, Equatable, Identifiable {
     let productPosition: String
     let rarities: [String]
     
-    init(card: Card?, productPosition: String, rarities: [String]) {
-        self.card = card
-        self.productPosition = productPosition
-        self.rarities = rarities
-    }
-    
     var id: String {
         if let card {
             return card.cardID + productPosition + String(rarities.hashValue)

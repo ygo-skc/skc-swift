@@ -91,11 +91,10 @@ private struct BanListDateRangePicker: View {
     private let numYears: Int
     
     init(chosenDateRange: Binding<Int>, showDateSelectorSheet: Binding<Bool>, banListDates: [BanListDate]) {
+        _chosenYear = State(initialValue: getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate))
         self._chosenDateRange = chosenDateRange
         self._showDateSelectorSheet = showDateSelectorSheet
-        
         self.banListDates = banListDates
-        
         
         for (ind, banList) in banListDates.enumerated() {
             let banListDate = banList.effectiveDate
@@ -105,7 +104,6 @@ private struct BanListDateRangePicker: View {
         
         yearsSortedDesc = Array(banListEffectiveDatesByYear.keys).sorted(by: >)
         numYears = yearsSortedDesc.count
-        chosenYear = getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate)
     }
     
     var body: some View {

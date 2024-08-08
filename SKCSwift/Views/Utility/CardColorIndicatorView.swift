@@ -11,11 +11,6 @@ struct CardColorIndicatorView: View, Equatable {
     let cardColor: String
     let variant: CardColorIndicatorVariant
     
-    init(cardColor: String, variant: CardColorIndicatorVariant) {
-        self.cardColor = cardColor
-        self.variant = variant
-    }
-    
     var body: some View {
         Circle()
             .if(cardColor.starts(with: "Pendulum")) {

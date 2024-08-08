@@ -15,7 +15,6 @@ struct CardStatsView: View, Equatable {
     
     init(card: Card, variant: YGOCardViewVariant = .normal) {
         self.card = card
-        
         self.variant = variant
         
         self.attribute = Attribute(rawValue: card.cardAttribute) ?? .unknown
