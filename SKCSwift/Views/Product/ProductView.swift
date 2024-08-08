@@ -38,21 +38,25 @@ struct ProductView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack{
-                ProductImage(width: 150, productID: productID, imgSize: .small)
-                    .padding(.vertical)
-                if let product {
-                    InlineDateView(date: product.productReleaseDate)
-                    Text([productID, product.productType, product.productSubType].joined(separator: " | "))
-                        .font(.subheadline)
+        TabView {
+            ScrollView {
+                VStack{
+                    ProductImage(width: 150, productID: productID, imgSize: .small)
+                        .padding(.vertical)
+                    if let product {
+                        InlineDateView(date: product.productReleaseDate)
+                        Text([product.productType, product.productSubType].joined(separator: " | "))
+                            .font(.subheadline)
+                    } else {
+                        ProgressView()
+                    }
                     
-                    if let content = product.productContent {
-                        LazyVStack {
+                    LazyVStack {
+                        if let content = product?.productContent {
                             ForEach(content) { c in
                                 if let card = c.card {
                                     NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                        GroupBox(label: Label("\(productID) | \(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
+                                        GroupBox(label: Label("\(productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
                                             VStack {
                                                 CardListItemView(card: card, showEffect: true)
                                                     .equatable()
@@ -64,17 +68,24 @@ struct ProductView: View {
                                 }
                             }
                         }
-                        .frame(maxWidth: .infinity)
                     }
-                } else {
-                    ProgressView()
+                    .frame(maxWidth: .infinity)
+                }
+                .modifier(ParentViewModifier(alignment: .topLeading))
+                .task(priority: .userInitiated) {
+                    await fetch()
                 }
             }
-            .modifier(ParentViewModifier(alignment: .center))
-            .task(priority: .userInitiated) {
-                await fetch()
+            
+            ScrollView {
+                VStack {
+                    Text("YOOO")
+                }
+                .modifier(ParentViewModifier(alignment: .topLeading))
             }
         }
+        .tabViewStyle(.page(indexDisplayMode: .always))
+        .indexViewStyle(.page(backgroundDisplayMode: .always))
     }
 }
 

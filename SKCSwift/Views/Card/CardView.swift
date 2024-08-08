@@ -20,16 +20,10 @@ struct CardLinkDestinationView: View {
 private struct CardView: View {
     let cardID: String
     
-    @State private var cardData: Card
-    @State private var isDataLoaded = false
-    
-    init(cardID: String) {
-        self.cardID = cardID
-        self.cardData = Card(cardID: cardID, cardName: "", cardColor: "", cardAttribute: "", cardEffect: "")
-    }
+    @State private var cardData: Card?
     
     private func fetchData() async {
-        if isDataLoaded {
+        if cardData != nil {
             return
         }
         request(url: cardInfoURL(cardID: self.cardID), priority: 0.4) { (result: Result<Card, Error>) -> Void in
@@ -37,7 +31,6 @@ private struct CardView: View {
             case .success(let card):
                 DispatchQueue.main.async {
                     cardData = card
-                    isDataLoaded = true
                 }
             case .failure(let error):
                 print(error)
@@ -46,44 +39,55 @@ private struct CardView: View {
     }
     
     private func getProducts() -> [Product] {
-        return cardData.foundIn ?? [Product]()
+        return cardData?.foundIn ?? [Product]()
     }
     
     private func getBanList(format: BanListFormat) -> [BanList] {
         switch format {
         case .tcg:
-            return cardData.restrictedIn?.TCG ?? [BanList]()
+            return cardData?.restrictedIn?.TCG ?? [BanList]()
         case .md:
-            return cardData.restrictedIn?.MD ?? [BanList]()
+            return cardData?.restrictedIn?.MD ?? [BanList]()
         case .dl:
-            return cardData.restrictedIn?.DL ?? [BanList]()
+            return cardData?.restrictedIn?.DL ?? [BanList]()
         }
     }
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 30) {
-                YGOCardView(card: cardData, isDataLoaded: isDataLoaded)
-                    .equatable()
-                if (isDataLoaded) {
-                    Group {
+        TabView {
+            ScrollView {
+                VStack(spacing: 30) {
+                    YGOCardView(cardID: cardID, card: cardData)
+                        .equatable()
+                    if let cardData {
                         RelatedContentView(
                             cardName: cardData.cardName,
                             products: getProducts(),
                             tcgBanLists: getBanList(format: BanListFormat.tcg),
                             mdBanLists: getBanList(format: BanListFormat.md), dlBanLists: getBanList(format: BanListFormat.dl)
                         )
-                        CardSuggestionsView(cardID: cardID)
+                        .padding(.bottom)
+                        .modifier(ParentViewModifier())
                     }
-                    .modifier(ParentViewModifier())
                 }
+                .task(priority: .userInitiated) {
+                    await fetchData()
+                }
+                .padding(.bottom, 30)
+                .frame(maxHeight: .infinity)
             }
-            .task(priority: .userInitiated) {
-                await fetchData()
+            .scrollIndicators(.hidden)
+            
+            ScrollView {
+                LazyVStack(spacing: 30) {
+                    CardSuggestionsView(cardID: cardID)
+                }
+                .padding(.bottom, 30)
+                .modifier(ParentViewModifier())
             }
-            .frame(maxHeight: .infinity)
         }
-        .scrollIndicators(.hidden)
+        .tabViewStyle(.page(indexDisplayMode: .always))
+        .indexViewStyle(.page(backgroundDisplayMode: .always))
     }
 }
 
