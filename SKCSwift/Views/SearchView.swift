@@ -38,9 +38,7 @@ struct SearchView: View {
                     .ignoresSafeArea(.keyboard)
                 } else {
                     if !searchText.isEmpty && searchViewModel.searchResults.isEmpty {
-                        Text("Nothing found in database")
-                            .font(.title2)
-                            .frame(alignment: .center)
+                        ContentUnavailableView.search
                     } else if searchText.isEmpty {
                         ScrollView() {
                             if let cards = trendingViewModel.cards, let products = trendingViewModel.products {
