@@ -11,32 +11,58 @@ import SwiftUI
 private let ICON_SIZE = 30.0
 
 struct MonsterAssociationView: View, Equatable {
-    var monsterAssociation: MonsterAssociation
-    var attribute: Attribute
+    let monsterAssociation: MonsterAssociation?
+    let attribute: Attribute
+    let variant: YGOCardViewVariant
+    
+    init(monsterAssociation: MonsterAssociation?, attribute: Attribute, variant: YGOCardViewVariant) {
+        self.monsterAssociation = monsterAssociation
+        self.attribute = attribute
+        self.variant = variant
+    }
     
     var body: some View {
         HStack {
-            Spacer()
             HStack {
                 AttributeView(attribute: attribute)
                     .equatable()
                 
-                if (monsterAssociation.level != nil) {
-                    LevelAssociationView(level: monsterAssociation.level!)
-                    if (monsterAssociation.scaleRating != nil) {
-                        PendulumAssociationView(pendScale: monsterAssociation.scaleRating!)
-                    }
-                } else if (monsterAssociation.rank != nil) {
-                    RankAssociationView(rank: monsterAssociation.rank!)
-                } else if (monsterAssociation.linkRating != nil && monsterAssociation.linkArrows != nil) {
-                    LinkAssociationView(linkRating: monsterAssociation.linkRating!, linkArrows: monsterAssociation.linkArrows!)
+                if let level = monsterAssociation?.level {
+                    LevelAssociationView(level: level)
+                } else if let rank = monsterAssociation?.rank {
+                    RankAssociationView(rank: rank)
+                } else if let linkRating = monsterAssociation?.linkRating, let linkArrows = monsterAssociation?.linkArrows {
+                    LinkAssociationView(linkRating: linkRating, linkArrows: linkArrows)
+                }
+                
+                if let scaleRating = monsterAssociation?.scaleRating {
+                    PendulumAssociationView(pendScale: scaleRating)
                 }
             }
-            .padding(.vertical, 5.0)
-            .padding(.horizontal, 15)
-            .background(Color("translucent_background"))
-            .cornerRadius(50.0)
-            Spacer()
+            .modifier(MonsterAssociationViewModifier(variant: variant))
+        }
+    }
+}
+
+extension MonsterAssociationView {
+    init(monsterAssociation: MonsterAssociation?, attribute: Attribute) {
+        self.init(monsterAssociation: monsterAssociation, attribute: attribute, variant: .normal)
+    }
+}
+
+private struct MonsterAssociationViewModifier: ViewModifier {
+    var variant: YGOCardViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal, .condensed:
+            content
+                .padding(.vertical, 5.0)
+                .padding(.horizontal, 15)
+                .background(Color("translucent_background"))
+                .cornerRadius(50.0)
+        case .list_view:
+            content
         }
     }
 }
@@ -99,6 +125,7 @@ private struct LinkAssociationView: View, Equatable {
         HStack {
             Text("L\(linkRating): \(linkArrows)")
                 .fontWeight(.bold)
+                .lineLimit(1)
         }
     }
 }
