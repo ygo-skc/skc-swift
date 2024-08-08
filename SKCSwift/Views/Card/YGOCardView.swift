@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct YGOCardView: View, Equatable {
-    let card: Card
-    let isDataLoaded: Bool
+    let cardID: String
+    let card: Card?
     let variant: YGOCardViewVariant
     
     private let width: CGFloat
     private let imageSize: CGFloat
     private let imageSizeVariant: ImageSize
     
-    init(card: Card, isDataLoaded: Bool, variant: YGOCardViewVariant = .normal) {
+    init(cardID: String, card: Card?, variant: YGOCardViewVariant = .normal) {
+        self.cardID = cardID
         self.card = card
-        self.isDataLoaded = isDataLoaded
         self.variant = variant
         
         self.width = (variant == .normal) ?  UIScreen.main.bounds.width : 220
@@ -28,10 +28,10 @@ struct YGOCardView: View, Equatable {
     
     var body: some View {
         VStack(spacing: 5) {
-            CardImageView(length: imageSize, cardID: card.cardID, imgSize: imageSizeVariant, variant: .rounded_corner)
+            CardImageView(length: imageSize, cardID: cardID, imgSize: imageSizeVariant, variant: .rounded_corner)
                 .equatable()
             
-            if (isDataLoaded) {
+            if let card {
                 CardStatsView(card: card, variant: variant)
                     .equatable()
             } else {
@@ -44,6 +44,7 @@ struct YGOCardView: View, Equatable {
 
 #Preview {
     YGOCardView(
+        cardID: "40044918",
         card: Card(
             cardID: "40044918",
             cardName: "Elemental HERO Stratos",
@@ -51,12 +52,13 @@ struct YGOCardView: View, Equatable {
             cardAttribute: "Wind",
             cardEffect: "Draw 2",
             monsterType: "Warrior/Effect"
-        ), isDataLoaded: true
+        )
     )
 }
 
 #Preview("Condensed") {
     YGOCardView(
+        cardID: "40044918",
         card: Card(
             cardID: "40044918",
             cardName: "Elemental HERO Stratos",
@@ -64,7 +66,7 @@ struct YGOCardView: View, Equatable {
             cardAttribute: "Wind",
             cardEffect: "Draw 2",
             monsterType: "Warrior/Effect"
-        ), isDataLoaded: true,
+        ),
         variant: .condensed
     )
 }

@@ -66,14 +66,11 @@ struct CardSuggestionsView: View {
                     content: {
             VStack(alignment: .leading, spacing: 5) {
                 if isSuggestionDataLoaded && isSupportDataLoaded {
-                    Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
-                        .padding(.bottom)
                     if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
-                        Text("Nothing to suggest 🤔")
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.bottom)
+                        ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
                     } else {
+                        Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
+                            .padding(.bottom)
                         SuggestionCarouselView(header: "Named Materials", subHeader: "Cards that can be used as summoning material", references: namedMaterials)
                         SuggestionCarouselView(header: "Named References", subHeader: "Cards found in card text - non materials", references: namedReferences)
                         SupportCarouselView(header: "Material For", subHeader: "Cards that can be summoned using this card as material", references: materialFor)
@@ -84,12 +81,13 @@ struct CardSuggestionsView: View {
                         .frame(maxWidth: .infinity)
                 }
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .task(priority: .userInitiated) {
                 await loadSuggestions()
                 await loadSupport()
             }
         })
+        .frame(maxHeight: .infinity)
     }
 }
 
@@ -161,7 +159,7 @@ private struct SupportCarouselView: View {
                     ForEach(references, id: \.card.cardID) { reference in
                         let card = reference.card
                         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                            YGOCardView(card: card, isDataLoaded: true, variant: .condensed)
+                            YGOCardView(cardID: card.cardID, card: card, variant: .condensed)
                                 .equatable()
                                 .contentShape(Rectangle())
                         })
