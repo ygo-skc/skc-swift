@@ -30,41 +30,39 @@ struct TrendingView: View, Equatable {
             }
             .pickerStyle(.segmented)
             
-            LazyVStack{
-                if focusedTrend == .card {
+            if focusedTrend == .card {
+                LazyVStack {
                     ForEach(cardTrendingData, id: \.resource.cardID) { m in
                         let card = m.resource
-                        LazyVStack {
-                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                HStack {
-                                    TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                    VStack {
-                                        CardListItemView(card: card)
-                                            .equatable()
-                                        Divider()
-                                    }
+                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                            HStack {
+                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
+                                VStack {
+                                    CardListItemView(card: card)
+                                        .equatable()
+                                    Divider()
                                 }
-                                .contentShape(Rectangle())
-                            })
-                        }
+                            }
+                            .contentShape(Rectangle())
+                        })
                         .buttonStyle(.plain)
                     }
-                } else if focusedTrend == .product {
+                }
+            } else if focusedTrend == .product {
+                LazyVStack {
                     ForEach(productTrendingData, id: \.resource.productId) { m in
                         let product = m.resource
-                        LazyVStack {
-                            NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                                HStack {
-                                    TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                    VStack {
-                                        ProductListItemView(product: product)
-                                        Divider()
-                                    }
+                        NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
+                            HStack {
+                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
+                                VStack {
+                                    ProductListItemView(product: product)
+                                    Divider()
                                 }
-                                .contentShape(Rectangle())
-                            })
-                            .buttonStyle(.plain)
-                        }
+                            }
+                            .contentShape(Rectangle())
+                        })
+                        .buttonStyle(.plain)
                     }
                 }
             }
