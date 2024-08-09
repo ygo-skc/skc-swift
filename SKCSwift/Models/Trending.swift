@@ -12,6 +12,6 @@ struct TrendingMetric<R:Codable>: Codable {
 }
 
 struct Trending<R:Codable>: Codable {
-    let resourceName: TrendingResouceType
+    let resourceName: TrendingResourceType
     let metrics: [TrendingMetric<R>]
 }

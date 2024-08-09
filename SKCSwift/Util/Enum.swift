@@ -52,7 +52,7 @@ enum ImageSize: String {
     case tiny = "tn", extra_small = "x-sm", small = "sm", medium = "md", large = "lg", original = "original"
 }
 
-enum TrendingResouceType: String, Codable, CaseIterable {
+enum TrendingResourceType: String, Codable, CaseIterable {
     case card = "CARD", product = "PRODUCT"
 }
 
