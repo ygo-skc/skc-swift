@@ -7,12 +7,19 @@
 
 import SwiftUI
 
-struct GroupBoxStyle: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct ListItemGroupBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading) {
+            configuration.label
+                .fontWeight(.semibold)
+            configuration.content
+        }
+        .contentShape(Rectangle())
+        .padding(.all, 10)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
     }
 }
 
-#Preview {
-    GroupBoxStyle()
+extension GroupBoxStyle where Self == ListItemGroupBoxStyle {
+    static var trending: ListItemGroupBoxStyle { .init() }
 }

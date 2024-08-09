@@ -35,10 +35,11 @@ struct CardOfTheDayView: View, Equatable {
                                 Text(cardOfTheDay.card.cardName)
                                     .lineLimit(2)
                                     .font(.title3)
-                                    .fontWeight(.semibold)
+                                    .fontWeight(.bold)
                                 
                                 Text(cardOfTheDay.card.cardType())
                                     .font(.headline)
+                                    .lineLimit(1)
                             } else {
                                 PlaceholderView(width: 200, height: 18, radius: 5)
                                 PlaceholderView(width: 120, height: 18, radius: 5)

@@ -14,7 +14,7 @@ struct CardListItemView: View, Equatable {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
+            HStack() {
                 CardColorIndicatorView(cardColor: card.cardColor)
                     .equatable()
                 Text(card.cardName)
@@ -23,7 +23,7 @@ struct CardListItemView: View, Equatable {
                     .lineLimit(1)
                     .padding(.bottom, -3)
             }
-            HStack() {
+            HStack(alignment: .top, spacing: 20) {
                 CardImageView(length: 60, cardID: card.cardID, imgSize: .tiny, variant: .rounded_corner)
                     .equatable()
                     .padding(.trailing, 3)
@@ -39,7 +39,6 @@ struct CardListItemView: View, Equatable {
                     
                     Text(card.monsterType ?? card.cardColor)
                         .font(.subheadline)
-                        .fontWeight(.semibold)
                         .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .topLeading)

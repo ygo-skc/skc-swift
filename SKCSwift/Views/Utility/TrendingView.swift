@@ -11,7 +11,7 @@ struct TrendingView: View, Equatable {
     let cardTrendingData: [TrendingMetric<Card>]
     let productTrendingData: [TrendingMetric<Product>]
     
-    @State private var focusedTrend = TrendingResouceType.card
+    @State private var focusedTrend = TrendingResourceType.card
     
     static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
         lhs.focusedTrend == rhs.focusedTrend
@@ -24,49 +24,68 @@ struct TrendingView: View, Equatable {
                     variant: .plain,
                     content: {
             Picker("Select Trend Type", selection: $focusedTrend) {
-                ForEach(TrendingResouceType.allCases, id: \.self) { type in
+                ForEach(TrendingResourceType.allCases, id: \.self) { type in
                     Text(type.rawValue.capitalized).tag(type)
                 }
             }
             .pickerStyle(.segmented)
             
             if focusedTrend == .card {
-                LazyVStack {
-                    ForEach(cardTrendingData, id: \.resource.cardID) { m in
-                        let card = m.resource
-                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                            HStack {
-                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                VStack {
-                                    CardListItemView(card: card)
-                                        .equatable()
-                                    Divider()
-                                }
-                            }
-                            .contentShape(Rectangle())
-                        })
-                        .buttonStyle(.plain)
-                    }
-                }
+                TrendingCardsView(trendingCards: cardTrendingData)
+                    .equatable()
             } else if focusedTrend == .product {
-                LazyVStack {
-                    ForEach(productTrendingData, id: \.resource.productId) { m in
-                        let product = m.resource
-                        NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                            HStack {
-                                TrendChangeView(trendChange: m.change, hits: m.occurrences)
-                                VStack {
-                                    ProductListItemView(product: product)
-                                    Divider()
-                                }
-                            }
-                            .contentShape(Rectangle())
-                        })
-                        .buttonStyle(.plain)
-                    }
-                }
+                TrendingProductsView(trendingProducts: productTrendingData)
+                    .equatable()
             }
         })
+    }
+}
+
+private struct TrendingCardsView: View, Equatable {
+    let trendingCards: [TrendingMetric<Card>]
+    
+    static func == (lhs: TrendingCardsView, rhs: TrendingCardsView) -> Bool {
+        lhs.trendingCards.elementsEqual(rhs.trendingCards, by: { $0.resource.cardID == $1.resource.cardID })
+    }
+    
+    var body: some View {
+        LazyVStack {
+            ForEach(trendingCards, id: \.resource.cardID) { m in
+                let card = m.resource
+                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                    GroupBox(label: TrendChangeView(trendChange: m.change, hits: m.occurrences)) {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.trending)
+                })
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+private struct TrendingProductsView: View, Equatable {
+    let trendingProducts: [TrendingMetric<Product>]
+    
+    static func == (lhs: TrendingProductsView, rhs: TrendingProductsView) -> Bool {
+        lhs.trendingProducts.elementsEqual(rhs.trendingProducts, by: { $0.resource.productId == $1.resource.productId })
+    }
+    
+    var body: some View {
+        LazyVStack {
+            ForEach(trendingProducts, id: \.resource.productId) { m in
+                let product = m.resource
+                NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
+                    GroupBox(label: TrendChangeView(trendChange: m.change, hits: m.occurrences)) {
+                        ProductListItemView(product: product)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.trending)
+                })
+                .buttonStyle(.plain)
+            }
+        }
     }
 }
 
@@ -96,21 +115,12 @@ private struct TrendChangeView: View, Equatable {
         }
     }
     
-    
     var body: some View {
-        VStack {
-            HStack(spacing: 0.5) {
-                Image(systemName: trendImage)
-                    .foregroundColor(trendColor)
-                    .font(.title)
-                    .fontWeight(.medium)
-                Text(trendChange)
-                    .fontWeight(.light)
-                    .font(.system(.title3, design: .monospaced))
-            }
-            Text("\(hits) Hits")
-                .foregroundColor(.secondary)
-                .font(.footnote)
+        Label {
+            Text("\(trendChange) \(hits) hits")
+        } icon: {
+            Image(systemName: trendImage)
+                .foregroundColor(trendColor)
         }
     }
 }
