@@ -18,7 +18,6 @@
 		1F21FF6C2977BC2D00B4451A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF6B2977BC2D00B4451A /* Color.swift */; };
 		1F30FE70296B729400B80816 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F30FE6F296B729400B80816 /* SearchResults.swift */; };
 		1F32565229635936001AACF1 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565129635936001AACF1 /* Card.swift */; };
-		1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565329635AAC001AACF1 /* RequestHelper.swift */; };
 		1F3256592963E116001AACF1 /* MonsterAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3256582963E116001AACF1 /* MonsterAssociationView.swift */; };
 		1F32565B2963E195001AACF1 /* CardStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565A2963E195001AACF1 /* CardStatsView.swift */; };
 		1F32565D2963E25B001AACF1 /* RoundedRectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */; };
@@ -105,7 +104,6 @@
 		1F21FF6B2977BC2D00B4451A /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		1F30FE6F296B729400B80816 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
 		1F32565129635936001AACF1 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
-		1F32565329635AAC001AACF1 /* RequestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHelper.swift; sourceTree = "<group>"; };
 		1F3256582963E116001AACF1 /* MonsterAssociationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonsterAssociationView.swift; sourceTree = "<group>"; };
 		1F32565A2963E195001AACF1 /* CardStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStatsView.swift; sourceTree = "<group>"; };
 		1F32565C2963E25B001AACF1 /* RoundedRectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectImage.swift; sourceTree = "<group>"; };
@@ -225,7 +223,6 @@
 		1F32564D296358AB001AACF1 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				1F32565329635AAC001AACF1 /* RequestHelper.swift */,
 				1FB93905296503AE00BF0CBA /* DataTasks.swift */,
 				1F3C10A7296739F500EE4EBE /* APIURLs.swift */,
 			);
@@ -579,7 +576,6 @@
 				1F30FE70296B729400B80816 /* SearchResults.swift in Sources */,
 				1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */,
 				1F1C1D3A2A3539C600E73D67 /* HATEOAS.swift in Sources */,
-				1F32565429635AAC001AACF1 /* RequestHelper.swift in Sources */,
 				DE59153B2C5426290069E32F /* ParentViewModifier.swift in Sources */,
 				1F6687E02967904400C8555D /* SearchView.swift in Sources */,
 				1F6687E2296798E700C8555D /* HomeView.swift in Sources */,

@@ -7,7 +7,17 @@
 
 import Foundation
 
-private func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bool {
+fileprivate func baseRequest(url: URL) -> URLRequest {
+    var request = URLRequest(url: url)
+    request.httpMethod = RequestHelper.GET.description
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.addValue(RequestHelper.CLIENT_ID.description, forHTTPHeaderField: "CLIENT_ID")
+    request.addValue("keep-alive", forHTTPHeaderField: "Connection")
+    
+    return request
+}
+
+fileprivate func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bool {
     // handle error
     if let error = error {
         if (error.localizedDescription != "cancelled") {
@@ -42,7 +52,7 @@ func requestTask<T: Codable>(url: URL, priority: Float = 1, _ completion: @escap
         
         if let body = body, hasErrors == false {
             do {
-                let body = try RequestHelpers.decoder.decode(T.self, from: body)
+                let body = try RequestHelper.decoder.decode(T.self, from: body)
                 completion(.success(body))
             } catch {
                 print("An error ocurred while decoding output from http request \(error.localizedDescription)")

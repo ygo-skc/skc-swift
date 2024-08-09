@@ -7,7 +7,35 @@
 
 import Foundation
 
-private func createURL(components: URLComponents) -> URL {
+// common request helpers
+struct RequestHelper {
+    static let decoder = JSONDecoder()
+    
+    static let GET: StaticString = "GET"
+    static let CLIENT_ID: StaticString = "SKCSwift"
+    
+    // SKC API request helpers
+    static let SKC_API_BASE_URL: StaticString = "skc-ygo-api.com"
+    static let SKC_API_SEARCH_ENDPOINT: StaticString = "/api/v1/card/search"
+    static let SKC_API_CARD_INFORMATION_ENDPOINT: StaticString = "/api/v1/card/%@"
+    static let SKC_API_PRODUCT_INFORMATION_ENDPOINT: StaticString = "/api/v1/product/%@/en"
+    static let SKC_API_DB_STATS_ENDPOINT: StaticString = "/api/v1/stats"
+    static let SKC_API_BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
+
+    // SKC Suggestion request helpers
+    static let SKC_SUGGESTION_ENGINE_BASE_URL: StaticString = "suggestions.skc-ygo-api.com"
+    static let SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
+    static let SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support/%@"
+    static let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
+    static let SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
+
+    // Heart API request helpers
+    static let HEART_API_BASE_URL: StaticString = "heart-api.com"
+    static let HEART_API_EVENT_ENDPOINT: StaticString = "/api/v1/events"
+    static let HEART_API_YT_UPLOADS_ENDPOINT: StaticString = "/api/v1/yt/channel/uploads"
+}
+
+fileprivate func createURL(components: URLComponents) -> URL {
     guard let url = components.url else {
         fatalError("URL is incorrect")
     }
@@ -27,8 +55,8 @@ private func baseURLComponents(host: String, path: String) -> URLComponents {
 
 func cardInfoURL(cardID: String) -> URL {
     var components = baseURLComponents(
-        host: SKC_API_BASE_URL.description,
-        path: String(format: SKC_API_CARD_INFORMATION_ENDPOINT.description, cardID)
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: String(format: RequestHelper.SKC_API_CARD_INFORMATION_ENDPOINT.description, cardID)
     )
     components.queryItems = [
         URLQueryItem(name: "allInfo", value: "true")
@@ -39,8 +67,8 @@ func cardInfoURL(cardID: String) -> URL {
 
 func productInfoURL(productID: String) -> URL {
     let components = baseURLComponents(
-        host: SKC_API_BASE_URL.description,
-        path: String(format: SKC_API_PRODUCT_INFORMATION_ENDPOINT.description, productID)
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: String(format: RequestHelper.SKC_API_PRODUCT_INFORMATION_ENDPOINT.description, productID)
     )
     
     return createURL(components: components)
@@ -48,8 +76,8 @@ func productInfoURL(productID: String) -> URL {
 
 func searchCardURL(cardName: String) -> URL {
     var components = baseURLComponents(
-        host: SKC_API_BASE_URL.description,
-        path: SKC_API_SEARCH_ENDPOINT.description
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: RequestHelper.SKC_API_SEARCH_ENDPOINT.description
     )
     components.queryItems = [
         URLQueryItem(name: "limit", value: "10"),
@@ -61,16 +89,16 @@ func searchCardURL(cardName: String) -> URL {
 
 func dbStatsURL() -> URL {
     let components = baseURLComponents(
-        host: SKC_API_BASE_URL.description,
-        path: SKC_API_DB_STATS_ENDPOINT.description
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: RequestHelper.SKC_API_DB_STATS_ENDPOINT.description
     )
     return createURL(components: components)
 }
 
 func banListDatesURL(format: String) -> URL {
     var components = baseURLComponents(
-        host: SKC_API_BASE_URL.description,
-        path: SKC_API_BAN_LIST_DATES_ENDPOINT.description
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: RequestHelper.SKC_API_BAN_LIST_DATES_ENDPOINT.description
     )
     components.queryItems = [
         URLQueryItem(name: "format", value: format)
@@ -83,32 +111,32 @@ func banListDatesURL(format: String) -> URL {
 
 func cardSuggestionsURL(cardID: String) -> URL {
     let components = baseURLComponents(
-        host: SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description, cardID)
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description, cardID)
     )
     return createURL(components: components)
 }
 
 func cardSupportURL(cardID: String) -> URL {
     let components = baseURLComponents(
-        host: SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardID)
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardID)
     )
     return createURL(components: components)
 }
 
 func cardOfTheDayURL() -> URL {
     let components = baseURLComponents(
-        host: SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT.description
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT.description
     )
     return createURL(components: components)
 }
 
 func trendingUrl(resource: TrendingResourceType) -> URL {
     let components = baseURLComponents(
-        host: SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT.description, resource.rawValue)
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT.description, resource.rawValue)
     )
     return createURL(components: components)
 }
@@ -117,8 +145,8 @@ func trendingUrl(resource: TrendingResourceType) -> URL {
 
 func upcomingEventsURL() -> URL {
     var components = baseURLComponents(
-        host: HEART_API_BASE_URL.description,
-        path: HEART_API_EVENT_ENDPOINT.description
+        host: RequestHelper.HEART_API_BASE_URL.description,
+        path: RequestHelper.HEART_API_EVENT_ENDPOINT.description
     )
     components.queryItems = [
         URLQueryItem(name: "service", value: "skc"),
@@ -130,8 +158,8 @@ func upcomingEventsURL() -> URL {
 
 func ytUploadsURL(ytChannelId: String) -> URL {
     var components = baseURLComponents(
-        host: HEART_API_BASE_URL.description,
-        path: HEART_API_YT_UPLOADS_ENDPOINT.description
+        host: RequestHelper.HEART_API_BASE_URL.description,
+        path: RequestHelper.HEART_API_YT_UPLOADS_ENDPOINT.description
     )
     components.queryItems = [
         URLQueryItem(name: "channelId", value: ytChannelId)
