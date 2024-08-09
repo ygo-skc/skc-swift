@@ -62,7 +62,7 @@ struct ProductView: View {
                                                     .equatable()
                                             }
                                         }
-                                        .contentShape(Rectangle())
+                                        .groupBoxStyle(.list_item)
                                     })
                                     .buttonStyle(.plain)
                                 }

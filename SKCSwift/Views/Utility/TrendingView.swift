@@ -57,7 +57,7 @@ private struct TrendingCardsView: View, Equatable {
                         CardListItemView(card: card)
                             .equatable()
                     }
-                    .groupBoxStyle(.trending)
+                    .groupBoxStyle(.list_item)
                 })
                 .buttonStyle(.plain)
             }
@@ -81,7 +81,7 @@ private struct TrendingProductsView: View, Equatable {
                         ProductListItemView(product: product)
                             .equatable()
                     }
-                    .groupBoxStyle(.trending)
+                    .groupBoxStyle(.list_item)
                 })
                 .buttonStyle(.plain)
             }

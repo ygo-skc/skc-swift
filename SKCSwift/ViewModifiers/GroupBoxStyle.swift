@@ -21,5 +21,5 @@ struct ListItemGroupBoxStyle: GroupBoxStyle {
 }
 
 extension GroupBoxStyle where Self == ListItemGroupBoxStyle {
-    static var trending: ListItemGroupBoxStyle { .init() }
+    static var list_item: ListItemGroupBoxStyle { .init() }
 }
