@@ -28,7 +28,7 @@ struct CardSuggestionsView: View {
             switch result {
             case .success(let suggestions):
                 DispatchQueue.main.async {
-                    self.hasSelfReference = suggestions.hasSelfReference
+                    self.hasSelfReference = suggestions.hasSelfReference ?? false
                     self.namedMaterials = suggestions.namedMaterials
                     self.namedReferences = suggestions.namedReferences
                     
@@ -91,7 +91,7 @@ struct CardSuggestionsView: View {
     }
 }
 
-private struct SuggestionnHeightPreferenceKey: PreferenceKey {
+private struct SuggestionHeightPreferenceKey: PreferenceKey {
     static let defaultValue: CGFloat = 0
     
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
@@ -99,7 +99,7 @@ private struct SuggestionnHeightPreferenceKey: PreferenceKey {
     }
 }
 
-private struct SuggestionCarouselView: View {
+struct SuggestionCarouselView: View {
     var header: String
     var subHeader: String
     var references: [CardReference]
@@ -121,11 +121,11 @@ private struct SuggestionCarouselView: View {
                         SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
                             .background(GeometryReader { geometry in
                                 Color.clear.preference(
-                                    key: SuggestionnHeightPreferenceKey.self,
+                                    key: SuggestionHeightPreferenceKey.self,
                                     value: geometry.size.height
                                 )
                             })
-                            .onPreferenceChange(SuggestionnHeightPreferenceKey.self) {
+                            .onPreferenceChange(SuggestionHeightPreferenceKey.self) {
                                 height = $0
                             }
                     }
@@ -138,7 +138,7 @@ private struct SuggestionCarouselView: View {
     }
 }
 
-private struct SupportCarouselView: View {
+struct SupportCarouselView: View {
     var header: String
     var subHeader: String
     var references: [CardReference]
@@ -166,11 +166,11 @@ private struct SupportCarouselView: View {
                         .buttonStyle(.plain)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(
-                                key: SuggestionnHeightPreferenceKey.self,
+                                key: SuggestionHeightPreferenceKey.self,
                                 value: geometry.size.height
                             )
                         })
-                        .onPreferenceChange(SuggestionnHeightPreferenceKey.self) {
+                        .onPreferenceChange(SuggestionHeightPreferenceKey.self) {
                             height = $0
                         }
                         

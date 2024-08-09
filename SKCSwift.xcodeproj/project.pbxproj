@@ -26,7 +26,7 @@
 		1F3B51052B41EC6F002D79D8 /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3B51042B41EC6F002D79D8 /* CardImageView.swift */; };
 		1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A7296739F500EE4EBE /* APIURLs.swift */; };
 		1F3C10AA29673E1200EE4EBE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3C10A929673E1200EE4EBE /* CardView.swift */; };
-		1F601D06297DFBFC007E1E0C /* CardSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */; };
+		1F601D06297DFBFC007E1E0C /* Suggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D05297DFBFC007E1E0C /* Suggestions.swift */; };
 		1F601D08297DFD52007E1E0C /* DeckList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D07297DFD52007E1E0C /* DeckList.swift */; };
 		1F6687E02967904400C8555D /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687DF2967904400C8555D /* SearchView.swift */; };
 		1F6687E2296798E700C8555D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E1296798E700C8555D /* HomeView.swift */; };
@@ -112,7 +112,7 @@
 		1F3B51042B41EC6F002D79D8 /* CardImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardImageView.swift; sourceTree = "<group>"; };
 		1F3C10A7296739F500EE4EBE /* APIURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURLs.swift; sourceTree = "<group>"; };
 		1F3C10A929673E1200EE4EBE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
-		1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestions.swift; sourceTree = "<group>"; };
+		1F601D05297DFBFC007E1E0C /* Suggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Suggestions.swift; sourceTree = "<group>"; };
 		1F601D07297DFD52007E1E0C /* DeckList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckList.swift; sourceTree = "<group>"; };
 		1F6687DF2967904400C8555D /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		1F6687E1296798E700C8555D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -235,13 +235,13 @@
 				1FB939072965043500BF0CBA /* BanList.swift */,
 				1F32565129635936001AACF1 /* Card.swift */,
 				1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */,
-				1F601D05297DFBFC007E1E0C /* CardSuggestions.swift */,
 				1F601D07297DFD52007E1E0C /* DeckList.swift */,
 				1FBE069929FDBE8000EA85A4 /* Events.swift */,
 				1F1C1D392A3539C600E73D67 /* HATEOAS.swift */,
 				1FB939032965029B00BF0CBA /* Product.swift */,
 				1F30FE6F296B729400B80816 /* SearchResults.swift */,
 				1FB9824129FB4A8A00679D81 /* SKCDatabaseStats.swift */,
+				1F601D05297DFBFC007E1E0C /* Suggestions.swift */,
 				DEC099B62C4F0F8F00A8B797 /* Trending.swift */,
 				1F39328A2A34CA4800BD0DD2 /* YouTubeUploads.swift */,
 			);
@@ -554,7 +554,7 @@
 				1FE8C9BF2978CED9005AD924 /* Enum.swift in Sources */,
 				1FB9823E29FA117800679D81 /* DBStatsView.swift in Sources */,
 				1F39328D2A34CC3600BD0DD2 /* YouTubeUploadsView.swift in Sources */,
-				1F601D06297DFBFC007E1E0C /* CardSuggestions.swift in Sources */,
+				1F601D06297DFBFC007E1E0C /* Suggestions.swift in Sources */,
 				DECB118E2C66AF5600DCADD8 /* GroupBoxStyle.swift in Sources */,
 				1FE8C9C12978ED3F005AD924 /* Text.swift in Sources */,
 				1FD83E1C2985B2E900E40822 /* Date.swift in Sources */,

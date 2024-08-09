@@ -11,8 +11,8 @@ struct CardReference: Codable {
 }
 
 struct CardSuggestions: Codable {
-    let card: Card
-    let hasSelfReference: Bool
+    let card: Card?
+    let hasSelfReference: Bool?
     let namedMaterials: [CardReference]
     let namedReferences: [CardReference]
     let materialArchetypes: [String]
@@ -20,7 +20,12 @@ struct CardSuggestions: Codable {
 }
 
 struct CardSupport: Codable {
-    let card: Card
+    let card: Card?
     let referencedBy: [CardReference]
     let materialFor: [CardReference]
+}
+
+struct ProductSuggestions: Codable {
+    let suggestions: CardSuggestions
+    let support: CardSupport
 }

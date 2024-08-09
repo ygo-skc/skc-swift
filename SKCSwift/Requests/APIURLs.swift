@@ -7,10 +7,10 @@
 
 import Foundation
 
-// common request helpers
 struct RequestHelper {
     static let decoder = JSONDecoder()
     
+    // Headers
     static let GET: StaticString = "GET"
     static let CLIENT_ID: StaticString = "SKCSwift"
     
@@ -21,14 +21,15 @@ struct RequestHelper {
     static let SKC_API_PRODUCT_INFORMATION_ENDPOINT: StaticString = "/api/v1/product/%@/en"
     static let SKC_API_DB_STATS_ENDPOINT: StaticString = "/api/v1/stats"
     static let SKC_API_BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
-
+    
     // SKC Suggestion request helpers
     static let SKC_SUGGESTION_ENGINE_BASE_URL: StaticString = "suggestions.skc-ygo-api.com"
     static let SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
     static let SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support/%@"
+    static let SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
     static let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
     static let SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
-
+    
     // Heart API request helpers
     static let HEART_API_BASE_URL: StaticString = "heart-api.com"
     static let HEART_API_EVENT_ENDPOINT: StaticString = "/api/v1/events"
@@ -121,6 +122,14 @@ func cardSupportURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardID)
+    )
+    return createURL(components: components)
+}
+
+func productSuggestionsURL(productID: String) -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT.description, productID)
     )
     return createURL(components: components)
 }
