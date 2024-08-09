@@ -71,6 +71,7 @@ struct ProductView: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .padding(.bottom, 40)
                 .modifier(ParentViewModifier(alignment: .topLeading))
                 .task(priority: .userInitiated) {
                     await fetch()
@@ -81,6 +82,7 @@ struct ProductView: View {
                 VStack {
                     Text("YOOO")
                 }
+                .padding(.bottom, 30)
                 .modifier(ParentViewModifier(alignment: .topLeading))
             }
         }
