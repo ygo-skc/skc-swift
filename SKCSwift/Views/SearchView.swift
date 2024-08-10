@@ -9,13 +9,13 @@ import SwiftUI
 
 struct SearchView: View {
     @State private var searchText: String
-    @StateObject private var searchViewModel: SearchViewModel
-    @StateObject private var trendingViewModel: TrendingViewModel
+    private var searchViewModel: SearchViewModel
+    private var trendingViewModel: TrendingViewModel
     
     init() {
         _searchText = State(initialValue: "")
-        _searchViewModel = StateObject(wrappedValue: SearchViewModel())
-        _trendingViewModel = StateObject(wrappedValue: TrendingViewModel())
+        searchViewModel = SearchViewModel()
+        trendingViewModel = TrendingViewModel()
     }
     
     var body: some View {

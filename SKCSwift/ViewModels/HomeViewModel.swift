@@ -7,20 +7,28 @@
 
 import Foundation
 
-class HomeViewModel: ObservableObject {
-    @Published private(set) var dbStats: SKCDatabaseStats?
-    @Published private(set) var cardOfTheDay: CardOfTheDay?
-    @Published private(set) var upcommingTCGProducts: [Event]?
-    @Published private(set) var ytUploads: [YouTubeVideos]?
+@Observable
+class HomeViewModel {
+    private(set) var dbStats: SKCDatabaseStats?
+    private(set) var cardOfTheDay: CardOfTheDay?
+    private(set) var upcomingTCGProducts: [Event]?
+    private(set) var ytUploads: [YouTubeVideos]?
     
-    private var dbStatsRefresTimetamp = Date(), cardOfTheDayRefreshTimeStamp = Date(), upcommingTCGProductsRefreshTimeStamp = Date(), ytUploadsRefreshTimeStamp = Date()
+    @ObservationIgnored
+    private var dbStatsRefreshTimestamp = Date()
+    @ObservationIgnored
+    private var cardOfTheDayRefreshTimeStamp = Date()
+    @ObservationIgnored
+    private var upcomingTCGProductsRefreshTimeStamp = Date()
+    @ObservationIgnored
+    private var ytUploadsRefreshTimeStamp = Date()
     
     func fetchDBStatsData() {
-        if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefresTimetamp) {
+        if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) {
             request(url: dbStatsURL(), priority: 0.3) { (result: Result<SKCDatabaseStats, Error>) -> Void in
                 switch result {
                 case .success(let dbStats):
-                    self.dbStatsRefresTimetamp = Date()
+                    self.dbStatsRefreshTimestamp = Date()
                     DispatchQueue.main.async {
                         self.dbStats = dbStats
                     }
@@ -34,7 +42,7 @@ class HomeViewModel: ObservableObject {
     func fetchCardOfTheDayData() {
         if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)  {
             request(url: cardOfTheDayURL(), priority: 0.25) { (result: Result<CardOfTheDay, Error>) -> Void in
-                self.fetchUpcommingTCGProducts()
+                self.fetchUpcomingTCGProducts()
                 switch result {
                 case .success(let cardOfTheyDay):
                     self.cardOfTheDayRefreshTimeStamp = Date()
@@ -50,16 +58,16 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    func fetchUpcommingTCGProducts() {
-        if upcommingTCGProducts == nil || self.isDataInvalidated(date: self.upcommingTCGProductsRefreshTimeStamp) {
+    func fetchUpcomingTCGProducts() {
+        if upcomingTCGProducts == nil || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) {
             request(url: upcomingEventsURL(), priority: 0.2) { (result: Result<Events, Error>) -> Void in
                 self.fetchYouTubeUploadsData()
                 switch result {
                 case .success(let upcomingProducts):
-                    self.upcommingTCGProductsRefreshTimeStamp = Date()
-                    if self.upcommingTCGProducts != upcomingProducts.events {
+                    self.upcomingTCGProductsRefreshTimeStamp = Date()
+                    if self.upcomingTCGProducts != upcomingProducts.events {
                         DispatchQueue.main.async {
-                            self.upcommingTCGProducts = upcomingProducts.events
+                            self.upcomingTCGProducts = upcomingProducts.events
                         }
                     }
                 case .failure(let error):
@@ -100,8 +108,8 @@ class HomeViewModel: ObservableObject {
         
         repeat {
             try? await Task.sleep(for: .milliseconds(250))
-        } while self.isDataInvalidated(date: self.dbStatsRefresTimetamp) || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)
-        || self.isDataInvalidated(date: self.upcommingTCGProductsRefreshTimeStamp) || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp)
+        } while self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)
+        || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp)
     }
     
     private func isDataInvalidated(date: Date) -> Bool {

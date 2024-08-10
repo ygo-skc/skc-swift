@@ -7,9 +7,12 @@
 
 import Foundation
 
-class TrendingViewModel: ObservableObject {
-    @Published private(set) var cards: [TrendingMetric<Card>]?
-    @Published private(set) var products: [TrendingMetric<Product>]?
+@Observable
+class TrendingViewModel {
+    private(set) var cards: [TrendingMetric<Card>]?
+    private(set) var products: [TrendingMetric<Product>]?
+    
+    @ObservationIgnored
     private var trendingDataLastRefresh = Date()
     
     func fetchTrendingData() async {

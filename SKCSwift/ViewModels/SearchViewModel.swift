@@ -7,12 +7,14 @@
 
 import Foundation
 
-class SearchViewModel: ObservableObject {
-    @Published private(set) var status = DataTaskStatus.pending
+@Observable
+class SearchViewModel {
+    private(set) var status = DataTaskStatus.pending
     
     private(set) var searchResults = [SearchResults]()
     private(set) var searchResultsIds = [String]()
     
+    @ObservationIgnored
     private var task: URLSessionDataTask?
     
     func newSearchSubject(value: String) async {
