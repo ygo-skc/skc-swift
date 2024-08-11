@@ -14,13 +14,15 @@ struct SuggestedCardView: View {
     var body: some View {
         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
             VStack {
-                HStack(spacing: 20) {
-                    CardImageView(length: 90.0, cardID: card.cardID, imgSize: .tiny, variant: .round)
+                HStack(spacing: 10) {
+                    CardImageView(length: 75, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
                         .equatable()
                     
                     Text("\(occurrence) Reference(s)")
                         .font(.subheadline)
                 }
+                .padding(.horizontal)
+                .frame(width: 220)
                 
                 CardStatsView(card: card, variant: .condensed)
                     .equatable()

@@ -24,13 +24,13 @@ struct CardListItemView: View, Equatable {
                     .padding(.bottom, -3)
             }
             HStack(alignment: .top, spacing: 15) {
-                CardImageView(length: 55, cardID: card.cardID, imgSize: .tiny, variant: .rounded_corner)
+                CardImageView(length: 55, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
                     .equatable()
                     .padding(.trailing, 3)
                 VStack(alignment: .leading) {
                     if showAllInfo {
                         MonsterAssociationView(monsterAssociation: card.monsterAssociation, attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown,
-                                               variant: .list_view)
+                                               variant: .listView)
                             .equatable()
                     } else {
                         AttributeView(attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown)

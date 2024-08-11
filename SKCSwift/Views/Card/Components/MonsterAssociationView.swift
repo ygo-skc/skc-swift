@@ -55,7 +55,7 @@ private struct MonsterAssociationViewModifier: ViewModifier {
                 .padding(.horizontal, 15)
                 .background(Color("translucent_background"))
                 .cornerRadius(50.0)
-        case .list_view:
+        case .listView:
             content
         }
     }

@@ -84,9 +84,9 @@ private extension Image {
 }
 
 #Preview("Rounded Corner") {
-    CardImageView(length: 240.0, cardID: "73146473", imgSize: .medium, variant: .rounded_corner)
+    CardImageView(length: 240.0, cardID: "73146473", imgSize: .medium, variant: .roundedCorner)
 }
 
 #Preview("Rounded Corner - IMG DNE") {
-    CardImageView(length: 240.0, cardID: "73146473", imgSize: .medium, variant: .rounded_corner)
+    CardImageView(length: 240.0, cardID: "73146473", imgSize: .medium, variant: .roundedCorner)
 }

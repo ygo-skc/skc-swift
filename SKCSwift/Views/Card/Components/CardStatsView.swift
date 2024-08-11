@@ -42,18 +42,20 @@ struct CardStatsView: View, Equatable {
                     HStack {
                         Text(card.cardID)
                             .modifier(CardIdModifier(variant: variant))
-                            .fontWeight(.light)
                         
                         Spacer()
-                        HStack(spacing: 15) {
-                            Text(card.atk())
-                                .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                .foregroundColor(.red)
-                            Text(card.def())
-                                .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                .foregroundColor(.blue)
+                        
+                        if card.cardColor != "Spell" && card.cardColor != "Trap" {
+                            HStack(spacing: 15) {
+                                Text(card.atk())
+                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                    .foregroundColor(.red)
+                                Text(card.def())
+                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                    .foregroundColor(.blue)
+                            }
+                            .modifier(MonsterAttackDefenseContainerModifier(variant: variant))
                         }
-                        .modifier(MonsterAttackDefenseContainerModifier(cardType: (card.cardColor == "Spell" || card.cardColor == "Trap") ? .non_monster : .monster))
                         
                     }
                     .padding(.top, 1)
@@ -62,19 +64,20 @@ struct CardStatsView: View, Equatable {
                 .background(Color("translucent_background"))
                 .cornerRadius(10)
             }
-            .padding(.horizontal, 5.0)
-            .padding(.vertical, 10.0)
+            .padding(.horizontal, 5)
+            .padding(.vertical, 8)
         }
         .if(card.isPendulum()) {
             $0.background(cardColorGradient(cardColor: card.cardColor))
         } else: {
             $0.background(cardColorUI(cardColor: card.cardColor))
         }
-        .cornerRadius(15)
+        .cornerRadius((variant == .normal) ? 15 : 10)
         .frame(
             maxWidth: .infinity,
             alignment: .topLeading
         )
+        .dynamicTypeSize(...DynamicTypeSize.xLarge)
     }
 }
 
@@ -88,11 +91,12 @@ private struct CardNameModifier: ViewModifier {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .lineLimit(1)
-        case .condensed, .list_view:
+        case .condensed, .listView:
             content
                 .font(.headline)
                 .fontWeight(.medium)
                 .lineLimit(1)
+                .padding(.vertical, -1)
         }
     }
 }
@@ -108,7 +112,7 @@ private struct MonsterTypeModifier: ViewModifier {
                 .fontWeight(.medium)
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 1.0)
-        case .condensed, .list_view:
+        case .condensed, .listView:
             content
                 .font(.footnote)
                 .fontWeight(.medium)
@@ -136,7 +140,7 @@ private struct CardEffectModifier: ViewModifier {
                 .lineLimit(3, reservesSpace: true)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
-        case .list_view:
+        case .listView:
             content
                 .font(.footnote)
                 .fontWeight(.light)
@@ -155,9 +159,11 @@ private struct CardIdModifier: ViewModifier {
         case .normal:
             content
                 .font(.callout)
-        case .condensed, .list_view:
+                .fontWeight(.light)
+        case .condensed, .listView:
             content
                 .font(.caption)
+                .fontWeight(.light)
         }
     }
 }
@@ -171,7 +177,7 @@ private struct MonsterAttackDefenseModifier: ViewModifier {
             content
                 .font(.callout)
                 .fontWeight(.bold)
-        case .condensed, .list_view:
+        case .condensed, .listView:
             content
                 .font(.caption)
                 .fontWeight(.bold)
@@ -180,21 +186,20 @@ private struct MonsterAttackDefenseModifier: ViewModifier {
 }
 
 private struct MonsterAttackDefenseContainerModifier: ViewModifier {
-    var cardType: CardType
+    var variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
-        switch(cardType) {
-        case .monster:
+        switch(variant) {
+        case .normal:
             content
                 .padding(.all, 5)
                 .background(Color("translucent_background"))
                 .cornerRadius(20)
-        case .non_monster:
+        case .condensed, .listView:
             content
-                .padding(.all, 5)
+                .padding(.all, 4)
                 .background(Color("translucent_background"))
-                .cornerRadius(20)
-                .hidden()
+                .cornerRadius(8)
         }
     }
 }
