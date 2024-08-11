@@ -23,8 +23,8 @@ struct CardListItemView: View, Equatable {
                     .lineLimit(1)
                     .padding(.bottom, -3)
             }
-            HStack(alignment: .top, spacing: 20) {
-                CardImageView(length: 60, cardID: card.cardID, imgSize: .tiny, variant: .rounded_corner)
+            HStack(alignment: .top, spacing: 15) {
+                CardImageView(length: 55, cardID: card.cardID, imgSize: .tiny, variant: .rounded_corner)
                     .equatable()
                     .padding(.trailing, 3)
                 VStack(alignment: .leading) {

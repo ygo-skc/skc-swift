@@ -91,25 +91,21 @@ private struct TrendingProductsView: View, Equatable {
 
 
 private struct TrendChangeView: View, Equatable {
-    let trendChange: String
-    let hits: Int
-    
+    private let trendLabel: String
     private let trendColor: Color
     private let trendImage: String
     
     init(trendChange: Int, hits: Int) {
-        self.hits = hits
-        
         if trendChange > 0 {
-            self.trendChange = "+\(trendChange)".padding(toLength: 3, withPad: " ", startingAt: 0)
+            trendLabel = "+\(trendChange) • \(hits) hits"
             trendColor = .mint
             trendImage = "chart.line.uptrend.xyaxis"
         } else if trendChange < 0 {
-            self.trendChange = "\(trendChange)".padding(toLength: 3, withPad: " ", startingAt: 0)
+            trendLabel = "\(trendChange) • \(hits) hits"
             trendColor = .pinkRed
             trendImage = "chart.line.downtrend.xyaxis"
         } else {
-            self.trendChange = "±\(trendChange)".padding(toLength: 3, withPad: " ", startingAt: 0)
+            trendLabel = "±\(trendChange) • \(hits) hits"
             trendColor = .normalYgoCard
             trendImage = "chart.line.flattrend.xyaxis"
         }
@@ -117,7 +113,8 @@ private struct TrendChangeView: View, Equatable {
     
     var body: some View {
         Label {
-            Text("\(trendChange) \(hits) hits")
+            Text(trendLabel)
+                .foregroundColor(.secondary)
         } icon: {
             Image(systemName: trendImage)
                 .foregroundColor(trendColor)

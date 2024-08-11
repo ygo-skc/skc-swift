@@ -11,7 +11,7 @@ struct ProductListItemView: View, Equatable {
     let product: Product
     
     var body: some View {
-        HStack(alignment: .top, spacing: 20) {
+        HStack(alignment: .top, spacing: 15) {
             ProductImage(width: 55, productID: product.productId, imgSize: .tiny)
                 .equatable()
                 .padding(.trailing, 3)
