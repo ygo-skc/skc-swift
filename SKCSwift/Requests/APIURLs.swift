@@ -19,6 +19,7 @@ struct RequestHelper {
     static let SKC_API_SEARCH_ENDPOINT: StaticString = "/api/v1/card/search"
     static let SKC_API_CARD_INFORMATION_ENDPOINT: StaticString = "/api/v1/card/%@"
     static let SKC_API_PRODUCT_INFORMATION_ENDPOINT: StaticString = "/api/v1/product/%@/en"
+    static let SKC_API_PRODUCTS_ENDPOINT: StaticString = "/api/v1/products/en"
     static let SKC_API_DB_STATS_ENDPOINT: StaticString = "/api/v1/stats"
     static let SKC_API_BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
     
@@ -70,6 +71,15 @@ func productInfoURL(productID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: String(format: RequestHelper.SKC_API_PRODUCT_INFORMATION_ENDPOINT.description, productID)
+    )
+    
+    return createURL(components: components)
+}
+
+func productsURL() -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: RequestHelper.SKC_API_PRODUCTS_ENDPOINT.description
     )
     
     return createURL(components: components)

@@ -69,10 +69,8 @@ struct ProductView: View {
                                 if let card = c.card {
                                     NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                                         GroupBox(label: Label("\(productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
-                                            VStack {
-                                                CardListItemView(card: card, showAllInfo: true)
-                                                    .equatable()
-                                            }
+                                            CardListItemView(card: card, showAllInfo: true)
+                                                .equatable()
                                         }
                                         .groupBoxStyle(.list_item)
                                     })

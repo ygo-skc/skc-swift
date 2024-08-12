@@ -18,7 +18,11 @@ struct ContentView: View, Equatable {
                 }
             BannedContent()
                 .tabItem {
-                    Image(systemName: "xmark.circle")
+                    Image(systemName: "x.square")
+                }
+            BrowseView()
+                .tabItem {
+                    Image(systemName: "square.grid.2x2")
                 }
             SearchView()
                 .tabItem {

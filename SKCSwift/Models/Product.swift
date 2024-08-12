@@ -54,6 +54,11 @@ extension ProductContent {
     }
 }
 
+struct Products: Codable, Equatable {
+    let locale: String
+    let products: [Product]
+}
+
 // used as convenience when working with NavigationDestination
 struct ProductLinkDestinationValue: Hashable {
     let productID: String
