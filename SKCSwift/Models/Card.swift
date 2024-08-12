@@ -6,31 +6,31 @@
 //
 
 struct MonsterAssociation: Codable, Equatable {
-    let level: Int?
-    let rank: Int?
-    let scaleRating: Int?
-    let linkRating: Int?
+    let level: UInt8?
+    let rank: UInt8?
+    let scaleRating: UInt8?
+    let linkRating: UInt8?
     let linkArrows: [String]?
 }
 
 extension MonsterAssociation {
-    init(level: Int) {
+    init(level: UInt8) {
         self.init(level: level, rank: nil, scaleRating: nil, linkRating: nil, linkArrows: nil)
     }
     
-    init(rank: Int) {
+    init(rank: UInt8) {
         self.init(level: nil, rank: rank, scaleRating: nil, linkRating: nil, linkArrows: nil)
     }
     
-    init(level: Int, scaleRating: Int) {
+    init(level: UInt8, scaleRating: UInt8) {
         self.init(level: level, rank: nil, scaleRating: scaleRating, linkRating: nil, linkArrows: nil)
     }
     
-    init(rank: Int, scaleRating: Int) {
+    init(rank: UInt8, scaleRating: UInt8) {
         self.init(level: nil, rank: rank, scaleRating: scaleRating, linkRating: nil, linkArrows: nil)
     }
     
-    init(linkRating: Int, linkArrows: [String]) {
+    init(linkRating: UInt8, linkArrows: [String]) {
         self.init(level: nil, rank: nil, scaleRating: nil, linkRating: linkRating, linkArrows: linkArrows)
     }
 }

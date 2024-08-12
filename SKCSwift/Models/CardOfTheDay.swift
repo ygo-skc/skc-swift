@@ -7,6 +7,6 @@
 
 struct CardOfTheDay: Codable, Equatable {
     let date: String
-    let version: Int
+    let version: UInt8
     let card: Card
 }

@@ -62,7 +62,7 @@ private struct MonsterAssociationViewModifier: ViewModifier {
 }
 
 private struct LevelAssociationView: View, Equatable {
-    var level: Int
+    var level: UInt8
     
     var body: some View {
         HStack {
@@ -77,7 +77,7 @@ private struct LevelAssociationView: View, Equatable {
 }
 
 private struct PendulumAssociationView: View, Equatable {
-    var pendScale: Int
+    var pendScale: UInt8
     
     var body: some View {
         HStack {
@@ -92,7 +92,7 @@ private struct PendulumAssociationView: View, Equatable {
 }
 
 private struct RankAssociationView: View, Equatable {
-    var rank: Int
+    var rank: UInt8
     
     var body: some View {
         HStack {
@@ -107,10 +107,10 @@ private struct RankAssociationView: View, Equatable {
 }
 
 private struct LinkAssociationView: View, Equatable {
-    var linkRating: Int
+    var linkRating: UInt8
     var linkArrows: String
     
-    init(linkRating: Int, linkArrows: [String]) {
+    init(linkRating: UInt8, linkArrows: [String]) {
         self.linkRating = linkRating
         self.linkArrows = linkArrows.joined(separator: " ")
     }

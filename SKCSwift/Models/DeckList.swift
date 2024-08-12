@@ -6,7 +6,7 @@
 //
 
 struct DeckContent: Codable {
-    let quantity: Int
+    let quantity: UInt8
     let card: Card
 }
 
@@ -17,8 +17,8 @@ struct DeckList: Codable {
     let videoUrl: String
     let uniqueCards: [String]
     let deckMascots: [String]
-    let numMainDeckCards: Int
-    let numExtraDeckCards: Int
+    let numMainDeckCards: UInt8
+    let numExtraDeckCards: UInt8
     let tags: [String]
     let createdAt: String
     let updatedAt: String
