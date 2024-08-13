@@ -37,7 +37,7 @@ struct SearchView: View {
                         .listStyle(.plain)
                         .ignoresSafeArea(.keyboard)
                     } else {
-                        if !searchText.isEmpty && searchViewModel.searchResults.isEmpty {
+                        if !searchText.isEmpty {
                             if searchViewModel.status == .done {
                                 ContentUnavailableView.search
                             } else {

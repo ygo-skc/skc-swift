@@ -32,9 +32,18 @@ class SearchViewModel {
         } else {
             await self.updateState(.pending)
             task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)),
-                               priority: 0.45, { (result: Result<[Card], Error>) -> Void in
+                               priority: 0.6, { (result: Result<[Card], Error>) -> Void in
                 switch result {
                 case .success(let cards):
+                    if cards.isEmpty {
+                        self.searchResults.removeAll()
+                        self.searchResultsIds.removeAll()
+                        Task(priority: .userInitiated) {
+                            await self.updateState(.done)
+                        }
+                        return
+                    }
+                    
                     var sections = [String]()
                     var searchResultsIds = [String]()
                     let results = cards.reduce(into: [String: [Card]]()) { results, card in
