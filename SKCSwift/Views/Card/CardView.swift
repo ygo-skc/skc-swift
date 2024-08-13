@@ -56,9 +56,11 @@ private struct CardView: View {
     var body: some View {
         TabView {
             ScrollView {
-                VStack(spacing: 30) {
+                VStack {
                     YGOCardView(cardID: cardID, card: cardData)
                         .equatable()
+                        .padding(.bottom)
+                    
                     if let cardData {
                         RelatedContentView(
                             cardName: cardData.cardName,
@@ -66,23 +68,21 @@ private struct CardView: View {
                             tcgBanLists: getBanList(format: BanListFormat.tcg),
                             mdBanLists: getBanList(format: BanListFormat.md), dlBanLists: getBanList(format: BanListFormat.dl)
                         )
-                        .padding(.bottom)
                         .modifier(ParentViewModifier())
                     }
                 }
                 .task(priority: .userInitiated) {
                     await fetchData()
                 }
-                .padding(.bottom, 30)
+                .padding(.bottom, 40)
                 .frame(maxHeight: .infinity)
             }
-            .scrollIndicators(.hidden)
             
             ScrollView {
-                LazyVStack(spacing: 30) {
+                LazyVStack {
                     CardSuggestionsView(cardID: cardID)
                 }
-                .padding(.bottom, 30)
+                .padding(.bottom, 40)
                 .modifier(ParentViewModifier())
             }
         }

@@ -21,58 +21,55 @@ struct CardStatsView: View, Equatable {
     }
     
     var body: some View {
-        VStack {
-            VStack(spacing: 5)  {
-                Text(card.cardName)
-                    .modifier(CardNameModifier(variant: variant))
-                    .foregroundColor(.white)
-                
-                if variant != .condensed {
-                    MonsterAssociationView(monsterAssociation: card.monsterAssociation, attribute: attribute)
-                        .equatable()
-                }
-                
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(card.cardType())
-                        .modifier(MonsterTypeModifier(variant: variant))
-                    
-                    Text(replaceHTMLEntities(subject: card.cardEffect))
-                        .modifier(CardEffectModifier(variant: variant))
-                    
-                    HStack {
-                        Text(card.cardID)
-                            .modifier(CardIdModifier(variant: variant))
-                        
-                        Spacer()
-                        
-                        HStack(spacing: 15) {
-                            Text(card.atk())
-                                .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                .foregroundColor(.red)
-                            Text(card.def())
-                                .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                .foregroundColor(.blue)
-                        }
-                        .modifier(MonsterAttackDefenseContainerModifier(variant: variant))
-                        .if(card.cardColor != "Spell" || card.cardColor != "Trap" ) {
-                            $0.hidden()
-                        }
-                    }
-                    .padding(.top, 1)
-                }
-                .padding(.all, 8)
-                .background(Color("translucent_background"))
-                .cornerRadius(10)
+        VStack(spacing: 5)  {
+            Text(card.cardName)
+                .modifier(CardNameModifier(variant: variant))
+                .foregroundColor(.white)
+            
+            if variant != .condensed {
+                MonsterAssociationView(monsterAssociation: card.monsterAssociation, attribute: attribute)
+                    .equatable()
             }
-            .padding(.horizontal, 5)
-            .padding(.vertical, 8)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(card.cardType())
+                    .modifier(MonsterTypeModifier(variant: variant))
+                
+                Text(replaceHTMLEntities(subject: card.cardEffect))
+                    .modifier(CardEffectModifier(variant: variant))
+                
+                HStack {
+                    Text(card.cardID)
+                        .modifier(CardIdModifier(variant: variant))
+                    
+                    Spacer()
+                    
+                    HStack(spacing: 15) {
+                        Text(card.atk())
+                            .modifier(MonsterAttackDefenseModifier(variant: variant))
+                            .foregroundColor(.red)
+                        Text(card.def())
+                            .modifier(MonsterAttackDefenseModifier(variant: variant))
+                            .foregroundColor(.blue)
+                    }
+                    .modifier(MonsterAttackDefenseContainerModifier(variant: variant))
+                    .if(card.cardColor == "Spell" || card.cardColor == "Trap" ) {
+                        $0.hidden()
+                    }
+                }
+                .padding(.top, 1)
+            }
+            .padding(.all, (variant == .normal) ? 10 : 6)
+            .background(Color("translucent_background"))
+            .cornerRadius((variant == .normal) ? 10 : 6)
         }
+        .padding(.all, (variant == .normal) ? 8 : 5)
         .if(card.isPendulum()) {
             $0.background(cardColorGradient(cardColor: card.cardColor))
         } else: {
             $0.background(cardColorUI(cardColor: card.cardColor))
         }
-        .cornerRadius((variant == .normal) ? 15 : 10)
+        .cornerRadius((variant == .normal) ? 10 : 6)
         .frame(
             maxWidth: .infinity,
             alignment: .topLeading
@@ -94,7 +91,6 @@ private struct CardNameModifier: ViewModifier {
         case .condensed, .listView:
             content
                 .font(.headline)
-                .fontWeight(.medium)
                 .lineLimit(1)
                 .padding(.vertical, -1)
         }
@@ -192,10 +188,12 @@ private struct MonsterAttackDefenseContainerModifier: ViewModifier {
         switch(variant) {
         case .normal:
             content
+                .padding(.all, 5)
                 .background(Color("translucent_background"))
-                .cornerRadius(20)
+                .cornerRadius(10)
         case .condensed, .listView:
             content
+                .padding(.all, 4)
                 .background(Color("translucent_background"))
                 .cornerRadius(8)
         }

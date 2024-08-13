@@ -54,8 +54,12 @@ struct BrowseView: View {
                     }
                     .listStyle(.plain)
                     .ignoresSafeArea(.keyboard)
+                } else {
+                    ProgressView()
                 }
             }
+            .frame(maxHeight: .infinity, alignment: .top)
+            .frame(maxHeight: .infinity)
             .task(priority: .userInitiated) {
                 await fetch()
             }
