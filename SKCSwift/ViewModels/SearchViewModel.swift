@@ -9,66 +9,66 @@ import Foundation
 
 @Observable
 class SearchViewModel {
-    private(set) var status = DataTaskStatus.pending
+    private(set) var status = DataTaskStatus.done
     
+    @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
-    private(set) var searchResultsIds = [String]()
     
+    @ObservationIgnored
+    private var searchResultsIds = [String]()
     @ObservationIgnored
     private var task: URLSessionDataTask?
     
     func newSearchSubject(value: String) async {
         if let task {
-            Task(priority: .userInitiated) {
-                task.cancel()
-            }
+            task.cancel()
         }
         
         if value == "" {
             self.task = nil
-            Task(priority: .userInitiated) {
-                self.searchResults = []
-                self.searchResultsIds = []
-                await self.updateState()
-            }
+            self.searchResults.removeAll()
+            self.searchResultsIds.removeAll()
+            await self.updateState(.done)
         } else {
-            task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)), priority: 0.45, { (result: Result<[Card], Error>) -> Void in
+            await self.updateState(.pending)
+            task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)),
+                               priority: 0.45, { (result: Result<[Card], Error>) -> Void in
                 switch result {
                 case .success(let cards):
-                    var results = [String: [Card]]()
                     var sections = [String]()
                     var searchResultsIds = [String]()
-                    
-                    cards.forEach { card in
+                    let results = cards.reduce(into: [String: [Card]]()) { results, card in
                         let section = card.cardColor
-                        if results[section] == nil {
-                            results[section] = []
+                        results[section, default: []].append(card)
+                        if !sections.contains(section) {
                             sections.append(section)
                         }
-                        results[section]!.append(card)
                         searchResultsIds.append(card.cardID)
                     }
                     
                     if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
-                        var searchResults = [SearchResults]()
-                        for (section) in sections {
-                            searchResults.append(SearchResults(section: section, results: results[section]!))
+                        self.searchResults.removeAll()
+                        self.searchResultsIds = searchResultsIds
+                        for section in sections {
+                            self.searchResults.append(SearchResults(section: section, results: results[section]!))
                         }
                         
-                        self.searchResults = searchResults
-                        self.searchResultsIds = searchResultsIds
                         Task(priority: .userInitiated) {
-                            await self.updateState()
+                            await self.updateState(.done)
                         }
                     }
-                case .failure: break    // TODO add error screen for appropriate error response
+                case .failure(let error):
+                    print(error)
+                    Task(priority: .userInitiated) {
+                        await self.updateState(.error)
+                    }
                 }
             })
         }
     }
     
     @MainActor
-    func updateState() {
-        self.status = .done
+    private func updateState(_ status: DataTaskStatus) {
+        self.status = status
     }
 }
