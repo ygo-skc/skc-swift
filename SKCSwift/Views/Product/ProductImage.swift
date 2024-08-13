@@ -40,7 +40,7 @@ struct ProductImage: View, Equatable {
     }
     
     var body: some View {
-        CachedAsyncImage(url: imgUrl, transaction: Transaction(animation: .easeInOut(duration: 0.1))) { phase in
+        CachedAsyncImage(url: imgUrl) { phase in
             switch phase {
             case .empty:
                 PlaceholderView(width: width, height: height, radius: 0)
