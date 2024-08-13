@@ -20,7 +20,7 @@ struct CardImageView: View, Equatable {
     private let colorOverLayWidth: CGFloat
     private let radius: CGFloat
     
-    init(length: CGFloat, cardID: String, imgSize: ImageSize, cardColor: String?, variant: YGOCardImageVariant = .round) {
+    init(length: CGFloat, cardID: String, imgSize: ImageSize, cardColor: String? = nil, variant: YGOCardImageVariant = .round) {
         self.length = length
         self.variant = variant
         self.imgSize = imgSize
@@ -54,17 +54,12 @@ struct CardImageView: View, Equatable {
     }
 }
 
-extension CardImageView {
-    init(length: CGFloat, cardID: String, imgSize: ImageSize, variant: YGOCardImageVariant = .round) {
-        self.init(length: length, cardID: cardID, imgSize: imgSize, cardColor: nil, variant: variant)
-    }
-}
-
 private extension Image {
     func cardImageViewModifier(length: CGFloat, radius: CGFloat, cardColor: String?, colorOverLayWidth: CGFloat) -> some View {
         self
             .resizable()
-            .aspectRatio(contentMode: .fit)
+            .aspectRatio(1.0, contentMode: .fit)
+            .clipped()
             .frame(width: length, height: length)
             .cornerRadius(radius)
             .if(cardColor != nil) { view in

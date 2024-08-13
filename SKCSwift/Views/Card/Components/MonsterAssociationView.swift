@@ -15,6 +15,12 @@ struct MonsterAssociationView: View, Equatable {
     let attribute: Attribute
     let variant: YGOCardViewVariant
     
+    init(monsterAssociation: MonsterAssociation? = nil, attribute: Attribute, variant: YGOCardViewVariant = .normal) {
+        self.monsterAssociation = monsterAssociation
+        self.attribute = attribute
+        self.variant = variant
+    }
+    
     var body: some View {
         HStack {
             HStack {
@@ -35,12 +41,6 @@ struct MonsterAssociationView: View, Equatable {
             }
             .modifier(MonsterAssociationViewModifier(variant: variant))
         }
-    }
-}
-
-extension MonsterAssociationView {
-    init(monsterAssociation: MonsterAssociation?, attribute: Attribute) {
-        self.init(monsterAssociation: monsterAssociation, attribute: attribute, variant: .normal)
     }
 }
 

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CardColorIndicatorView: View, Equatable {
     let cardColor: String
-    let variant: CardColorIndicatorVariant
+    let variant: CardColorIndicatorVariant = .regular
     
     var body: some View {
         Circle()
@@ -19,12 +19,6 @@ struct CardColorIndicatorView: View, Equatable {
                 $0.fill(cardColorUI(cardColor: cardColor))
             }
             .modifier(CardColorIndicatorViewModifier(variant: variant))
-    }
-}
-
-extension CardColorIndicatorView {
-    init(cardColor: String) {
-        self.init(cardColor: cardColor, variant: .regular)
     }
 }
 
