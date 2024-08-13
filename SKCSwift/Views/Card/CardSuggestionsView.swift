@@ -8,31 +8,28 @@
 import SwiftUI
 
 struct CardSuggestionsView: View {
-    var cardID: String
+    let cardID: String
+    let cardName: String
     
     @State private var hasSelfReference: Bool = false
-    @State private var namedMaterials: [CardReference] = [CardReference]()
-    @State private var namedReferences: [CardReference] = [CardReference]()
-    @State private var isSuggestionDataLoaded = false
+    @State private var namedMaterials: [CardReference]?
+    @State private var namedReferences: [CardReference]?
     
-    @State private var referencedBy: [CardReference] = [CardReference]()
-    @State private var materialFor: [CardReference] = [CardReference]()
-    @State private var isSupportDataLoaded = false
+    @State private var referencedBy: [CardReference]?
+    @State private var materialFor: [CardReference]?
     
     private func loadSuggestions() async {
-        if isSuggestionDataLoaded {
+        if namedMaterials != nil && namedReferences != nil {
             return
         }
         
-        request(url: cardSuggestionsURL(cardID: cardID), priority: 0.2) { (result: Result<CardSuggestions, Error>) -> Void in
+        request(url: cardSuggestionsURL(cardID: cardID), priority: 0.4) { (result: Result<CardSuggestions, Error>) -> Void in
             switch result {
             case .success(let suggestions):
                 DispatchQueue.main.async {
                     self.hasSelfReference = suggestions.hasSelfReference ?? false
                     self.namedMaterials = suggestions.namedMaterials
                     self.namedReferences = suggestions.namedReferences
-                    
-                    self.isSuggestionDataLoaded = true
                 }
             case .failure(let error):
                 print(error)
@@ -41,18 +38,16 @@ struct CardSuggestionsView: View {
     }
     
     private func loadSupport() async {
-        if isSupportDataLoaded {
+        if referencedBy != nil && materialFor != nil {
             return
         }
         
-        request(url: cardSupportURL(cardID: cardID), priority: 0.2) { (result: Result<CardSupport, Error>) -> Void in
+        request(url: cardSupportURL(cardID: cardID), priority: 0.4) { (result: Result<CardSupport, Error>) -> Void in
             switch result {
             case .success(let support):
                 DispatchQueue.main.async {
                     self.referencedBy = support.referencedBy
                     self.materialFor = support.materialFor
-                    
-                    self.isSupportDataLoaded = true
                 }
             case .failure(let error):
                 print(error)
@@ -61,33 +56,39 @@ struct CardSuggestionsView: View {
     }
     
     var body: some View {
-        SectionView(header: "Suggestions",
-                    variant: .plain,
-                    content: {
-            VStack(alignment: .leading, spacing: 5) {
-                if isSuggestionDataLoaded && isSupportDataLoaded {
-                    if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
-                        ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
-                    } else {
-                        Text("Other cards that have a tie of sorts with currently selected card. These could be summoning materials for example.")
-                            .padding(.bottom)
-                        SuggestionCarouselView(header: "Named Materials", subHeader: "Cards that can be used as summoning material", references: namedMaterials)
-                        SuggestionCarouselView(header: "Named References", subHeader: "Cards found in card text - non materials", references: namedReferences)
-                        SupportCarouselView(header: "Material For", subHeader: "Cards that can be summoned using this card as material", references: materialFor)
-                        SupportCarouselView(header: "Referenced By", subHeader: "Cards that reference this card - excludes ED cards that reference this card as a summoning material", references: referencedBy)
-                    }
+        VStack(alignment: .leading, spacing: 5) {
+            Label {
+                Text("Suggestions")
+                    .font(.title)
+            } icon: {
+                CardImageView(length: 50, cardID: cardID, imgSize: .tiny)
+            }
+            .padding(.bottom)
+            .frame(maxWidth: .infinity, alignment: .center)
+            
+            if let namedMaterials, let namedReferences, let referencedBy, let materialFor {
+                if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
+                    ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
                 } else {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
+                    SuggestionCarouselView(header: "Named Materials",
+                                           subHeader: "Cards that can be used as summoning material for \(cardName).", references: namedMaterials)
+                    SuggestionCarouselView(header: "Named References",
+                                           subHeader: "All other cards found in the text of \(cardName) - non materials.", references: namedReferences)
+                    SupportCarouselView(header: "Material For",
+                                        subHeader: "ED cards that can be summoned using \(cardName) as material", references: materialFor)
+                    SupportCarouselView(header: "Referenced By",
+                                        subHeader: "Cards that reference \(cardName) - excludes ED cards that reference this card as a summoning material.", references: referencedBy)
                 }
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .task(priority: .userInitiated) {
-                await loadSuggestions()
-                await loadSupport()
-            }
-        })
-        .frame(maxHeight: .infinity)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .task(priority: .userInitiated) {
+            await loadSuggestions()
+            await loadSupport()
+        }
     }
 }
 
@@ -100,23 +101,20 @@ private struct SuggestionHeightPreferenceKey: PreferenceKey {
 }
 
 struct SuggestionCarouselView: View {
-    var header: String
-    var subHeader: String
-    var references: [CardReference]
+    let header: String
+    let subHeader: String
+    let references: [CardReference]
     
     @State private var height: CGFloat = 0.0
     
     var body: some View {
         if (!references.isEmpty) {
             Text(header)
-                .font(.headline)
-                .fontWeight(.heavy)
-            
+                .font(.title3)
             Text(subHeader)
-                .padding(.bottom)
             
             ScrollView(.horizontal) {
-                LazyHStack(spacing: 15) {
+                LazyHStack(spacing: 8) {
                     ForEach(references, id: \.card.cardID) { suggestion in
                         SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
                             .background(GeometryReader { geometry in
@@ -133,29 +131,26 @@ struct SuggestionCarouselView: View {
             }
             .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, -16)
-            .padding(.bottom, 20)
+            .padding(.bottom, 15)
         }
     }
 }
 
 struct SupportCarouselView: View {
-    var header: String
-    var subHeader: String
-    var references: [CardReference]
+    let header: String
+    let subHeader: String
+    let references: [CardReference]
     
     @State private var height: CGFloat = 0.0
     
     var body: some View {
         if (!references.isEmpty) {
             Text(header)
-                .font(.headline)
-                .fontWeight(.heavy)
-            
+                .font(.title3)
             Text(subHeader)
-                .padding(.bottom)
             
             ScrollView(.horizontal) {
-                LazyHStack(spacing: 15) {
+                LazyHStack(spacing: 8) {
                     ForEach(references, id: \.card.cardID) { reference in
                         let card = reference.card
                         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
@@ -173,27 +168,26 @@ struct SupportCarouselView: View {
                         .onPreferenceChange(SuggestionHeightPreferenceKey.self) {
                             height = $0
                         }
-                        
                     }
                 }
             }
             .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, -16)
-            .padding(.bottom, 20)
+            .padding(.bottom, 15)
         }
     }
 }
 
 #Preview("Air Neos Suggestions") {
     ScrollView {
-        CardSuggestionsView(cardID: "11502550")
+        CardSuggestionsView(cardID: "11502550", cardName: "Elemental HERO Air Neos")
             .padding(.horizontal)
     }
 }
 
 #Preview("Dark Magician Girl Suggestions") {
     ScrollView {
-        CardSuggestionsView(cardID: "38033121")
+        CardSuggestionsView(cardID: "38033121", cardName: "Dark Magician Girl")
             .padding(.horizontal)
     }
 }

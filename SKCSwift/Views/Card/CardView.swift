@@ -26,7 +26,7 @@ private struct CardView: View {
         if cardData != nil {
             return
         }
-        request(url: cardInfoURL(cardID: self.cardID), priority: 0.4) { (result: Result<Card, Error>) -> Void in
+        request(url: cardInfoURL(cardID: self.cardID), priority: 0.5) { (result: Result<Card, Error>) -> Void in
             switch result {
             case .success(let card):
                 DispatchQueue.main.async {
@@ -80,9 +80,13 @@ private struct CardView: View {
             
             ScrollView {
                 LazyVStack {
-                    CardSuggestionsView(cardID: cardID)
+                    if let cardData {
+                        CardSuggestionsView(cardID: cardID, cardName: cardData.cardName)
+                    } else {
+                        ProgressView()
+                    }
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 30)
                 .modifier(ParentViewModifier())
             }
         }

@@ -61,7 +61,7 @@ struct CardStatsView: View, Equatable {
             }
             .padding(.all, (variant == .normal) ? 10 : 6)
             .background(Color("translucent_background"))
-            .cornerRadius((variant == .normal) ? 10 : 6)
+            .cornerRadius((variant == .normal) ? 10 : 7)
         }
         .padding(.all, (variant == .normal) ? 8 : 5)
         .if(card.isPendulum()) {
@@ -69,7 +69,7 @@ struct CardStatsView: View, Equatable {
         } else: {
             $0.background(cardColorUI(cardColor: card.cardColor))
         }
-        .cornerRadius((variant == .normal) ? 10 : 6)
+        .cornerRadius((variant == .normal) ? 10 : 7)
         .frame(
             maxWidth: .infinity,
             alignment: .topLeading
