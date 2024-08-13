@@ -10,50 +10,7 @@ import SwiftUI
 struct CardSuggestionsView: View {
     let cardID: String
     let cardName: String
-    
-    @State private var hasSelfReference: Bool = false
-    @State private var namedMaterials: [CardReference]?
-    @State private var namedReferences: [CardReference]?
-    
-    @State private var referencedBy: [CardReference]?
-    @State private var materialFor: [CardReference]?
-    
-    private func loadSuggestions() async {
-        if namedMaterials != nil && namedReferences != nil {
-            return
-        }
-        
-        request(url: cardSuggestionsURL(cardID: cardID), priority: 0.4) { (result: Result<CardSuggestions, Error>) -> Void in
-            switch result {
-            case .success(let suggestions):
-                DispatchQueue.main.async {
-                    self.hasSelfReference = suggestions.hasSelfReference ?? false
-                    self.namedMaterials = suggestions.namedMaterials
-                    self.namedReferences = suggestions.namedReferences
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-    
-    private func loadSupport() async {
-        if referencedBy != nil && materialFor != nil {
-            return
-        }
-        
-        request(url: cardSupportURL(cardID: cardID), priority: 0.4) { (result: Result<CardSupport, Error>) -> Void in
-            switch result {
-            case .success(let support):
-                DispatchQueue.main.async {
-                    self.referencedBy = support.referencedBy
-                    self.materialFor = support.materialFor
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
+    private let suggestionViewModel = CardSuggestionViewModel()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -66,7 +23,9 @@ struct CardSuggestionsView: View {
             .padding(.bottom)
             .frame(maxWidth: .infinity, alignment: .center)
             
-            if let namedMaterials, let namedReferences, let referencedBy, let materialFor {
+            if suggestionViewModel.areSuggestionsLoaded && suggestionViewModel.isSupportLoaded,
+               let namedMaterials = suggestionViewModel.namedMaterials, let namedReferences = suggestionViewModel.namedReferences,
+               let referencedBy = suggestionViewModel.referencedBy, let materialFor = suggestionViewModel.materialFor {
                 if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
                     ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
                 } else {
@@ -86,8 +45,8 @@ struct CardSuggestionsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task(priority: .userInitiated) {
-            await loadSuggestions()
-            await loadSupport()
+            await suggestionViewModel.fetchSuggestions(cardID: cardID)
+            await suggestionViewModel.fetchSupport(cardID: cardID)
         }
     }
 }
