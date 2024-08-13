@@ -24,7 +24,7 @@ struct YouTubeUploadsView: View, Equatable {
                             .equatable()
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity)
             } else {
                 ProgressView()
                     .frame(maxWidth: .infinity)
@@ -60,7 +60,7 @@ private struct YouTubeUploadView: View, Equatable {
                         .font(.callout)
                         .fontWeight(.regular)
                 }
-                .frame(maxHeight: .infinity, alignment: .topLeading)
+                .frame(maxHeight: .infinity)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())

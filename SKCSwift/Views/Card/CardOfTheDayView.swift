@@ -46,10 +46,6 @@ struct CardOfTheDayView: View, Equatable {
                                 PlaceholderView(width: 60, height: 18, radius: 5)
                             }
                         }
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: .topLeading
-                        )
                     }
                     .contentShape(Rectangle())
                 })

@@ -16,7 +16,7 @@ struct UpcomingTCGProductsView: View, Equatable {
                     content: {
             if let events {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("TCG products that have been anounced and which we have a tenative release date for.")
+                    Text("TCG products that have been announced and which we have a tentative release date for.")
                         .font(.body)
                         .padding(.bottom)
                     
@@ -25,7 +25,7 @@ struct UpcomingTCGProductsView: View, Equatable {
                             .equatable()
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity)
             } else {
                 ProgressView()
                     .frame(maxWidth: .infinity)

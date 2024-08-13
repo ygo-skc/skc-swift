@@ -33,14 +33,11 @@ struct DBStatsView: View, Equatable {
                     }
                     .padding(.horizontal)
                 }
-                .frame(
-                    maxWidth: .infinity
-                )
+                .frame(maxWidth: .infinity)
             }
         })
     }
 }
-
 
 private struct DBStatView: View {
     let count: String?
