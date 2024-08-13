@@ -45,18 +45,18 @@ struct CardStatsView: View, Equatable {
                         
                         Spacer()
                         
-                        if card.cardColor != "Spell" && card.cardColor != "Trap" {
-                            HStack(spacing: 15) {
-                                Text(card.atk())
-                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                    .foregroundColor(.red)
-                                Text(card.def())
-                                    .modifier(MonsterAttackDefenseModifier(variant: variant))
-                                    .foregroundColor(.blue)
-                            }
-                            .modifier(MonsterAttackDefenseContainerModifier(variant: variant))
+                        HStack(spacing: 15) {
+                            Text(card.atk())
+                                .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                .foregroundColor(.red)
+                            Text(card.def())
+                                .modifier(MonsterAttackDefenseModifier(variant: variant))
+                                .foregroundColor(.blue)
                         }
-                        
+                        .modifier(MonsterAttackDefenseContainerModifier(variant: variant))
+                        .if(card.cardColor != "Spell" || card.cardColor != "Trap" ) {
+                            $0.hidden()
+                        }
                     }
                     .padding(.top, 1)
                 }
@@ -192,12 +192,10 @@ private struct MonsterAttackDefenseContainerModifier: ViewModifier {
         switch(variant) {
         case .normal:
             content
-                .padding(.all, 5)
                 .background(Color("translucent_background"))
                 .cornerRadius(20)
         case .condensed, .listView:
             content
-                .padding(.all, 4)
                 .background(Color("translucent_background"))
                 .cornerRadius(8)
         }
