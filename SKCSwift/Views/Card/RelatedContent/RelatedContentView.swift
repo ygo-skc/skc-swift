@@ -10,11 +10,11 @@ import SwiftUI
 protocol RelatedContent: View {}
 
 struct RelatedContentView: View {
-    var cardName: String
-    var products:[Product]
-    var tcgBanLists: [BanList]
-    var mdBanLists: [BanList]
-    var dlBanLists: [BanList]
+    let cardName: String
+    let products:[Product]
+    let tcgBanLists: [BanList]
+    let mdBanLists: [BanList]
+    let dlBanLists: [BanList]
     
     var body: some View {
         SectionView(header: "Explore",
@@ -48,8 +48,8 @@ private struct RelatedContentSectionHeaderViewModel: View {
 }
 
 private struct RelatedProductsSectionViewModel: RelatedContent {
-    var cardName: String
-    var products: [Product]
+    let cardName: String
+    let products: [Product]
     
     private var latestReleaseInfo = "Last Day Printed Not Found In DB"
     
@@ -87,10 +87,10 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
 }
 
 private struct RelatedBanListsSectionViewModel: RelatedContent{
-    var cardName: String
-    var tcgBanLists: [BanList]
-    var mdBanLists: [BanList]
-    var dlBanLists: [BanList]
+    let cardName: String
+    let tcgBanLists: [BanList]
+    let mdBanLists: [BanList]
+    let dlBanLists: [BanList]
     
     var body: some View {
         VStack(spacing: 8) {
@@ -118,7 +118,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
 private struct RelatedContentSheetButton<RC: RelatedContent>: View {
     let format: String
     let contentCount: Int
-    var contentType: RelatedContentType
+    let contentType: RelatedContentType
     let sheetContent: RC
     
     init(format: String, contentCount: Int, contentType: RelatedContentType, @ViewBuilder sheetContent: () -> RC) {
