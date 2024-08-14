@@ -16,7 +16,7 @@ struct CardSuggestionsView: View {
         VStack(alignment: .leading, spacing: 5) {
             Label {
                 Text("Suggestions")
-                    .font(.title)
+                    .font(.title2)
             } icon: {
                 CardImageView(length: 50, cardID: cardID, imgSize: .tiny)
             }
@@ -51,6 +51,60 @@ struct CardSuggestionsView: View {
     }
 }
 
+struct ProductCardSuggestionsView: View {
+    let productID: String
+    let productName: String
+    
+    @State private var suggestions: ProductSuggestions? = nil
+    
+    private func fetch() async {
+        request(url: productSuggestionsURL(productID: productID), priority: 0.5) { (result: Result<ProductSuggestions, Error>) -> Void in
+            switch result {
+            case .success(let suggestions):
+                DispatchQueue.main.async {
+                    self.suggestions = suggestions
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Label {
+                Text("Suggestions")
+                    .font(.title2)
+            } icon: {
+                ProductImage(width: 50, productID: productID, imgSize: .tiny)
+            }
+            .padding(.bottom)
+            .frame(maxWidth: .infinity, alignment: .center)
+            
+            if let suggestions {
+                SuggestionCarouselView(header: "Named Materials", 
+                                       subHeader: "Cards that can be used as summoning material for a card included in \(productName).",
+                                       references: suggestions.suggestions.namedMaterials)
+                SuggestionCarouselView(header: "Named References", 
+                                       subHeader: "All other cards found in the text of a card included in \(productName) which cannot be used a summoning material.",
+                                       references: suggestions.suggestions.namedReferences)
+                SupportCarouselView(header: "Material For", 
+                                    subHeader: "ED cards that can be summoned using a card found in \(productName).",
+                                    references: suggestions.support.materialFor)
+                SupportCarouselView(header: "Referenced By", 
+                                    subHeader: "Cards that reference a card found in \(productName). Excludes ED cards that reference this card as a summoning material.",
+                                    references: suggestions.support.referencedBy)
+            } else {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .task(priority: .userInitiated) {
+            await fetch()
+        }
+    }
+}
+
 private struct SuggestionHeightPreferenceKey: PreferenceKey {
     static let defaultValue: CGFloat = 0
     
@@ -59,7 +113,7 @@ private struct SuggestionHeightPreferenceKey: PreferenceKey {
     }
 }
 
-struct SuggestionCarouselView: View {
+private struct SuggestionCarouselView: View {
     let header: String
     let subHeader: String
     let references: [CardReference]
@@ -95,7 +149,7 @@ struct SuggestionCarouselView: View {
     }
 }
 
-struct SupportCarouselView: View {
+private struct SupportCarouselView: View {
     let header: String
     let subHeader: String
     let references: [CardReference]

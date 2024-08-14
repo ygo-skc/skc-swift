@@ -79,7 +79,7 @@ private struct CardView: View {
             }
             
             ScrollView {
-                LazyVStack {
+                VStack {
                     if let cardData {
                         CardSuggestionsView(cardID: cardID, cardName: cardData.cardName)
                     } else {

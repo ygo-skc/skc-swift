@@ -21,7 +21,6 @@ struct ProductView: View {
     let productID: String
     
     @State private var product: Product? = nil
-    @State private var suggestions: ProductSuggestions? = nil
     
     private func fetch() async {
         if product == nil {
@@ -30,17 +29,6 @@ struct ProductView: View {
                 case .success(let product):
                     DispatchQueue.main.async {
                         self.product = product
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-            
-            request(url: productSuggestionsURL(productID: productID), priority: 0.5) { (result: Result<ProductSuggestions, Error>) -> Void in
-                switch result {
-                case .success(let suggestions):
-                    DispatchQueue.main.async {
-                        self.suggestions = suggestions
                     }
                 case .failure(let error):
                     print(error)
@@ -89,16 +77,11 @@ struct ProductView: View {
             }
             
             ScrollView {
-                VStack(alignment: .leading) {
-                    if let suggestions {
-                        SuggestionCarouselView(header: "Named Materials", subHeader: "Cards that can be used as summoning material",
-                                               references: suggestions.suggestions.namedMaterials)
-                        SuggestionCarouselView(header: "Named References", subHeader: "Cards found in card text - non materials",
-                                               references: suggestions.suggestions.namedReferences)
-                        SupportCarouselView(header: "Material For", subHeader: "Cards that can be summoned using this card as material",
-                                            references: suggestions.support.materialFor)
-                        SupportCarouselView(header: "Referenced By", subHeader: "Cards that reference this card - excludes ED cards that reference this card as a summoning material",
-                                            references: suggestions.support.referencedBy)
+                VStack {
+                    if let product {
+                        ProductCardSuggestionsView(productID: productID, productName: product.productName)
+                    } else {
+                        ProgressView()
                     }
                 }
                 .padding(.bottom, 30)
