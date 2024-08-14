@@ -41,7 +41,7 @@ struct BrowseView: View {
                 if let productsByYear {
                     List(productsByYear.keys.sorted(by: >), id: \.self) { year in
                         if let productForYear = productsByYear[year] {
-                            Section(header: Text(year).font(.headline).fontWeight(.black)) {
+                            Section(header: Text("\(year) • \(productForYear.count) total").font(.headline).fontWeight(.black)) {
                                 ForEach(productForYear, id: \.productId) { product in
                                     NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
                                         ProductListItemView(product: product)
@@ -69,6 +69,14 @@ struct BrowseView: View {
             }
             .navigationDestination(for: ProductLinkDestinationValue.self) { product in
                 ProductLinkDestinationView(productLinkDestinationValue: product)
+            }
+            .toolbar {
+                Button {
+                    print("YOOO")
+                } label: {
+                    Image(systemName: "swift")
+                    
+                }
             }
         }
     }
