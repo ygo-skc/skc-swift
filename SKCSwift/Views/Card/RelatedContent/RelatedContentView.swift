@@ -23,6 +23,7 @@ struct RelatedContentView: View {
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .top, spacing: 15) {
                     RelatedProductsSectionViewModel(cardName: cardName, products: products)
+                    Divider()
                     RelatedBanListsSectionViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
                 }
                 .frame(maxWidth: .infinity)
@@ -38,7 +39,7 @@ struct RelatedContentView: View {
 }
 
 private struct RelatedContentSectionHeaderViewModel: View {
-    var header: String
+    let header: String
     
     var body: some View {
         Text(header)
@@ -68,25 +69,20 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: 8) {
             RelatedContentSectionHeaderViewModel(header: "Products")
             
-            RelatedContentSheetButton(text: "TCG") {
+            RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
                 RelatedProductsContentView(cardName: cardName, products: self.products)
             }
-            .disabled(products.isEmpty)
             
-            RelatedContentCount(count: products.count, contentType: .products)
-            
-            HStack {
-                Image(systemName: "calendar")
-                Text(latestReleaseInfo)
-                    .font(.subheadline)
-                    .fontWeight(.light)
-            }
-            .padding(.top)
+            Label(latestReleaseInfo, systemImage: "calendar")
+                .font(.subheadline)
+                .fontWeight(.light)
+                .padding(.top)
+                .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -97,68 +93,38 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
     var dlBanLists: [BanList]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: 8) {
             RelatedContentSectionHeaderViewModel(header: "Ban Lists")
             
             // TCG ban list deets
-            RelatedContentSheetButton(text: "TCG") {
+            RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .ban_lists) {
                 RelatedBanListsContentView(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
             }
-            .disabled(tcgBanLists.isEmpty)
-            RelatedContentCount(count: tcgBanLists.count, contentType: .ban_lists)
             
             // MD ban list deets
-            RelatedContentSheetButton(text: "Master Duel") {
+            RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .ban_lists) {
                 RelatedBanListsContentView(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
             }
-            .disabled(mdBanLists.isEmpty)
-            RelatedContentCount(count: mdBanLists.count, contentType: .ban_lists)
             
             // DL ban list deets
-            RelatedContentSheetButton(text: "Duel Links") {
+            RelatedContentSheetButton(format: "Duel Links", contentCount: dlBanLists.count, contentType: .ban_lists) {
                 RelatedBanListsContentView(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
             }
-            .disabled(dlBanLists.isEmpty)
-            RelatedContentCount(count: dlBanLists.count, contentType: .ban_lists)
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-}
-
-private struct RelatedContentCount: View {
-    var count: Int
-    var contentType: RelatedContentType
-    
-    private var descriptor: String
-    
-    init(count: Int, contentType: RelatedContentType) {
-        self.count = count
-        self.contentType = contentType
-        
-        self.descriptor = (contentType == .ban_lists) ? "Occurences(s)" : "Printing(s)"
-    }
-    
-    var body: some View {
-        Group {
-            HStack {
-                Text(String(count))
-                    .font(.body)
-                    .fontWeight(.bold)
-                Text(descriptor)
-                    .font(.body)
-                    .fontWeight(.light)
-            }
-            Divider()
-        }
+        .frame(maxWidth: .infinity)
     }
 }
 
 private struct RelatedContentSheetButton<RC: RelatedContent>: View {
-    var text: String
-    var sheetContent: RC
+    let format: String
+    let contentCount: Int
+    var contentType: RelatedContentType
+    let sheetContent: RC
     
-    init(text: String, @ViewBuilder sheetContent: () -> RC) {
-        self.text = text
+    init(format: String, contentCount: Int, contentType: RelatedContentType, @ViewBuilder sheetContent: () -> RC) {
+        self.format = format
+        self.contentCount = contentCount
+        self.contentType = contentType
         self.sheetContent = sheetContent()
     }
     
@@ -168,16 +134,19 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
         Button {
             showSheet.toggle()
         } label: {
-            HStack {
-                Text(text)
+            VStack {
+                Text(format)
                     .font(.subheadline)
                     .bold()
-                Image(systemName: "chevron.right")
+                Text("\(contentCount) ").font(.subheadline).fontWeight(.bold) + Text((contentType == .products) ? "Printings" : "Occurrences").font(.subheadline)
             }
+            .frame(maxWidth: .infinity)
         }
+        .buttonStyle(.borderedProminent)
         .sheet(isPresented: $showSheet, onDismiss: {showSheet = false}) {
             sheetContent
         }
+        .disabled(contentCount <= 0)
     }
 }
 
