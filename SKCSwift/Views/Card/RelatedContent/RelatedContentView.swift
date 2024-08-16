@@ -121,14 +121,14 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
     let contentType: RelatedContentType
     let sheetContent: RC
     
+    @State private var showSheet = false
+    
     init(format: String, contentCount: Int, contentType: RelatedContentType, @ViewBuilder sheetContent: () -> RC) {
         self.format = format
         self.contentCount = contentCount
         self.contentType = contentType
         self.sheetContent = sheetContent()
     }
-    
-    @State private var showSheet = false
     
     var body: some View {
         Button {

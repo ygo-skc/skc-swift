@@ -8,37 +8,13 @@
 import SwiftUI
 
 struct BrowseView: View {
-    @State var productsByYear: [String: [Product]]?
-    
-    private func fetch() async {
-        if productsByYear == nil {
-            request(url: productsURL(), priority: 0.4) { (result: Result<Products, Error>) -> Void in
-                switch result {
-                case .success(let p):
-                    let productsByYear = p.products.reduce(into: [String: [Product]]()) { productsByYear, product in
-                        let year: String = String(product.productReleaseDate.split(separator: "-", maxSplits: 1)[0])
-                        productsByYear[year, default: []].append(product)
-                    }
-                    
-                    Task(priority: .userInitiated) { [productsByYear] in
-                        await self.updateState(productsByYear: productsByYear)
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    private func updateState(productsByYear: [String: [Product]]) {
-        self.productsByYear = productsByYear
-    }
+    @State private var showFiltersSheet = false
+    @State private var browseViewModel = BrowseViewModel()
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                if let productsByYear {
+                if let productsByYear = browseViewModel.productsByYear {
                     List(productsByYear.keys.sorted(by: >), id: \.self) { year in
                         if let productForYear = productsByYear[year] {
                             Section(header: Text("\(year) • \(productForYear.count) total").font(.headline).fontWeight(.black)) {
@@ -61,7 +37,7 @@ struct BrowseView: View {
             .frame(maxHeight: .infinity, alignment: .top)
             .frame(maxHeight: .infinity)
             .task(priority: .userInitiated) {
-                await fetch()
+                await browseViewModel.fetchProductBrowseData()
             }
             .navigationTitle("Browse")
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
@@ -72,13 +48,87 @@ struct BrowseView: View {
             }
             .toolbar {
                 Button {
-                    print("YOOO")
+                    showFiltersSheet.toggle()
                 } label: {
-                    Image(systemName: "swift")
+                    Image(systemName: "line.3.horizontal.decrease")
                     
                 }
+                .sheet(isPresented: $showFiltersSheet, onDismiss: {showFiltersSheet = false}) {
+                    ProductFilters(
+                        productTypeFilters: $browseViewModel.productTypeFilters,
+                        productSubTypeFilters: $browseViewModel.productSubTypeFilters)
+                }
+            }
+            .onChange(of: browseViewModel.productTypeFilters) {
+                browseViewModel.syncProductSubTypeFilters()
             }
         }
+    }
+}
+
+private struct ProductFilters: View {
+    @Binding var productTypeFilters: [FilteredItem]
+    @Binding var productSubTypeFilters: [FilteredItem]
+    
+    private let columns = Array(repeating: GridItem(.flexible()), count: 4)
+    private let columns2 = Array(repeating: GridItem(.flexible()), count: 2)
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Product filters")
+                .font(.title2)
+            Text("Filter out products by either its main product type and/or its sub-type")
+                .font(.subheadline)
+                .padding(.bottom)
+            GroupBox {
+                GroupBox {
+                    LazyVGrid(columns: columns) {
+                        ForEach($productTypeFilters) { $pt in
+                            Toggle(isOn: $pt.enabled) {
+                                Text(pt.category)
+                                    .font(.subheadline)
+                                    .frame(maxWidth: .infinity)
+                                    .contentShape(Rectangle())
+                            }
+                            .disabled(pt.disableToggle)
+                            .toggleStyle(.button)
+                            .frame(maxWidth: .infinity)
+                            .tint(.primary)
+                        }
+                    }
+                }
+                .groupBoxStyle(.filtersSubGroup)
+            } label: {
+                Label("Product type", systemImage: "1.circle")
+            }
+            .groupBoxStyle(.filters)
+            .padding(.bottom)
+            
+            GroupBox {
+                GroupBox {
+                    LazyVGrid(columns: columns2) {
+                        ForEach($productSubTypeFilters) { $pt in
+                            Toggle(isOn: $pt.enabled) {
+                                Text(pt.category)
+                                    .font(.subheadline)
+                                    .frame(maxWidth: .infinity)
+                                    .contentShape(Rectangle())
+                            }
+                            .disabled(pt.disableToggle)
+                            .toggleStyle(.button)
+                            .frame(maxWidth: .infinity)
+                            .tint(.primary)
+                        }
+                    }
+                }
+                .groupBoxStyle(.filtersSubGroup)
+            } label: {
+                Label("Product sub-type", systemImage: "2.circle")
+            }
+            .groupBoxStyle(.filters)
+        }
+        .modifier(ParentViewModifier())
+        .padding(.top)
     }
 }
 

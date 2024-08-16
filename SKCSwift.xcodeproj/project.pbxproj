@@ -74,6 +74,7 @@
 		DEDE9F462C5701CB009E834C /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDE9F452C5701CB009E834C /* HomeViewModel.swift */; };
 		DEE1CD6E2C69635A003419D1 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE1CD6D2C69635A003419D1 /* BrowseView.swift */; };
 		DEEAC4EA2C557D32007342E7 /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEAC4E92C557D32007342E7 /* ProductImage.swift */; };
+		DEEE6C432C6EEC4A007E9B54 /* BrowseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEE6C422C6EEC4A007E9B54 /* BrowseViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -164,6 +165,7 @@
 		DEDE9F452C5701CB009E834C /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		DEE1CD6D2C69635A003419D1 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		DEEAC4E92C557D32007342E7 /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
+		DEEE6C422C6EEC4A007E9B54 /* BrowseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +201,7 @@
 				DE825C672C54650300600FD2 /* TrendingViewModel.swift */,
 				DEDE9F452C5701CB009E834C /* HomeViewModel.swift */,
 				DE1CF0A42C6C1C47001A37E8 /* CardSuggestionViewModel.swift */,
+				DEEE6C422C6EEC4A007E9B54 /* BrowseViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -560,6 +563,7 @@
 				1FE8C9BF2978CED9005AD924 /* Enum.swift in Sources */,
 				1FB9823E29FA117800679D81 /* DBStatsView.swift in Sources */,
 				DE1CF0A52C6C1C47001A37E8 /* CardSuggestionViewModel.swift in Sources */,
+				DEEE6C432C6EEC4A007E9B54 /* BrowseViewModel.swift in Sources */,
 				1F39328D2A34CC3600BD0DD2 /* YouTubeUploadsView.swift in Sources */,
 				1F601D06297DFBFC007E1E0C /* Suggestions.swift in Sources */,
 				DECB118E2C66AF5600DCADD8 /* GroupBoxStyle.swift in Sources */,
