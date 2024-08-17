@@ -14,25 +14,7 @@ struct BrowseView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                if let productsByYear = browseViewModel.productsByYear {
-                    List(productsByYear.keys.sorted(by: >), id: \.self) { year in
-                        if let productForYear = productsByYear[year] {
-                            Section(header: Text("\(year) • \(productForYear.count) total").font(.headline).fontWeight(.black)) {
-                                ForEach(productForYear, id: \.productId) { product in
-                                    NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                                        ProductListItemView(product: product)
-                                            .equatable()
-                                    })
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                        }
-                    }
-                    .listStyle(.plain)
-                    .ignoresSafeArea(.keyboard)
-                } else {
-                    ProgressView()
-                }
+                ProductBrowseView(productsByYear: browseViewModel.productsByYear)
             }
             .frame(maxHeight: .infinity, alignment: .top)
             .frame(maxHeight: .infinity)
@@ -51,7 +33,6 @@ struct BrowseView: View {
                     showFiltersSheet.toggle()
                 } label: {
                     Image(systemName: "line.3.horizontal.decrease")
-                    
                 }
                 .sheet(isPresented: $showFiltersSheet, onDismiss: {showFiltersSheet = false}) {
                     ProductFilters(
@@ -59,9 +40,44 @@ struct BrowseView: View {
                         productSubTypeFilters: $browseViewModel.productSubTypeFilters)
                 }
             }
-            .onChange(of: browseViewModel.productTypeFilters) {
-                browseViewModel.syncProductSubTypeFilters()
+            .onChange(of: browseViewModel.productTypeFilters) { oldValue, newValue in
+                Task {
+                    await browseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
+                }
             }
+            .onChange(of: browseViewModel.productSubTypeFilters) {
+                Task {
+                    await browseViewModel.updateToggled()
+                }
+            }
+        }
+    }
+}
+
+private struct ProductBrowseView: View {
+    let productsByYear: [String: [Product]]?
+    
+    var body: some View {
+        if let productsByYear = productsByYear, productsByYear.isEmpty {
+            ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
+        } else if let productsByYear = productsByYear, !productsByYear.isEmpty {
+            List(productsByYear.keys.sorted(by: >), id: \.self) { year in
+                if let productForYear = productsByYear[year] {
+                    Section(header: Text("\(year) • \(productForYear.count) total").font(.headline).fontWeight(.black)) {
+                        ForEach(productForYear, id: \.productId) { product in
+                            NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
+                                ProductListItemView(product: product)
+                                    .equatable()
+                            })
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .ignoresSafeArea(.keyboard)
+        } else {
+            ProgressView()
         }
     }
 }
@@ -77,14 +93,15 @@ private struct ProductFilters: View {
         VStack(alignment: .leading) {
             Text("Product filters")
                 .font(.title2)
-            Text("Filter out products by either its main product type and/or its sub-type")
-                .font(.subheadline)
+            Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
+                .font(.headline)
+                .fontWeight(.light)
                 .padding(.bottom)
             GroupBox {
                 GroupBox {
                     LazyVGrid(columns: columns) {
                         ForEach($productTypeFilters) { $pt in
-                            Toggle(isOn: $pt.enabled) {
+                            Toggle(isOn: $pt.isToggled) {
                                 Text(pt.category)
                                     .font(.subheadline)
                                     .frame(maxWidth: .infinity)
@@ -99,7 +116,7 @@ private struct ProductFilters: View {
                 }
                 .groupBoxStyle(.filtersSubGroup)
             } label: {
-                Label("Product type", systemImage: "1.circle")
+                Label("Narrow down products", systemImage: "1.circle")
             }
             .groupBoxStyle(.filters)
             .padding(.bottom)
@@ -108,7 +125,7 @@ private struct ProductFilters: View {
                 GroupBox {
                     LazyVGrid(columns: columns2) {
                         ForEach($productSubTypeFilters) { $pt in
-                            Toggle(isOn: $pt.enabled) {
+                            Toggle(isOn: $pt.isToggled) {
                                 Text(pt.category)
                                     .font(.subheadline)
                                     .frame(maxWidth: .infinity)
@@ -123,7 +140,7 @@ private struct ProductFilters: View {
                 }
                 .groupBoxStyle(.filtersSubGroup)
             } label: {
-                Label("Product sub-type", systemImage: "2.circle")
+                Label("Choose specific product category", systemImage: "2.circle")
             }
             .groupBoxStyle(.filters)
         }

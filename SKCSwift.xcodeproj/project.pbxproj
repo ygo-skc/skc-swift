@@ -307,12 +307,12 @@
 		1F8211DA2961FF0000238EE1 = {
 			isa = PBXGroup;
 			children = (
+				DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */,
+				DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */,
+				DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */,
 				1F8211E52961FF0000238EE1 /* SKCSwift */,
 				1F8211F62961FF0100238EE1 /* SKCSwiftTests */,
 				1F8212002961FF0100238EE1 /* SKCSwiftUITests */,
-				DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */,
-				DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */,
-				DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */,
 			);
 			sourceTree = "<group>";
 		};
