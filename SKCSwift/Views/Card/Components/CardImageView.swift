@@ -14,9 +14,7 @@ struct CardImageView: View, Equatable {
     private let imgSize: ImageSize
     private let variant: YGOCardImageVariant
     private let cardColor: String?
-    private let imgUrl: URL
     
-    private let fallbackUrl: URL
     private let colorOverLayWidth: CGFloat
     private let radius: CGFloat
     
@@ -26,15 +24,13 @@ struct CardImageView: View, Equatable {
         self.imgSize = imgSize
         self.cardID = cardID
         self.cardColor = cardColor
-        self.imgUrl = URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!
         
-        self.fallbackUrl = URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/default-card-image.jpg")!
         self.colorOverLayWidth = length / 18
         self.radius = (variant == .round) ? length : length / 10
     }
     
     var body: some View {
-        CachedAsyncImage(url: imgUrl) { phase in
+        CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!) { phase in
             switch phase {
             case .empty:
                 PlaceholderView(width: length, height: length, radius: radius)
@@ -42,7 +38,7 @@ struct CardImageView: View, Equatable {
                 image
                     .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
             default:
-                CachedAsyncImage(url: fallbackUrl) { image in
+                CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/default-card-image.jpg")!) { image in
                     image
                         .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
                 } placeholder: {

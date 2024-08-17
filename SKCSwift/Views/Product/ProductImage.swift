@@ -14,9 +14,6 @@ struct ProductImage: View, Equatable {
     private let productID: String
     private let imgSize: ImageSize
     
-    private let imgUrl: URL
-    private let fallbackUrl: URL
-    
     private static let RATIO = 1.667
     
     init(height: CGFloat, productID: String, imgSize: ImageSize) {
@@ -24,9 +21,6 @@ struct ProductImage: View, Equatable {
         self.width = height / ProductImage.RATIO
         self.imgSize = imgSize
         self.productID = productID
-        
-        self.imgUrl = URL(string: "https://images.thesupremekingscastle.com/products/tn/\(productID).png")!
-        self.fallbackUrl = URL(string: "https://images.thesupremekingscastle.com/products/\(productID)/default-product-image.png")!
     }
     
     init(width: CGFloat, productID: String, imgSize: ImageSize) {
@@ -34,13 +28,10 @@ struct ProductImage: View, Equatable {
         self.height = width * ProductImage.RATIO
         self.imgSize = imgSize
         self.productID = productID
-        
-        self.imgUrl = URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!
-        self.fallbackUrl = URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/default-product-image.png")!
     }
     
     var body: some View {
-        CachedAsyncImage(url: imgUrl) { phase in
+        CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!) { phase in
             switch phase {
             case .empty:
                 PlaceholderView(width: width, height: height, radius: 0)
@@ -50,7 +41,7 @@ struct ProductImage: View, Equatable {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: width, height: height)
             default:
-                CachedAsyncImage(url: fallbackUrl) { image in
+                CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/default-product-image.png")!) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)

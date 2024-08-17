@@ -125,6 +125,7 @@ private struct SuggestionCarouselView: View {
             Text(header)
                 .font(.title3)
             Text(subHeader)
+                .padding(.bottom)
             
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 8) {
@@ -161,6 +162,7 @@ private struct SupportCarouselView: View {
             Text(header)
                 .font(.title3)
             Text(subHeader)
+                .padding(.bottom)
             
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 8) {
