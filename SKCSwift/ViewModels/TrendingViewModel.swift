@@ -15,7 +15,7 @@ class TrendingViewModel {
     @ObservationIgnored
     private var trendingDataLastRefresh = Date()
     
-    func fetchTrendingData() async {
+    func fetchTrendingCards() async {
         if cards == nil || products == nil || trendingDataLastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5  {
             request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending<Card>, Error>) -> Void in
                 switch result {
@@ -27,19 +27,22 @@ class TrendingViewModel {
                     print(error)
                 }
             }
-            
-            request(url: trendingUrl(resource: .product), priority: 0.2) { (result: Result<Trending<Product>, Error>) -> Void in
-                switch result {
-                case .success(let trending):
-                    DispatchQueue.main.async {
-                        self.products = trending.metrics
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-            
-            trendingDataLastRefresh = Date()
         }
     }
+    
+    func fetchTrendingProducts() async {
+        request(url: trendingUrl(resource: .product), priority: 0.2) { (result: Result<Trending<Product>, Error>) -> Void in
+            switch result {
+            case .success(let trending):
+                DispatchQueue.main.async {
+                    self.products = trending.metrics
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+        trendingDataLastRefresh = Date()
+    }
 }
+

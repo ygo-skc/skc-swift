@@ -46,6 +46,8 @@ struct CardSuggestionsView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task(priority: .userInitiated) {
             await suggestionViewModel.fetchSuggestions(cardID: cardID)
+        }
+        .task(priority: .userInitiated) {
             await suggestionViewModel.fetchSupport(cardID: cardID)
         }
     }

@@ -48,7 +48,10 @@ struct HomeView: View {
                 await homeViewModel.refresh()
             }
             .task(priority: .low) {
-                await homeViewModel.load()
+                await homeViewModel.loadDBStats()
+            }
+            .task(priority: .low) {
+                await homeViewModel.loadCardOfTheDay()
             }
         }
     }

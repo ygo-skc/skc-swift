@@ -18,9 +18,6 @@ struct BrowseView: View {
             }
             .frame(maxHeight: .infinity, alignment: .top)
             .frame(maxHeight: .infinity)
-            .task(priority: .userInitiated) {
-                await browseViewModel.fetchProductBrowseData()
-            }
             .navigationTitle("Browse")
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
                 CardLinkDestinationView(cardLinkDestinationValue: card)
@@ -49,6 +46,9 @@ struct BrowseView: View {
                 Task {
                     await browseViewModel.updateToggled()
                 }
+            }
+            .task(priority: .userInitiated) {
+                await browseViewModel.fetchProductBrowseData()
             }
         }
     }

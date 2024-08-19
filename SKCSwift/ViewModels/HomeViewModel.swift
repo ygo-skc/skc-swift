@@ -23,7 +23,33 @@ class HomeViewModel {
     @ObservationIgnored
     private var ytUploadsRefreshTimeStamp = Date()
     
-    func fetchDBStatsData() {
+    func loadDBStats() async {
+        if dbStats == nil {
+            await self.fetchDBStatsData()
+        }
+    }
+    
+    func loadCardOfTheDay() async {
+        if cardOfTheDay == nil {
+            await self.fetchCardOfTheDayData()
+        }
+    }
+    
+    func refresh() async {
+        await self.fetchDBStatsData()
+        await self.fetchCardOfTheDayData()
+        
+        repeat {
+            try? await Task.sleep(for: .milliseconds(250))
+        } while self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)
+        || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp)
+    }
+    
+    private func isDataInvalidated(date: Date) -> Bool {
+        return date.timeIntervalSinceNow(millisConversion: .minutes) >= 5
+    }
+    
+    private func fetchDBStatsData() async {
         if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) {
             request(url: dbStatsURL(), priority: 0.3) { (result: Result<SKCDatabaseStats, Error>) -> Void in
                 switch result {
@@ -39,7 +65,7 @@ class HomeViewModel {
         }
     }
     
-    func fetchCardOfTheDayData() {
+    private func fetchCardOfTheDayData() async {
         if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)  {
             request(url: cardOfTheDayURL(), priority: 0.25) { (result: Result<CardOfTheDay, Error>) -> Void in
                 self.fetchUpcomingTCGProducts()
@@ -58,7 +84,7 @@ class HomeViewModel {
         }
     }
     
-    func fetchUpcomingTCGProducts() {
+    private func fetchUpcomingTCGProducts() {
         if upcomingTCGProducts == nil || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) {
             request(url: upcomingEventsURL(), priority: 0.2) { (result: Result<Events, Error>) -> Void in
                 self.fetchYouTubeUploadsData()
@@ -77,7 +103,7 @@ class HomeViewModel {
         }
     }
     
-    func fetchYouTubeUploadsData() {
+    private func fetchYouTubeUploadsData() {
         if ytUploads == nil || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp) {
             request(url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), priority: 0.0) { (result: Result<YouTubeUploads, Error>) -> Void in
                 switch result {
@@ -93,26 +119,5 @@ class HomeViewModel {
                 }
             }
         }
-    }
-    
-    func load() async {
-        if dbStats == nil || cardOfTheDay == nil {
-            self.fetchDBStatsData()
-            self.fetchCardOfTheDayData()
-        }
-    }
-    
-    func refresh() async {
-        self.fetchDBStatsData()
-        self.fetchCardOfTheDayData()
-        
-        repeat {
-            try? await Task.sleep(for: .milliseconds(250))
-        } while self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)
-        || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp)
-    }
-    
-    private func isDataInvalidated(date: Date) -> Bool {
-        return date.timeIntervalSinceNow(millisConversion: .minutes) >= 5
     }
 }

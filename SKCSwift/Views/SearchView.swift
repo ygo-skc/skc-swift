@@ -71,12 +71,15 @@ struct SearchView: View {
             }
             .navigationTitle("Search")
             .task(priority: .userInitiated) {
-                await trendingViewModel.fetchTrendingData()
+                await trendingViewModel.fetchTrendingCards()
+            }
+            .task(priority: .medium) {
+                await trendingViewModel.fetchTrendingProducts()
             }
         }
         .searchable(text: $searchText, prompt: "Search for card...")
         .onChange(of: searchText, initial: false) { _, newValue in
-            Task {
+            Task(priority: .userInitiated) {
                 await searchViewModel.newSearchSubject(value: newValue)
             }
         }

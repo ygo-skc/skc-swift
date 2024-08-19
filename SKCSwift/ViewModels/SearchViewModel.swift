@@ -28,9 +28,9 @@ class SearchViewModel {
             self.task = nil
             self.searchResults.removeAll()
             self.searchResultsIds.removeAll()
-            await self.updateState(.done)
+            self.updateState(.done)
         } else {
-            await self.updateState(.pending)
+            self.updateState(.pending)
             task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)),
                                priority: 0.6, { (result: Result<[Card], Error>) -> Void in
                 switch result {
@@ -38,9 +38,7 @@ class SearchViewModel {
                     if cards.isEmpty {
                         self.searchResults.removeAll()
                         self.searchResultsIds.removeAll()
-                        Task(priority: .userInitiated) {
-                            await self.updateState(.done)
-                        }
+                        self.updateState(.done)
                         return
                     }
                     
@@ -62,22 +60,19 @@ class SearchViewModel {
                             self.searchResults.append(SearchResults(section: section, results: results[section]!))
                         }
                         
-                        Task(priority: .userInitiated) {
-                            await self.updateState(.done)
-                        }
+                        self.updateState(.done)
                     }
                 case .failure(let error):
                     print(error)
-                    Task(priority: .userInitiated) {
-                        await self.updateState(.error)
-                    }
+                    self.updateState(.error)
                 }
             })
         }
     }
     
-    @MainActor
     private func updateState(_ status: DataTaskStatus) {
-        self.status = status
+        Task(priority: .userInitiated) { @MainActor in
+            self.status = status
+        }
     }
 }
