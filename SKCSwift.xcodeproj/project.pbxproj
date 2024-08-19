@@ -197,11 +197,11 @@
 		1F0F993E29F8A30F00AA9F69 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				DEEE6C422C6EEC4A007E9B54 /* BrowseViewModel.swift */,
+				DE1CF0A42C6C1C47001A37E8 /* CardSuggestionViewModel.swift */,
+				DEDE9F452C5701CB009E834C /* HomeViewModel.swift */,
 				1F0F994329F8A4E400AA9F69 /* SearchViewModel.swift */,
 				DE825C672C54650300600FD2 /* TrendingViewModel.swift */,
-				DEDE9F452C5701CB009E834C /* HomeViewModel.swift */,
-				DE1CF0A42C6C1C47001A37E8 /* CardSuggestionViewModel.swift */,
-				DEEE6C422C6EEC4A007E9B54 /* BrowseViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -219,10 +219,10 @@
 			isa = PBXGroup;
 			children = (
 				1F21FF6B2977BC2D00B4451A /* Color.swift */,
-				1FE8C9BE2978CED9005AD924 /* Enum.swift */,
-				1FE8C9C02978ED3F005AD924 /* Text.swift */,
 				1FD83E1B2985B2E900E40822 /* Date.swift */,
+				1FE8C9BE2978CED9005AD924 /* Enum.swift */,
 				1FB9824329FC728B00679D81 /* Number.swift */,
+				1FE8C9C02978ED3F005AD924 /* Text.swift */,
 				DE63448D2A4545C20016BC43 /* View.swift */,
 			);
 			path = Util;
@@ -372,8 +372,8 @@
 		DE5915392C5425E90069E32F /* ViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
-				DE59153A2C5426290069E32F /* ParentViewModifier.swift */,
 				DECB118D2C66AF5600DCADD8 /* GroupBoxStyle.swift */,
+				DE59153A2C5426290069E32F /* ParentViewModifier.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
