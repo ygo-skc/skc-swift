@@ -45,7 +45,10 @@ struct HomeView: View {
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
             .refreshable {
-                await homeViewModel.refresh()
+                // below code is needed else refreshable task will be cancelled https://stackoverflow.com/questions/74977787/why-is-async-task-cancelled-in-a-refreshable-modifier-on-a-scrollview-ios-16
+                await Task {
+                    await homeViewModel.refresh()
+                }.value
             }
             .task(priority: .low) {
                 await homeViewModel.loadDBStats()
