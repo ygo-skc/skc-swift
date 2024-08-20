@@ -15,29 +15,15 @@ struct SearchView: View {
         NavigationStack {
             VStack {
                 switch searchViewModel.status {
-                case .done, .none:
+                case .done, .pending, .none:
                     if searchViewModel.status == .none || searchViewModel.searchText.isEmpty {
-                        ScrollView() {
-                            if let cards = trendingViewModel.cards, let products = trendingViewModel.products {
-                                TrendingView(cardTrendingData: cards, productTrendingData: products)
-                                    .equatable()
-                                    .modifier(ParentViewModifier())
-                            } else {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                    Spacer()
-                                }
-                            }
-                        }
+                        TrendingResultsView(cards: trendingViewModel.cards, products: trendingViewModel.products)
                     } else if !searchViewModel.searchResults.isEmpty {
-                        ExtractedView2(searchResults: searchViewModel.searchResults)
+                        SearchResultsView(searchResults: searchViewModel.searchResults)
                             .equatable()
-                    } else if !searchViewModel.searchText.isEmpty && searchViewModel.searchResults.isEmpty {
+                    } else if searchViewModel.status == .done && !searchViewModel.searchText.isEmpty && searchViewModel.searchResults.isEmpty {
                         ContentUnavailableView.search
                     }
-                case .pending:
-                    ProgressView()
                 case .error:
                     Text("Error")
                 }
@@ -70,7 +56,7 @@ struct SearchView: View {
     SearchView()
 }
 
-private struct ExtractedView2: View, Equatable {
+private struct SearchResultsView: View, Equatable {
     let searchResults: [SearchResults]
     
     var body: some View {
@@ -88,5 +74,26 @@ private struct ExtractedView2: View, Equatable {
         .scrollDismissesKeyboard(.immediately)
         .listStyle(.plain)
         .ignoresSafeArea(.keyboard)
+    }
+}
+
+private struct TrendingResultsView: View {
+    let cards: [TrendingMetric<Card>]?
+    let products: [TrendingMetric<Product>]?
+    
+    var body: some View {
+        ScrollView() {
+            if let cards = cards, let products {
+                TrendingView(cardTrendingData: cards, productTrendingData: products)
+                    .equatable()
+                    .modifier(ParentViewModifier())
+            } else {
+                HStack {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                }
+            }
+        }
     }
 }

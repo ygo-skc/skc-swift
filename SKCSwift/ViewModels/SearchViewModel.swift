@@ -56,6 +56,7 @@ class SearchViewModel {
                     }
                     
                     if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
+                        self.searchResults.removeAll()
                         self.searchResultsIds = searchResultsIds
                         for section in sections {
                             self.searchResults.append(SearchResults(section: section, results: results[section]!))
