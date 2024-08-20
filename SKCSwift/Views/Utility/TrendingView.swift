@@ -15,8 +15,8 @@ struct TrendingView: View, Equatable {
     
     static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
         lhs.focusedTrend == rhs.focusedTrend
-        && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID })
-        && lhs.productTrendingData.elementsEqual(rhs.productTrendingData, by: { $0.resource.productId == $1.resource.productId })
+        && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID && $0.occurrences == $1.occurrences })
+        && lhs.productTrendingData.elementsEqual(rhs.productTrendingData, by: { $0.resource.productId == $1.resource.productId && $0.occurrences == $1.occurrences })
     }
     
     var body: some View {
@@ -32,21 +32,15 @@ struct TrendingView: View, Equatable {
             
             if focusedTrend == .card {
                 TrendingCardsView(trendingCards: cardTrendingData)
-                    .equatable()
             } else if focusedTrend == .product {
                 TrendingProductsView(trendingProducts: productTrendingData)
-                    .equatable()
             }
         })
     }
 }
 
-private struct TrendingCardsView: View, Equatable {
+private struct TrendingCardsView: View {
     let trendingCards: [TrendingMetric<Card>]
-    
-    static func == (lhs: TrendingCardsView, rhs: TrendingCardsView) -> Bool {
-        lhs.trendingCards.elementsEqual(rhs.trendingCards, by: { $0.resource.cardID == $1.resource.cardID })
-    }
     
     var body: some View {
         LazyVStack {
@@ -65,12 +59,8 @@ private struct TrendingCardsView: View, Equatable {
     }
 }
 
-private struct TrendingProductsView: View, Equatable {
+private struct TrendingProductsView: View {
     let trendingProducts: [TrendingMetric<Product>]
-    
-    static func == (lhs: TrendingProductsView, rhs: TrendingProductsView) -> Bool {
-        lhs.trendingProducts.elementsEqual(rhs.trendingProducts, by: { $0.resource.productId == $1.resource.productId })
-    }
     
     var body: some View {
         LazyVStack {
