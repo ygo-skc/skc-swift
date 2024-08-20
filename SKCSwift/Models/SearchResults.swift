@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SearchResults: Identifiable {
+struct SearchResults: Identifiable, Equatable {
     let id = UUID()
     let section: String
     let results: [Card]

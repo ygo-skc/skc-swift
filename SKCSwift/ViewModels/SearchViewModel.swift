@@ -9,7 +9,9 @@ import Foundation
 
 @Observable
 class SearchViewModel {
-    private(set) var status = DataTaskStatus.done
+    var searchText: String = ""
+    
+    private(set) var status: DataTaskStatus?
     
     @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
@@ -54,17 +56,19 @@ class SearchViewModel {
                     }
                     
                     if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
-                        self.searchResults.removeAll()
                         self.searchResultsIds = searchResultsIds
                         for section in sections {
                             self.searchResults.append(SearchResults(section: section, results: results[section]!))
                         }
-                        
-                        self.updateState(.done)
                     }
-                } catch {
-                    print(error)
-                    self.updateState(.error)
+                    self.updateState(.done)
+                } catch(let error) {
+                    switch error {
+                    case DataFetchError.cancelled: break    // do nothing
+                    default:
+                        print(error)
+                        self.updateState(.error)
+                    }
                 }
             }
         }
