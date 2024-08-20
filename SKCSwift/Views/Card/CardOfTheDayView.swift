@@ -17,10 +17,10 @@ struct CardOfTheDayView: View, Equatable {
     }
     
     var body: some View {
-        SectionView(
-            header: "Card of the day",
-            content: {
-                NavigationLink(value: CardLinkDestinationValue(cardID: cardOfTheDay?.card.cardID ?? "", cardName: cardOfTheDay?.card.cardName ?? ""), label: {
+        NavigationLink(value: CardLinkDestinationValue(cardID: cardOfTheDay?.card.cardID ?? "", cardName: cardOfTheDay?.card.cardName ?? ""), label: {
+            SectionView(
+                header: "Card of the day",
+                content: {
                     HStack(alignment: .top, spacing: 20) {
                         if let card = cardOfTheDay?.card {
                             CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny, cardColor: card.cardColor)
@@ -47,12 +47,12 @@ struct CardOfTheDayView: View, Equatable {
                             }
                         }
                     }
-                    .contentShape(Rectangle())
-                })
-                .buttonStyle(.plain)
-                .disabled(cardOfTheDay == nil)
-            }
-        )
+                }
+            )
+            .contentShape(Rectangle())
+        })
+        .buttonStyle(.plain)
+        .disabled(cardOfTheDay == nil)
     }
 }
 
