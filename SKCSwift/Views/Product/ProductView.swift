@@ -24,14 +24,9 @@ struct ProductView: View {
     
     private func fetch() async {
         if product == nil {
-            request(url: productInfoURL(productID: productID), priority: 0.5) { (result: Result<Product, Error>) -> Void in
-                switch result {
-                case .success(let product):
-                    DispatchQueue.main.async {
-                        self.product = product
-                    }
-                case .failure(let error):
-                    print(error)
+            if let product = try? await data(Product.self, url: productInfoURL(productID: productID)) {
+                DispatchQueue.main.async {
+                    self.product = product
                 }
             }
         }

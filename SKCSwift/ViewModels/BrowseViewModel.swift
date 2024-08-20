@@ -37,23 +37,18 @@ class BrowseViewModel {
     
     func fetchProductBrowseData() async {
         if products == nil {
-            request(url: productsURL(), priority: 0.4) { (result: Result<Products, Error>) -> Void in
-                switch result {
-                case .success(let p):
-                    p.products.forEach { product in
-                        self.uniqueProductTypes.insert(product.productType)
-                        self.uniqueProductSubTypes.insert(product.productSubType)
-                        self.productTypeByProductSubType[product.productSubType] = product.productType
+            if let p = try? await data(Products.self, url: productsURL()) {
+                p.products.forEach { product in
+                    self.uniqueProductTypes.insert(product.productType)
+                    self.uniqueProductSubTypes.insert(product.productSubType)
+                    self.productTypeByProductSubType[product.productSubType] = product.productType
+                }
+                self.products = p.products
+                
+                Task(priority: .userInitiated) { @MainActor in
+                    self.productTypeFilters = self.uniqueProductTypes.sorted().reduce(into: [FilteredItem]()) {
+                        $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
                     }
-                    self.products = p.products
-                    
-                    Task(priority: .userInitiated) { @MainActor in
-                        self.productTypeFilters = self.uniqueProductTypes.sorted().reduce(into: [FilteredItem]()) {
-                            $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
-                        }
-                    }
-                case .failure(let error):
-                    print(error)
                 }
             }
         }

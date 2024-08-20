@@ -17,50 +17,43 @@ fileprivate func baseRequest(url: URL) -> URLRequest {
     return request
 }
 
-fileprivate func handleErrors(response: URLResponse?, error: Error?, url: URL) -> Bool {
-    // handle error
-    if let error = error {
-        if (error.localizedDescription != "cancelled") {
-            print("Error occurred while calling \(url.absoluteString) \(error.localizedDescription)")
-        }
-        return true
-    }
-    
+fileprivate func validateResponse(response: URLResponse?, url: URL) async throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         if code <= 201 {
-            return false
+            return
+        } else if code == 404 {
+            print("URL \(url.absoluteString) does not exist")
+            throw DataFetchError.notFound
+        } else if code >= 400 && code <= 499 {
+            print("URL \(url.absoluteString) returned with 400 level code \(code)")
+            throw DataFetchError.client
+        } else {
+            print("URL \(url.absoluteString) returned with 500 level code \(code)")
+            throw DataFetchError.server
         }
-        
-        print("Encountered status code \(code) while calling \(url.absoluteString).")
-        return true
     }
-    
-    return false
 }
 
-func request<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  Void {
-    _ = requestTask(url: url, priority: priority, completion)
-}
-
-func requestTask<T: Codable>(url: URL, priority: Float = 1, _ completion: @escaping (Result<T, Error>) -> Void) ->  URLSessionDataTask {
-    let request = baseRequest(url: url)
-    
-    let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (body, response, error) -> Void in
-        // handle errors
-        let hasErrors = handleErrors(response: response, error: error, url: url)
+func data<T>(_ type: T.Type, url: URL) async throws -> T where T : Decodable {
+    do {
+        let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url))
+        try Task.checkCancellation()
         
-        if let body = body, hasErrors == false {
-            do {
-                let body = try RequestHelper.decoder.decode(T.self, from: body)
-                completion(.success(body))
-            } catch {
-                print("An error occurred while decoding output from http request \(error.localizedDescription)")
-            }
+        try await validateResponse(response: response, url: url)
+        
+        do {
+            return try RequestHelper.decoder.decode(type, from: body)
+        } catch {
+            print("An error occurred while decoding output from http request \(error.localizedDescription)")
+            throw DataFetchError.bodyParse
         }
-    })
-    
-    dataTask.priority = priority
-    dataTask.resume()
-    return dataTask
+    } catch let error {
+        if (error.localizedDescription == "cancelled") {
+            throw DataFetchError.cancelled
+        }
+        
+        print("Error occurred while calling \(url.absoluteString) \(error.localizedDescription)")
+        throw DataFetchError.unknown
+    }
 }

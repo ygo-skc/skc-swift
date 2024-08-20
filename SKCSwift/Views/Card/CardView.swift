@@ -26,14 +26,10 @@ private struct CardView: View {
         if cardData != nil {
             return
         }
-        request(url: cardInfoURL(cardID: self.cardID), priority: 0.5) { (result: Result<Card, Error>) -> Void in
-            switch result {
-            case .success(let card):
-                DispatchQueue.main.async {
-                    cardData = card
-                }
-            case .failure(let error):
-                print(error)
+        
+        if let card = try? await data(Card.self, url: cardInfoURL(cardID: self.cardID)) {
+            DispatchQueue.main.async {
+                cardData = card
             }
         }
     }

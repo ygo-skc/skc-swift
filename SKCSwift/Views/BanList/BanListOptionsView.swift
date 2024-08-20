@@ -28,18 +28,13 @@ private struct BanListDatesView: View {
     @State private var isDataLoaded = false
     @State private var showDateSelectorSheet = false
     
-    private func fetchData() {
+    private func fetchData() async {
         if !isDataLoaded {
-            request(url: banListDatesURL(format: "\(chosenFormat)"), priority: 0.4) { (result: Result<BanListDates, Error>) -> Void in
-                switch result {
-                case .success(let dates):
-                    DispatchQueue.main.async {
-                        self.banListDates = dates.banListDates
-                        self.chosenDateRange = 0
-                        self.isDataLoaded = true
-                    }
-                case .failure(let error):
-                    print(error)
+            if let dates = try? await data(BanListDates.self, url: banListDatesURL(format: "\(chosenFormat)")) {
+                DispatchQueue.main.async {
+                    self.banListDates = dates.banListDates
+                    self.chosenDateRange = 0
+                    self.isDataLoaded = true
                 }
             }
         }
@@ -66,7 +61,10 @@ private struct BanListDatesView: View {
         }
         .onChange(of: $chosenFormat.wrappedValue, initial: true) {
             self.isDataLoaded = false
-            fetchData()
+            Task {
+                // TODO: can this be improved?
+                await fetchData()
+            }
         }
         .popover(isPresented: $showDateSelectorSheet) {
             BanListDateRangePicker(chosenDateRange: $chosenDateRange, showDateSelectorSheet: $showDateSelectorSheet, banListDates: banListDates)

@@ -13,36 +13,28 @@ class TrendingViewModel {
     private(set) var products: [TrendingMetric<Product>]?
     
     @ObservationIgnored
-    private var trendingDataLastRefresh = Date()
+    private var trendingCardDataLastFetch = Date()
+    @ObservationIgnored
+    private var trendingProductDataLastFetch = Date()
     
     func fetchTrendingCards() async {
-        if cards == nil || products == nil || trendingDataLastRefresh.timeIntervalSinceNow(millisConversion: .minutes) >= 5  {
-            request(url: trendingUrl(resource: .card), priority: 0.2) { (result: Result<Trending<Card>, Error>) -> Void in
-                switch result {
-                case .success(let trending):
-                    DispatchQueue.main.async {
-                        self.cards = trending.metrics
-                    }
-                case .failure(let error):
-                    print(error)
+        if cards == nil || trendingCardDataLastFetch.timeIntervalSinceNow(millisConversion: .minutes) >= 5  {
+            if let trending = try? await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
+                DispatchQueue.main.async {
+                    self.cards = trending.metrics
                 }
             }
+            trendingCardDataLastFetch = Date()
         }
     }
     
     func fetchTrendingProducts() async {
-        request(url: trendingUrl(resource: .product), priority: 0.2) { (result: Result<Trending<Product>, Error>) -> Void in
-            switch result {
-            case .success(let trending):
+        if products == nil || trendingProductDataLastFetch.timeIntervalSinceNow(millisConversion: .minutes) >= 5  {
+            if let trending: Trending<Product> = try? await data(Trending<Product>.self, url: trendingUrl(resource: .product)) {
                 DispatchQueue.main.async {
                     self.products = trending.metrics
                 }
-            case .failure(let error):
-                print(error)
             }
         }
-        
-        trendingDataLastRefresh = Date()
     }
 }
-

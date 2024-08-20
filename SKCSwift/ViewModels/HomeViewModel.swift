@@ -51,73 +51,47 @@ class HomeViewModel {
     
     private func fetchDBStatsData() async {
         if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) {
-            request(url: dbStatsURL(), priority: 0.3) { (result: Result<SKCDatabaseStats, Error>) -> Void in
-                switch result {
-                case .success(let dbStats):
-                    self.dbStatsRefreshTimestamp = Date()
-                    DispatchQueue.main.async {
-                        self.dbStats = dbStats
-                    }
-                case .failure(let error):
-                    print(error)
+            if let dbStats = try? await data(SKCDatabaseStats.self, url: dbStatsURL()) {
+                DispatchQueue.main.async {
+                    self.dbStats = dbStats
                 }
             }
+            self.dbStatsRefreshTimestamp = Date()
         }
     }
     
     private func fetchCardOfTheDayData() async {
-        if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)  {
-            request(url: cardOfTheDayURL(), priority: 0.25) { (result: Result<CardOfTheDay, Error>) -> Void in
-                self.fetchUpcomingTCGProducts()
-                switch result {
-                case .success(let cardOfTheyDay):
-                    self.cardOfTheDayRefreshTimeStamp = Date()
-                    if self.cardOfTheDay?.date != cardOfTheyDay.date {
-                        DispatchQueue.main.async {
-                            self.cardOfTheDay = cardOfTheyDay
-                        }
-                    }
-                case .failure(let error):
-                    print(error)
+        if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp) {
+            if let cardOfTheDay = try? await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
+                DispatchQueue.main.async {
+                    self.cardOfTheDay = cardOfTheDay
                 }
             }
+            self.cardOfTheDayRefreshTimeStamp = Date()
+            await fetchUpcomingTCGProducts()
         }
     }
     
-    private func fetchUpcomingTCGProducts() {
+    private func fetchUpcomingTCGProducts() async {
         if upcomingTCGProducts == nil || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) {
-            request(url: upcomingEventsURL(), priority: 0.2) { (result: Result<Events, Error>) -> Void in
-                self.fetchYouTubeUploadsData()
-                switch result {
-                case .success(let upcomingProducts):
-                    self.upcomingTCGProductsRefreshTimeStamp = Date()
-                    if self.upcomingTCGProducts != upcomingProducts.events {
-                        DispatchQueue.main.async {
-                            self.upcomingTCGProducts = upcomingProducts.events
-                        }
-                    }
-                case .failure(let error):
-                    print(error)
+            if let upcomingTCGProducts = try? await data(Events.self, url: upcomingEventsURL()) {
+                DispatchQueue.main.async {
+                    self.upcomingTCGProducts = upcomingTCGProducts.events
                 }
             }
+            self.upcomingTCGProductsRefreshTimeStamp = Date()
+            await fetchYouTubeUploadsData()
         }
     }
     
-    private func fetchYouTubeUploadsData() {
+    private func fetchYouTubeUploadsData() async {
         if ytUploads == nil || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp) {
-            request(url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), priority: 0.0) { (result: Result<YouTubeUploads, Error>) -> Void in
-                switch result {
-                case .success(let uploadData):
-                    self.ytUploadsRefreshTimeStamp = Date()
-                    if self.ytUploads != uploadData.videos {
-                        DispatchQueue.main.async {
-                            self.ytUploads = uploadData.videos
-                        }
-                    }
-                case .failure(let error):
-                    print(error)
+            if let uploadData = try? await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
+                DispatchQueue.main.async {
+                    self.ytUploads = uploadData.videos
                 }
             }
+            self.ytUploadsRefreshTimeStamp = Date()
         }
     }
 }

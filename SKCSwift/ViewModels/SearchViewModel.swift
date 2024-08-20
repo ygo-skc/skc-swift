@@ -17,7 +17,7 @@ class SearchViewModel {
     @ObservationIgnored
     private var searchResultsIds = [String]()
     @ObservationIgnored
-    private var task: URLSessionDataTask?
+    private var task: Task<(), any Error>?
     
     func newSearchSubject(value: String) async {
         if let task {
@@ -31,10 +31,10 @@ class SearchViewModel {
             self.updateState(.done)
         } else {
             self.updateState(.pending)
-            task = requestTask(url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)),
-                               priority: 0.6, { (result: Result<[Card], Error>) -> Void in
-                switch result {
-                case .success(let cards):
+            
+            task = Task {
+                do {
+                    let cards = try await data([Card].self, url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)))
                     if cards.isEmpty {
                         self.searchResults.removeAll()
                         self.searchResultsIds.removeAll()
@@ -62,11 +62,11 @@ class SearchViewModel {
                         
                         self.updateState(.done)
                     }
-                case .failure(let error):
+                } catch {
                     print(error)
                     self.updateState(.error)
                 }
-            })
+            }
         }
     }
     

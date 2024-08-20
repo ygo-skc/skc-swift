@@ -59,3 +59,12 @@ enum TrendingResourceType: String, Codable, CaseIterable {
 enum DataTaskStatus: String, Codable, CaseIterable {
     case pending, done, error
 }
+
+enum DataFetchError: Error {
+    case client
+    case server
+    case notFound
+    case bodyParse
+    case cancelled
+    case unknown
+}
