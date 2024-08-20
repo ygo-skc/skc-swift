@@ -17,7 +17,7 @@ fileprivate func baseRequest(url: URL) -> URLRequest {
     return request
 }
 
-fileprivate func validateResponse(response: URLResponse?, url: URL) async throws {
+fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         if code <= 201 {
@@ -40,7 +40,7 @@ func data<T>(_ type: T.Type, url: URL) async throws -> T where T : Decodable {
         let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url))
         try Task.checkCancellation()
         
-        try await validateResponse(response: response, url: url)
+        try validateResponse(response: response, url: url)
         
         do {
             return try RequestHelper.decoder.decode(type, from: body)
