@@ -35,6 +35,7 @@ class TrendingViewModel {
                     self.products = trending.metrics
                 }
             }
+            trendingProductDataLastFetch = Date()
         }
     }
 }
