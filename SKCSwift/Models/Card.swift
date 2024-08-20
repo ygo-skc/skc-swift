@@ -77,3 +77,13 @@ struct CardLinkDestinationValue: Hashable {
     let cardID: String
     let cardName: String
 }
+
+struct CardBrowseCriteria: Codable {
+    let cardColors: [String]
+    let attributes: [String]
+    let monsterTypes: [String]
+    let monsterSubTypes: [String]
+    let levels: [UInt8]
+    let ranks: [UInt8]
+    let linkRatings: [UInt8]
+}

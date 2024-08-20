@@ -16,6 +16,7 @@ struct RequestHelper {
     
     // SKC API request helpers
     static let SKC_API_BASE_URL: StaticString = "skc-ygo-api.com"
+    static let SKC_API_CARD_BROWSE_CRITERIA_ENDPOINT: StaticString = "/api/v1/card/browse/criteria"
     static let SKC_API_SEARCH_ENDPOINT: StaticString = "/api/v1/card/search"
     static let SKC_API_CARD_INFORMATION_ENDPOINT: StaticString = "/api/v1/card/%@"
     static let SKC_API_PRODUCT_INFORMATION_ENDPOINT: StaticString = "/api/v1/product/%@/en"
@@ -82,6 +83,14 @@ func productsURL() -> URL {
         path: RequestHelper.SKC_API_PRODUCTS_ENDPOINT.description
     )
     
+    return createURL(components: components)
+}
+
+func cardBrowseCriteriaURL() -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: RequestHelper.SKC_API_CARD_BROWSE_CRITERIA_ENDPOINT.description
+    )
     return createURL(components: components)
 }
 

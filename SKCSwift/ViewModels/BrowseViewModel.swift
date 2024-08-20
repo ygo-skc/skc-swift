@@ -22,6 +22,8 @@ class BrowseViewModel {
     var productTypeFilters: [FilteredItem] = []
     var productSubTypeFilters: [FilteredItem] = []
     
+    var cardBrowseCriteria: CardBrowseCriteria?
+    
     private(set) var productsByYear: [String: [Product]]?
     
     @ObservationIgnored
@@ -76,14 +78,13 @@ class BrowseViewModel {
                     Task { @MainActor in
                         self.productSubTypeFilters = productSubTypeFilters
                     }
-                default:
-                    fatalError()
+                default: break
                 }
             }
         }
     }
     
-    func updateToggled() async {
+    func updateProductList() async {
         let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
         
         let productsByYear = products?
@@ -95,6 +96,16 @@ class BrowseViewModel {
         
         Task { @MainActor in
             self.productsByYear = productsByYear
+        }
+    }
+    
+    // Browse cards
+    
+    func fetchCardBrowseCriteria() async {
+        if cardBrowseCriteria == nil, let cardBrowseCriteria = try? await data(CardBrowseCriteria.self, url: cardBrowseCriteriaURL()) {
+            Task(priority: .userInitiated) { @MainActor in
+                self.cardBrowseCriteria = cardBrowseCriteria
+            }
         }
     }
 }

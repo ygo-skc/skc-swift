@@ -44,11 +44,14 @@ struct BrowseView: View {
             }
             .onChange(of: browseViewModel.productSubTypeFilters) {
                 Task {
-                    await browseViewModel.updateToggled()
+                    await browseViewModel.updateProductList()
                 }
             }
             .task(priority: .userInitiated) {
                 await browseViewModel.fetchProductBrowseData()
+            }
+            .task(priority: .userInitiated) {
+                await browseViewModel.fetchCardBrowseCriteria()
             }
         }
     }
