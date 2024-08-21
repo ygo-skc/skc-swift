@@ -14,7 +14,7 @@ struct AttributeView: View, Equatable {
     
     var body: some View {
         if (attribute == .unknown) {
-            Image(systemName: "exclamationmark.triangle.fill")
+            Image(systemName: "questionmark.circle.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: AttributeView.ICON_SIZE - 5, height: AttributeView.ICON_SIZE - 5)

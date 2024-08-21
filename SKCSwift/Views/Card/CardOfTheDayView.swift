@@ -37,7 +37,7 @@ struct CardOfTheDayView: View, Equatable {
                                     .font(.title3)
                                     .fontWeight(.bold)
                                 
-                                Text(cardOfTheDay.card.cardType())
+                                Text(cardOfTheDay.card.cardType)
                                     .font(.headline)
                                     .lineLimit(1)
                             } else {

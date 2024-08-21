@@ -39,7 +39,7 @@ struct Card: Codable, Equatable {
     let cardID: String
     let cardName: String
     let cardColor: String
-    let cardAttribute: String
+    let cardAttribute: String?
     let cardEffect: String
     var monsterType: String?
     var monsterAssociation: MonsterAssociation?
@@ -48,28 +48,30 @@ struct Card: Codable, Equatable {
     var restrictedIn: BanListsForCard?
     var foundIn: [Product]?
     
+    var attribute: Attribute {
+        get{ Attribute(rawValue: cardAttribute ?? "") ?? .unknown }
+    }
+    var isPendulum: Bool {
+        get{ cardColor.starts(with: "Pendulum") }
+    }
+    var cardType: String {
+        get{ return (monsterType != nil) ? monsterType! : cardAttribute ?? "" }
+    }
+    var atk: String {
+        get{ return (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!) }
+    }
+    var def: String {
+        get {
+            if cardColor == "Link" {
+                return Card.linkDefStat
+            }
+            
+            return (monsterDefense == nil) ? Card.nilStat : String(monsterDefense!)
+        }
+    }
+    
     private static let nilStat = "?"
     private static let linkDefStat = "-"
-    
-    func isPendulum() -> Bool {
-        return cardColor.starts(with: "Pendulum")
-    }
-    
-    func cardType() -> String {
-        return (monsterType != nil) ? monsterType! : cardAttribute
-    }
-    
-    func atk() -> String {
-        return (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!)
-    }
-    
-    func def() -> String {
-        if cardColor == "Link" {
-            return Card.linkDefStat
-        }
-        
-        return (monsterDefense == nil) ? Card.nilStat : String(monsterDefense!)
-    }
 }
 
 // used as convenience when working with NavigationDestination

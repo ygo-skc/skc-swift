@@ -29,11 +29,12 @@ struct CardListItemView: View, Equatable {
                     .padding(.trailing, 3)
                 VStack(alignment: .leading) {
                     if showAllInfo {
-                        MonsterAssociationView(monsterAssociation: card.monsterAssociation, attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown,
+                        MonsterAssociationView(monsterAssociation: card.monsterAssociation, 
+                                               attribute: card.attribute,
                                                variant: .listView)
                             .equatable()
                     } else {
-                        AttributeView(attribute: Attribute(rawValue: card.cardAttribute) ?? .unknown)
+                        AttributeView(attribute: card.attribute)
                             .equatable()
                     }
                     

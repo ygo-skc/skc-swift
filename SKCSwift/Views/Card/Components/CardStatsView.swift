@@ -17,7 +17,7 @@ struct CardStatsView: View, Equatable {
         self.card = card
         self.variant = variant
         
-        self.attribute = Attribute(rawValue: card.cardAttribute) ?? .unknown
+        self.attribute = card.attribute
     }
     
     var body: some View {
@@ -32,7 +32,7 @@ struct CardStatsView: View, Equatable {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(card.cardType())
+                Text(card.cardType)
                     .modifier(MonsterTypeModifier(variant: variant))
                 
                 Text(replaceHTMLEntities(subject: card.cardEffect))
@@ -45,10 +45,10 @@ struct CardStatsView: View, Equatable {
                     Spacer()
                     
                     HStack(spacing: 15) {
-                        Text(card.atk())
+                        Text(card.atk)
                             .modifier(MonsterAttackDefenseModifier(variant: variant))
                             .foregroundColor(.red)
-                        Text(card.def())
+                        Text(card.def)
                             .modifier(MonsterAttackDefenseModifier(variant: variant))
                             .foregroundColor(.blue)
                     }
@@ -64,7 +64,7 @@ struct CardStatsView: View, Equatable {
             .cornerRadius((variant == .normal) ? 10 : 7)
         }
         .padding(.all, (variant == .normal) ? 8 : 5)
-        .if(card.isPendulum()) {
+        .if(card.isPendulum) {
             $0.background(cardColorGradient(cardColor: card.cardColor))
         } else: {
             $0.background(cardColorUI(cardColor: card.cardColor))
