@@ -14,12 +14,12 @@ enum BanListFormat: String {
 }
 
 enum RelatedContentType: String {
-    case products = "Products", ban_lists = "Ban Lists"
+    case products = "Products", banLists = "Ban Lists"
 }
 
 enum CardType {
     case monster
-    case non_monster
+    case nonMonster
 }
 
 enum SectionViewVariant {
@@ -49,7 +49,7 @@ enum YGOCardImageVariant {
 }
 
 enum ImageSize: String {
-    case tiny = "tn", extra_small = "x-sm", small = "sm", medium = "md", large = "lg", original = "original"
+    case tiny = "tn", extraSmall = "x-sm", small = "sm", medium = "md", large = "lg", original = "original"
 }
 
 enum TrendingResourceType: String, Codable, CaseIterable {

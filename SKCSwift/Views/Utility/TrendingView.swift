@@ -92,11 +92,11 @@ private struct TrendChangeView: View, Equatable {
             trendImage = "chart.line.uptrend.xyaxis"
         } else if trendChange < 0 {
             trendLabel = "\(trendChange) • \(hits) hits"
-            trendColor = .pinkRed
+            trendColor = .dateRed
             trendImage = "chart.line.downtrend.xyaxis"
         } else {
             trendLabel = "±\(trendChange) • \(hits) hits"
-            trendColor = .normalYgoCard
+            trendColor = .normalYGOCard
             trendImage = "chart.line.flattrend.xyaxis"
         }
     }

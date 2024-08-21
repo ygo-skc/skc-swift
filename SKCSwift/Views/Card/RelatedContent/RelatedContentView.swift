@@ -97,17 +97,17 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
             RelatedContentSectionHeaderViewModel(header: "Ban Lists")
             
             // TCG ban list deets
-            RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .ban_lists) {
+            RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
                 RelatedBanListsContentView(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
             }
             
             // MD ban list deets
-            RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .ban_lists) {
+            RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
                 RelatedBanListsContentView(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
             }
             
             // DL ban list deets
-            RelatedContentSheetButton(format: "Duel Links", contentCount: dlBanLists.count, contentType: .ban_lists) {
+            RelatedContentSheetButton(format: "Duel Links", contentCount: dlBanLists.count, contentType: .banLists) {
                 RelatedBanListsContentView(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
             }
         }

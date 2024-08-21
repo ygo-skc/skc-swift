@@ -53,7 +53,7 @@ private struct MonsterAssociationViewModifier: ViewModifier {
             content
                 .padding(.vertical, 5.0)
                 .padding(.horizontal, 15)
-                .background(Color("translucent_background"))
+                .background(.regularMaterial)
                 .cornerRadius(50.0)
         case .listView:
             content
@@ -66,7 +66,7 @@ private struct LevelAssociationView: View, Equatable {
     
     var body: some View {
         HStack {
-            Image("card_level")
+            Image(.level)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: ICON_SIZE, height: ICON_SIZE)
@@ -81,7 +81,7 @@ private struct PendulumAssociationView: View, Equatable {
     
     var body: some View {
         HStack {
-            Image("pend_scale")
+            Image(.pendScale)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: ICON_SIZE, height: ICON_SIZE)
@@ -96,7 +96,7 @@ private struct RankAssociationView: View, Equatable {
     
     var body: some View {
         HStack {
-            Image("card_rank")
+            Image(.rank)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: ICON_SIZE, height: ICON_SIZE)

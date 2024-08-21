@@ -60,7 +60,7 @@ struct CardStatsView: View, Equatable {
                 .padding(.top, 1)
             }
             .padding(.all, (variant == .normal) ? 10 : 6)
-            .background(Color("translucent_background"))
+            .background(.regularMaterial)
             .cornerRadius((variant == .normal) ? 10 : 7)
         }
         .padding(.all, (variant == .normal) ? 8 : 5)
@@ -189,12 +189,12 @@ private struct MonsterAttackDefenseContainerModifier: ViewModifier {
         case .normal:
             content
                 .padding(.all, 5)
-                .background(Color("translucent_background"))
+                .background(.thickMaterial)
                 .cornerRadius(10)
         case .condensed, .listView:
             content
                 .padding(.all, 4)
-                .background(Color("translucent_background"))
+                .background(.thickMaterial)
                 .cornerRadius(8)
         }
     }

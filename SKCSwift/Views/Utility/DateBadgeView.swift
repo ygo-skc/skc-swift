@@ -30,7 +30,7 @@ struct DateBadgeView: View, Equatable {
             Text(year)
                 .modifier(DateViewYearModifier(variant: variant))
         }
-        .background(Color("date_gray"))
+        .background(.dateGray)
         .modifier(DateViewParentModifier(variant: variant))
     }
 }
@@ -60,13 +60,13 @@ private struct DateViewMonthModifier: ViewModifier {
         case .normal:
             content
                 .frame(maxWidth: .infinity)
-                .background(Color("pink_red"))
+                .background(.dateRed)
                 .font(.headline)
                 .foregroundColor(Color(.white))
         case .condensed:
             content
                 .frame(maxWidth: .infinity)
-                .background(Color("pink_red"))
+                .background(.dateRed)
                 .font(.subheadline)
                 .foregroundColor(Color(.white))
         }

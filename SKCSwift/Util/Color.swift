@@ -10,13 +10,13 @@ import SwiftUI
 func banStatusColor(status: String) -> Color {
     switch status {
     case "Forbidden":
-        return Color("forbidden")
+        return .forbidden
     case "Limited", "Limited 1":
-        return Color("limited")
+        return .limited
     case "Semi-Limited", "Limited 2":
-        return Color("semi-limited")
+        return .semiLimited
     case "Limited 3":
-        return Color("limited-three")
+        return .limitedThree
     default:
         return .gray
     }
@@ -25,23 +25,23 @@ func banStatusColor(status: String) -> Color {
 func cardColorUI(cardColor: String) -> Color {
     switch cardColor {
     case "Normal":
-        return Color("normal_ygo_card")
+        return .normalYGOCard
     case "Effect":
-        return Color("effect_ygo_card")
+        return .effectYGOCard
     case "Ritual":
-        return Color("ritual_ygo_card")
+        return .ritualYGOCard
     case "Fusion":
-        return Color("fusion_ygo_card")
+        return .fusionYGOCard
     case "Synchro":
-        return Color("synchro_ygo_card")
+        return .synchroYGOCard
     case "Xyz":
-        return Color("xyz_ygo_card")
+        return .xyzYGOCard
     case "Link":
-        return Color("link_ygo_card")
+        return .linkYGOCard
     case "Spell":
-        return Color("spell_ygo_card")
+        return .spellYGOCard
     case "Trap":
-        return Color("trap_ygo_card")
+        return .trapYGOCard
     default:
         return .gray
     }

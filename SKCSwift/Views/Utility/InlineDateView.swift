@@ -22,7 +22,7 @@ struct InlineDateView: View, Equatable {
             Text(month)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 3)
-                .background(Color("pink_red"))
+                .background(.dateRed)
                 .font(.system(.caption, design: .monospaced))
                 .fontWeight(.semibold)
                 .foregroundColor(Color(.white))
