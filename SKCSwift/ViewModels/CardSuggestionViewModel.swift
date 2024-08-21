@@ -22,11 +22,7 @@ class CardSuggestionViewModel {
     private(set) var materialFor: [CardReference]?
     
     func fetchSuggestions(cardID: String) async {
-        if areSuggestionsLoaded {
-            return
-        }
-        
-        if let suggestions = try? await data(CardSuggestions.self, url: cardSuggestionsURL(cardID: cardID)) {
+        if !areSuggestionsLoaded, let suggestions = try? await data(CardSuggestions.self, url: cardSuggestionsURL(cardID: cardID)) {
             self.namedMaterials = suggestions.namedMaterials
             self.namedReferences = suggestions.namedReferences
             DispatchQueue.main.async {
@@ -36,11 +32,7 @@ class CardSuggestionViewModel {
     }
     
     func fetchSupport(cardID: String) async {
-        if isSupportLoaded {
-            return
-        }
-        
-        if let support = try? await data(CardSupport.self, url: cardSupportURL(cardID: cardID)) {
+        if !isSupportLoaded, let support = try? await data(CardSupport.self, url: cardSupportURL(cardID: cardID)) {
             self.referencedBy = support.referencedBy
             self.materialFor = support.materialFor
             DispatchQueue.main.async {

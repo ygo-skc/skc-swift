@@ -60,7 +60,7 @@ struct ProductCardSuggestionsView: View {
     @State private var suggestions: ProductSuggestions? = nil
     
     private func fetch() async {
-        if let suggestions = try? await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
+        if suggestions == nil, let suggestions = try? await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
             DispatchQueue.main.async {
                 self.suggestions = suggestions
             }

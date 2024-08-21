@@ -20,16 +20,17 @@ fileprivate func baseRequest(url: URL) -> URLRequest {
 fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
-        if code <= 201 {
+        switch code {
+        case 0...399:
             return
-        } else if code == 404 {
+        case 404:
             print("URL \(url.absoluteString) does not exist")
             throw DataFetchError.notFound
-        } else if code >= 400 && code <= 499 {
-            print("URL \(url.absoluteString) returned with 400 level code \(code)")
+        case 400...499:
+            print("URL \(url.absoluteString) returned with 400 level code: \(code)")
             throw DataFetchError.client
-        } else {
-            print("URL \(url.absoluteString) returned with 500 level code \(code)")
+        default:
+            print("URL \(url.absoluteString) returned with 500 level code: \(code)")
             throw DataFetchError.server
         }
     }
@@ -45,7 +46,7 @@ func data<T>(_ type: T.Type, url: URL) async throws -> T where T : Decodable {
         do {
             return try RequestHelper.decoder.decode(type, from: body)
         } catch {
-            print("An error occurred while decoding output from http request \(error.localizedDescription)")
+            print("An error occurred while decoding output from http request \(error)")
             throw DataFetchError.bodyParse
         }
     } catch let error {

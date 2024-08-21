@@ -23,11 +23,9 @@ struct ProductView: View {
     @State private var product: Product? = nil
     
     private func fetch() async {
-        if product == nil {
-            if let product = try? await data(Product.self, url: productInfoURL(productID: productID)) {
-                DispatchQueue.main.async {
-                    self.product = product
-                }
+        if product == nil, let product = try? await data(Product.self, url: productInfoURL(productID: productID)) {
+            DispatchQueue.main.async {
+                self.product = product
             }
         }
     }

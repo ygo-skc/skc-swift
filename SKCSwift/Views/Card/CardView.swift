@@ -23,11 +23,7 @@ private struct CardView: View {
     @State private var cardData: Card?
     
     private func fetchData() async {
-        if cardData != nil {
-            return
-        }
-        
-        if let card = try? await data(Card.self, url: cardInfoURL(cardID: self.cardID)) {
+        if cardData == nil, let card = try? await data(Card.self, url: cardInfoURL(cardID: self.cardID)) {
             DispatchQueue.main.async {
                 cardData = card
             }

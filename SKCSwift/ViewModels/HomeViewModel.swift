@@ -50,48 +50,44 @@ class HomeViewModel {
     }
     
     private func fetchDBStatsData() async {
-        if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) {
-            if let dbStats = try? await data(SKCDatabaseStats.self, url: dbStatsURL()) {
-                DispatchQueue.main.async {
-                    self.dbStats = dbStats
-                }
+        if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefreshTimestamp),
+            let dbStats = try? await data(SKCDatabaseStats.self, url: dbStatsURL()) {
+            DispatchQueue.main.async {
+                self.dbStats = dbStats
             }
-            self.dbStatsRefreshTimestamp = Date()
         }
+        self.dbStatsRefreshTimestamp = Date()
     }
     
     private func fetchCardOfTheDayData() async {
-        if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp) {
-            if let cardOfTheDay = try? await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
-                DispatchQueue.main.async {
-                    self.cardOfTheDay = cardOfTheDay
-                }
+        if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp),
+           let cardOfTheDay = try? await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
+            DispatchQueue.main.async {
+                self.cardOfTheDay = cardOfTheDay
             }
-            self.cardOfTheDayRefreshTimeStamp = Date()
-            await fetchUpcomingTCGProducts()
         }
+        self.cardOfTheDayRefreshTimeStamp = Date()
+        await fetchUpcomingTCGProducts()
     }
     
     private func fetchUpcomingTCGProducts() async {
-        if upcomingTCGProducts == nil || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) {
-            if let upcomingTCGProducts = try? await data(Events.self, url: upcomingEventsURL()) {
-                DispatchQueue.main.async {
-                    self.upcomingTCGProducts = upcomingTCGProducts.events
-                }
+        if upcomingTCGProducts == nil || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp),
+           let upcomingTCGProducts = try? await data(Events.self, url: upcomingEventsURL()) {
+            DispatchQueue.main.async {
+                self.upcomingTCGProducts = upcomingTCGProducts.events
             }
-            self.upcomingTCGProductsRefreshTimeStamp = Date()
-            await fetchYouTubeUploadsData()
         }
+        self.upcomingTCGProductsRefreshTimeStamp = Date()
+        await fetchYouTubeUploadsData()
     }
     
     private func fetchYouTubeUploadsData() async {
-        if ytUploads == nil || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp) {
-            if let uploadData = try? await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
-                DispatchQueue.main.async {
-                    self.ytUploads = uploadData.videos
-                }
+        if ytUploads == nil || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp),
+            let uploadData = try? await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
+            DispatchQueue.main.async {
+                self.ytUploads = uploadData.videos
             }
-            self.ytUploadsRefreshTimeStamp = Date()
         }
+        self.ytUploadsRefreshTimeStamp = Date()
     }
 }
