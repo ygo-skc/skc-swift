@@ -56,6 +56,7 @@ private struct CardView: View {
                     if let cardData {
                         RelatedContentView(
                             cardName: cardData.cardName,
+                            cardColor: cardData.cardColor,
                             products: getProducts(),
                             tcgBanLists: getBanList(format: BanListFormat.tcg),
                             mdBanLists: getBanList(format: BanListFormat.md), dlBanLists: getBanList(format: BanListFormat.dl)

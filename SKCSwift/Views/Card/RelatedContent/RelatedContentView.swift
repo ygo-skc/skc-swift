@@ -11,6 +11,7 @@ protocol RelatedContent: View {}
 
 struct RelatedContentView: View {
     let cardName: String
+    let cardColor: String
     let products:[Product]
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
@@ -22,9 +23,9 @@ struct RelatedContentView: View {
                     content: {
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .top, spacing: 15) {
-                    RelatedProductsSectionViewModel(cardName: cardName, products: products)
+                    RelatedProductsSectionViewModel(cardName: cardName, cardColor: cardColor, products: products)
                     Divider()
-                    RelatedBanListsSectionViewModel(cardName: cardName, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
+                    RelatedBanListsSectionViewModel(cardName: cardName, cardColor: cardColor, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -38,23 +39,16 @@ struct RelatedContentView: View {
     }
 }
 
-private struct RelatedContentSectionHeaderViewModel: View {
-    let header: String
-    
-    var body: some View {
-        Text(header)
-            .font(.headline)
-    }
-}
-
 private struct RelatedProductsSectionViewModel: RelatedContent {
     let cardName: String
+    let cardColor: String
     let products: [Product]
     
     private var latestReleaseInfo = "Last Day Printed Not Found In DB"
     
-    init(cardName: String, products: [Product]) {
+    init(cardName: String, cardColor: String, products: [Product]) {
         self.cardName = cardName
+        self.cardColor = cardColor
         self.products = products
         
         if (!products.isEmpty) {
@@ -70,7 +64,8 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
     
     var body: some View {
         VStack(spacing: 8) {
-            RelatedContentSectionHeaderViewModel(header: "Products")
+            Text("Products")
+                .font(.headline)
             
             RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
                 RelatedProductsContentView(cardName: cardName, products: self.products)
@@ -82,19 +77,22 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
                 .padding(.top)
                 .frame(maxWidth: .infinity)
         }
+        .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
         .frame(maxWidth: .infinity)
     }
 }
 
 private struct RelatedBanListsSectionViewModel: RelatedContent{
     let cardName: String
+    let cardColor: String
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     let dlBanLists: [BanList]
     
     var body: some View {
         VStack(spacing: 8) {
-            RelatedContentSectionHeaderViewModel(header: "Ban Lists")
+            Text("Ban Lists")
+                .font(.headline)
             
             // TCG ban list deets
             RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
@@ -111,6 +109,7 @@ private struct RelatedBanListsSectionViewModel: RelatedContent{
                 RelatedBanListsContentView(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
             }
         }
+        .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
         .frame(maxWidth: .infinity)
     }
 }
@@ -152,6 +151,7 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
 
 #Preview("Stratos") {
     RelatedContentView(cardName: "Elemental HERO Stratos",
+                       cardColor: "Effect",
                        products: [
                         Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector", productReleaseDate: "2022-03-11",
                                 productContent: [
@@ -171,6 +171,7 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
 
 #Preview("Liquid Boi") {
     RelatedContentView(cardName: "Elemental HERO Liquid Soldier",
+                       cardColor: "Effect",
                        products: [
                         Product(productId: "LDS3", productLocale: "EN", productName: "Legendary Duelists: Season 3", productType: "Set", productSubType: "Reprint", productReleaseDate: "2022-07-22",
                                 productContent: [
@@ -195,6 +196,7 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
 
 #Preview("Monster Reborn") {
     RelatedContentView(cardName: "Monster Reborn",
+                       cardColor: "Spell",
                        products: [],
                        tcgBanLists: [
                         BanList(banListDate: "2022-12-01", cardID: "83764718", banStatus: "Limited", format: "TCG"),
