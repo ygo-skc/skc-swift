@@ -23,33 +23,19 @@ class HomeViewModel {
     @ObservationIgnored
     private var ytUploadsRefreshTimeStamp = Date()
     
-    func loadDBStats() async {
-        if dbStats == nil {
-            await self.fetchDBStatsData()
-        }
-    }
-    
-    func loadCardOfTheDay() async {
-        if cardOfTheDay == nil {
-            await self.fetchCardOfTheDayData()
-        }
-    }
-    
     func refresh() async {
-        await self.fetchDBStatsData()
-        await self.fetchCardOfTheDayData()
-        
-        repeat {
-            try? await Task.sleep(for: .milliseconds(250))
-        } while self.isDataInvalidated(date: self.dbStatsRefreshTimestamp) || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp)
-        || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp) || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp)
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { await self.fetchDBStatsData() }
+            taskGroup.addTask { await self.fetchCardOfTheDayData() }
+            taskGroup.addTask { await self.fetchUpcomingTCGProducts() }
+        }
     }
     
     private func isDataInvalidated(date: Date) -> Bool {
         return date.timeIntervalSinceNow(millisConversion: .minutes) >= 5
     }
     
-    private func fetchDBStatsData() async {
+    func fetchDBStatsData() async {
         if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefreshTimestamp),
             let dbStats = try? await data(SKCDatabaseStats.self, url: dbStatsURL()) {
             DispatchQueue.main.async {
@@ -59,7 +45,7 @@ class HomeViewModel {
         self.dbStatsRefreshTimestamp = Date()
     }
     
-    private func fetchCardOfTheDayData() async {
+    func fetchCardOfTheDayData() async {
         if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp),
            let cardOfTheDay = try? await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
             DispatchQueue.main.async {
@@ -67,10 +53,9 @@ class HomeViewModel {
             }
         }
         self.cardOfTheDayRefreshTimeStamp = Date()
-        await fetchUpcomingTCGProducts()
     }
     
-    private func fetchUpcomingTCGProducts() async {
+    func fetchUpcomingTCGProducts() async {
         if upcomingTCGProducts == nil || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp),
            let upcomingTCGProducts = try? await data(Events.self, url: upcomingEventsURL()) {
             DispatchQueue.main.async {
