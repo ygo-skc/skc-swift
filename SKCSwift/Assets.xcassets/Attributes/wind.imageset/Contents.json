@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "windx1.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "windx2.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "windx3.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "wind.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

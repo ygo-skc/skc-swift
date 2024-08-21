@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "divinex1.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "divinex2.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "divinex3.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "divine.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

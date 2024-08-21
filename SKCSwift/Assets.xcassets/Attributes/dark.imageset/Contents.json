@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "darkx1.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "darkx2.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "darkx3.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "dark.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "trapx1.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "trapx2.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "trapx3.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "trap.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "waterx1.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "waterx2.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "waterx3.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "water.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

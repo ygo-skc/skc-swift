@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "card_rankx1.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "card_rankx2.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "card_rankx3.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "rank.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {
