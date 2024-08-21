@@ -8,38 +8,41 @@
 import SwiftUI
 
 struct SectionView<Content: View>: View {
-    var header: String
+    let header: String
     var variant: SectionViewVariant = .styled
     
-    @ViewBuilder var content: () -> Content
+    @ViewBuilder let content: () -> Content
     
     var body: some View {
         VStack(alignment: .leading, spacing: (variant == .styled) ? 5 : 10) {
             Text(header)
                 .font(.title2)
                 .fontWeight(.bold)
-            content()
-                .modifier(SectionContentViewModifier(variant: variant))
+            
+            switch variant {
+            case .plain:
+                content()
+                    .modifier(SectionContentViewModifier(variant: variant))
+            case .styled:
+                GroupBox {
+                    content()
+                        .modifier(SectionContentViewModifier(variant: variant))
+                }
+                .groupBoxStyle(.sectionContent)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
 private struct SectionContentViewModifier: ViewModifier {
-    var variant: SectionViewVariant
+    let variant: SectionViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
-        case .plain:
+        case .plain, .styled:
             content
                 .frame(maxWidth: .infinity, alignment: .leading)
-        case .styled:
-            content
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical)
-                .padding(.horizontal)
-                .background(Color("section-background"))
-                .cornerRadius(15)
         }
     }
 }

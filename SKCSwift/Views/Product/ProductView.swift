@@ -53,7 +53,7 @@ struct ProductView: View {
                                             CardListItemView(card: card, showAllInfo: true)
                                                 .equatable()
                                         }
-                                        .groupBoxStyle(.list_item)
+                                        .groupBoxStyle(.listItem)
                                     })
                                     .buttonStyle(.plain)
                                 }

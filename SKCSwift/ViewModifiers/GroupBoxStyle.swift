@@ -20,6 +20,17 @@ struct ListItemGroupBoxStyle: GroupBoxStyle {
     }
 }
 
+struct SectionContentGroupBoxStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading) {
+            configuration.content
+        }
+        .contentShape(Rectangle())
+        .padding(.all, 12)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+    }
+}
+
 struct FiltersGroupBoxStyle: GroupBoxStyle {
     func makeBody(configuration: Configuration) -> some View {
         VStack(alignment: .leading) {
@@ -45,7 +56,8 @@ struct FiltersSubGroupBoxStyle: GroupBoxStyle {
 }
 
 extension GroupBoxStyle where Self == ListItemGroupBoxStyle {
-    static var list_item: ListItemGroupBoxStyle { .init() }
+    static var listItem: ListItemGroupBoxStyle { .init() }
+    static var sectionContent: SectionContentGroupBoxStyle { .init() }
     static var filters: FiltersGroupBoxStyle { .init() }
     static var filtersSubGroup: FiltersSubGroupBoxStyle { .init() }
 }
