@@ -47,17 +47,11 @@ struct HomeView: View {
             .refreshable {
                 // below code is needed else refreshable task will be cancelled https://stackoverflow.com/questions/74977787/why-is-async-task-cancelled-in-a-refreshable-modifier-on-a-scrollview-ios-16
                 await Task(priority: .userInitiated) {
-                    await homeViewModel.refresh()
+                    await homeViewModel.fetchData()
                 }.value
             }
-            .task(priority: .medium) {
-                await homeViewModel.fetchDBStatsData()
-            }
-            .task(priority: .medium) {
-                await homeViewModel.fetchCardOfTheDayData()
-            }
-            .task(priority: .medium) {
-                await homeViewModel.fetchUpcomingTCGProducts()
+            .task(priority: .userInitiated) {
+                await homeViewModel.fetchData()
             }
         }
     }

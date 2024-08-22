@@ -23,11 +23,12 @@ class HomeViewModel {
     @ObservationIgnored
     private var ytUploadsRefreshTimeStamp = Date()
     
-    func refresh() async {
+    func fetchData() async {
         await withTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask { await self.fetchDBStatsData() }
             taskGroup.addTask { await self.fetchCardOfTheDayData() }
             taskGroup.addTask { await self.fetchUpcomingTCGProducts() }
+            taskGroup.addTask(priority: .medium) { await self.fetchYouTubeUploadsData() }
         }
     }
     
@@ -63,10 +64,9 @@ class HomeViewModel {
             }
         }
         self.upcomingTCGProductsRefreshTimeStamp = Date()
-        await fetchYouTubeUploadsData()
     }
     
-    private func fetchYouTubeUploadsData() async {
+    func fetchYouTubeUploadsData() async {
         if ytUploads == nil || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp),
             let uploadData = try? await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
             DispatchQueue.main.async {
