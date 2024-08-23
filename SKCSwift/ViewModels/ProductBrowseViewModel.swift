@@ -7,23 +7,12 @@
 
 import Foundation
 
-struct FilteredItem: Identifiable, Equatable {
-    let category: String
-    var isToggled: Bool
-    var disableToggle: Bool
-    
-    var id: String {
-        return category + "-\(isToggled)-\(disableToggle)"
-    }
-}
-
 @Observable
-class BrowseViewModel {
+class ProductBrowseViewModel {
     var productTypeFilters: [FilteredItem] = []
     var productSubTypeFilters: [FilteredItem] = []
     
     private(set) var productsByYear: [String: [Product]]?
-    private(set) var cardBrowseCriteria: CardBrowseCriteria?
     
     @ObservationIgnored
     private(set) var products: [Product]?
@@ -93,16 +82,6 @@ class BrowseViewModel {
         
         Task { @MainActor in
             self.productsByYear = productsByYear
-        }
-    }
-    
-    // Browse cards
-    
-    func fetchCardBrowseCriteria() async {
-        if cardBrowseCriteria == nil, let cardBrowseCriteria = try? await data(CardBrowseCriteria.self, url: cardBrowseCriteriaURL()) {
-            Task(priority: .userInitiated) { @MainActor in
-                self.cardBrowseCriteria = cardBrowseCriteria
-            }
         }
     }
 }

@@ -9,12 +9,13 @@ import SwiftUI
 
 struct BrowseView: View {
     @State private var showFiltersSheet = false
-    @State private var browseViewModel = BrowseViewModel()
+    @State private var productBrowseViewModel = ProductBrowseViewModel()
+    @State private var cardBrowseViewModel = CardBrowseViewModel()
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                ProductBrowseView(productsByYear: browseViewModel.productsByYear)
+                ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
             }
             .frame(maxHeight: .infinity, alignment: .top)
             .navigationTitle("Browse")
@@ -32,25 +33,25 @@ struct BrowseView: View {
                 }
                 .sheet(isPresented: $showFiltersSheet, onDismiss: {showFiltersSheet = false}) {
                     ProductFilters(
-                        productTypeFilters: $browseViewModel.productTypeFilters,
-                        productSubTypeFilters: $browseViewModel.productSubTypeFilters)
+                        productTypeFilters: $productBrowseViewModel.productTypeFilters,
+                        productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
                 }
             }
-            .onChange(of: browseViewModel.productTypeFilters) { oldValue, newValue in
+            .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
                 Task {
-                    await browseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
+                    await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
                 }
             }
-            .onChange(of: browseViewModel.productSubTypeFilters) {
+            .onChange(of: productBrowseViewModel.productSubTypeFilters) {
                 Task {
-                    await browseViewModel.updateProductList()
+                    await productBrowseViewModel.updateProductList()
                 }
             }
             .task(priority: .userInitiated) {
-                await browseViewModel.fetchProductBrowseData()
+                await productBrowseViewModel.fetchProductBrowseData()
             }
             .task(priority: .userInitiated) {
-                await browseViewModel.fetchCardBrowseCriteria()
+                await cardBrowseViewModel.fetchCardBrowseCriteria()
             }
         }
     }
