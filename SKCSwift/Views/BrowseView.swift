@@ -17,7 +17,6 @@ struct BrowseView: View {
                 ProductBrowseView(productsByYear: browseViewModel.productsByYear)
             }
             .frame(maxHeight: .infinity, alignment: .top)
-            .frame(maxHeight: .infinity)
             .navigationTitle("Browse")
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
                 CardLinkDestinationView(cardLinkDestinationValue: card)
@@ -100,58 +99,72 @@ private struct ProductFilters: View {
                 .font(.headline)
                 .fontWeight(.light)
                 .padding(.bottom)
-            GroupBox {
-                GroupBox {
-                    LazyVGrid(columns: columns) {
-                        ForEach($productTypeFilters) { $pt in
-                            Toggle(isOn: $pt.isToggled) {
-                                Text(pt.category)
-                                    .font(.subheadline)
-                                    .frame(maxWidth: .infinity)
-                                    .contentShape(Rectangle())
-                            }
-                            .disabled(pt.disableToggle)
-                            .toggleStyle(.button)
-                            .frame(maxWidth: .infinity)
-                            .tint(.primary)
-                        }
-                    }
-                }
-                .groupBoxStyle(.filtersSubGroup)
-            } label: {
-                Label("Narrow down products", systemImage: "1.circle")
-            }
-            .groupBoxStyle(.filters)
-            .padding(.bottom)
             
-            GroupBox {
-                GroupBox {
-                    LazyVGrid(columns: columns2) {
-                        ForEach($productSubTypeFilters) { $pt in
-                            Toggle(isOn: $pt.isToggled) {
-                                Text(pt.category)
-                                    .font(.subheadline)
-                                    .frame(maxWidth: .infinity)
-                                    .contentShape(Rectangle())
-                            }
-                            .disabled(pt.disableToggle)
-                            .toggleStyle(.button)
-                            .frame(maxWidth: .infinity)
-                            .tint(.primary)
-                        }
-                    }
-                }
-                .groupBoxStyle(.filtersSubGroup)
-            } label: {
-                Label("Choose specific product category", systemImage: "2.circle")
-            }
-            .groupBoxStyle(.filters)
+            ProductFilter(filters: $productTypeFilters, filterInfo: "Narrow down products", filterImage: "1.circle", columns: columns)
+            ProductFilter(filters: $productSubTypeFilters, filterInfo: "Choose specific product category", filterImage: "2.circle", columns: columns2)
         }
         .modifier(ParentViewModifier())
         .padding(.top)
     }
 }
 
+private struct ProductFilter: View {
+    @Binding var filters: [FilteredItem]
+    let filterInfo: String
+    let filterImage: String
+    let columns: [GridItem]
+    
+    var body: some View {
+        GroupBox {
+            GroupBox {
+                LazyVGrid(columns: columns) {
+                    ForEach($filters) { $pt in
+                        Toggle(isOn: $pt.isToggled) {
+                            Text(pt.category)
+                                .modifier(.buttonToggleText)
+                        }
+                        .disabled(pt.disableToggle)
+                        .modifier(.buttonToggle)
+                    }
+                }
+            }
+            .groupBoxStyle(.filtersSubGroup)
+        } label: {
+            Label(filterInfo, systemImage: filterImage)
+        }
+        .groupBoxStyle(.filters)
+        .padding(.bottom)
+    }
+}
+
 #Preview {
     BrowseView()
+}
+
+private struct CardFilters: View {
+    let cardBrowseCriteria: CardBrowseCriteria
+    
+    @State var temp = false
+    
+    var body: some View {
+        VStack {
+            GroupBox {
+                GroupBox {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
+                        ForEach(cardBrowseCriteria.cardColors, id: \.self) { cardColor in
+                            Toggle(isOn: $temp) {
+                                CardColorIndicatorView(cardColor: cardColor, variant: .large)
+                            }
+                            .modifier(.buttonToggle)
+                        }
+                    }
+                }
+                .groupBoxStyle(.filtersSubGroup)
+            } label: {
+                Text("Filter by card color")
+            }
+            .groupBoxStyle(.filters)
+            .padding(.bottom)
+        }
+    }
 }

@@ -22,9 +22,8 @@ class BrowseViewModel {
     var productTypeFilters: [FilteredItem] = []
     var productSubTypeFilters: [FilteredItem] = []
     
-    var cardBrowseCriteria: CardBrowseCriteria?
-    
     private(set) var productsByYear: [String: [Product]]?
+    private(set) var cardBrowseCriteria: CardBrowseCriteria?
     
     @ObservationIgnored
     private(set) var products: [Product]?

@@ -57,7 +57,16 @@ struct FiltersSubGroupBoxStyle: GroupBoxStyle {
 
 extension GroupBoxStyle where Self == ListItemGroupBoxStyle {
     static var listItem: ListItemGroupBoxStyle { .init() }
+}
+
+extension GroupBoxStyle where Self == SectionContentGroupBoxStyle {
     static var sectionContent: SectionContentGroupBoxStyle { .init() }
+}
+
+extension GroupBoxStyle where Self == FiltersGroupBoxStyle {
     static var filters: FiltersGroupBoxStyle { .init() }
+}
+
+extension GroupBoxStyle where Self == FiltersSubGroupBoxStyle {
     static var filtersSubGroup: FiltersSubGroupBoxStyle { .init() }
 }

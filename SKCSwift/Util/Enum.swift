@@ -41,6 +41,7 @@ enum YGOCardViewVariant {
 enum CardColorIndicatorVariant {
     case small
     case regular
+    case large
 }
 
 enum YGOCardImageVariant {
