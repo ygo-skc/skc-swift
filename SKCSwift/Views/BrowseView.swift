@@ -88,8 +88,8 @@ private struct ProductFilters: View {
     @Binding var productTypeFilters: [FilteredItem]
     @Binding var productSubTypeFilters: [FilteredItem]
     
-    private let columns = Array(repeating: GridItem(.flexible()), count: 4)
-    private let columns2 = Array(repeating: GridItem(.flexible()), count: 2)
+    private static let productTypeColumns = Array(repeating: GridItem(.flexible()), count: 4)
+    private static let productSubTypeColumns = Array(repeating: GridItem(.flexible()), count: 2)
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -100,8 +100,14 @@ private struct ProductFilters: View {
                 .fontWeight(.light)
                 .padding(.bottom)
             
-            ProductFilter(filters: $productTypeFilters, filterInfo: "Narrow down products", filterImage: "1.circle", columns: columns)
-            ProductFilter(filters: $productSubTypeFilters, filterInfo: "Choose specific product category", filterImage: "2.circle", columns: columns2)
+            ProductFilter(filters: $productTypeFilters, 
+                          filterInfo: "Narrow down products",
+                          filterImage: "1.circle",
+                          columns: ProductFilters.productTypeColumns)
+            ProductFilter(filters: $productSubTypeFilters,
+                          filterInfo: "Choose specific product category",
+                          filterImage: "2.circle",
+                          columns: ProductFilters.productSubTypeColumns)
         }
         .modifier(ParentViewModifier())
         .padding(.top)
@@ -137,10 +143,6 @@ private struct ProductFilter: View {
     }
 }
 
-#Preview {
-    BrowseView()
-}
-
 private struct CardFilters: View {
     let cardBrowseCriteria: CardBrowseCriteria
     
@@ -167,4 +169,8 @@ private struct CardFilters: View {
             .padding(.bottom)
         }
     }
+}
+
+#Preview {
+    BrowseView()
 }
