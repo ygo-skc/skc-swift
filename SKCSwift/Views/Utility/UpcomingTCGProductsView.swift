@@ -40,7 +40,7 @@ private struct UpcomingTCGProductView: View, Equatable {
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            DateBadgeView(date: event.eventDate, dateFormat: Dates.isoChicago, variant: .condensed)
+            DateBadgeView(date: event.eventDate, dateFormat: Date.isoChicago, variant: .condensed)
                 .equatable()
             
             VStack(alignment: .leading, spacing: 8) {

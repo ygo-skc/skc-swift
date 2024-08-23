@@ -14,7 +14,7 @@ struct DateBadgeView: View, Equatable {
     private let year: String
     private let variant: DateBadgeViewVariant
     
-    init(date: String, dateFormat: (formatter: DateFormatter, calendar: Calendar) = Dates.yyyyMMddGMT, variant: DateBadgeViewVariant = .normal) {
+    init(date: String, dateFormat: (formatter: DateFormatter, calendar: Calendar) = Date.yyyyMMddGMT, variant: DateBadgeViewVariant = .normal) {
         self.variant = variant
         
         let date = dateFormat.formatter.date(from: date)!
