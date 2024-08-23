@@ -15,64 +15,49 @@ class HomeViewModel {
     private(set) var ytUploads: [YouTubeVideos]?
     
     @ObservationIgnored
-    private var dbStatsRefreshTimestamp = Date()
-    @ObservationIgnored
-    private var cardOfTheDayRefreshTimeStamp = Date()
-    @ObservationIgnored
-    private var upcomingTCGProductsRefreshTimeStamp = Date()
-    @ObservationIgnored
-    private var ytUploadsRefreshTimeStamp = Date()
+    private var lastRefreshTimestamp = Date(timeIntervalSinceNow: -60 * 60)
     
     func fetchData() async {
-        await withTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask { await self.fetchDBStatsData() }
-            taskGroup.addTask { await self.fetchCardOfTheDayData() }
-            taskGroup.addTask { await self.fetchUpcomingTCGProducts() }
-            taskGroup.addTask(priority: .medium) { await self.fetchYouTubeUploadsData() }
+        if lastRefreshTimestamp.isDateInvalidated(5, millisConversion: .minutes) {
+            await withTaskGroup(of: Void.self) { taskGroup in
+                taskGroup.addTask { await self.fetchDBStatsData() }
+                taskGroup.addTask { await self.fetchCardOfTheDayData() }
+                taskGroup.addTask { await self.fetchUpcomingTCGProducts() }
+                taskGroup.addTask(priority: .medium) { await self.fetchYouTubeUploadsData() }
+            }
+            lastRefreshTimestamp = Date()
         }
     }
     
-    private func isDataInvalidated(date: Date) -> Bool {
-        return date.timeIntervalSinceNow(millisConversion: .minutes) >= 5
-    }
-    
     func fetchDBStatsData() async {
-        if dbStats == nil || self.isDataInvalidated(date: self.dbStatsRefreshTimestamp),
-            let dbStats = try? await data(SKCDatabaseStats.self, url: dbStatsURL()) {
+        if let dbStats = try? await data(SKCDatabaseStats.self, url: dbStatsURL()) {
             DispatchQueue.main.async {
                 self.dbStats = dbStats
             }
         }
-        self.dbStatsRefreshTimestamp = Date()
     }
     
     func fetchCardOfTheDayData() async {
-        if cardOfTheDay == nil || self.isDataInvalidated(date: self.cardOfTheDayRefreshTimeStamp),
-           let cardOfTheDay = try? await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
+        if let cardOfTheDay = try? await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
             DispatchQueue.main.async {
                 self.cardOfTheDay = cardOfTheDay
             }
         }
-        self.cardOfTheDayRefreshTimeStamp = Date()
     }
     
     func fetchUpcomingTCGProducts() async {
-        if upcomingTCGProducts == nil || self.isDataInvalidated(date: self.upcomingTCGProductsRefreshTimeStamp),
-           let upcomingTCGProducts = try? await data(Events.self, url: upcomingEventsURL()) {
+        if let upcomingTCGProducts = try? await data(Events.self, url: upcomingEventsURL()) {
             DispatchQueue.main.async {
                 self.upcomingTCGProducts = upcomingTCGProducts.events
             }
         }
-        self.upcomingTCGProductsRefreshTimeStamp = Date()
     }
     
     func fetchYouTubeUploadsData() async {
-        if ytUploads == nil || self.isDataInvalidated(date: self.ytUploadsRefreshTimeStamp),
-            let uploadData = try? await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
+        if let uploadData = try? await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
             DispatchQueue.main.async {
                 self.ytUploads = uploadData.videos
             }
         }
-        self.ytUploadsRefreshTimeStamp = Date()
     }
 }

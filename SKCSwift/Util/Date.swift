@@ -50,7 +50,12 @@ extension Date {
     }
     
     func getMonthDayAndYear(calendar: Calendar) -> (String, String, String){
-        return (calendar.shortMonthSymbols[calendar.component(.month, from: self) - 1], String(calendar.component(.day, from: self)), String(calendar.component(.year, from: self)))
+        return (calendar.shortMonthSymbols[calendar.component(.month, from: self) - 1], 
+                String(calendar.component(.day, from: self)), String(calendar.component(.year, from: self)))
+    }
+    
+    func isDateInvalidated(_ t: Int, millisConversion: ConversionFromSeconds = .minutes) -> Bool {
+        return self.timeIntervalSinceNow(millisConversion: millisConversion) >= t
     }
 }
 
