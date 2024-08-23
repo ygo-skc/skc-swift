@@ -18,7 +18,7 @@ class HomeViewModel {
     private var lastRefreshTimestamp = Date(timeIntervalSinceNow: -60 * 60)
     
     func fetchData() async {
-        if lastRefreshTimestamp.isDateInvalidated(5, millisConversion: .minutes) {
+        if lastRefreshTimestamp.isDateInvalidated(5) {
             await withTaskGroup(of: Void.self) { taskGroup in
                 taskGroup.addTask { await self.fetchDBStatsData() }
                 taskGroup.addTask { await self.fetchCardOfTheDayData() }
