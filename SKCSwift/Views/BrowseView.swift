@@ -36,6 +36,15 @@ struct BrowseView: View {
                         productTypeFilters: $productBrowseViewModel.productTypeFilters,
                         productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
                 }
+                
+                Button {
+                    showFiltersSheet.toggle()
+                } label: {
+                    Image(systemName: "folder")
+                }
+                .sheet(isPresented: $showFiltersSheet, onDismiss: {showFiltersSheet = false}) {
+                    CardFilters(cardColorFilters: $cardBrowseViewModel.cardColorFilters)
+                }
             }
             .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
                 Task {
@@ -101,7 +110,7 @@ private struct ProductFilters: View {
                 .fontWeight(.light)
                 .padding(.bottom)
             
-            ProductFilter(filters: $productTypeFilters, 
+            ProductFilter(filters: $productTypeFilters,
                           filterInfo: "Narrow down products",
                           filterImage: "1.circle",
                           columns: ProductFilters.productTypeColumns)
@@ -145,18 +154,16 @@ private struct ProductFilter: View {
 }
 
 private struct CardFilters: View {
-    let cardBrowseCriteria: CardBrowseCriteria
-    
-    @State var temp = false
+    @Binding var cardColorFilters: [FilteredItem]
     
     var body: some View {
         VStack {
             GroupBox {
                 GroupBox {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
-                        ForEach(cardBrowseCriteria.cardColors, id: \.self) { cardColor in
-                            Toggle(isOn: $temp) {
-                                CardColorIndicatorView(cardColor: cardColor, variant: .large)
+                        ForEach($cardColorFilters) { $cardColorFilter in
+                            Toggle(isOn: $cardColorFilter.isToggled) {
+                                CardColorIndicatorView(cardColor: cardColorFilter.category, variant: .large)
                             }
                             .modifier(.buttonToggle)
                         }

@@ -9,12 +9,22 @@ import Foundation
 
 @Observable
 class CardBrowseViewModel {
-    private(set) var cardBrowseCriteria: CardBrowseCriteria?
+    var cardColorFilters: [FilteredItem] = []
+    
+    @ObservationIgnored
+    private var cardBrowseCriteria: CardBrowseCriteria?
     
     func fetchCardBrowseCriteria() async {
         if cardBrowseCriteria == nil, let cardBrowseCriteria = try? await data(CardBrowseCriteria.self, url: cardBrowseCriteriaURL()) {
-            Task(priority: .userInitiated) { @MainActor in
-                self.cardBrowseCriteria = cardBrowseCriteria
+            self.cardBrowseCriteria = cardBrowseCriteria
+            
+            var cardColorFilters: [FilteredItem] = []
+            for cardColor in cardBrowseCriteria.cardColors {
+                cardColorFilters.append(FilteredItem(category: cardColor, isToggled: false, disableToggle: false))
+            }
+            
+            Task { @MainActor [cardColorFilters] in
+                self.cardColorFilters = cardColorFilters
             }
         }
     }
