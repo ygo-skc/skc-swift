@@ -16,3 +16,8 @@ struct FilteredItem: Identifiable, Equatable {
         return category + "-\(isToggled)-\(disableToggle)"
     }
 }
+
+struct CardFilters: Equatable {
+    var attributes: [FilteredItem]
+    var colors: [FilteredItem]
+}

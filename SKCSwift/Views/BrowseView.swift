@@ -8,60 +8,100 @@
 import SwiftUI
 
 struct BrowseView: View {
-    @State private var showFiltersSheet = false
+    @State private var focusedResource = TrendingResourceType.card
+    
     @State private var productBrowseViewModel = ProductBrowseViewModel()
     @State private var cardBrowseViewModel = CardBrowseViewModel()
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
-            }
-            .frame(maxHeight: .infinity, alignment: .top)
-            .navigationTitle("Browse")
-            .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                CardLinkDestinationView(cardLinkDestinationValue: card)
-            }
-            .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-                ProductLinkDestinationView(productLinkDestinationValue: product)
-            }
-            .toolbar {
-                Button {
-                    showFiltersSheet.toggle()
-                } label: {
-                    Image(systemName: "line.3.horizontal.decrease")
-                }
-                .sheet(isPresented: $showFiltersSheet, onDismiss: {showFiltersSheet = false}) {
-                    ProductFilters(
-                        productTypeFilters: $productBrowseViewModel.productTypeFilters,
-                        productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
-                }
-                
-                Button {
-                    showFiltersSheet.toggle()
-                } label: {
-                    Image(systemName: "folder")
-                }
-                .sheet(isPresented: $showFiltersSheet, onDismiss: {showFiltersSheet = false}) {
-                    CardFilters(cardColorFilters: $cardBrowseViewModel.cardColorFilters)
+            Picker("Select resource to browse", selection: $focusedResource) {
+                ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                    Text(type.rawValue.capitalized).tag(type)
                 }
             }
-            .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
-                Task {
-                    await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            
+            switch focusedResource {
+            case .card:
+                VStack(alignment: .leading) {
+                    List(cardBrowseViewModel.cards, id: \.self.cardID) { card in
+                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                            CardListItemView(card: card)
+                                .equatable()
+                        })
+                        .buttonStyle(.plain)
+                    }
+                    .listStyle(.plain)
+                    .ignoresSafeArea(.keyboard)
+                }
+                .frame(maxHeight: .infinity, alignment: .top)
+                .navigationTitle("Browse")
+                .navigationDestination(for: CardLinkDestinationValue.self) { card in
+                    CardLinkDestinationView(cardLinkDestinationValue: card)
+                }
+                .navigationDestination(for: ProductLinkDestinationValue.self) { product in
+                    ProductLinkDestinationView(productLinkDestinationValue: product)
+                }
+                .toolbar {
+                    Button {
+                        cardBrowseViewModel.showFilters.toggle()
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease")
+                    }
+                    .sheet(isPresented: $cardBrowseViewModel.showFilters, onDismiss: {cardBrowseViewModel.showFilters = false}) {
+                        if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
+                            CardFiltersView(filters: filters)
+                        }
+                    }
+                }
+            case .product:
+                VStack(alignment: .leading) {
+                    ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
+                }
+                .frame(maxHeight: .infinity, alignment: .top)
+                .navigationTitle("Browse")
+                .navigationDestination(for: CardLinkDestinationValue.self) { card in
+                    CardLinkDestinationView(cardLinkDestinationValue: card)
+                }
+                .navigationDestination(for: ProductLinkDestinationValue.self) { product in
+                    ProductLinkDestinationView(productLinkDestinationValue: product)
+                }
+                .toolbar {
+                    Button {
+                        productBrowseViewModel.showFilters.toggle()
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease")
+                    }
+                    .sheet(isPresented: $productBrowseViewModel.showFilters, onDismiss: {productBrowseViewModel.showFilters = false}) {
+                        ProductFiltersView(
+                            productTypeFilters: $productBrowseViewModel.productTypeFilters,
+                            productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
+                    }
                 }
             }
-            .onChange(of: productBrowseViewModel.productSubTypeFilters) {
-                Task {
-                    await productBrowseViewModel.updateProductList()
-                }
+        }
+        .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
+            Task {
+                await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
             }
-            .task(priority: .userInitiated) {
-                await productBrowseViewModel.fetchProductBrowseData()
+        }
+        .onChange(of: productBrowseViewModel.productSubTypeFilters) {
+            Task {
+                await productBrowseViewModel.updateProductList()
             }
-            .task(priority: .userInitiated) {
-                await cardBrowseViewModel.fetchCardBrowseCriteria()
+        }
+        .onChange(of: cardBrowseViewModel.filters) {
+            Task {
+                await cardBrowseViewModel.fetchCards()
             }
+        }
+        .task(priority: .userInitiated) {
+            await productBrowseViewModel.fetchProductBrowseData()
+        }
+        .task(priority: .userInitiated) {
+            await cardBrowseViewModel.fetchCardBrowseCriteria()
         }
     }
 }
@@ -94,7 +134,7 @@ private struct ProductBrowseView: View {
     }
 }
 
-private struct ProductFilters: View {
+private struct ProductFiltersView: View {
     @Binding var productTypeFilters: [FilteredItem]
     @Binding var productSubTypeFilters: [FilteredItem]
     
@@ -110,21 +150,21 @@ private struct ProductFilters: View {
                 .fontWeight(.light)
                 .padding(.bottom)
             
-            ProductFilter(filters: $productTypeFilters,
-                          filterInfo: "Narrow down products",
-                          filterImage: "1.circle",
-                          columns: ProductFilters.productTypeColumns)
-            ProductFilter(filters: $productSubTypeFilters,
-                          filterInfo: "Choose specific product category",
-                          filterImage: "2.circle",
-                          columns: ProductFilters.productSubTypeColumns)
+            ProductFilterView(filters: $productTypeFilters,
+                              filterInfo: "Narrow down products",
+                              filterImage: "1.circle",
+                              columns: ProductFiltersView.productTypeColumns)
+            ProductFilterView(filters: $productSubTypeFilters,
+                              filterInfo: "Choose specific product category",
+                              filterImage: "2.circle",
+                              columns: ProductFiltersView.productSubTypeColumns)
         }
         .modifier(ParentViewModifier())
         .padding(.top)
     }
 }
 
-private struct ProductFilter: View {
+private struct ProductFilterView: View {
     @Binding var filters: [FilteredItem]
     let filterInfo: String
     let filterImage: String
@@ -153,29 +193,53 @@ private struct ProductFilter: View {
     }
 }
 
-private struct CardFilters: View {
-    @Binding var cardColorFilters: [FilteredItem]
+private struct CardFiltersView: View {
+    @Binding var filters: CardFilters
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
+            Text("Card filters")
+                .font(.title2)
+            Text("Filter cards by using card metadata")
+                .font(.headline)
+                .fontWeight(.light)
+                .padding(.bottom)
+            
+            CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
+                CardColorIndicatorView(cardColor: category, variant: .large)
+            }
+            CardFilterView(filters: $filters.attributes, filterInfo: "Filter by attribute") { category in
+                AttributeView(attribute: Attribute(rawValue: category) ?? .unknown)
+            }
+        }
+        .modifier(ParentViewModifier())
+        .padding(.top)
+    }
+}
+
+struct CardFilterView<Content: View>: View {
+    @Binding var filters: [FilteredItem]
+    let filterInfo: String
+    @ViewBuilder let content: (String) -> Content
+    
+    var body: some View {
+        GroupBox {
             GroupBox {
-                GroupBox {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
-                        ForEach($cardColorFilters) { $cardColorFilter in
-                            Toggle(isOn: $cardColorFilter.isToggled) {
-                                CardColorIndicatorView(cardColor: cardColorFilter.category, variant: .large)
-                            }
-                            .modifier(.buttonToggle)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
+                    ForEach($filters) { $cardColorFilter in
+                        Toggle(isOn: $cardColorFilter.isToggled) {
+                            content(cardColorFilter.category)
                         }
+                        .modifier(.buttonToggle)
                     }
                 }
-                .groupBoxStyle(.filtersSubGroup)
-            } label: {
-                Text("Filter by card color")
             }
-            .groupBoxStyle(.filters)
-            .padding(.bottom)
+            .groupBoxStyle(.filtersSubGroup)
+        } label: {
+            Text(filterInfo)
         }
+        .groupBoxStyle(.filters)
+        .padding(.bottom)
     }
 }
 

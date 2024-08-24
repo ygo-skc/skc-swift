@@ -89,3 +89,8 @@ struct CardBrowseCriteria: Codable {
     let ranks: [UInt8]
     let linkRatings: [UInt8]
 }
+
+struct CardBrowseResults: Codable {
+    let results: [Card]
+    let numResults: UInt
+}
