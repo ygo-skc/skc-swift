@@ -26,18 +26,22 @@ struct BrowseView: View {
                 
                 switch focusedResource {
                 case .card:
-                    VStack(alignment: .leading) {
-                        List(cardBrowseViewModel.cards, id: \.self.cardID) { card in
-                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                CardListItemView(card: card)
-                                    .equatable()
-                            })
-                            .buttonStyle(.plain)
+                    ScrollView {
+                        LazyVStack(alignment: .leading) {
+                            ForEach(cardBrowseViewModel.cards, id: \.self.cardID) { card in
+                                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                    GroupBox {
+                                        CardListItemView(card: card)
+                                            .equatable()
+                                    }
+                                    .groupBoxStyle(.listItem)
+                                })
+                                .buttonStyle(.plain)
+                            }
+                            .listStyle(.plain)
+                            .ignoresSafeArea(.keyboard)
                         }
-                        .listStyle(.plain)
-                        .ignoresSafeArea(.keyboard)
                     }
-                    .frame(maxHeight: .infinity, alignment: .top)
                     .toolbar {
                         Button {
                             cardBrowseViewModel.showFilters.toggle()
@@ -129,17 +133,19 @@ private struct ProductBrowseView: View {
                     ForEach(productsByYear.keys.sorted(by: >), id: \.self) { year in
                         if let productForYear = productsByYear[year] {
                             Section(header: HeaderView(header: "\(year) • \(productForYear.count) total")) {
-                                ForEach(productForYear, id: \.productId) { product in
-                                    NavigationLink(
-                                        value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
-                                        label: {
-                                            GroupBox {
-                                                ProductListItemView(product: product)
-                                                    .equatable()
-                                            }
-                                            .groupBoxStyle(.listItem)
-                                        })
-                                    .buttonStyle(.plain)
+                                LazyVStack {
+                                    ForEach(productForYear, id: \.productId) { product in
+                                        NavigationLink(
+                                            value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
+                                            label: {
+                                                GroupBox {
+                                                    ProductListItemView(product: product)
+                                                        .equatable()
+                                                }
+                                                .groupBoxStyle(.listItem)
+                                            })
+                                        .buttonStyle(.plain)
+                                    }
                                 }
                             }
                         }
@@ -147,8 +153,8 @@ private struct ProductBrowseView: View {
                     .listStyle(.plain)
                     .ignoresSafeArea(.keyboard)
                 }
+                .modifier(ParentViewModifier())
             }
-            .modifier(ParentViewModifier())
         } else {
             ProgressView()
         }
