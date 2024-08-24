@@ -15,10 +15,10 @@ class HomeViewModel {
     private(set) var ytUploads: [YouTubeVideos]?
     
     @ObservationIgnored
-    private var lastRefreshTimestamp = Date(timeIntervalSinceNow: -60 * 60)
+    private var lastRefreshTimestamp: Date?
     
-    func fetchData() async {
-        if lastRefreshTimestamp.isDateInvalidated(5) {
+    func fetchData(refresh: Bool) async {
+        if lastRefreshTimestamp == nil || (refresh && lastRefreshTimestamp!.isDateInvalidated(5)) {
             await withTaskGroup(of: Void.self) { taskGroup in
                 taskGroup.addTask { await self.fetchDBStatsData() }
                 taskGroup.addTask { await self.fetchCardOfTheDayData() }
