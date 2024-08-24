@@ -15,71 +15,66 @@ struct BrowseView: View {
     
     var body: some View {
         NavigationStack {
-            Picker("Select resource to browse", selection: $focusedResource) {
-                ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                    Text(type.rawValue.capitalized).tag(type)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            
-            switch focusedResource {
-            case .card:
-                VStack(alignment: .leading) {
-                    List(cardBrowseViewModel.cards, id: \.self.cardID) { card in
-                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                            CardListItemView(card: card)
-                                .equatable()
-                        })
-                        .buttonStyle(.plain)
+            VStack {
+                Picker("Select resource to browse", selection: $focusedResource) {
+                    ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                        Text(type.rawValue.capitalized).tag(type)
                     }
-                    .listStyle(.plain)
-                    .ignoresSafeArea(.keyboard)
                 }
-                .frame(maxHeight: .infinity, alignment: .top)
-                .navigationTitle("Browse")
-                .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                    CardLinkDestinationView(cardLinkDestinationValue: card)
-                }
-                .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-                    ProductLinkDestinationView(productLinkDestinationValue: product)
-                }
-                .toolbar {
-                    Button {
-                        cardBrowseViewModel.showFilters.toggle()
-                    } label: {
-                        Image(systemName: "line.3.horizontal.decrease")
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                
+                switch focusedResource {
+                case .card:
+                    VStack(alignment: .leading) {
+                        List(cardBrowseViewModel.cards, id: \.self.cardID) { card in
+                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                CardListItemView(card: card)
+                                    .equatable()
+                            })
+                            .buttonStyle(.plain)
+                        }
+                        .listStyle(.plain)
+                        .ignoresSafeArea(.keyboard)
                     }
-                    .sheet(isPresented: $cardBrowseViewModel.showFilters, onDismiss: {cardBrowseViewModel.showFilters = false}) {
-                        if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
-                            CardFiltersView(filters: filters)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .toolbar {
+                        Button {
+                            cardBrowseViewModel.showFilters.toggle()
+                        } label: {
+                            Image(systemName: "line.3.horizontal.decrease")
+                        }
+                        .sheet(isPresented: $cardBrowseViewModel.showFilters, onDismiss: {cardBrowseViewModel.showFilters = false}) {
+                            if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
+                                CardFiltersView(filters: filters)
+                            }
+                        }
+                    }
+                case .product:
+                    VStack {
+                        ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .toolbar {
+                        Button {
+                            productBrowseViewModel.showFilters.toggle()
+                        } label: {
+                            Image(systemName: "line.3.horizontal.decrease")
+                        }
+                        .sheet(isPresented: $productBrowseViewModel.showFilters, onDismiss: {productBrowseViewModel.showFilters = false}) {
+                            ProductFiltersView(
+                                productTypeFilters: $productBrowseViewModel.productTypeFilters,
+                                productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
                         }
                     }
                 }
-            case .product:
-                VStack(alignment: .leading) {
-                    ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
-                }
-                .frame(maxHeight: .infinity, alignment: .top)
-                .navigationTitle("Browse")
-                .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                    CardLinkDestinationView(cardLinkDestinationValue: card)
-                }
-                .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-                    ProductLinkDestinationView(productLinkDestinationValue: product)
-                }
-                .toolbar {
-                    Button {
-                        productBrowseViewModel.showFilters.toggle()
-                    } label: {
-                        Image(systemName: "line.3.horizontal.decrease")
-                    }
-                    .sheet(isPresented: $productBrowseViewModel.showFilters, onDismiss: {productBrowseViewModel.showFilters = false}) {
-                        ProductFiltersView(
-                            productTypeFilters: $productBrowseViewModel.productTypeFilters,
-                            productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
-                    }
-                }
+            }
+            .navigationTitle("Browse")
+            .navigationDestination(for: CardLinkDestinationValue.self) { card in
+                CardLinkDestinationView(cardLinkDestinationValue: card)
+            }
+            .navigationDestination(for: ProductLinkDestinationValue.self) { product in
+                ProductLinkDestinationView(productLinkDestinationValue: product)
             }
         }
         .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
@@ -106,6 +101,22 @@ struct BrowseView: View {
     }
 }
 
+private struct HeaderView: View {
+    let header: String
+    
+    var body: some View {
+        HStack {
+            Text(header)
+                .font(.headline)
+                .fontWeight(.black)
+            Spacer()
+        }
+        .padding(.all, 5)
+        .background(.thinMaterial)
+        .cornerRadius(5)
+    }
+}
+
 private struct ProductBrowseView: View {
     let productsByYear: [String: [Product]]?
     
@@ -113,21 +124,31 @@ private struct ProductBrowseView: View {
         if let productsByYear = productsByYear, productsByYear.isEmpty {
             ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
         } else if let productsByYear = productsByYear, !productsByYear.isEmpty {
-            List(productsByYear.keys.sorted(by: >), id: \.self) { year in
-                if let productForYear = productsByYear[year] {
-                    Section(header: Text("\(year) • \(productForYear.count) total").font(.headline).fontWeight(.black)) {
-                        ForEach(productForYear, id: \.productId) { product in
-                            NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                                ProductListItemView(product: product)
-                                    .equatable()
-                            })
-                            .buttonStyle(.plain)
+            ScrollView {
+                LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+                    ForEach(productsByYear.keys.sorted(by: >), id: \.self) { year in
+                        if let productForYear = productsByYear[year] {
+                            Section(header: HeaderView(header: "\(year) • \(productForYear.count) total")) {
+                                ForEach(productForYear, id: \.productId) { product in
+                                    NavigationLink(
+                                        value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
+                                        label: {
+                                            GroupBox {
+                                                ProductListItemView(product: product)
+                                                    .equatable()
+                                            }
+                                            .groupBoxStyle(.listItem)
+                                        })
+                                    .buttonStyle(.plain)
+                                }
+                            }
                         }
                     }
+                    .listStyle(.plain)
+                    .ignoresSafeArea(.keyboard)
                 }
             }
-            .listStyle(.plain)
-            .ignoresSafeArea(.keyboard)
+            .modifier(ParentViewModifier())
         } else {
             ProgressView()
         }
