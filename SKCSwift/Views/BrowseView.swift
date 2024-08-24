@@ -9,10 +9,10 @@ import SwiftUI
 
 struct BrowseView: View {
     @State private var focusedResource = TrendingResourceType.card
-    
+
     @State private var productBrowseViewModel = ProductBrowseViewModel()
     @State private var cardBrowseViewModel = CardBrowseViewModel()
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -23,7 +23,7 @@ struct BrowseView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
-                
+
                 switch focusedResource {
                 case .card:
                     ScrollView {
@@ -107,7 +107,7 @@ struct BrowseView: View {
 
 private struct HeaderView: View {
     let header: String
-    
+
     var body: some View {
         HStack {
             Text(header)
@@ -123,7 +123,7 @@ private struct HeaderView: View {
 
 private struct ProductBrowseView: View {
     let productsByYear: [String: [Product]]?
-    
+
     var body: some View {
         if let productsByYear = productsByYear, productsByYear.isEmpty {
             ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
@@ -164,10 +164,10 @@ private struct ProductBrowseView: View {
 private struct ProductFiltersView: View {
     @Binding var productTypeFilters: [FilteredItem]
     @Binding var productSubTypeFilters: [FilteredItem]
-    
+
     private static let productTypeColumns = Array(repeating: GridItem(.flexible()), count: 4)
     private static let productSubTypeColumns = Array(repeating: GridItem(.flexible()), count: 2)
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Text("Product filters")
@@ -176,7 +176,7 @@ private struct ProductFiltersView: View {
                 .font(.headline)
                 .fontWeight(.light)
                 .padding(.bottom)
-            
+
             ProductFilterView(filters: $productTypeFilters,
                               filterInfo: "Narrow down products",
                               filterImage: "1.circle",
@@ -196,7 +196,7 @@ private struct ProductFilterView: View {
     let filterInfo: String
     let filterImage: String
     let columns: [GridItem]
-    
+
     var body: some View {
         GroupBox {
             GroupBox {
@@ -222,7 +222,7 @@ private struct ProductFilterView: View {
 
 private struct CardFiltersView: View {
     @Binding var filters: CardFilters
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Text("Card filters")
@@ -231,7 +231,7 @@ private struct CardFiltersView: View {
                 .font(.headline)
                 .fontWeight(.light)
                 .padding(.bottom)
-            
+
             CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
                 CardColorIndicatorView(cardColor: category, variant: .large)
             }
@@ -248,7 +248,7 @@ struct CardFilterView<Content: View>: View {
     @Binding var filters: [FilteredItem]
     let filterInfo: String
     @ViewBuilder let content: (String) -> Content
-    
+
     var body: some View {
         GroupBox {
             GroupBox {
