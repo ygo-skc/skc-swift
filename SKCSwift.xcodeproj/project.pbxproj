@@ -68,6 +68,7 @@
 		DE825C682C54650300600FD2 /* TrendingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE825C672C54650300600FD2 /* TrendingViewModel.swift */; };
 		DE96B78C2C61A3FC00DC5ABB /* ProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96B78B2C61A3FC00DC5ABB /* ProductView.swift */; };
 		DEB57CB22C7911780016D7A4 /* ToggleViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB57CB12C7911780016D7A4 /* ToggleViewModifier.swift */; };
+		DEB9977A2C7BE257000B8548 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB997792C7BE257000B8548 /* HeaderView.swift */; };
 		DEC099B12C4DD05E00A8B797 /* CardListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B02C4DD05E00A8B797 /* CardListItemView.swift */; };
 		DEC099B32C4F0CCD00A8B797 /* TrendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */; };
 		DEC099B72C4F0F8F00A8B797 /* Trending.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC099B62C4F0F8F00A8B797 /* Trending.swift */; };
@@ -163,6 +164,7 @@
 		DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEB57CB12C7911780016D7A4 /* ToggleViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleViewModifier.swift; sourceTree = "<group>"; };
+		DEB997792C7BE257000B8548 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		DEC099B02C4DD05E00A8B797 /* CardListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardListItemView.swift; sourceTree = "<group>"; };
 		DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingView.swift; sourceTree = "<group>"; };
 		DEC099B62C4F0F8F00A8B797 /* Trending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trending.swift; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				DEC099B22C4F0CCD00A8B797 /* TrendingView.swift */,
 				1FBE069729FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift */,
 				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
+				DEB997792C7BE257000B8548 /* HeaderView.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -551,6 +554,7 @@
 				DEC099B32C4F0CCD00A8B797 /* TrendingView.swift in Sources */,
 				1F3B51052B41EC6F002D79D8 /* CardImageView.swift in Sources */,
 				1F1C1D3D2A353B1800E73D67 /* BanListOptionsView.swift in Sources */,
+				DEB9977A2C7BE257000B8548 /* HeaderView.swift in Sources */,
 				1F21FF6C2977BC2D00B4451A /* Color.swift in Sources */,
 				1FBE069A29FDBE8000EA85A4 /* Events.swift in Sources */,
 				1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */,

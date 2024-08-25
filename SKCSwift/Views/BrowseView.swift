@@ -9,10 +9,10 @@ import SwiftUI
 
 struct BrowseView: View {
     @State private var focusedResource = TrendingResourceType.card
-
+    
     @State private var productBrowseViewModel = ProductBrowseViewModel()
     @State private var cardBrowseViewModel = CardBrowseViewModel()
-
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -23,7 +23,7 @@ struct BrowseView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
-
+                
                 switch focusedResource {
                 case .card:
                     ScrollView {
@@ -42,34 +42,23 @@ struct BrowseView: View {
                             .ignoresSafeArea(.keyboard)
                         }
                     }
-                    .toolbar {
-                        Button {
-                            cardBrowseViewModel.showFilters.toggle()
-                        } label: {
-                            Image(systemName: "line.3.horizontal.decrease")
-                        }
-                        .sheet(isPresented: $cardBrowseViewModel.showFilters, onDismiss: {cardBrowseViewModel.showFilters = false}) {
-                            if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
-                                CardFiltersView(filters: filters)
-                            }
+                case .product:
+                    ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
+                }
+            }
+            .toolbar {
+                switch focusedResource {
+                case .card:
+                    FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
+                        if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
+                            CardFiltersView(filters: filters)
                         }
                     }
                 case .product:
-                    VStack {
-                        ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .toolbar {
-                        Button {
-                            productBrowseViewModel.showFilters.toggle()
-                        } label: {
-                            Image(systemName: "line.3.horizontal.decrease")
-                        }
-                        .sheet(isPresented: $productBrowseViewModel.showFilters, onDismiss: {productBrowseViewModel.showFilters = false}) {
-                            ProductFiltersView(
-                                productTypeFilters: $productBrowseViewModel.productTypeFilters,
-                                productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
-                        }
+                    FilterButton(showFilters: $productBrowseViewModel.showFilters) {
+                        ProductFiltersView(
+                            productTypeFilters: $productBrowseViewModel.productTypeFilters,
+                            productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
                     }
                 }
             }
@@ -105,69 +94,53 @@ struct BrowseView: View {
     }
 }
 
-private struct HeaderView: View {
-    let header: String
-
-    var body: some View {
-        HStack {
-            Text(header)
-                .font(.headline)
-                .fontWeight(.black)
-            Spacer()
-        }
-        .padding(.all, 5)
-        .background(.thinMaterial)
-        .cornerRadius(5)
-    }
-}
-
 private struct ProductBrowseView: View {
     let productsByYear: [String: [Product]]?
-
+    
     var body: some View {
-        if let productsByYear = productsByYear, productsByYear.isEmpty {
-            ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
-        } else if let productsByYear = productsByYear, !productsByYear.isEmpty {
-            ScrollView {
-                LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                    ForEach(productsByYear.keys.sorted(by: >), id: \.self) { year in
-                        if let productForYear = productsByYear[year] {
-                            Section(header: HeaderView(header: "\(year) • \(productForYear.count) total")) {
-                                LazyVStack {
-                                    ForEach(productForYear, id: \.productId) { product in
-                                        NavigationLink(
-                                            value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
-                                            label: {
-                                                GroupBox {
-                                                    ProductListItemView(product: product)
-                                                        .equatable()
-                                                }
-                                                .groupBoxStyle(.listItem)
-                                            })
-                                        .buttonStyle(.plain)
+        VStack {
+            if let productsByYear = productsByYear, productsByYear.isEmpty {
+                ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
+            } else if let productsByYear = productsByYear, !productsByYear.isEmpty {
+                ScrollView {
+                    LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+                        ForEach(productsByYear.keys.sorted(by: >), id: \.self) { year in
+                            if let productForYear = productsByYear[year] {
+                                Section(header: HeaderView(header: "\(year) • \(productForYear.count) total")) {
+                                    LazyVStack {
+                                        ForEach(productForYear, id: \.productId) { product in
+                                            NavigationLink(
+                                                value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
+                                                label: {
+                                                    GroupBox {
+                                                        ProductListItemView(product: product)
+                                                            .equatable()
+                                                    }
+                                                    .groupBoxStyle(.listItem)
+                                                })
+                                            .buttonStyle(.plain)
+                                        }
                                     }
                                 }
                             }
                         }
+                        .listStyle(.plain)
+                        .ignoresSafeArea(.keyboard)
                     }
-                    .listStyle(.plain)
-                    .ignoresSafeArea(.keyboard)
+                    .modifier(ParentViewModifier())
                 }
-                .modifier(ParentViewModifier())
+            } else {
+                ProgressView()
             }
-        } else {
-            ProgressView()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 private struct ProductFiltersView: View {
     @Binding var productTypeFilters: [FilteredItem]
     @Binding var productSubTypeFilters: [FilteredItem]
-
-    private static let productTypeColumns = Array(repeating: GridItem(.flexible()), count: 4)
-    private static let productSubTypeColumns = Array(repeating: GridItem(.flexible()), count: 2)
-
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Product filters")
@@ -176,15 +149,15 @@ private struct ProductFiltersView: View {
                 .font(.headline)
                 .fontWeight(.light)
                 .padding(.bottom)
-
+            
             ProductFilterView(filters: $productTypeFilters,
                               filterInfo: "Narrow down products",
                               filterImage: "1.circle",
-                              columns: ProductFiltersView.productTypeColumns)
+                              columns: Array(repeating: GridItem(.flexible()), count: 4))
             ProductFilterView(filters: $productSubTypeFilters,
                               filterInfo: "Choose specific product category",
                               filterImage: "2.circle",
-                              columns: ProductFiltersView.productSubTypeColumns)
+                              columns: Array(repeating: GridItem(.flexible()), count: 2))
         }
         .modifier(ParentViewModifier())
         .padding(.top)
@@ -196,7 +169,7 @@ private struct ProductFilterView: View {
     let filterInfo: String
     let filterImage: String
     let columns: [GridItem]
-
+    
     var body: some View {
         GroupBox {
             GroupBox {
@@ -222,7 +195,7 @@ private struct ProductFilterView: View {
 
 private struct CardFiltersView: View {
     @Binding var filters: CardFilters
-
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Card filters")
@@ -231,7 +204,7 @@ private struct CardFiltersView: View {
                 .font(.headline)
                 .fontWeight(.light)
                 .padding(.bottom)
-
+            
             CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
                 CardColorIndicatorView(cardColor: category, variant: .large)
             }
@@ -244,11 +217,11 @@ private struct CardFiltersView: View {
     }
 }
 
-struct CardFilterView<Content: View>: View {
+private struct CardFilterView<Content: View>: View {
     @Binding var filters: [FilteredItem]
     let filterInfo: String
     @ViewBuilder let content: (String) -> Content
-
+    
     var body: some View {
         GroupBox {
             GroupBox {
@@ -267,6 +240,22 @@ struct CardFilterView<Content: View>: View {
         }
         .groupBoxStyle(.filters)
         .padding(.bottom)
+    }
+}
+
+private struct FilterButton<Content: View>: View {
+    @Binding var showFilters: Bool
+    @ViewBuilder let content: () -> Content
+    
+    var body: some View {
+        Button {
+            showFilters.toggle()
+        } label: {
+            Image(systemName: "line.3.horizontal.decrease")
+        }
+        .sheet(isPresented: $showFilters, onDismiss: { showFilters = false }) {
+            content()
+        }
     }
 }
 
