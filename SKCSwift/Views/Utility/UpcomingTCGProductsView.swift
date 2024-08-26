@@ -16,7 +16,7 @@ struct UpcomingTCGProductsView: View, Equatable {
                     content: {
             if let events {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("TCG products that have been announced and which we have a tentative release date for.")
+                    Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
                         .font(.body)
                         .padding(.bottom)
                     
