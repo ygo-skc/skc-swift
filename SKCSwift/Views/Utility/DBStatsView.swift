@@ -13,18 +13,14 @@ struct DBStatsView: View, Equatable {
     var body: some View {
         SectionView(header: "Content",
                     content: {
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(spacing: 5) {
                 Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
                     .padding(.bottom)
                     .font(.body)
+                    .multilineTextAlignment(.center)
                 
                 Text("DB Stats")
                     .font(.title3)
-                    .frame(
-                        minWidth: 0,
-                        maxWidth: .infinity,
-                        alignment: .center
-                    )
                 HStack {
                     Group {
                         DBStatView(count: stats?.cardTotal, stat: "Cards")
@@ -33,8 +29,16 @@ struct DBStatsView: View, Equatable {
                     }
                     .padding(.horizontal)
                 }
-                .frame(maxWidth: .infinity)
+                .padding(.bottom)
+                
+                Group {
+                    Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
+                    Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
+                }
+                .font(.footnote)
+                .multilineTextAlignment(.center)
             }
+            .frame(maxWidth: .infinity)
         })
     }
 }

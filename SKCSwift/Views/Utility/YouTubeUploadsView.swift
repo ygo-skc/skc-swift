@@ -15,7 +15,7 @@ struct YouTubeUploadsView: View, Equatable {
                     variant: .plain,
                     content: {
             if let videos {
-                Text("Did you know I make YouTube videos? Keep tabs of TCG news, watch the best unboxings on YouTube and also watch some dope Master Duel replays. Don't forget to sub.")
+                Text("Did you know I make YouTube videos? Keep tabs on the TCG, watch the best un-boxings on YouTube or watch some dope Master Duel replays. Don't forget to sub.")
                     .font(.body)
                 
                 LazyVStack(alignment: .leading, spacing: 5) {
