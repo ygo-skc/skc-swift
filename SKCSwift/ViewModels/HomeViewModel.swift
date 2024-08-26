@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 @Observable
 class HomeViewModel {
@@ -13,6 +14,8 @@ class HomeViewModel {
     private(set) var cardOfTheDay: CardOfTheDay?
     private(set) var upcomingTCGProducts: [Event]?
     private(set) var ytUploads: [YouTubeVideos]?
+    
+    var navigationPath = NavigationPath()
     
     @ObservationIgnored
     private var lastRefreshTimestamp: Date?
@@ -59,5 +62,14 @@ class HomeViewModel {
                 self.ytUploads = uploadData.videos
             }
         }
+    }
+    
+    func handleURLClick(_ url: URL) -> OpenURLAction.Result {
+        let path = url.relativePath
+        if path.contains("/card/") {
+            navigationPath.append(CardLinkDestinationValue(cardID: path.replacingOccurrences(of: "/card/", with: ""), cardName: ""))
+            return .handled
+        }
+        return .systemAction
     }
 }

@@ -8,20 +8,10 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var navigationPath = NavigationPath()
-    private let homeViewModel = HomeViewModel()
-    
-    private func handleURL(_ url: URL) -> OpenURLAction.Result {
-        let path = url.relativePath
-        if path.contains("/card/") {
-            navigationPath.append(CardLinkDestinationValue(cardID: path.replacingOccurrences(of: "/card/", with: ""), cardName: ""))
-            return .handled
-        }
-        return .systemAction
-    }
+    @State private var homeViewModel = HomeViewModel()
     
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        NavigationStack(path: $homeViewModel.navigationPath) {
             ScrollView {
                 VStack(spacing: 30) {
                     DBStatsView(stats: homeViewModel.dbStats)
@@ -41,7 +31,7 @@ struct HomeView: View {
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
                 CardLinkDestinationView(cardLinkDestinationValue: card)
             }
-            .environment(\.openURL, OpenURLAction(handler: handleURL))
+            .environment(\.openURL, OpenURLAction(handler: homeViewModel.handleURLClick))
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
             .refreshable {
