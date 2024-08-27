@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CardSuggestionsView: View {
     let cardID: String
-    let cardName: String
+    let cardName: String?
     private let suggestionViewModel = CardSuggestionViewModel()
     
     var body: some View {
@@ -23,7 +23,7 @@ struct CardSuggestionsView: View {
             .padding(.bottom)
             .frame(maxWidth: .infinity, alignment: .center)
             
-            if suggestionViewModel.areSuggestionsLoaded && suggestionViewModel.isSupportLoaded,
+            if let cardName, suggestionViewModel.areSuggestionsLoaded && suggestionViewModel.isSupportLoaded,
                let namedMaterials = suggestionViewModel.namedMaterials, let namedReferences = suggestionViewModel.namedReferences,
                let referencedBy = suggestionViewModel.referencedBy, let materialFor = suggestionViewModel.materialFor {
                 if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {

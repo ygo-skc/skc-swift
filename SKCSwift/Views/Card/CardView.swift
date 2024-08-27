@@ -22,7 +22,7 @@ private struct CardView: View {
     let cardViewModel = CardViewModel()
     
     var body: some View {
-        if let error = cardViewModel.error {
+        if cardViewModel.error != nil {
             ContentUnavailableView("Could not fetch content", systemImage: "network.slash", description: Text("Please try again later"))
         } else {
             TabView {
@@ -48,12 +48,10 @@ private struct CardView: View {
                     await cardViewModel.fetchData(cardID: cardID)
                 }
                 
-                if let card = cardViewModel.card {
-                    ScrollView {
-                        CardSuggestionsView(cardID: cardID, cardName: card.cardName)
-                            .padding(.bottom, 30)
-                            .modifier(ParentViewModifier())
-                    }
+                ScrollView {
+                    CardSuggestionsView(cardID: cardID, cardName: cardViewModel.card?.cardName)
+                        .padding(.bottom, 30)
+                        .modifier(ParentViewModifier())
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .always))

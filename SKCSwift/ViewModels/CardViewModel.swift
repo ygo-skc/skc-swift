@@ -19,7 +19,9 @@ final class CardViewModel {
                     self.card = card
                 }
             } catch let error {
-                self.error = error
+                Task { @MainActor in
+                    self.error = error
+                }
             }
         }
     }
