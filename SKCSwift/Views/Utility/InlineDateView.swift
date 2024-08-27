@@ -23,7 +23,8 @@ struct InlineDateView: View, Equatable {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 3)
                 .background(.dateRed)
-                .font(.system(.caption, design: .monospaced))
+                .font(.caption)
+                .monospaced()
                 .fontWeight(.semibold)
                 .foregroundColor(Color(.white))
             Group {
@@ -31,7 +32,8 @@ struct InlineDateView: View, Equatable {
                     .fontWeight(.semibold)
                 + Text(year)
             }
-            .font(.system(.caption2, design: .monospaced))
+            .font(.caption2)
+            .monospaced()
             .foregroundColor(.primary)
             .padding(.horizontal, 8)
         }

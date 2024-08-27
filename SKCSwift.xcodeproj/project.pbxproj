@@ -63,6 +63,7 @@
 		DE0C54552C792BB500DF1E9E /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0C54542C792BB500DF1E9E /* Filter.swift */; };
 		DE0C54572C792BE800DF1E9E /* CardBrowseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0C54562C792BE800DF1E9E /* CardBrowseViewModel.swift */; };
 		DE1CF0A52C6C1C47001A37E8 /* CardSuggestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1CF0A42C6C1C47001A37E8 /* CardSuggestionViewModel.swift */; };
+		DE47B7522C7D707A001850FC /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE47B7512C7D707A001850FC /* CardViewModel.swift */; };
 		DE59153B2C5426290069E32F /* ParentViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE59153A2C5426290069E32F /* ParentViewModifier.swift */; };
 		DE63448E2A4545C20016BC43 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63448D2A4545C20016BC43 /* View.swift */; };
 		DE825C682C54650300600FD2 /* TrendingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE825C672C54650300600FD2 /* TrendingViewModel.swift */; };
@@ -156,6 +157,7 @@
 		DE0C54542C792BB500DF1E9E /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		DE0C54562C792BE800DF1E9E /* CardBrowseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardBrowseViewModel.swift; sourceTree = "<group>"; };
 		DE1CF0A42C6C1C47001A37E8 /* CardSuggestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestionViewModel.swift; sourceTree = "<group>"; };
+		DE47B7512C7D707A001850FC /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE59153A2C5426290069E32F /* ParentViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentViewModifier.swift; sourceTree = "<group>"; };
 		DE63448D2A4545C20016BC43 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				1F0F994329F8A4E400AA9F69 /* SearchViewModel.swift */,
 				DE825C672C54650300600FD2 /* TrendingViewModel.swift */,
 				DE0C54562C792BE800DF1E9E /* CardBrowseViewModel.swift */,
+				DE47B7512C7D707A001850FC /* CardViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -557,6 +560,7 @@
 				DEB9977A2C7BE257000B8548 /* HeaderView.swift in Sources */,
 				1F21FF6C2977BC2D00B4451A /* Color.swift in Sources */,
 				1FBE069A29FDBE8000EA85A4 /* Events.swift in Sources */,
+				DE47B7522C7D707A001850FC /* CardViewModel.swift in Sources */,
 				1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */,
 				1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */,
 				1F39328B2A34CA4800BD0DD2 /* YouTubeUploads.swift in Sources */,

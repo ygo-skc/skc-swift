@@ -19,72 +19,46 @@ struct CardLinkDestinationView: View {
 
 private struct CardView: View {
     let cardID: String
-    
-    @State private var cardData: Card?
-    
-    private func fetchData() async {
-        if cardData == nil, let card = try? await data(Card.self, url: cardInfoURL(cardID: self.cardID)) {
-            DispatchQueue.main.async {
-                cardData = card
-            }
-        }
-    }
-    
-    private func getProducts() -> [Product] {
-        return cardData?.foundIn ?? [Product]()
-    }
-    
-    private func getBanList(format: BanListFormat) -> [BanList] {
-        switch format {
-        case .tcg:
-            return cardData?.restrictedIn?.TCG ?? [BanList]()
-        case .md:
-            return cardData?.restrictedIn?.MD ?? [BanList]()
-        case .dl:
-            return cardData?.restrictedIn?.DL ?? [BanList]()
-        }
-    }
+    let cardViewModel = CardViewModel()
     
     var body: some View {
-        TabView {
-            ScrollView {
-                VStack {
-                    YGOCardView(cardID: cardID, card: cardData)
+        if let error = cardViewModel.error {
+            ContentUnavailableView("Could not fetch content", systemImage: "network.slash", description: Text("Please try again later"))
+        } else {
+            TabView {
+                ScrollView {
+                    YGOCardView(cardID: cardID, card: cardViewModel.card)
                         .equatable()
                         .padding(.bottom)
                     
-                    if let cardData {
+                    if let card = cardViewModel.card {
                         RelatedContentView(
-                            cardName: cardData.cardName,
-                            cardColor: cardData.cardColor,
-                            products: getProducts(),
-                            tcgBanLists: getBanList(format: BanListFormat.tcg),
-                            mdBanLists: getBanList(format: BanListFormat.md), dlBanLists: getBanList(format: BanListFormat.dl)
+                            cardName: card.cardName,
+                            cardColor: card.cardColor,
+                            products: cardViewModel.getProducts(),
+                            tcgBanLists: cardViewModel.getBanList(format: BanListFormat.tcg),
+                            mdBanLists: cardViewModel.getBanList(format: BanListFormat.md),
+                            dlBanLists: cardViewModel.getBanList(format: BanListFormat.dl)
                         )
                         .modifier(ParentViewModifier())
+                        .padding(.bottom, 50)
                     }
                 }
                 .task(priority: .userInitiated) {
-                    await fetchData()
+                    await cardViewModel.fetchData(cardID: cardID)
                 }
-                .padding(.bottom, 40)
-                .frame(maxHeight: .infinity)
-            }
-            
-            ScrollView {
-                VStack {
-                    if let cardData {
-                        CardSuggestionsView(cardID: cardID, cardName: cardData.cardName)
-                    } else {
-                        ProgressView()
+                
+                if let card = cardViewModel.card {
+                    ScrollView {
+                        CardSuggestionsView(cardID: cardID, cardName: card.cardName)
+                            .padding(.bottom, 30)
+                            .modifier(ParentViewModifier())
                     }
                 }
-                .padding(.bottom, 30)
-                .modifier(ParentViewModifier())
             }
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
         }
-        .tabViewStyle(.page(indexDisplayMode: .always))
-        .indexViewStyle(.page(backgroundDisplayMode: .always))
     }
 }
 
