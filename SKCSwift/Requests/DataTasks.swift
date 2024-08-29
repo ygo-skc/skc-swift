@@ -23,14 +23,13 @@ fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
         switch code {
         case 0...399:
             return
+        case 400:
+            throw DataFetchError.client
         case 404:
-            print("URL \(url.absoluteString) does not exist")
             throw DataFetchError.notFound
-        case 400...499:
-            print("URL \(url.absoluteString) returned with 400 level code: \(code)")
+        case 401...499:
             throw DataFetchError.client
         default:
-            print("URL \(url.absoluteString) returned with 500 level code: \(code)")
             throw DataFetchError.server
         }
     }
@@ -43,18 +42,16 @@ func data<T>(_ type: T.Type, url: URL) async throws -> T where T : Decodable {
         
         try validateResponse(response: response, url: url)
         
-        do {
-            return try RequestHelper.decoder.decode(type, from: body)
-        } catch {
-            print("An error occurred while decoding output from http request \(error)")
-            throw DataFetchError.bodyParse
-        }
-    } catch let error {
+        return try RequestHelper.decoder.decode(type, from: body)
+    } catch let error as DataFetchError {
         if (error.localizedDescription == "cancelled") {
             throw DataFetchError.cancelled
         }
         
         print("Error occurred while calling \(url.absoluteString) \(error.localizedDescription)")
         throw DataFetchError.unknown
+    } catch {
+        print("An error occurred while decoding output from http request \(error)")
+        throw DataFetchError.bodyParse
     }
 }
