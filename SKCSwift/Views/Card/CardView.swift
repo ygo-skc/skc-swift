@@ -22,8 +22,22 @@ private struct CardView: View {
     let cardViewModel = CardViewModel()
     
     var body: some View {
-        if cardViewModel.error != nil {
-            ContentUnavailableView("Could not fetch content", systemImage: "network.slash", description: Text("Please try again later"))
+        if let error = cardViewModel.error {
+            switch error {
+            case .badRequest:
+                ContentUnavailableView("Card not currently supported",
+                                       systemImage: "exclamationmark.square.fill",
+                                       description: Text("Please check back later"))
+            default:
+                ContentUnavailableView {
+                    Label("Could not fetch content", systemImage: "network.slash")
+                } description: {
+                    Button(action: { cardViewModel.error = nil }) {
+                        Label("Retry", systemImage: "arrow.clockwise")
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
         } else {
             TabView {
                 ScrollView {
@@ -60,8 +74,14 @@ private struct CardView: View {
     }
 }
 
-struct CardView_Previews: PreviewProvider {
-    static var previews: some View {
-        CardView(cardID: "90307498")
-    }
+#Preview("Kluger")  {
+    CardView(cardID: "90307498")
+}
+
+#Preview("Token")  {
+    CardView(cardID: "0034")
+}
+
+#Preview("Card DNE")  {
+    CardView(cardID: "12345678")
 }

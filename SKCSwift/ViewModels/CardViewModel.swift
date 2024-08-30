@@ -9,7 +9,7 @@ import Foundation
 @Observable
 final class CardViewModel {
     private(set) var card: Card?
-    private(set) var error: Error?
+    var error: DataFetchError?
     
     func fetchData(cardID: String) async {
         if self.card == nil {
@@ -18,10 +18,12 @@ final class CardViewModel {
                 Task { @MainActor in
                     self.card = card
                 }
-            } catch let error {
+            } catch let error as DataFetchError {
                 Task { @MainActor in
                     self.error = error
                 }
+            } catch {
+                
             }
         }
     }
