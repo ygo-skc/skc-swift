@@ -60,9 +60,13 @@ struct ProductCardSuggestionsView: View {
     @State private var suggestions: ProductSuggestions? = nil
     
     private func fetch() async {
-        if suggestions == nil, let suggestions = try? await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
-            DispatchQueue.main.async {
-                self.suggestions = suggestions
+        if suggestions == nil {
+            switch await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
+            case .success(let suggestions):
+                DispatchQueue.main.async {
+                    self.suggestions = suggestions
+                }
+            case .failure(_): break
             }
         }
     }
@@ -79,16 +83,16 @@ struct ProductCardSuggestionsView: View {
             .frame(maxWidth: .infinity, alignment: .center)
             
             if let suggestions {
-                SuggestionCarouselView(header: "Named Materials", 
+                SuggestionCarouselView(header: "Named Materials",
                                        subHeader: "Cards that can be used as summoning material for a card included in \(productName).",
                                        references: suggestions.suggestions.namedMaterials)
-                SuggestionCarouselView(header: "Named References", 
+                SuggestionCarouselView(header: "Named References",
                                        subHeader: "All other cards found in the text of a card included in \(productName) which cannot be used a summoning material.",
                                        references: suggestions.suggestions.namedReferences)
-                SupportCarouselView(header: "Material For", 
+                SupportCarouselView(header: "Material For",
                                     subHeader: "ED cards that can be summoned using a card found in \(productName).",
                                     references: suggestions.support.materialFor)
-                SupportCarouselView(header: "Referenced By", 
+                SupportCarouselView(header: "Referenced By",
                                     subHeader: "Cards that reference a card found in \(productName). Excludes ED cards that reference this card as a summoning material.",
                                     references: suggestions.support.referencedBy)
             } else {

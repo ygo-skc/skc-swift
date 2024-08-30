@@ -35,8 +35,8 @@ class SearchViewModel {
             self.updateState(.pending)
             
             task = Task {
-                do {
-                    let cards = try await data([Card].self, url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines)))
+                switch await data([Card].self, url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines))) {
+                case .success(let cards):
                     if cards.isEmpty {
                         self.searchResults.removeAll()
                         self.searchResultsIds.removeAll()
@@ -63,9 +63,9 @@ class SearchViewModel {
                         }
                     }
                     self.updateState(.done)
-                } catch(let error) {
+                case .failure(let error):
                     switch error {
-                    case DataFetchError.cancelled: break    // do nothing
+                    case NetworkError.cancelled: break    // do nothing
                     default:
                         print(error)
                         self.updateState(.error)

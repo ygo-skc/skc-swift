@@ -24,34 +24,35 @@ fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
         case 0...399:
             return
         case 400:
-            throw DataFetchError.badRequest
+            throw NetworkError.badRequest
         case 404:
-            throw DataFetchError.notFound
+            throw NetworkError.notFound
         case 401...499:
-            throw DataFetchError.client
+            throw NetworkError.client
         default:
-            throw DataFetchError.server
+            throw NetworkError.server
         }
     }
 }
 
-func data<T>(_ type: T.Type, url: URL) async throws -> T where T : Decodable {
+func data<T>(_ type: T.Type, url: URL) async -> Result<T, NetworkError> where T: Decodable {
     do {
         let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url))
         try Task.checkCancellation()
         
         try validateResponse(response: response, url: url)
         
-        return try RequestHelper.decoder.decode(type, from: body)
-    } catch let error as DataFetchError {
+        return .success(try RequestHelper.decoder.decode(type, from: body))
+    } catch let networkError as NetworkError {
+        
+        print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")
+        return .failure(networkError)
+    } catch let error {
         if (error.localizedDescription == "cancelled") {
-            throw DataFetchError.cancelled
+            return .failure(NetworkError.cancelled)
         }
         
-        print("Error occurred while calling \(url.absoluteString) \(error.localizedDescription)")
-        throw error
-    } catch {
         print("An error occurred while decoding output from http request \(error)")
-        throw DataFetchError.bodyParse
+        return .failure(NetworkError.bodyParse)
     }
 }
