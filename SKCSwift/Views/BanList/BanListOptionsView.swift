@@ -29,11 +29,15 @@ private struct BanListDatesView: View {
     @State private var showDateSelectorSheet = false
     
     private func fetchData() async {
-        if !isDataLoaded, let dates = try? await data(BanListDates.self, url: banListDatesURL(format: "\(chosenFormat)")) {
-            DispatchQueue.main.async {
-                self.banListDates = dates.banListDates
-                self.chosenDateRange = 0
-                self.isDataLoaded = true
+        if !isDataLoaded {
+            switch await data(BanListDates.self, url: banListDatesURL(format: "\(chosenFormat)")) {
+            case .success(let dates):
+                DispatchQueue.main.async {
+                    self.banListDates = dates.banListDates
+                    self.chosenDateRange = 0
+                    self.isDataLoaded = true
+                }
+            case .failure(_): break
             }
         }
     }

@@ -28,18 +28,22 @@ class ProductBrowseViewModel {
     private var uniqueProductSubTypes = Set<String>()
     
     func fetchProductBrowseData() async {
-        if products == nil, let p = try? await data(Products.self, url: productsURL()) {
-            p.products.forEach { product in
-                self.uniqueProductTypes.insert(product.productType)
-                self.uniqueProductSubTypes.insert(product.productSubType)
-                self.productTypeByProductSubType[product.productSubType] = product.productType
-            }
-            self.products = p.products
-            
-            Task(priority: .userInitiated) { @MainActor in
-                self.productTypeFilters = self.uniqueProductTypes.sorted().reduce(into: [FilteredItem]()) {
-                    $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
+        if products == nil {
+            switch await data(Products.self, url: productsURL()) {
+            case .success(let p):
+                p.products.forEach { product in
+                    self.uniqueProductTypes.insert(product.productType)
+                    self.uniqueProductSubTypes.insert(product.productSubType)
+                    self.productTypeByProductSubType[product.productSubType] = product.productType
                 }
+                self.products = p.products
+                
+                Task(priority: .userInitiated) { @MainActor in
+                    self.productTypeFilters = self.uniqueProductTypes.sorted().reduce(into: [FilteredItem]()) {
+                        $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
+                    }
+                }
+            case .failure(_): break
             }
         }
     }

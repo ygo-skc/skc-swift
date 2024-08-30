@@ -18,22 +18,28 @@ class TrendingViewModel {
     private var trendingProductDataLastFetch = Date()
     
     func fetchTrendingCards() async {
-        if cards == nil || trendingCardDataLastFetch.isDateInvalidated(5),
-            let trending = try? await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
-            DispatchQueue.main.async {
-                self.cards = trending.metrics
+        if cards == nil || trendingCardDataLastFetch.isDateInvalidated(5) {
+            switch await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
+            case .success(let trending):
+                DispatchQueue.main.async {
+                    self.cards = trending.metrics
+                }
+            case .failure(_): break
             }
+            trendingCardDataLastFetch = Date()
         }
-        trendingCardDataLastFetch = Date()
     }
     
     func fetchTrendingProducts() async {
-        if products == nil || trendingProductDataLastFetch.isDateInvalidated(5),
-            let trending: Trending<Product> = try? await data(Trending<Product>.self, url: trendingUrl(resource: .product)) {
-            DispatchQueue.main.async {
-                self.products = trending.metrics
+        if products == nil || trendingProductDataLastFetch.isDateInvalidated(5) {
+            switch await data(Trending<Product>.self, url: trendingUrl(resource: .product)) {
+            case .success(let trending):
+                DispatchQueue.main.async {
+                    self.products = trending.metrics
+                }
+            case .failure(_): break
             }
+            trendingProductDataLastFetch = Date()
         }
-        trendingProductDataLastFetch = Date()
     }
 }

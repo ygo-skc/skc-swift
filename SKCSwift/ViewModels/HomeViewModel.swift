@@ -33,34 +33,42 @@ class HomeViewModel {
     }
     
     func fetchDBStatsData() async {
-        if let dbStats = try? await data(SKCDatabaseStats.self, url: dbStatsURL()) {
+        switch await data(SKCDatabaseStats.self, url: dbStatsURL()) {
+        case .success(let dbStats):
             DispatchQueue.main.async {
                 self.dbStats = dbStats
             }
+        case .failure(_): break
         }
     }
     
     func fetchCardOfTheDayData() async {
-        if let cardOfTheDay = try? await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
+        switch await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
+        case .success(let cardOfTheDay):
             DispatchQueue.main.async {
                 self.cardOfTheDay = cardOfTheDay
             }
+        case .failure(_): break
         }
     }
     
     func fetchUpcomingTCGProducts() async {
-        if let upcomingTCGProducts = try? await data(Events.self, url: upcomingEventsURL()) {
+        switch await data(Events.self, url: upcomingEventsURL()) {
+        case .success(let upcomingTCGProducts):
             DispatchQueue.main.async {
                 self.upcomingTCGProducts = upcomingTCGProducts.events
             }
+        case .failure(_): break
         }
     }
     
     func fetchYouTubeUploadsData() async {
-        if let uploadData = try? await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
+        switch await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
+        case .success(let uploadData):
             DispatchQueue.main.async {
                 self.ytUploads = uploadData.videos
             }
+        case .failure(_): break
         }
     }
     

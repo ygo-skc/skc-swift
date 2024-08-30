@@ -63,7 +63,7 @@ enum DataTaskStatus: String, Codable, CaseIterable {
     case pending, done, error
 }
 
-enum DataFetchError: Error {
+enum NetworkError: Error {
     case client
     case server
     case notFound
@@ -73,7 +73,7 @@ enum DataFetchError: Error {
     case unknown
 }
 
-extension DataFetchError: CustomStringConvertible {
+extension NetworkError: CustomStringConvertible {
     public var description: String {
         switch self {
         case .client:
@@ -94,7 +94,7 @@ extension DataFetchError: CustomStringConvertible {
     }
 }
 
-extension DataFetchError: LocalizedError {
+extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .client:
