@@ -63,6 +63,7 @@
 		DE0C54552C792BB500DF1E9E /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0C54542C792BB500DF1E9E /* Filter.swift */; };
 		DE0C54572C792BE800DF1E9E /* CardBrowseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0C54562C792BE800DF1E9E /* CardBrowseViewModel.swift */; };
 		DE1CF0A52C6C1C47001A37E8 /* CardSuggestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1CF0A42C6C1C47001A37E8 /* CardSuggestionViewModel.swift */; };
+		DE1ED0B62C81507200F274BE /* DownstreamErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1ED0B52C81507200F274BE /* DownstreamErrorView.swift */; };
 		DE47B7522C7D707A001850FC /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE47B7512C7D707A001850FC /* CardViewModel.swift */; };
 		DE59153B2C5426290069E32F /* ParentViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE59153A2C5426290069E32F /* ParentViewModifier.swift */; };
 		DE63448E2A4545C20016BC43 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63448D2A4545C20016BC43 /* View.swift */; };
@@ -157,6 +158,7 @@
 		DE0C54542C792BB500DF1E9E /* Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
 		DE0C54562C792BE800DF1E9E /* CardBrowseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardBrowseViewModel.swift; sourceTree = "<group>"; };
 		DE1CF0A42C6C1C47001A37E8 /* CardSuggestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSuggestionViewModel.swift; sourceTree = "<group>"; };
+		DE1ED0B52C81507200F274BE /* DownstreamErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownstreamErrorView.swift; sourceTree = "<group>"; };
 		DE47B7512C7D707A001850FC /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE59153A2C5426290069E32F /* ParentViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentViewModifier.swift; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				1FBE069729FDBD2B00EA85A4 /* UpcomingTCGProductsView.swift */,
 				1F39328C2A34CC3600BD0DD2 /* YouTubeUploadsView.swift */,
 				DEB997792C7BE257000B8548 /* HeaderView.swift */,
+				DE1ED0B52C81507200F274BE /* DownstreamErrorView.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -595,6 +598,7 @@
 				1F1C1D3F2A353C1400E73D67 /* BannedContentView.swift in Sources */,
 				1FB9824229FB4A8A00679D81 /* SKCDatabaseStats.swift in Sources */,
 				1F3256592963E116001AACF1 /* MonsterAssociationView.swift in Sources */,
+				DE1ED0B62C81507200F274BE /* DownstreamErrorView.swift in Sources */,
 				1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */,
 				DE0C54552C792BB500DF1E9E /* Filter.swift in Sources */,
 				1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */,
