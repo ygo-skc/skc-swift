@@ -27,7 +27,7 @@ class CardSuggestionViewModel {
             case .success(let suggestions):
                 self.namedMaterials = suggestions.namedMaterials
                 self.namedReferences = suggestions.namedReferences
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     self.areSuggestionsLoaded = true
                 }
             case.failure(_): break
@@ -41,7 +41,7 @@ class CardSuggestionViewModel {
             case .success(let support):
                 self.referencedBy = support.referencedBy
                 self.materialFor = support.materialFor
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     self.isSupportLoaded = true
                 }
             case .failure(_): break

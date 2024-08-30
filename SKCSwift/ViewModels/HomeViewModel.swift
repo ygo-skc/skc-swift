@@ -35,7 +35,7 @@ class HomeViewModel {
     private func fetchDBStatsData() async {
         switch await data(SKCDatabaseStats.self, url: dbStatsURL()) {
         case .success(let dbStats):
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.dbStats = dbStats
             }
         case .failure(_): break
@@ -45,7 +45,7 @@ class HomeViewModel {
     private func fetchCardOfTheDayData() async {
         switch await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
         case .success(let cardOfTheDay):
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.cardOfTheDay = cardOfTheDay
             }
         case .failure(_): break
@@ -55,7 +55,7 @@ class HomeViewModel {
     private func fetchUpcomingTCGProducts() async {
         switch await data(Events.self, url: upcomingEventsURL()) {
         case .success(let upcomingTCGProducts):
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.upcomingTCGProducts = upcomingTCGProducts.events
             }
         case .failure(_): break
@@ -65,7 +65,7 @@ class HomeViewModel {
     private func fetchYouTubeUploadsData() async {
         switch await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
         case .success(let uploadData):
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.ytUploads = uploadData.videos
             }
         case .failure(_): break

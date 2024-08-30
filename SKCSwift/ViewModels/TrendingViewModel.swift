@@ -21,7 +21,7 @@ class TrendingViewModel {
         if cards == nil || trendingCardDataLastFetch.isDateInvalidated(5) {
             switch await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
             case .success(let trending):
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     self.cards = trending.metrics
                 }
             case .failure(_): break
@@ -34,7 +34,7 @@ class TrendingViewModel {
         if products == nil || trendingProductDataLastFetch.isDateInvalidated(5) {
             switch await data(Trending<Product>.self, url: trendingUrl(resource: .product)) {
             case .success(let trending):
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     self.products = trending.metrics
                 }
             case .failure(_): break
