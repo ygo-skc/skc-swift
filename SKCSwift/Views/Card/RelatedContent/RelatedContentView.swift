@@ -17,39 +17,15 @@ struct RelatedContentView: View {
     let mdBanLists: [BanList]
     let dlBanLists: [BanList]
     
-    var body: some View {
-        SectionView(header: "Explore",
-                    variant: .plain,
-                    content: {
-            VStack(alignment: .leading, spacing: 5) {
-                HStack(alignment: .top, spacing: 15) {
-                    RelatedProductsSectionViewModel(cardName: cardName, cardColor: cardColor, products: products)
-                    Divider()
-                    RelatedBanListsSectionViewModel(cardName: cardName, cardColor: cardColor, tcgBanLists: tcgBanLists, mdBanLists: mdBanLists, dlBanLists: dlBanLists)
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
-        }
-        )
-    }
-}
-
-private struct RelatedProductsSectionViewModel: RelatedContent {
-    let cardName: String
-    let cardColor: String
-    let products: [Product]
-    
     private var latestReleaseInfo = "Last Day Printed Not Found In DB"
     
-    init(cardName: String, cardColor: String, products: [Product]) {
+    init(cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList], dlBanLists: [BanList]) {
         self.cardName = cardName
         self.cardColor = cardColor
         self.products = products
+        self.tcgBanLists = tcgBanLists
+        self.mdBanLists = mdBanLists
+        self.dlBanLists = dlBanLists
         
         if (!products.isEmpty) {
             let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
@@ -63,54 +39,54 @@ private struct RelatedProductsSectionViewModel: RelatedContent {
     }
     
     var body: some View {
-        VStack(spacing: 8) {
-            Text("Products")
-                .font(.headline)
-            
-            RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
-                RelatedProductsContentView(cardName: cardName, products: self.products)
-            }
-            
-            Label(latestReleaseInfo, systemImage: "calendar")
-                .font(.subheadline)
-                .fontWeight(.light)
-                .padding(.top)
+        SectionView(header: "Explore",
+                    variant: .plain,
+                    content: {
+            HStack(alignment: .top, spacing: 15) {
+                VStack {
+                    Text("Products")
+                        .font(.headline)
+                    
+                    RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
+                        RelatedProductsContentView(cardName: cardName, products: self.products)
+                    }
+                    
+                    Label(latestReleaseInfo, systemImage: "calendar")
+                        .font(.subheadline)
+                        .fontWeight(.light)
+                        .padding(.top)
+                        .frame(maxWidth: .infinity)
+                }
+                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
                 .frame(maxWidth: .infinity)
+                
+                Divider()
+                
+                VStack {
+                    Text("Ban Lists")
+                        .font(.headline)
+                    
+                    // TCG ban list deets
+                    RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
+                        RelatedBanListsContentView(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
+                    }
+                    
+                    // MD ban list deets
+                    RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
+                        RelatedBanListsContentView(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
+                    }
+                    
+                    // DL ban list deets
+                    RelatedContentSheetButton(format: "Duel Links", contentCount: dlBanLists.count, contentType: .banLists) {
+                        RelatedBanListsContentView(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
+                    }
+                }
+                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
+                .frame(maxWidth: .infinity)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
-        .frame(maxWidth: .infinity)
-    }
-}
-
-private struct RelatedBanListsSectionViewModel: RelatedContent{
-    let cardName: String
-    let cardColor: String
-    let tcgBanLists: [BanList]
-    let mdBanLists: [BanList]
-    let dlBanLists: [BanList]
-    
-    var body: some View {
-        VStack(spacing: 8) {
-            Text("Ban Lists")
-                .font(.headline)
-            
-            // TCG ban list deets
-            RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
-                RelatedBanListsContentView(cardName: cardName, banlists: tcgBanLists, format: BanListFormat.tcg)
-            }
-            
-            // MD ban list deets
-            RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
-                RelatedBanListsContentView(cardName: cardName, banlists: mdBanLists, format: BanListFormat.md)
-            }
-            
-            // DL ban list deets
-            RelatedContentSheetButton(format: "Duel Links", contentCount: dlBanLists.count, contentType: .banLists) {
-                RelatedBanListsContentView(cardName: cardName, banlists: dlBanLists, format: BanListFormat.dl)
-            }
-        }
-        .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
-        .frame(maxWidth: .infinity)
+        )
     }
 }
 
@@ -150,65 +126,71 @@ private struct RelatedContentSheetButton<RC: RelatedContent>: View {
 }
 
 #Preview("Stratos") {
-    RelatedContentView(cardName: "Elemental HERO Stratos",
-                       cardColor: "Effect",
-                       products: [
-                        Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector", productReleaseDate: "2022-03-11",
-                                productContent: [
-                                    ProductContent(productPosition: "015", rarities: ["Duel Terminal Normal Parallel Rare", "Common"])
-                                ]
-                               )
-                       ],
-                       tcgBanLists: [
-                        BanList(banListDate: "2019-07-15", cardID: "40044918", banStatus: "Semi-Limited", format: "TCG"),
-                        BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG"),
-                        BanList(banListDate: "2019-01-28", cardID: "40044918", banStatus: "Limited", format: "TCG")
-                       ],
-                       mdBanLists: [],
-                       dlBanLists: []
-    )
+    VStack {
+        RelatedContentView(cardName: "Elemental HERO Stratos",
+                           cardColor: "Effect",
+                           products: [
+                            Product(productId: "HAC1", productLocale: "EN", productName: "Hidden Arsenal: Chapter 1", productType: "Set", productSubType: "Collector", productReleaseDate: "2022-03-11",
+                                    productContent: [
+                                        ProductContent(productPosition: "015", rarities: ["Duel Terminal Normal Parallel Rare", "Common"])
+                                    ]
+                                   )
+                           ],
+                           tcgBanLists: [
+                            BanList(banListDate: "2019-07-15", cardID: "40044918", banStatus: "Semi-Limited", format: "TCG"),
+                            BanList(banListDate: "2019-04-29", cardID: "40044918", banStatus: "Limited", format: "TCG"),
+                            BanList(banListDate: "2019-01-28", cardID: "40044918", banStatus: "Limited", format: "TCG")
+                           ],
+                           mdBanLists: [],
+                           dlBanLists: []
+        )
+    }.padding(.horizontal)
 }
 
 #Preview("Liquid Boi") {
-    RelatedContentView(cardName: "Elemental HERO Liquid Soldier",
-                       cardColor: "Effect",
-                       products: [
-                        Product(productId: "LDS3", productLocale: "EN", productName: "Legendary Duelists: Season 3", productType: "Set", productSubType: "Reprint", productReleaseDate: "2022-07-22",
-                                productContent: [
-                                    ProductContent(productPosition: "103", rarities: ["Secret Rare"])
-                                ]
-                               ),
-                        Product(productId: "LED6", productLocale: "EN", productName: "Legendary Duelists: Magical Hero", productType: "Pack", productSubType: "Legendary Duelists", productReleaseDate: "2020-01-17",
-                                productContent: [
-                                    ProductContent(productPosition: "013", rarities: ["Ultra Rare"])
-                                ]
-                               )
-                       ],
-                       tcgBanLists: [],
-                       mdBanLists: [],
-                       dlBanLists: [
-                        BanList(banListDate: "2022-12-26", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
-                        BanList(banListDate: "2022-12-08", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
-                        BanList(banListDate: "2022-09-28", cardID: "59392529", banStatus: "Limited 2", format: "DL")
-                       ]
-    )
+    VStack {
+        RelatedContentView(cardName: "Elemental HERO Liquid Soldier",
+                           cardColor: "Effect",
+                           products: [
+                            Product(productId: "LDS3", productLocale: "EN", productName: "Legendary Duelists: Season 3", productType: "Set", productSubType: "Reprint", productReleaseDate: "2022-07-22",
+                                    productContent: [
+                                        ProductContent(productPosition: "103", rarities: ["Secret Rare"])
+                                    ]
+                                   ),
+                            Product(productId: "LED6", productLocale: "EN", productName: "Legendary Duelists: Magical Hero", productType: "Pack", productSubType: "Legendary Duelists", productReleaseDate: "2020-01-17",
+                                    productContent: [
+                                        ProductContent(productPosition: "013", rarities: ["Ultra Rare"])
+                                    ]
+                                   )
+                           ],
+                           tcgBanLists: [],
+                           mdBanLists: [],
+                           dlBanLists: [
+                            BanList(banListDate: "2022-12-26", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
+                            BanList(banListDate: "2022-12-08", cardID: "59392529", banStatus: "Limited 2", format: "DL"),
+                            BanList(banListDate: "2022-09-28", cardID: "59392529", banStatus: "Limited 2", format: "DL")
+                           ]
+        )
+    }.padding(.horizontal)
 }
 
 #Preview("Monster Reborn") {
-    RelatedContentView(cardName: "Monster Reborn",
-                       cardColor: "Spell",
-                       products: [],
-                       tcgBanLists: [
-                        BanList(banListDate: "2022-12-01", cardID: "83764718", banStatus: "Limited", format: "TCG"),
-                        BanList(banListDate: "2022-10-03", cardID: "83764718", banStatus: "Limited", format: "TCG")
-                       ],
-                       mdBanLists: [
-                        BanList(banListDate: "2023-01-10", cardID: "83764718", banStatus: "Limited", format: "MD")
-                       ],
-                       dlBanLists: [
-                        BanList(banListDate: "2022-12-26", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
-                        BanList(banListDate: "2022-12-08", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
-                        BanList(banListDate: "2022-09-28", cardID: "83764718", banStatus: "Limited 1", format: "DL")
-                       ]
-    )
+    VStack {
+        RelatedContentView(cardName: "Monster Reborn",
+                           cardColor: "Spell",
+                           products: [],
+                           tcgBanLists: [
+                            BanList(banListDate: "2022-12-01", cardID: "83764718", banStatus: "Limited", format: "TCG"),
+                            BanList(banListDate: "2022-10-03", cardID: "83764718", banStatus: "Limited", format: "TCG")
+                           ],
+                           mdBanLists: [
+                            BanList(banListDate: "2023-01-10", cardID: "83764718", banStatus: "Limited", format: "MD")
+                           ],
+                           dlBanLists: [
+                            BanList(banListDate: "2022-12-26", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
+                            BanList(banListDate: "2022-12-08", cardID: "83764718", banStatus: "Limited 1", format: "DL"),
+                            BanList(banListDate: "2022-09-28", cardID: "83764718", banStatus: "Limited 1", format: "DL")
+                           ]
+        )
+    }.padding(.horizontal)
 }

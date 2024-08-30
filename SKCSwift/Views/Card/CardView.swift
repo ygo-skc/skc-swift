@@ -49,17 +49,18 @@ private struct CardView: View {
                         RelatedContentView(
                             cardName: card.cardName,
                             cardColor: card.cardColor,
-                            products: cardViewModel.getProducts(),
-                            tcgBanLists: cardViewModel.getBanList(format: BanListFormat.tcg),
-                            mdBanLists: cardViewModel.getBanList(format: BanListFormat.md),
-                            dlBanLists: cardViewModel.getBanList(format: BanListFormat.dl)
+                            products: card.getProducts(),
+                            tcgBanLists: card.getBanList(format: BanListFormat.tcg),
+                            mdBanLists: card.getBanList(format: BanListFormat.md),
+                            dlBanLists: card.getBanList(format: BanListFormat.dl)
                         )
                         .modifier(ParentViewModifier())
                         .padding(.bottom, 50)
+                    } else {
+                        ProgressView("Loading...")
+                            .controlSize(.large)
+                            .tint(.black)
                     }
-                }
-                .task(priority: .userInitiated) {
-                    await cardViewModel.fetchData(cardID: cardID)
                 }
                 
                 ScrollView {
@@ -67,6 +68,9 @@ private struct CardView: View {
                         .padding(.bottom, 30)
                         .modifier(ParentViewModifier())
                 }
+            }
+            .task(priority: .userInitiated) {
+                await cardViewModel.fetchData(cardID: cardID)
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
             .indexViewStyle(.page(backgroundDisplayMode: .always))

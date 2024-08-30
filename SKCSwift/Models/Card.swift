@@ -72,6 +72,21 @@ struct Card: Codable, Equatable {
     
     private static let nilStat = "?"
     private static let linkDefStat = "-"
+    
+    func getProducts() -> [Product] {
+        return foundIn ?? [Product]()
+    }
+    
+    func getBanList(format: BanListFormat) -> [BanList] {
+        switch format {
+        case .tcg:
+            return restrictedIn?.TCG ?? [BanList]()
+        case .md:
+            return restrictedIn?.MD ?? [BanList]()
+        case .dl:
+            return restrictedIn?.DL ?? [BanList]()
+        }
+    }
 }
 
 // used as convenience when working with NavigationDestination

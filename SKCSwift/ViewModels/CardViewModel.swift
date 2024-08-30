@@ -25,19 +25,4 @@ final class CardViewModel {
             }
         }
     }
-    
-    func getProducts() -> [Product] {
-        return card?.foundIn ?? [Product]()
-    }
-    
-    func getBanList(format: BanListFormat) -> [BanList] {
-        switch format {
-        case .tcg:
-            return card?.restrictedIn?.TCG ?? [BanList]()
-        case .md:
-            return card?.restrictedIn?.MD ?? [BanList]()
-        case .dl:
-            return card?.restrictedIn?.DL ?? [BanList]()
-        }
-    }
 }
