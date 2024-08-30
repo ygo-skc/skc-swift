@@ -24,7 +24,7 @@ fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
         case 0...399:
             return
         case 400:
-            throw DataFetchError.client
+            throw DataFetchError.badRequest
         case 404:
             throw DataFetchError.notFound
         case 401...499:
@@ -49,7 +49,7 @@ func data<T>(_ type: T.Type, url: URL) async throws -> T where T : Decodable {
         }
         
         print("Error occurred while calling \(url.absoluteString) \(error.localizedDescription)")
-        throw DataFetchError.unknown
+        throw error
     } catch {
         print("An error occurred while decoding output from http request \(error)")
         throw DataFetchError.bodyParse
