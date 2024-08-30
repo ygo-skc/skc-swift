@@ -32,7 +32,7 @@ class HomeViewModel {
         }
     }
     
-    func fetchDBStatsData() async {
+    private func fetchDBStatsData() async {
         switch await data(SKCDatabaseStats.self, url: dbStatsURL()) {
         case .success(let dbStats):
             DispatchQueue.main.async {
@@ -42,7 +42,7 @@ class HomeViewModel {
         }
     }
     
-    func fetchCardOfTheDayData() async {
+    private func fetchCardOfTheDayData() async {
         switch await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
         case .success(let cardOfTheDay):
             DispatchQueue.main.async {
@@ -52,7 +52,7 @@ class HomeViewModel {
         }
     }
     
-    func fetchUpcomingTCGProducts() async {
+    private func fetchUpcomingTCGProducts() async {
         switch await data(Events.self, url: upcomingEventsURL()) {
         case .success(let upcomingTCGProducts):
             DispatchQueue.main.async {
@@ -62,7 +62,7 @@ class HomeViewModel {
         }
     }
     
-    func fetchYouTubeUploadsData() async {
+    private func fetchYouTubeUploadsData() async {
         switch await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
         case .success(let uploadData):
             DispatchQueue.main.async {
