@@ -77,7 +77,7 @@ struct ProductCardSuggestionsView: View {
                 Text("Suggestions")
                     .font(.title2)
             } icon: {
-                ProductImage(width: 50, productID: productID, imgSize: .tiny)
+                ProductImageView(width: 50, productID: productID, imgSize: .tiny)
             }
             .padding(.bottom)
             .frame(maxWidth: .infinity, alignment: .center)

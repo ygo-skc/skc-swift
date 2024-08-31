@@ -38,7 +38,7 @@ struct ProductView: View {
         TabView {
             ScrollView {
                 VStack{
-                    ProductImage(width: 150, productID: productID, imgSize: .small)
+                    ProductImageView(width: 150, productID: productID, imgSize: .small)
                         .padding(.vertical)
                     if let product {
                         InlineDateView(date: product.productReleaseDate)

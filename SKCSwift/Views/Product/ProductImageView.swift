@@ -8,7 +8,7 @@
 import SwiftUI
 import CachedAsyncImage
 
-struct ProductImage: View, Equatable {
+struct ProductImageView: View, Equatable {
     private let height: CGFloat
     private let width: CGFloat
     private let productID: String
@@ -18,14 +18,14 @@ struct ProductImage: View, Equatable {
     
     init(height: CGFloat, productID: String, imgSize: ImageSize) {
         self.height = height
-        self.width = height / ProductImage.RATIO
+        self.width = height / ProductImageView.RATIO
         self.imgSize = imgSize
         self.productID = productID
     }
     
     init(width: CGFloat, productID: String, imgSize: ImageSize) {
         self.width = width
-        self.height = width * ProductImage.RATIO
+        self.height = width * ProductImageView.RATIO
         self.imgSize = imgSize
         self.productID = productID
     }
@@ -41,14 +41,10 @@ struct ProductImage: View, Equatable {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: width, height: height)
             default:
-                CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/default-product-image.png")!) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: width, height: height)
-                } placeholder: {
-                    PlaceholderView(width: width, height: height, radius: 0)
-                }
+                Image(.unknownProduct)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: width, height: height)
             }
         }
         .frame(width: width, height: height)
@@ -56,9 +52,9 @@ struct ProductImage: View, Equatable {
 }
 
 #Preview {
-    ProductImage(width: 50, productID: "INFO", imgSize: .tiny)
+    ProductImageView(width: 50, productID: "INFO", imgSize: .tiny)
 }
 
 #Preview {
-    ProductImage(width: 50, productID: "INF", imgSize: .tiny)
+    ProductImageView(width: 50, productID: "INF", imgSize: .tiny)
 }

@@ -38,12 +38,8 @@ struct CardImageView: View, Equatable {
                 image
                     .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
             default:
-                CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/default-card-image.jpg")!) { image in
-                    image
-                        .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
-                } placeholder: {
-                    PlaceholderView(width: length, height: length, radius: radius)
-                }
+                Image(.cardBackground)
+                    .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
             }
         }
         .frame(width: length, height: length)

@@ -12,7 +12,7 @@ struct ProductListItemView: View, Equatable {
     
     var body: some View {
         HStack(alignment: .top, spacing: 15) {
-            ProductImage(width: 55, productID: product.productId, imgSize: .tiny)
+            ProductImageView(width: 55, productID: product.productId, imgSize: .tiny)
                 .equatable()
                 .padding(.trailing, 3)
             VStack(alignment: .leading) {
