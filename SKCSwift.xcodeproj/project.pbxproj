@@ -30,7 +30,6 @@
 		1F601D08297DFD52007E1E0C /* DeckList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F601D07297DFD52007E1E0C /* DeckList.swift */; };
 		1F6687E02967904400C8555D /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687DF2967904400C8555D /* SearchView.swift */; };
 		1F6687E2296798E700C8555D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6687E1296798E700C8555D /* HomeView.swift */; };
-		1F68DA382988C22B00541E81 /* RelatedBanListsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */; };
 		1F7655302964CB2D00512EF1 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */; };
 		1F8211E72961FF0000238EE1 /* SKCSwiftApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */; };
 		1F8211E92961FF0000238EE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8211E82961FF0000238EE1 /* ContentView.swift */; };
@@ -45,7 +44,6 @@
 		1F96D7902A507F3C0033150D /* InlineDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D78F2A507F3C0033150D /* InlineDateView.swift */; };
 		1F96D7962A50E8830033150D /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D7952A50E8830033150D /* TabButton.swift */; };
 		1FA249FF29809DC500C04B79 /* RelatedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA249FE29809DC500C04B79 /* RelatedContentView.swift */; };
-		1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */; };
 		1FA24A072980A63700C04B79 /* SuggestedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA24A062980A63700C04B79 /* SuggestedCardView.swift */; };
 		1FB939042965029B00BF0CBA /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB939032965029B00BF0CBA /* Product.swift */; };
 		1FB93906296503AE00BF0CBA /* DataTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB93905296503AE00BF0CBA /* DataTasks.swift */; };
@@ -124,7 +122,6 @@
 		1F601D07297DFD52007E1E0C /* DeckList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckList.swift; sourceTree = "<group>"; };
 		1F6687DF2967904400C8555D /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		1F6687E1296798E700C8555D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedBanListsContentView.swift; sourceTree = "<group>"; };
 		1F76552F2964CB2D00512EF1 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
 		1F8211E62961FF0000238EE1 /* SKCSwiftApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCSwiftApp.swift; sourceTree = "<group>"; };
 		1F8211E82961FF0000238EE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -139,7 +136,6 @@
 		1F96D78F2A507F3C0033150D /* InlineDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineDateView.swift; sourceTree = "<group>"; };
 		1F96D7952A50E8830033150D /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
 		1FA249FE29809DC500C04B79 /* RelatedContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedContentView.swift; sourceTree = "<group>"; };
-		1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedProductsContentView.swift; sourceTree = "<group>"; };
 		1FA24A062980A63700C04B79 /* SuggestedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedCardView.swift; sourceTree = "<group>"; };
 		1FB939032965029B00BF0CBA /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		1FB93905296503AE00BF0CBA /* DataTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTasks.swift; sourceTree = "<group>"; };
@@ -289,10 +285,10 @@
 				DEC099B02C4DD05E00A8B797 /* CardListItemView.swift */,
 				1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */,
 				1F3C10A929673E1200EE4EBE /* CardView.swift */,
+				1FA249FE29809DC500C04B79 /* RelatedContentView.swift */,
 				1FA24A062980A63700C04B79 /* SuggestedCardView.swift */,
 				1F8BFA0A2A01CCEE008A66D1 /* YGOCardView.swift */,
 				DEDF9C162C433AC9005ACE80 /* Components */,
-				1FA24A0029809F3200C04B79 /* RelatedContent */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -371,16 +367,6 @@
 				1F8212032961FF0100238EE1 /* SKCSwiftUITestsLaunchTests.swift */,
 			);
 			path = SKCSwiftUITests;
-			sourceTree = "<group>";
-		};
-		1FA24A0029809F3200C04B79 /* RelatedContent */ = {
-			isa = PBXGroup;
-			children = (
-				1FA249FE29809DC500C04B79 /* RelatedContentView.swift */,
-				1FA24A0129809F8400C04B79 /* RelatedProductsContentView.swift */,
-				1F68DA372988C22B00541E81 /* RelatedBanListsContentView.swift */,
-			);
-			path = RelatedContent;
 			sourceTree = "<group>";
 		};
 		DE5915392C5425E90069E32F /* ViewModifiers */ = {
@@ -553,7 +539,6 @@
 				1F0F994429F8A4E400AA9F69 /* SearchViewModel.swift in Sources */,
 				1F7655302964CB2D00512EF1 /* PlaceholderView.swift in Sources */,
 				DEC099B12C4DD05E00A8B797 /* CardListItemView.swift in Sources */,
-				1F68DA382988C22B00541E81 /* RelatedBanListsContentView.swift in Sources */,
 				DEC099B32C4F0CCD00A8B797 /* TrendingView.swift in Sources */,
 				1F3B51052B41EC6F002D79D8 /* CardImageView.swift in Sources */,
 				1F1C1D3D2A353B1800E73D67 /* BanListOptionsView.swift in Sources */,
@@ -595,7 +580,6 @@
 				1F1C1D3F2A353C1400E73D67 /* BannedContentView.swift in Sources */,
 				1FB9824229FB4A8A00679D81 /* SKCDatabaseStats.swift in Sources */,
 				1F3256592963E116001AACF1 /* MonsterAssociationView.swift in Sources */,
-				1FA24A0229809F8400C04B79 /* RelatedProductsContentView.swift in Sources */,
 				DE0C54552C792BB500DF1E9E /* Filter.swift in Sources */,
 				1F3C10A8296739F500EE4EBE /* APIURLs.swift in Sources */,
 				1F3C10AA29673E1200EE4EBE /* CardView.swift in Sources */,

@@ -5,10 +5,18 @@
 //  Created by Javi Gomez on 1/3/23.
 //
 
-struct Product: Codable, Equatable {
+struct Product: Codable, Equatable, Identifiable {
     let productId, productLocale, productName, productType, productSubType, productReleaseDate: String
     let productTotal: Int?
     let productContent: [ProductContent]?
+    
+    var id: String {
+        if !(productContent?.isEmpty ?? true), let productContent {
+            return "\(productId)-\(productContent[0].id)"
+        } else {
+            return productId
+        }
+    }
     
     func productIDWithContentTotal() -> String {
         if let productTotal {
