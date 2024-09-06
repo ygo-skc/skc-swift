@@ -18,6 +18,8 @@ struct CardImageView: View, Equatable {
     private let colorOverLayWidth: CGFloat
     private let radius: CGFloat
     
+    private static let CARD_BACK_IMAGE = Image(.cardBackground)
+    
     init(length: CGFloat, cardID: String, imgSize: ImageSize, cardColor: String? = nil, variant: YGOCardImageVariant = .round) {
         self.length = length
         self.variant = variant
@@ -38,7 +40,7 @@ struct CardImageView: View, Equatable {
                 image
                     .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
             default:
-                Image(.cardBackground)
+                CardImageView.CARD_BACK_IMAGE
                     .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
             }
         }
