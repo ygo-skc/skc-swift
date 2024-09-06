@@ -20,11 +20,9 @@ struct BanListsForCard: Codable, Equatable {
 
 struct BanListDates: Codable, Hashable {
     let banListDates: [BanListDate]
-    let _links: HLink
 }
 
 struct BanListDate: Codable, Hashable {
     let format: String
     let effectiveDate: String
-    let _links: BanListDateHLink
 }
