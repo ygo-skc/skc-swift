@@ -12,7 +12,6 @@
 		1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */; };
 		1F0F994429F8A4E400AA9F69 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F994329F8A4E400AA9F69 /* SearchViewModel.swift */; };
 		1F1A3AC529871EE600B69892 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1A3AC429871EE600B69892 /* SuggestionsView.swift */; };
-		1F1C1D3A2A3539C600E73D67 /* HATEOAS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1C1D392A3539C600E73D67 /* HATEOAS.swift */; };
 		1F1C1D3D2A353B1800E73D67 /* BanListOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1C1D3C2A353B1800E73D67 /* BanListOptionsView.swift */; };
 		1F1C1D3F2A353C1400E73D67 /* BannedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1C1D3E2A353C1400E73D67 /* BannedContentView.swift */; };
 		1F21FF6C2977BC2D00B4451A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF6B2977BC2D00B4451A /* Color.swift */; };
@@ -103,7 +102,6 @@
 		1F0F993F29F8A3AD00AA9F69 /* CardOfTheDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardOfTheDayView.swift; sourceTree = "<group>"; };
 		1F0F994329F8A4E400AA9F69 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		1F1A3AC429871EE600B69892 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
-		1F1C1D392A3539C600E73D67 /* HATEOAS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HATEOAS.swift; sourceTree = "<group>"; };
 		1F1C1D3C2A353B1800E73D67 /* BanListOptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BanListOptionsView.swift; sourceTree = "<group>"; };
 		1F1C1D3E2A353C1400E73D67 /* BannedContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannedContentView.swift; sourceTree = "<group>"; };
 		1F20ECC92988C4B100D1161D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 				1F0F993C29F8972600AA9F69 /* CardOfTheDay.swift */,
 				1F601D07297DFD52007E1E0C /* DeckList.swift */,
 				1FBE069929FDBE8000EA85A4 /* Events.swift */,
-				1F1C1D392A3539C600E73D67 /* HATEOAS.swift */,
 				1FB939032965029B00BF0CBA /* Product.swift */,
 				1F30FE6F296B729400B80816 /* SearchResults.swift */,
 				1FB9824129FB4A8A00679D81 /* SKCDatabaseStats.swift */,
@@ -590,7 +587,6 @@
 				1FB939042965029B00BF0CBA /* Product.swift in Sources */,
 				1F30FE70296B729400B80816 /* SearchResults.swift in Sources */,
 				1F0F994029F8A3AD00AA9F69 /* CardOfTheDayView.swift in Sources */,
-				1F1C1D3A2A3539C600E73D67 /* HATEOAS.swift in Sources */,
 				DE59153B2C5426290069E32F /* ParentViewModifier.swift in Sources */,
 				1F6687E02967904400C8555D /* SearchView.swift in Sources */,
 				DEE1CD6E2C69635A003419D1 /* BrowseView.swift in Sources */,
