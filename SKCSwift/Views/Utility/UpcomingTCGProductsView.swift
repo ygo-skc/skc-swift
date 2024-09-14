@@ -14,8 +14,8 @@ struct UpcomingTCGProductsView: View, Equatable {
         SectionView(header: "Upcoming products",
                     variant: .plain,
                     content: {
-            if let events {
-                VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 5) {
+                if let events {
                     Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
                         .font(.body)
                         .padding(.bottom)
@@ -25,11 +25,12 @@ struct UpcomingTCGProductsView: View, Equatable {
                             .equatable()
                     }
                 }
-                .frame(maxWidth: .infinity)
-            } else {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
+                else {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                }
             }
+            .frame(maxWidth: .infinity)
         })
     }
 }

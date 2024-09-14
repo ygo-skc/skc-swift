@@ -130,7 +130,8 @@ private struct ProductBrowseView: View {
                     .modifier(ParentViewModifier())
                 }
             } else {
-                ProgressView()
+                ProgressView("Loading...")
+                    .controlSize(.large)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -14,21 +14,24 @@ struct YouTubeUploadsView: View, Equatable {
         SectionView(header: "YouTube videos",
                     variant: .plain,
                     content: {
-            if let videos {
-                Text("Did you know I make YouTube videos? Keep tabs on the TCG, watch the best un-boxings on YouTube or watch some dope Master Duel replays. Don't forget to sub.")
-                    .font(.body)
-                
-                LazyVStack(alignment: .leading, spacing: 5) {
-                    ForEach(videos, id: \.id) { video in
-                        YouTubeUploadView(videoID: video.id, title: video.title, uploadUrl: video.url)
-                            .equatable()
+            VStack {
+                if let videos {
+                    Text("Did you know I make YouTube videos? Keep tabs on the TCG, watch the best un-boxings on YouTube or watch some dope Master Duel replays. Don't forget to sub.")
+                        .font(.body)
+                    
+                    LazyVStack(alignment: .leading, spacing: 5) {
+                        ForEach(videos, id: \.id) { video in
+                            YouTubeUploadView(videoID: video.id, title: video.title, uploadUrl: video.url)
+                                .equatable()
+                        }
                     }
-                }
-                .frame(maxWidth: .infinity)
-            } else {
-                ProgressView()
                     .frame(maxWidth: .infinity)
+                } else {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                }
             }
+            .frame(maxWidth: .infinity)
         })
     }
 }

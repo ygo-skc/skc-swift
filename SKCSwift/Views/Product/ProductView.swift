@@ -44,27 +44,28 @@ struct ProductView: View {
                         InlineDateView(date: product.productReleaseDate)
                         Text([product.productType, product.productSubType].joined(separator: " | "))
                             .font(.subheadline)
-                    } else {
-                        ProgressView()
-                    }
-                    
-                    LazyVStack {
-                        if let content = product?.productContent {
-                            ForEach(content) { c in
-                                if let card = c.card {
-                                    NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                        GroupBox(label: Label("\(productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
-                                            CardListItemView(card: card, showAllInfo: true)
-                                                .equatable()
-                                        }
-                                        .groupBoxStyle(.listItem)
-                                    })
-                                    .buttonStyle(.plain)
+                        
+                        if let content = product.productContent {
+                            LazyVStack {
+                                ForEach(content) { c in
+                                    if let card = c.card {
+                                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                            GroupBox(label: Label("\(productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
+                                                CardListItemView(card: card, showAllInfo: true)
+                                                    .equatable()
+                                            }
+                                            .groupBoxStyle(.listItem)
+                                        })
+                                        .buttonStyle(.plain)
+                                    }
                                 }
                             }
+                            .frame(maxWidth: .infinity)
                         }
+                    } else {
+                        ProgressView("Loading...")
+                            .controlSize(.large)
                     }
-                    .frame(maxWidth: .infinity)
                 }
                 .padding(.bottom, 40)
                 .modifier(ParentViewModifier(alignment: .topLeading))
@@ -78,7 +79,8 @@ struct ProductView: View {
                     if let product {
                         ProductCardSuggestionsView(productID: productID, productName: product.productName)
                     } else {
-                        ProgressView()
+                        ProgressView("Loading...")
+                            .controlSize(.large)
                     }
                 }
                 .padding(.bottom, 30)

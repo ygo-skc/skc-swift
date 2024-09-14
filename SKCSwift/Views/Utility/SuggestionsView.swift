@@ -39,11 +39,11 @@ struct CardSuggestionsView: View {
                                         subHeader: "Cards that reference \(cardName) - excludes ED cards that reference this card as a summoning material.", references: referencedBy)
                 }
             } else {
-                ProgressView()
+                ProgressView("Loading...")
+                    .controlSize(.large)
                     .frame(maxWidth: .infinity)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task(priority: .userInitiated) {
             await suggestionViewModel.fetchSuggestions(cardID: cardID)
         }
@@ -96,7 +96,8 @@ struct ProductCardSuggestionsView: View {
                                     subHeader: "Cards that reference a card found in \(productName). Excludes ED cards that reference this card as a summoning material.",
                                     references: suggestions.support.referencedBy)
             } else {
-                ProgressView()
+                ProgressView("Loading...")
+                    .controlSize(.large)
                     .frame(maxWidth: .infinity)
             }
         }

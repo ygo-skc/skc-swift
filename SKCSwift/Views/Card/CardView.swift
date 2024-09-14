@@ -59,7 +59,6 @@ private struct CardView: View {
                     } else {
                         ProgressView("Loading...")
                             .controlSize(.large)
-                            .tint(.black)
                     }
                 }
                 
@@ -69,11 +68,11 @@ private struct CardView: View {
                         .modifier(ParentViewModifier())
                 }
             }
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
             .task(priority: .userInitiated) {
                 await cardViewModel.fetchData(cardID: cardID)
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
         }
     }
 }

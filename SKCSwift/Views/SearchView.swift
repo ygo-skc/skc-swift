@@ -89,10 +89,10 @@ private struct TrendingResultsView: View {
                     .modifier(ParentViewModifier())
             } else {
                 HStack {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 }
+                .frame(maxWidth: .infinity)
             }
         }
     }

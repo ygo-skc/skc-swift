@@ -22,7 +22,7 @@ struct HomeView: View {
                         .equatable()
                     YouTubeUploadsView(videos: homeViewModel.ytUploads)
                         .equatable()
-                        .if(homeViewModel.ytUploads == nil) { view in
+                        .if(homeViewModel.upcomingTCGProducts == nil) { view in
                             view.hidden()
                         }
                 }
