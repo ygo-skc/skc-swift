@@ -116,7 +116,7 @@ private struct SuggestionsView: View {
         case .card:
             return "Cards that reference **\(subjectName ?? "")** excluding ED cards that reference this card as a summoning material."
         case .product:
-            return "Cards that reference a card found in \(subjectName ?? "") excluding ED cards that reference a card in this set as a summoning material."
+            return "Cards that reference a card found in **\(subjectName ?? "")** excluding ED cards that reference a card in this set as a summoning material."
         }
     }
     
@@ -141,13 +141,21 @@ private struct SuggestionsView: View {
                 } else {
                     VStack(alignment: .leading, spacing: 5) {
                         SuggestionCarouselView(header: "Named Materials",
-                                               subHeader: namedMaterialSubHeader, references: namedMaterials)
+                                               subHeader: namedMaterialSubHeader,
+                                               references: namedMaterials,
+                                               variant: .suggestion)
                         SuggestionCarouselView(header: "Named References",
-                                               subHeader: namedReferenceSubHeader, references: namedReferences)
-                        SupportCarouselView(header: "Material For",
-                                            subHeader: materialForSubHeader, references: materialFor)
-                        SupportCarouselView(header: "Referenced By",
-                                            subHeader: referencedBySubHeader, references: referencedBy)
+                                               subHeader: namedReferenceSubHeader,
+                                               references: namedReferences,
+                                               variant: .suggestion)
+                        SuggestionCarouselView(header: "Material For",
+                                               subHeader: materialForSubHeader,
+                                               references: materialFor,
+                                               variant: .support)
+                        SuggestionCarouselView(header: "Referenced By",
+                                               subHeader: referencedBySubHeader,
+                                               references: referencedBy,
+                                               variant: .support)
                     }
                 }
             } else {
@@ -166,10 +174,16 @@ private struct SuggestionHeightPreferenceKey: PreferenceKey {
     }
 }
 
+private enum CarouselItemVariant {
+    case suggestion
+    case support
+}
+
 private struct SuggestionCarouselView: View {
     let header: String
     let subHeader: String
     let references: [CardReference]
+    let variant: CarouselItemVariant
     
     @State private var height: CGFloat = 0.0
     
@@ -183,16 +197,19 @@ private struct SuggestionCarouselView: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 8) {
                     ForEach(references, id: \.card.cardID) { suggestion in
-                        SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
-                            .background(GeometryReader { geometry in
-                                Color.clear.preference(
-                                    key: SuggestionHeightPreferenceKey.self,
-                                    value: geometry.size.height
-                                )
+                        switch variant {
+                        case .suggestion:
+                            SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
+                                .modifier(CarouselItemViewModifier())
+                        case .support:
+                            let card = suggestion.card
+                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                YGOCardView(cardID: card.cardID, card: card, variant: .condensed)
+                                    .equatable()
+                                    .contentShape(Rectangle())
                             })
-                            .onPreferenceChange(SuggestionHeightPreferenceKey.self) {
-                                height = $0
-                            }
+                            .modifier(CarouselItemViewModifier())
+                        }
                     }
                 }
             }
@@ -203,46 +220,22 @@ private struct SuggestionCarouselView: View {
     }
 }
 
-private struct SupportCarouselView: View {
-    let header: String
-    let subHeader: String
-    let references: [CardReference]
-    
+struct CarouselItemViewModifier: ViewModifier {
     @State private var height: CGFloat = 0.0
     
-    var body: some View {
-        if (!references.isEmpty) {
-            Text(header)
-                .font(.title3)
-            Text(LocalizedStringKey(subHeader))
-                .padding(.bottom)
-            
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 8) {
-                    ForEach(references, id: \.card.cardID) { reference in
-                        let card = reference.card
-                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                            YGOCardView(cardID: card.cardID, card: card, variant: .condensed)
-                                .equatable()
-                                .contentShape(Rectangle())
-                        })
-                        .buttonStyle(.plain)
-                        .background(GeometryReader { geometry in
-                            Color.clear.preference(
-                                key: SuggestionHeightPreferenceKey.self,
-                                value: geometry.size.height
-                            )
-                        })
-                        .onPreferenceChange(SuggestionHeightPreferenceKey.self) {
-                            height = $0
-                        }
-                    }
-                }
+    func body(content: Content) -> some View {
+        content
+            .buttonStyle(.plain)
+            .background(
+                GeometryReader { geometry in
+                    Color.clear.preference(
+                        key: SuggestionHeightPreferenceKey.self,
+                        value: geometry.size.height
+                    )
+                })
+            .onPreferenceChange(SuggestionHeightPreferenceKey.self) {
+                height = $0
             }
-            .frame(maxWidth: .infinity, minHeight: height)
-            .padding(.horizontal, -16)
-            .padding(.bottom, 15)
-        }
     }
 }
 
@@ -258,4 +251,42 @@ private struct SupportCarouselView: View {
         CardSuggestionsView(cardID: "38033121", cardName: "Dark Magician Girl")
             .padding(.horizontal)
     }
+}
+
+private struct SuggestedCardView: View {
+    var card: Card
+    var occurrence: Int
+    
+    var body: some View {
+        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+            VStack {
+                HStack(spacing: 10) {
+                    CardImageView(length: 75, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
+                        .equatable()
+                    
+                    Text("\(occurrence) Reference(s)")
+                        .font(.subheadline)
+                }
+                .padding(.horizontal)
+                .frame(width: 220)
+                
+                CardStatsView(card: card, variant: .condensed)
+                    .equatable()
+            }
+            .contentShape(Rectangle())
+            .frame(width: 220)
+        })
+    }
+}
+
+#Preview {
+    SuggestedCardView(
+        card: Card(
+            cardID: "40044918",
+            cardName: "Elemental HERO Stratos",
+            cardColor: "Effect",
+            cardAttribute: "Wind",
+            cardEffect: "Draw 2",
+            monsterType: "Warrior/Effect"
+        ), occurrence: 1)
 }
