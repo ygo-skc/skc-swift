@@ -89,16 +89,16 @@ private struct SuggestionsView: View {
         case .card:
             return "Cards that can be used as summoning material for **\(subjectName ?? "")**."
         case .product:
-            return "Cards that can be used as summoning material for a card included in \(subjectName ?? "")."
+            return "Cards that can be used as summoning material for a card included in **\(subjectName ?? "")**."
         }
     }
     
     private var namedReferenceSubHeader: String {
         switch subjectType {
         case .card:
-            return "All other cards found in the text of **\(subjectName ?? "")** - non materials."
+            return "Cards found in the text of **\(subjectName ?? "")** - non materials."
         case .product:
-            return "All other cards found in the text of a card included in \(subjectName ?? "") which cannot be used a summoning material."
+            return "Cards found in the text of a card included in **\(subjectName ?? "")** which cannot be used a summoning material."
         }
     }
     
@@ -107,16 +107,16 @@ private struct SuggestionsView: View {
         case .card:
             return "ED cards that can be summoned using **\(subjectName ?? "")** as material"
         case .product:
-            return "ED cards that can be summoned using a card found in \(subjectName ?? "")."
+            return "ED cards that can be summoned using a card found in **\(subjectName ?? "")**."
         }
     }
     
     private var referencedBySubHeader: String {
         switch subjectType {
         case .card:
-            return "Cards that reference **\(subjectName ?? "")** - excludes ED cards that reference this card as a summoning material."
+            return "Cards that reference **\(subjectName ?? "")** excluding ED cards that reference this card as a summoning material."
         case .product:
-            return "Cards that reference a card found in \(subjectName ?? ""). Excludes ED cards that reference this card as a summoning material."
+            return "Cards that reference a card found in \(subjectName ?? "") excluding ED cards that reference a card in this set as a summoning material."
         }
     }
     
