@@ -19,7 +19,7 @@ struct CardLinkDestinationView: View {
 
 private struct CardView: View {
     let cardID: String
-    let cardViewModel = CardViewModel()
+    private let cardViewModel = CardViewModel()
     
     var body: some View {
         if let error = cardViewModel.error {
@@ -64,8 +64,8 @@ private struct CardView: View {
                 
                 ScrollView {
                     CardSuggestionsView(cardID: cardID, cardName: cardViewModel.card?.cardName)
+                        .modifier(ParentViewModifier(alignment: .center))
                         .padding(.bottom, 30)
-                        .modifier(ParentViewModifier())
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .always))

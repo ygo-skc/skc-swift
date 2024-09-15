@@ -67,24 +67,17 @@ struct ProductView: View {
                             .controlSize(.large)
                     }
                 }
+                .modifier(ParentViewModifier(alignment: .center))
                 .padding(.bottom, 40)
-                .modifier(ParentViewModifier(alignment: .topLeading))
                 .task(priority: .userInitiated) {
                     await fetch()
                 }
             }
             
             ScrollView {
-                VStack {
-                    if let product {
-                        ProductCardSuggestionsView(productID: productID, productName: product.productName)
-                    } else {
-                        ProgressView("Loading...")
-                            .controlSize(.large)
-                    }
-                }
-                .padding(.bottom, 30)
-                .modifier(ParentViewModifier(alignment: .topLeading))
+                ProductCardSuggestionsView(productID: productID, productName: product?.productName)
+                    .modifier(ParentViewModifier(alignment: .center))
+                    .padding(.bottom, 30)
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .always))

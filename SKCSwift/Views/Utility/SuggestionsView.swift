@@ -10,40 +10,20 @@ import SwiftUI
 struct CardSuggestionsView: View {
     let cardID: String
     let cardName: String?
+    
     private let suggestionViewModel = CardSuggestionViewModel()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Label {
-                Text("Suggestions")
-                    .font(.title2)
-            } icon: {
-                CardImageView(length: 50, cardID: cardID, imgSize: .tiny)
-            }
-            .padding(.bottom)
-            .frame(maxWidth: .infinity, alignment: .center)
-            
-            if let cardName, suggestionViewModel.areSuggestionsLoaded && suggestionViewModel.isSupportLoaded,
-               let namedMaterials = suggestionViewModel.namedMaterials, let namedReferences = suggestionViewModel.namedReferences,
-               let referencedBy = suggestionViewModel.referencedBy, let materialFor = suggestionViewModel.materialFor {
-                if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
-                    ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
-                } else {
-                    SuggestionCarouselView(header: "Named Materials",
-                                           subHeader: "Cards that can be used as summoning material for \(cardName).", references: namedMaterials)
-                    SuggestionCarouselView(header: "Named References",
-                                           subHeader: "All other cards found in the text of \(cardName) - non materials.", references: namedReferences)
-                    SupportCarouselView(header: "Material For",
-                                        subHeader: "ED cards that can be summoned using \(cardName) as material", references: materialFor)
-                    SupportCarouselView(header: "Referenced By",
-                                        subHeader: "Cards that reference \(cardName) - excludes ED cards that reference this card as a summoning material.", references: referencedBy)
-                }
-            } else {
-                ProgressView("Loading...")
-                    .controlSize(.large)
-                    .frame(maxWidth: .infinity)
-            }
-        }
+        SuggestionsView(
+            subjectID: cardID,
+            subjectName: cardName,
+            subjectType: .card,
+            areSuggestionsLoaded: suggestionViewModel.areSuggestionsLoaded && suggestionViewModel.isSupportLoaded,
+            namedMaterials: suggestionViewModel.namedMaterials,
+            namedReferences: suggestionViewModel.namedReferences,
+            referencedBy: suggestionViewModel.referencedBy,
+            materialFor: suggestionViewModel.materialFor
+        )
         .task(priority: .userInitiated) {
             await suggestionViewModel.fetchSuggestions(cardID: cardID)
         }
@@ -55,7 +35,7 @@ struct CardSuggestionsView: View {
 
 struct ProductCardSuggestionsView: View {
     let productID: String
-    let productName: String
+    let productName: String?
     
     @State private var suggestions: ProductSuggestions? = nil
     
@@ -72,37 +52,108 @@ struct ProductCardSuggestionsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        SuggestionsView(
+            subjectID: productID,
+            subjectName: productName,
+            subjectType: .product,
+            areSuggestionsLoaded: suggestions != nil,
+            namedMaterials: suggestions?.suggestions.namedMaterials,
+            namedReferences: suggestions?.suggestions.namedReferences,
+            referencedBy: suggestions?.support.referencedBy,
+            materialFor: suggestions?.support.materialFor
+        )
+        .task(priority: .userInitiated) {
+            await fetch()
+        }
+    }
+}
+
+private enum CardSuggestionSubject {
+    case card
+    case product
+}
+
+private struct SuggestionsView: View {
+    let subjectID: String
+    let subjectName: String?
+    let subjectType: CardSuggestionSubject
+    
+    let areSuggestionsLoaded: Bool
+    let namedMaterials: [CardReference]?
+    let namedReferences: [CardReference]?
+    let referencedBy: [CardReference]?
+    let materialFor: [CardReference]?
+    
+    private var namedMaterialSubHeader: String {
+        switch subjectType {
+        case .card:
+            return "Cards that can be used as summoning material for **\(subjectName ?? "")**."
+        case .product:
+            return "Cards that can be used as summoning material for a card included in \(subjectName ?? "")."
+        }
+    }
+    
+    private var namedReferenceSubHeader: String {
+        switch subjectType {
+        case .card:
+            return "All other cards found in the text of **\(subjectName ?? "")** - non materials."
+        case .product:
+            return "All other cards found in the text of a card included in \(subjectName ?? "") which cannot be used a summoning material."
+        }
+    }
+    
+    private var materialForSubHeader: String {
+        switch subjectType {
+        case .card:
+            return "ED cards that can be summoned using **\(subjectName ?? "")** as material"
+        case .product:
+            return "ED cards that can be summoned using a card found in \(subjectName ?? "")."
+        }
+    }
+    
+    private var referencedBySubHeader: String {
+        switch subjectType {
+        case .card:
+            return "Cards that reference **\(subjectName ?? "")** - excludes ED cards that reference this card as a summoning material."
+        case .product:
+            return "Cards that reference a card found in \(subjectName ?? ""). Excludes ED cards that reference this card as a summoning material."
+        }
+    }
+    
+    var body: some View {
+        VStack {
             Label {
                 Text("Suggestions")
                     .font(.title2)
             } icon: {
-                ProductImageView(width: 50, productID: productID, imgSize: .tiny)
+                switch subjectType {
+                case .card:
+                    CardImageView(length: 50, cardID: subjectID, imgSize: .tiny)
+                case .product:
+                    ProductImageView(width: 50, productID: subjectID, imgSize: .tiny)
+                }
             }
             .padding(.bottom)
-            .frame(maxWidth: .infinity, alignment: .center)
             
-            if let suggestions {
-                SuggestionCarouselView(header: "Named Materials",
-                                       subHeader: "Cards that can be used as summoning material for a card included in \(productName).",
-                                       references: suggestions.suggestions.namedMaterials)
-                SuggestionCarouselView(header: "Named References",
-                                       subHeader: "All other cards found in the text of a card included in \(productName) which cannot be used a summoning material.",
-                                       references: suggestions.suggestions.namedReferences)
-                SupportCarouselView(header: "Material For",
-                                    subHeader: "ED cards that can be summoned using a card found in \(productName).",
-                                    references: suggestions.support.materialFor)
-                SupportCarouselView(header: "Referenced By",
-                                    subHeader: "Cards that reference a card found in \(productName). Excludes ED cards that reference this card as a summoning material.",
-                                    references: suggestions.support.referencedBy)
+            if areSuggestionsLoaded, let namedMaterials, let namedReferences , let materialFor, let referencedBy {
+                if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
+                    ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
+                } else {
+                    VStack(alignment: .leading, spacing: 5) {
+                        SuggestionCarouselView(header: "Named Materials",
+                                               subHeader: namedMaterialSubHeader, references: namedMaterials)
+                        SuggestionCarouselView(header: "Named References",
+                                               subHeader: namedReferenceSubHeader, references: namedReferences)
+                        SupportCarouselView(header: "Material For",
+                                            subHeader: materialForSubHeader, references: materialFor)
+                        SupportCarouselView(header: "Referenced By",
+                                            subHeader: referencedBySubHeader, references: referencedBy)
+                    }
+                }
             } else {
                 ProgressView("Loading...")
                     .controlSize(.large)
-                    .frame(maxWidth: .infinity)
             }
-        }
-        .task(priority: .userInitiated) {
-            await fetch()
         }
     }
 }
@@ -126,7 +177,7 @@ private struct SuggestionCarouselView: View {
         if (!references.isEmpty) {
             Text(header)
                 .font(.title3)
-            Text(subHeader)
+            Text(LocalizedStringKey(subHeader))
                 .padding(.bottom)
             
             ScrollView(.horizontal) {
@@ -163,7 +214,7 @@ private struct SupportCarouselView: View {
         if (!references.isEmpty) {
             Text(header)
                 .font(.title3)
-            Text(subHeader)
+            Text(LocalizedStringKey(subHeader))
                 .padding(.bottom)
             
             ScrollView(.horizontal) {
