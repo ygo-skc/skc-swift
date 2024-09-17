@@ -42,24 +42,28 @@ struct BrowseView: View {
                             .ignoresSafeArea(.keyboard)
                         }
                     }
-                case .product:
-                    ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
-                }
-            }
-            .toolbar {
-                switch focusedResource {
-                case .card:
-                    FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
-                        if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
-                            CardFiltersView(filters: filters)
+                    .task(priority: .userInitiated) {
+                        await cardBrowseViewModel.fetchCardBrowseCriteria()
+                    }
+                    .toolbar {
+                        FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
+                            if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
+                                CardFiltersView(filters: filters)
+                            }
                         }
                     }
                 case .product:
-                    FilterButton(showFilters: $productBrowseViewModel.showFilters) {
-                        ProductFiltersView(
-                            productTypeFilters: $productBrowseViewModel.productTypeFilters,
-                            productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
-                    }
+                    ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
+                        .task(priority: .userInitiated) {
+                            await productBrowseViewModel.fetchProductBrowseData()
+                        }
+                        .toolbar {
+                            FilterButton(showFilters: $productBrowseViewModel.showFilters) {
+                                ProductFiltersView(
+                                    productTypeFilters: $productBrowseViewModel.productTypeFilters,
+                                    productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
+                            }
+                        }
                 }
             }
             .navigationTitle("Browse")
@@ -84,12 +88,6 @@ struct BrowseView: View {
             Task {
                 await cardBrowseViewModel.fetchCards()
             }
-        }
-        .task(priority: .userInitiated) {
-            await productBrowseViewModel.fetchProductBrowseData()
-        }
-        .task(priority: .userInitiated) {
-            await cardBrowseViewModel.fetchCardBrowseCriteria()
         }
     }
 }
