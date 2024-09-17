@@ -387,9 +387,9 @@
 			isa = PBXGroup;
 			children = (
 				1F86EC3E29688821004F4F1B /* AttributeView.swift */,
-				1F3256582963E116001AACF1 /* MonsterAssociationView.swift */,
-				1F32565A2963E195001AACF1 /* CardStatsView.swift */,
 				1F3B51042B41EC6F002D79D8 /* CardImageView.swift */,
+				1F32565A2963E195001AACF1 /* CardStatsView.swift */,
+				1F3256582963E116001AACF1 /* MonsterAssociationView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
