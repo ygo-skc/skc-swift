@@ -35,7 +35,7 @@ fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
     }
 }
 
-func data<T>(_ type: T.Type, url: URL) async -> Result<T, NetworkError> where T: Decodable {
+nonisolated func data<T>(_ type: T.Type, url: URL) async -> sending Result<T, NetworkError> where T: Decodable {
     do {
         let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url))
         try Task.checkCancellation()

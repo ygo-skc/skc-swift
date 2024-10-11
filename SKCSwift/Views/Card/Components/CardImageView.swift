@@ -48,6 +48,7 @@ struct CardImageView: View, Equatable {
     }
 }
 
+@MainActor
 private extension Image {
     func cardImageViewModifier(length: CGFloat, radius: CGFloat, cardColor: String?, colorOverLayWidth: CGFloat) -> some View {
         self

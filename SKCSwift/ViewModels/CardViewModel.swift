@@ -11,17 +11,14 @@ final class CardViewModel {
     private(set) var card: Card?
     var error: NetworkError?
     
+    @MainActor
     func fetchData(cardID: String) async {
         if self.card == nil {
             switch await data(Card.self, url: cardInfoURL(cardID: cardID)) {
             case .success(let card):
-                Task { @MainActor in
-                    self.card = card
-                }
+                self.card = card
             case .failure(let error):
-                Task { @MainActor in
-                    self.error = error
-                }
+                self.error = error
             }
         }
     }

@@ -17,26 +17,24 @@ class TrendingViewModel {
     @ObservationIgnored
     private var trendingProductDataLastFetch = Date()
     
+    @MainActor
     func fetchTrendingCards() async {
         if cards == nil || trendingCardDataLastFetch.isDateInvalidated(5) {
             switch await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
             case .success(let trending):
-                Task { @MainActor in
-                    self.cards = trending.metrics
-                }
+                self.cards = trending.metrics
             case .failure(_): break
             }
             trendingCardDataLastFetch = Date()
         }
     }
     
+    @MainActor
     func fetchTrendingProducts() async {
         if products == nil || trendingProductDataLastFetch.isDateInvalidated(5) {
             switch await data(Trending<Product>.self, url: trendingUrl(resource: .product)) {
             case .success(let trending):
-                Task { @MainActor in
-                    self.products = trending.metrics
-                }
+                self.products = trending.metrics
             case .failure(_): break
             }
             trendingProductDataLastFetch = Date()

@@ -21,29 +21,27 @@ class CardSuggestionViewModel {
     @ObservationIgnored
     private(set) var materialFor: [CardReference]?
     
+    @MainActor
     func fetchSuggestions(cardID: String) async {
         if !areSuggestionsLoaded {
             switch await data(CardSuggestions.self, url: cardSuggestionsURL(cardID: cardID)) {
             case .success(let suggestions):
                 self.namedMaterials = suggestions.namedMaterials
                 self.namedReferences = suggestions.namedReferences
-                Task { @MainActor in
-                    self.areSuggestionsLoaded = true
-                }
+                self.areSuggestionsLoaded = true
             case.failure(_): break
             }
         }
     }
     
+    @MainActor
     func fetchSupport(cardID: String) async {
         if !isSupportLoaded {
             switch await data(CardSupport.self, url: cardSupportURL(cardID: cardID)) {
             case .success(let support):
                 self.referencedBy = support.referencedBy
                 self.materialFor = support.materialFor
-                Task { @MainActor in
-                    self.isSupportLoaded = true
-                }
+                self.isSupportLoaded = true
             case .failure(_): break
             }
         }

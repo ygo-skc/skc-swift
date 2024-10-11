@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TrendingView: View, Equatable {
+struct TrendingView: View, @preconcurrency Equatable {
     let cardTrendingData: [TrendingMetric<Card>]
     let productTrendingData: [TrendingMetric<Product>]
     

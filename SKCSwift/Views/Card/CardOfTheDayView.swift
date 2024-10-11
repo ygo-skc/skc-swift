@@ -12,7 +12,7 @@ struct CardOfTheDayView: View, Equatable {
     
     private static let IMAGE_SIZE: CGFloat = 90
     
-    static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
+    nonisolated static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
         return lhs.cardOfTheDay == rhs.cardOfTheDay
     }
     

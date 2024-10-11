@@ -21,6 +21,7 @@ class SearchViewModel {
     @ObservationIgnored
     private var task: Task<(), any Error>?
     
+    @MainActor
     func newSearchSubject(value: String) async {
         if let task {
             task.cancel()
@@ -30,9 +31,9 @@ class SearchViewModel {
             self.task = nil
             self.searchResults.removeAll()
             self.searchResultsIds.removeAll()
-            self.updateState(.done)
+            self.status = .done
         } else {
-            self.updateState(.pending)
+            self.status = .pending
             
             task = Task {
                 switch await data([Card].self, url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines))) {
@@ -40,44 +41,45 @@ class SearchViewModel {
                     if cards.isEmpty {
                         self.searchResults.removeAll()
                         self.searchResultsIds.removeAll()
-                        self.updateState(.done)
+                        self.status = .done
                         return
                     }
                     
-                    var sections = [String]()
-                    var searchResultsIds = [String]()
-                    let results = cards.reduce(into: [String: [Card]]()) { results, card in
-                        let section = card.cardColor
-                        results[section, default: []].append(card)
-                        if !sections.contains(section) {
-                            sections.append(section)
-                        }
-                        searchResultsIds.append(card.cardID)
-                    }
-                    
-                    if (self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds) {
+                    let (sections, searchResultsIds, results, shouldUpdateUI) = await partitionResults(cards)
+                    if (shouldUpdateUI) {
                         self.searchResults.removeAll()
                         self.searchResultsIds = searchResultsIds
                         for section in sections {
                             self.searchResults.append(SearchResults(section: section, results: results[section]!))
                         }
                     }
-                    self.updateState(.done)
+                    
+                    self.status = .done
                 case .failure(let error):
                     switch error {
                     case NetworkError.cancelled: break    // do nothing
                     default:
                         print(error)
-                        self.updateState(.error)
+                        self.status = .error
                     }
                 }
             }
         }
     }
     
-    private func updateState(_ status: DataTaskStatus) {
-        Task(priority: .userInitiated) { @MainActor in
-            self.status = status
+    nonisolated private func partitionResults(_ cards: [Card]) async -> ([String], [String],  [String : [Card]], Bool) {
+        var sections = [String]()
+        var searchResultsIds = [String]()
+        let results = cards.reduce(into: [String: [Card]]()) { results, card in
+            let section = card.cardColor
+            results[section, default: []].append(card)
+            if !sections.contains(section) {
+                sections.append(section)
+            }
+            searchResultsIds.append(card.cardID)
         }
+        
+        let shouldUpdateUI = self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds
+        return (sections, searchResultsIds, results, shouldUpdateUI)
     }
 }

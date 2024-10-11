@@ -18,6 +18,7 @@ class CardBrowseViewModel {
     @ObservationIgnored
     private var cardBrowseCriteria: CardBrowseCriteria?
     
+    @MainActor
     func fetchCardBrowseCriteria() async {
         if cardBrowseCriteria == nil {
             switch await data(CardBrowseCriteria.self, url: cardBrowseCriteriaURL()) {
@@ -39,6 +40,7 @@ class CardBrowseViewModel {
         }
     }
     
+    @MainActor
     func fetchCards() async {
         if let filters {
             let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }

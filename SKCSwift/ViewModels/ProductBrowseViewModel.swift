@@ -27,6 +27,7 @@ class ProductBrowseViewModel {
     @ObservationIgnored
     private var uniqueProductSubTypes = Set<String>()
     
+    @MainActor
     func fetchProductBrowseData() async {
         if products == nil {
             switch await data(Products.self, url: productsURL()) {
@@ -48,6 +49,7 @@ class ProductBrowseViewModel {
         }
     }
     
+    @MainActor
     func syncProductSubTypeFilters(insertions: [CollectionDifference<FilteredItem>.Change]) async {
         let productSubTypeFilters: [FilteredItem]
         if insertions.count == uniqueProductTypes.count {   // init case
@@ -76,6 +78,7 @@ class ProductBrowseViewModel {
         }
     }
     
+    @MainActor
     func updateProductList() async {
         let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
         
@@ -86,8 +89,6 @@ class ProductBrowseViewModel {
                 productsByYear[year, default: []].append(product)
             }
         
-        Task { @MainActor in
-            self.productsByYear = productsByYear
-        }
+        self.productsByYear = productsByYear
     }
 }
