@@ -57,9 +57,7 @@ class ProductBrowseViewModel {
                 $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
             }
             
-            Task { @MainActor in
-                self.productSubTypeFilters = productSubTypeFilters
-            }
+            self.productSubTypeFilters = productSubTypeFilters
         } else {
             if let c = insertions.first {
                 switch c {
@@ -69,9 +67,7 @@ class ProductBrowseViewModel {
                         FilteredItem(category: $0.category, isToggled: changeElement.isToggled, disableToggle: !changeElement.isToggled) : $0
                     }
                     
-                    Task { @MainActor in
-                        self.productSubTypeFilters = productSubTypeFilters
-                    }
+                    self.productSubTypeFilters = productSubTypeFilters
                 default: break
                 }
             }
@@ -80,15 +76,18 @@ class ProductBrowseViewModel {
     
     @MainActor
     func updateProductList() async {
+        self.productsByYear = await ProductBrowseViewModel.filteredProducts(productSubTypeFilters: productSubTypeFilters, products: products)
+    }
+    
+    private static nonisolated func filteredProducts(productSubTypeFilters: [FilteredItem], products: [Product]?) async -> [String : [Product]]? {
         let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
         
-        let productsByYear = products?
+        return products?
             .filter({toggledProductSubTypeFilters.contains($0.productSubType)})
             .reduce(into: [String: [Product]]()) { productsByYear, product in
+                print(product)
                 let year: String = String(product.productReleaseDate.split(separator: "-", maxSplits: 1)[0])
                 productsByYear[year, default: []].append(product)
             }
-        
-        self.productsByYear = productsByYear
     }
 }

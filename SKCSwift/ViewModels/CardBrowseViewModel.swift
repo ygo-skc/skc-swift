@@ -32,9 +32,7 @@ class CardBrowseViewModel {
                     FilteredItem(category: cardColor, isToggled: false, disableToggle: false)
                 }
                 
-                Task { @MainActor in
-                    self.filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters)
-                }
+                self.filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters)
             case .failure(_): break;
             }
         }
@@ -50,9 +48,7 @@ class CardBrowseViewModel {
                 switch await data(CardBrowseResults.self, url: cardBrowseURL(attributes: attributes, colors: colors)) {
                 case .success(let r):
                     self.numResults = r.numResults
-                    Task { @MainActor in
-                        self.cards = r.results
-                    }
+                    self.cards = r.results
                 case .failure(_): break
                 }
             }

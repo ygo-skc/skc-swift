@@ -43,9 +43,7 @@ struct ProductCardSuggestionsView: View {
         if suggestions == nil {
             switch await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
             case .success(let suggestions):
-                Task { @MainActor in
-                    self.suggestions = suggestions
-                }
+                self.suggestions = suggestions
             case .failure(_): break
             }
         }

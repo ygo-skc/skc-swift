@@ -26,9 +26,7 @@ struct ProductView: View {
         if product == nil {
             switch await data(Product.self, url: productInfoURL(productID: productID)) {
             case .success(let product):
-                Task { @MainActor in
-                    self.product = product
-                }
+                self.product = product
             case .failure(_): break
             }
         }

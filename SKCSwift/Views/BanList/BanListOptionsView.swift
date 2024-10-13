@@ -32,11 +32,9 @@ private struct BanListDatesView: View {
         if !isDataLoaded {
             switch await data(BanListDates.self, url: banListDatesURL(format: "\(chosenFormat)")) {
             case .success(let dates):
-                Task { @MainActor in
-                    self.banListDates = dates.banListDates
-                    self.chosenDateRange = 0
-                    self.isDataLoaded = true
-                }
+                self.banListDates = dates.banListDates
+                self.chosenDateRange = 0
+                self.isDataLoaded = true
             case .failure(_): break
             }
         }
