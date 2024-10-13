@@ -109,10 +109,10 @@ private struct ProductBrowseView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
                         ForEach(filteredProducts.keys.sorted(by: >), id: \.self) { year in
-                            if let productForYear = filteredProducts[year] {
-                                Section(header: HeaderView(header: "\(year) • \(productForYear.count) total")) {
+                            if let filteredProducts = filteredProducts[year] {
+                                Section(header: HeaderView(header: "\(year) • \(filteredProducts.count) total")) {
                                     LazyVStack {
-                                        ForEach(productForYear, id: \.productId) { product in
+                                        ForEach(filteredProducts, id: \.productId) { product in
                                             NavigationLink(
                                                 value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
                                                 label: {
