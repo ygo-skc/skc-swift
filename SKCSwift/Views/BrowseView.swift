@@ -53,7 +53,8 @@ struct BrowseView: View {
                         }
                     }
                 case .product:
-                    ProductBrowseView(productsByYear: productBrowseViewModel.productsByYear)
+                    ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts,
+                                      areProductsFiltered: productBrowseViewModel.areProductsFiltered)
                         .task(priority: .userInitiated) {
                             await productBrowseViewModel.fetchProductBrowseData()
                         }
@@ -93,17 +94,22 @@ struct BrowseView: View {
 }
 
 private struct ProductBrowseView: View {
-    let productsByYear: [String: [Product]]?
+    let filteredProducts: [String: [Product]]
+    let areProductsFiltered: Bool
     
     var body: some View {
         VStack {
-            if let productsByYear = productsByYear, productsByYear.isEmpty {
+            if !areProductsFiltered {
+                ProgressView("Loading...")
+                    .controlSize(.large)
+            }
+            else if areProductsFiltered && filteredProducts.isEmpty {
                 ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
-            } else if let productsByYear = productsByYear, !productsByYear.isEmpty {
+            } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                        ForEach(productsByYear.keys.sorted(by: >), id: \.self) { year in
-                            if let productForYear = productsByYear[year] {
+                        ForEach(filteredProducts.keys.sorted(by: >), id: \.self) { year in
+                            if let productForYear = filteredProducts[year] {
                                 Section(header: HeaderView(header: "\(year) • \(productForYear.count) total")) {
                                     LazyVStack {
                                         ForEach(productForYear, id: \.productId) { product in
@@ -127,9 +133,6 @@ private struct ProductBrowseView: View {
                     }
                     .modifier(ParentViewModifier())
                 }
-            } else {
-                ProgressView("Loading...")
-                    .controlSize(.large)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

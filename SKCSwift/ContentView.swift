@@ -14,19 +14,19 @@ struct ContentView: View, Equatable {
         TabView {
             HomeView()
                 .tabItem {
-                    Image(systemName: "house")
+                    Label("Home", systemImage: "house")
                 }
-            BannedContent()
-                .tabItem {
-                    Image(systemName: "x.square")
-                }
+//            BannedContent()
+//                .tabItem {
+//                    Image(systemName: "x.square")
+//                }
             BrowseView()
                 .tabItem {
-                    Image(systemName: "square.grid.2x2")
+                    Label("Browse", systemImage: "square.grid.2x2")
                 }
             SearchView()
                 .tabItem {
-                    Image(systemName: "magnifyingglass")
+                    Label("Search", systemImage: "magnifyingglass")
                 }
         }
     }
