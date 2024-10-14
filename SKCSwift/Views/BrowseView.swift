@@ -24,47 +24,43 @@ struct BrowseView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
-                switch focusedResource {
-                case .card:
-                    ScrollView {
-                        LazyVStack(alignment: .leading) {
-                            ForEach(cardBrowseViewModel.cards, id: \.self.cardID) { card in
-                                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                    GroupBox {
-                                        CardListItemView(card: card)
-                                            .equatable()
+                
+                if ((focusedResource == .product && !productBrowseViewModel.areProductsFiltered) ||
+                    (focusedResource == .card && cardBrowseViewModel.filters == nil)) {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                } else if ((focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
+                           (focusedResource == .card && cardBrowseViewModel.cards.isEmpty)) {
+                    ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
+                }
+                
+                ScrollView {
+                    switch focusedResource {
+                    case .card:
+                        CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                            .task(priority: .userInitiated) {
+                                await cardBrowseViewModel.fetchCardBrowseCriteria()
+                            }
+                            .toolbar {
+                                FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
+                                    if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
+                                        CardFiltersView(filters: filters)
                                     }
-                                    .groupBoxStyle(.listItem)
-                                })
-                                .buttonStyle(.plain)
+                                }
                             }
-                            .listStyle(.plain)
-                            .ignoresSafeArea(.keyboard)
-                        }
-                    }
-                    .task(priority: .userInitiated) {
-                        await cardBrowseViewModel.fetchCardBrowseCriteria()
-                    }
-                    .toolbar {
-                        FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
-                            if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
-                                CardFiltersView(filters: filters)
+                    case .product:
+                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
+                            .task(priority: .userInitiated) {
+                                await productBrowseViewModel.fetchProductBrowseData()
                             }
-                        }
-                    }
-                case .product:
-                    ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts,
-                                      areProductsFiltered: productBrowseViewModel.areProductsFiltered)
-                        .task(priority: .userInitiated) {
-                            await productBrowseViewModel.fetchProductBrowseData()
-                        }
-                        .toolbar {
-                            FilterButton(showFilters: $productBrowseViewModel.showFilters) {
-                                ProductFiltersView(
-                                    productTypeFilters: $productBrowseViewModel.productTypeFilters,
-                                    productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
+                            .toolbar {
+                                FilterButton(showFilters: $productBrowseViewModel.showFilters) {
+                                    ProductFiltersView(
+                                        productTypeFilters: $productBrowseViewModel.productTypeFilters,
+                                        productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
+                                }
                             }
-                        }
+                    }
                 }
             }
             .navigationTitle("Browse")
@@ -74,20 +70,20 @@ struct BrowseView: View {
             .navigationDestination(for: ProductLinkDestinationValue.self) { product in
                 ProductLinkDestinationView(productLinkDestinationValue: product)
             }
-        }
-        .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
-            Task {
-                await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
+            .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
+                Task {
+                    await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
+                }
             }
-        }
-        .onChange(of: productBrowseViewModel.productSubTypeFilters) {
-            Task {
-                await productBrowseViewModel.updateProductList()
+            .onChange(of: productBrowseViewModel.productSubTypeFilters) {
+                Task {
+                    await productBrowseViewModel.updateProductList()
+                }
             }
-        }
-        .onChange(of: cardBrowseViewModel.filters) {
-            Task {
-                await cardBrowseViewModel.fetchCards()
+            .onChange(of: cardBrowseViewModel.filters) {
+                Task {
+                    await cardBrowseViewModel.fetchCards()
+                }
             }
         }
     }
@@ -95,47 +91,55 @@ struct BrowseView: View {
 
 private struct ProductBrowseView: View {
     let filteredProducts: [String: [Product]]
-    let areProductsFiltered: Bool
     
     var body: some View {
-        VStack {
-            if !areProductsFiltered {
-                ProgressView("Loading...")
-                    .controlSize(.large)
-            }
-            else if areProductsFiltered && filteredProducts.isEmpty {
-                ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
-            } else {
-                ScrollView {
-                    LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                        ForEach(filteredProducts.keys.sorted(by: >), id: \.self) { year in
-                            if let filteredProducts = filteredProducts[year] {
-                                Section(header: HeaderView(header: "\(year) • \(filteredProducts.count) total")) {
-                                    LazyVStack {
-                                        ForEach(filteredProducts, id: \.productId) { product in
-                                            NavigationLink(
-                                                value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
-                                                label: {
-                                                    GroupBox {
-                                                        ProductListItemView(product: product)
-                                                            .equatable()
-                                                    }
-                                                    .groupBoxStyle(.listItem)
-                                                })
-                                            .buttonStyle(.plain)
+        LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+            ForEach(filteredProducts.keys.sorted(by: >), id: \.self) { year in
+                if let filteredProducts = filteredProducts[year] {
+                    Section(header: HeaderView(header: "\(year) • \(filteredProducts.count) total")) {
+                        LazyVStack {
+                            ForEach(filteredProducts, id: \.productId) { product in
+                                NavigationLink(
+                                    value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
+                                    label: {
+                                        GroupBox {
+                                            ProductListItemView(product: product)
+                                                .equatable()
                                         }
-                                    }
-                                }
+                                        .groupBoxStyle(.listItem)
+                                    })
+                                .buttonStyle(.plain)
                             }
                         }
-                        .listStyle(.plain)
-                        .ignoresSafeArea(.keyboard)
                     }
-                    .modifier(ParentViewModifier())
                 }
             }
+            .listStyle(.plain)
+            .ignoresSafeArea(.keyboard)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .modifier(ParentViewModifier())
+    }
+}
+
+private struct CardBrowseView: View {
+    let filteredCards: [Card]
+    
+    var body: some View {
+        LazyVStack(alignment: .leading) {
+            ForEach(filteredCards, id: \.self.cardID) { card in
+                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                    GroupBox {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
+                })
+                .buttonStyle(.plain)
+            }
+            .listStyle(.plain)
+            .ignoresSafeArea(.keyboard)
+        }
+        .modifier(ParentViewModifier())
     }
 }
 

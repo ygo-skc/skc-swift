@@ -14,8 +14,6 @@ class CardBrowseViewModel {
     var cards: [Card] = []
     
     @ObservationIgnored
-    private var numResults: UInt = 0
-    @ObservationIgnored
     private var cardBrowseCriteria: CardBrowseCriteria?
     
     @MainActor
@@ -47,7 +45,6 @@ class CardBrowseViewModel {
             if !attributes.isEmpty || !colors.isEmpty {
                 switch await data(CardBrowseResults.self, url: cardBrowseURL(attributes: attributes, colors: colors)) {
                 case .success(let r):
-                    self.numResults = r.numResults
                     self.cards = r.results
                 case .failure(_): break
                 }
