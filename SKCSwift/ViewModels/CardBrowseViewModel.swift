@@ -13,6 +13,8 @@ class CardBrowseViewModel {
     var filters: CardFilters?
     var cards: [Card] = []
     
+    private(set) var status = DataTaskStatus.pending
+    
     @ObservationIgnored
     private var cardBrowseCriteria: CardBrowseCriteria?
     
@@ -31,7 +33,9 @@ class CardBrowseViewModel {
                 }
                 
                 self.filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters)
-            case .failure(_): break;
+                self.status = .done
+            case .failure(_):
+                self.status = .error
             }
         }
     }

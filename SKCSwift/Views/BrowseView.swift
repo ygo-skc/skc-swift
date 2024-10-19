@@ -24,42 +24,48 @@ struct BrowseView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
-                
-                if ((focusedResource == .product && !productBrowseViewModel.areProductsFiltered) ||
-                    (focusedResource == .card && cardBrowseViewModel.filters == nil)) {
+                switch focusedResource == .product ? productBrowseViewModel.status : cardBrowseViewModel.status {
+                case .pending:
                     ProgressView("Loading...")
                         .controlSize(.large)
-                } else if ((focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
-                           (focusedResource == .card && cardBrowseViewModel.cards.isEmpty)) {
-                    ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
-                }
-                
-                ScrollView {
-                    switch focusedResource {
-                    case .card:
-                        CardBrowseView(filteredCards: cardBrowseViewModel.cards)
-                            .task(priority: .userInitiated) {
+                        .task(priority: .userInitiated) {
+                            switch focusedResource {
+                            case .card:
                                 await cardBrowseViewModel.fetchCardBrowseCriteria()
-                            }
-                            .toolbar {
-                                FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
-                                    if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
-                                        CardFiltersView(filters: filters)
-                                    }
-                                }
-                            }
-                    case .product:
-                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
-                            .task(priority: .userInitiated) {
+                            case .product:
                                 await productBrowseViewModel.fetchProductBrowseData()
                             }
-                            .toolbar {
-                                FilterButton(showFilters: $productBrowseViewModel.showFilters) {
-                                    ProductFiltersView(
-                                        productTypeFilters: $productBrowseViewModel.productTypeFilters,
-                                        productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
-                                }
+                        }
+                        .frame(maxHeight: .infinity)
+                case .done, .error:
+                    if (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
+                        (focusedResource == .card && cardBrowseViewModel.cards.isEmpty) {
+                        ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
+                    } else {
+                        ScrollView {
+                            switch focusedResource {
+                            case .card:
+                                CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                            case .product:
+                                ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
                             }
+                        }
+                    }
+                }
+            }
+            .toolbar {
+                switch focusedResource {
+                case .card:
+                    FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
+                        if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
+                            CardFiltersView(filters: filters)
+                        }
+                    }
+                case .product:
+                    FilterButton(showFilters: $productBrowseViewModel.showFilters) {
+                        ProductFiltersView(
+                            productTypeFilters: $productBrowseViewModel.productTypeFilters,
+                            productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
                     }
                 }
             }

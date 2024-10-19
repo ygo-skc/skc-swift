@@ -14,6 +14,7 @@ class ProductBrowseViewModel {
     var productTypeFilters: [FilteredItem] = []
     var productSubTypeFilters: [FilteredItem] = []
     
+    private(set) var status = DataTaskStatus.pending
     private(set) var areProductsFiltered = false
     private(set) var filteredProducts: [String: [Product]] = [:]
     
@@ -36,7 +37,9 @@ class ProductBrowseViewModel {
                 (self.uniqueProductTypes, self.uniqueProductSubTypes, self.productTypeByProductSubType, self.productTypeFilters) = await ProductBrowseViewModel
                     .configureProductBrowseData(products: p.products)
                 self.products = p.products
-            case .failure(_): break
+                self.status = .done
+            case .failure(_):
+                self.status = .error
             }
         }
     }
