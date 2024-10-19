@@ -10,9 +10,10 @@ import Foundation
 fileprivate func baseRequest(url: URL) -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = RequestHelper.GET.description
-    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     request.addValue(RequestHelper.CLIENT_ID.description, forHTTPHeaderField: "CLIENT_ID")
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     request.addValue("keep-alive", forHTTPHeaderField: "Connection")
+    request.addValue("gzip", forHTTPHeaderField: "Accept-Encoding")
     
     return request
 }
