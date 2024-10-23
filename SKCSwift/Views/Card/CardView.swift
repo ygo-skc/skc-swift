@@ -24,7 +24,7 @@ private struct CardView: View {
     var body: some View {
         if let error = cardViewModel.error {
             switch error {
-            case .badRequest:
+            case .badRequest, .unprocessableEntity:
                 ContentUnavailableView("Card not currently supported",
                                        systemImage: "exclamationmark.square.fill",
                                        description: Text("Please check back later"))

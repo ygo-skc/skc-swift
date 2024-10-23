@@ -66,8 +66,9 @@ enum DataTaskStatus: String, Codable, CaseIterable {
 enum NetworkError: Error {
     case client
     case server
-    case notFound
     case badRequest
+    case notFound
+    case unprocessableEntity
     case bodyParse
     case cancelled
     case unknown
@@ -80,10 +81,12 @@ extension NetworkError: CustomStringConvertible {
             return "Client error"
         case .server:
             return "Server error"
-        case .notFound:
-            return "404 not found"
         case .badRequest:
             return "400 bad request"
+        case .notFound:
+            return "404 not found"
+        case .unprocessableEntity:
+            return "422 unproccessable entity"
         case .bodyParse:
             return "Cannot parse body"
         case .cancelled:
@@ -97,19 +100,7 @@ extension NetworkError: CustomStringConvertible {
 extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .client:
-            return self.description
-        case .server:
-            return self.description
-        case .notFound:
-            return self.description
-        case .badRequest:
-            return self.description
-        case .bodyParse:
-            return self.description
-        case .cancelled:
-            return self.description
-        case .unknown:
+        case .client, .server, .badRequest, .notFound, .unprocessableEntity, .bodyParse, .cancelled, .unknown:
             return self.description
         }
     }

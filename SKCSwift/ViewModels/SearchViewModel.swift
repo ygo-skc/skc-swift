@@ -59,7 +59,6 @@ class SearchViewModel {
                     switch error {
                     case NetworkError.cancelled: break    // do nothing
                     default:
-                        print(error)
                         self.status = .error
                     }
                 }

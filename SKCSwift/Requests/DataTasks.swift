@@ -28,6 +28,8 @@ fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
             throw NetworkError.badRequest
         case 404:
             throw NetworkError.notFound
+        case 422:
+            throw NetworkError.unprocessableEntity
         case 401...499:
             throw NetworkError.client
         default:
