@@ -114,7 +114,12 @@ func searchCardURL(cardName: String) -> URL {
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_SEARCH_ENDPOINT.description
     )
-    components.queryItems = [
+    
+    components.queryItems = cardName.allSatisfy { $0.isNumber } ? [
+        URLQueryItem(name: "limit", value: "10"),
+        URLQueryItem(name: "cId", value: cardName),
+        URLQueryItem(name: "cName", value: cardName)
+    ] : [
         URLQueryItem(name: "limit", value: "10"),
         URLQueryItem(name: "cName", value: cardName)
     ]
