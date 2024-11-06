@@ -14,25 +14,30 @@ struct CardListItemView: View, Equatable {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack() {
+            HStack {
                 CardColorIndicatorView(cardColor: card.cardColor)
                     .equatable()
                 Text(card.cardName)
                     .fontWeight(.bold)
                     .font(.headline)
                     .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                     .padding(.bottom, -3)
+                Text(card.cardID)
+                    .font(.footnote)
+                    .fontWeight(.light)
             }
+            
             HStack(alignment: .top, spacing: 15) {
                 CardImageView(length: 55, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
                     .equatable()
                     .padding(.trailing, 3)
                 VStack(alignment: .leading) {
                     if showAllInfo {
-                        MonsterAssociationView(monsterAssociation: card.monsterAssociation, 
+                        MonsterAssociationView(monsterAssociation: card.monsterAssociation,
                                                attribute: card.attribute,
                                                variant: .listView)
-                            .equatable()
+                        .equatable()
                     } else {
                         AttributeView(attribute: card.attribute)
                             .equatable()

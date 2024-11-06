@@ -13,6 +13,15 @@ struct BrowseView: View {
     @State private var productBrowseViewModel = ProductBrowseViewModel()
     @State private var cardBrowseViewModel = CardBrowseViewModel()
     
+    private var noBrowseResults: String {
+        switch focusedResource {
+        case .card:
+            return "There are over 12k cards available to browse, try filtering to narrow down your search"
+        case .product:
+            return "No filters selected - what were you expecting to see 🤔"
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -40,7 +49,7 @@ struct BrowseView: View {
                 case .done, .error:
                     if (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
                         (focusedResource == .card && cardBrowseViewModel.cards.isEmpty) {
-                        ContentUnavailableView("No filters selected - what were you expecting to see 🤔", systemImage: "exclamationmark.square.fill")
+                        ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
                     } else {
                         ScrollView {
                             switch focusedResource {

@@ -187,7 +187,7 @@ private struct SuggestionCarouselView: View {
     
     var body: some View {
         if (!references.isEmpty) {
-            Text(header)
+            Text("\(header) (\(references.count))")
                 .font(.title3)
             Text(LocalizedStringKey(subHeader))
                 .padding(.bottom)
