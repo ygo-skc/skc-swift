@@ -34,6 +34,10 @@ struct DBStatsView: View, Equatable {
                 Group {
                     Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
                     Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
+                    if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+                        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+                        Text("v\(appVersion)(\(build))")
+                    }
                 }
                 .font(.footnote)
                 .multilineTextAlignment(.center)
