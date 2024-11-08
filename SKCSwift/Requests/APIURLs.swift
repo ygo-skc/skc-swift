@@ -10,8 +10,9 @@ import Foundation
 struct RequestHelper {
     static let decoder = JSONDecoder()
     
-    // Headers
     static let GET: StaticString = "GET"
+    
+    // Headers
     static let CLIENT_ID: StaticString = "SKCSwift"
     
     // SKC API request helpers

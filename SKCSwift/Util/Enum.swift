@@ -71,6 +71,7 @@ enum NetworkError: Error {
     case unprocessableEntity
     case bodyParse
     case cancelled
+    case timeout
     case unknown
 }
 
@@ -91,6 +92,8 @@ extension NetworkError: CustomStringConvertible {
             return "Cannot parse body"
         case .cancelled:
             return "Request cancelled by client"
+        case .timeout:
+            return "Request time out"
         case .unknown:
             return "Unknown"
         }
@@ -100,7 +103,7 @@ extension NetworkError: CustomStringConvertible {
 extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .client, .server, .badRequest, .notFound, .unprocessableEntity, .bodyParse, .cancelled, .unknown:
+        case .client, .server, .badRequest, .notFound, .unprocessableEntity, .bodyParse, .cancelled, .timeout, .unknown:
             return self.description
         }
     }

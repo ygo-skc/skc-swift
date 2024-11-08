@@ -15,10 +15,11 @@ fileprivate func baseRequest(url: URL) -> URLRequest {
     request.addValue("keep-alive", forHTTPHeaderField: "Connection")
     request.addValue("gzip", forHTTPHeaderField: "Accept-Encoding")
     
+    request.timeoutInterval = 5
     return request
 }
 
-fileprivate func validateResponse(response: URLResponse?, url: URL) throws {
+fileprivate func validateResponse(response: URLResponse?) throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         switch code {
@@ -42,20 +43,30 @@ nonisolated func data<T>(_ type: T.Type, url: URL) async -> sending Result<T, Ne
     do {
         let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url))
         try Task.checkCancellation()
-        
-        try validateResponse(response: response, url: url)
-        
+        try validateResponse(response: response)
         return .success(try RequestHelper.decoder.decode(type, from: body))
     } catch let networkError as NetworkError {
-        
         print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")
         return .failure(networkError)
-    } catch let error {
-        if (error.localizedDescription == "cancelled") {
+    } catch let urlError as URLError {
+        switch urlError.code {
+        case .cancelled:
             return .failure(NetworkError.cancelled)
+        case .timedOut:
+            print("Request timed out for url: \(url.absoluteString)")
+            return .failure(NetworkError.timeout)
+        case .badServerResponse, .cannotDecodeContentData, .cannotParseResponse:
+            print("Server responded with bad data for url: \(url.absoluteString)")
+            return .failure(NetworkError.bodyParse)
+        default:
+            print("Unknown URLError occurred while calling \(url.absoluteString) - error: \(urlError)")
+            return .failure(NetworkError.unknown)
         }
-        
-        print("An error occurred while decoding output from http request \(error)")
+    } catch let decodeError as DecodingError {
+        print("Error decoding output for url: \(url.absoluteString) - error: \(decodeError)")
         return .failure(NetworkError.bodyParse)
+    } catch let error {
+        print("Unknown error occurred while calling \(url.absoluteString) - error: \(error)")
+        return .failure(NetworkError.unknown)
     }
 }
