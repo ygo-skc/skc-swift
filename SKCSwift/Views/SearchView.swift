@@ -14,15 +14,20 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                switch searchViewModel.dataTaskStatus {
-                case .done where searchViewModel.requestError == .notFound,
-                        .pending where searchViewModel.requestError == .notFound:
+                switch (searchViewModel.dataTaskStatus, searchViewModel.requestError) {
+                case (.done, .notFound), (.pending, .notFound):
                     ContentUnavailableView.search
-                case .done where !searchViewModel.searchText.isEmpty && !searchViewModel.searchResults.isEmpty, .pending:
+                case (.done, _) where searchViewModel.searchText.isEmpty, (.pending, _) where searchViewModel.searchText.isEmpty, (.uninitiated, _):
+                    TrendingView(model: trendingViewModel)
+                case (_, .server), (_, .timeout):
+                    NetworkErrorView(error: searchViewModel.requestError ?? .server, action: {
+                        Task {
+                            await searchViewModel.newSearchSubject(oldValue: searchViewModel.searchText, newValue: searchViewModel.searchText)
+                        }
+                    })
+                case (.done, _), (.pending, _):
                     SearchResultsView(searchResults: searchViewModel.searchResults)
                         .equatable()
-                case .done, .uninitiated:
-                    TrendingView(model: trendingViewModel)
                 }
             }
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
