@@ -20,8 +20,8 @@ struct SearchView: View {
                 case (.done, _) where searchViewModel.searchText.isEmpty, (.pending, _) where searchViewModel.searchText.isEmpty, (.uninitiated, _):
                     TrendingView(model: trendingViewModel)
                 case (.done, _), (.pending, _):
-                    if let error = searchViewModel.requestError {
-                        NetworkErrorView(error: searchViewModel.requestError ?? .server, action: {
+                    if let error = searchViewModel.requestError, error != .cancelled {
+                        NetworkErrorView(error: error, action: {
                             Task {
                                 await searchViewModel.newSearchSubject(oldValue: searchViewModel.searchText, newValue: searchViewModel.searchText)
                             }
