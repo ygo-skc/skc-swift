@@ -19,15 +19,17 @@ struct SearchView: View {
                     ContentUnavailableView.search
                 case (.done, _) where searchViewModel.searchText.isEmpty, (.pending, _) where searchViewModel.searchText.isEmpty, (.uninitiated, _):
                     TrendingView(model: trendingViewModel)
-                case (_, .server), (_, .timeout):
-                    NetworkErrorView(error: searchViewModel.requestError ?? .server, action: {
-                        Task {
-                            await searchViewModel.newSearchSubject(oldValue: searchViewModel.searchText, newValue: searchViewModel.searchText)
-                        }
-                    })
                 case (.done, _), (.pending, _):
-                    SearchResultsView(searchResults: searchViewModel.searchResults)
-                        .equatable()
+                    if let error = searchViewModel.requestError {
+                        NetworkErrorView(error: searchViewModel.requestError ?? .server, action: {
+                            Task {
+                                await searchViewModel.newSearchSubject(oldValue: searchViewModel.searchText, newValue: searchViewModel.searchText)
+                            }
+                        })
+                    } else {
+                        SearchResultsView(searchResults: searchViewModel.searchResults)
+                            .equatable()
+                    }
                 }
             }
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
