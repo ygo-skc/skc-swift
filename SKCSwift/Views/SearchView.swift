@@ -15,7 +15,7 @@ struct SearchView: View {
         NavigationStack {
             VStack {
                 switch searchViewModel.status {
-                case .done, .pending, .uninitiated, .retry:
+                case .done, .pending, .uninitiated, .timeout:
                     if searchViewModel.status == .uninitiated || searchViewModel.searchText.isEmpty {
                         TrendingView(model: trendingViewModel)
                     } else if !searchViewModel.searchResults.isEmpty {

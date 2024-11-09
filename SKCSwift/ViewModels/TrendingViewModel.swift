@@ -27,7 +27,6 @@ class TrendingViewModel {
     @MainActor
     func fetchTrendingCards() async {
         if trendingCardDataLastFetch.isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
-            print("loading")
             trendingCardTask = .pending
             switch await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
             case .success(let trending):
@@ -58,7 +57,7 @@ class TrendingViewModel {
     private func determineTaskState(error: NetworkError) -> DataTaskStatus {
         switch error {
         case .timeout, .cancelled:
-            return .retry
+            return .timeout
         default:
             return .error
         }
