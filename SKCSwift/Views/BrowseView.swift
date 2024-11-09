@@ -46,7 +46,7 @@ struct BrowseView: View {
                             }
                         }
                         .frame(maxHeight: .infinity)
-                case .done, .error, .timeout:
+                case .done:
                     if (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
                         (focusedResource == .card && cardBrowseViewModel.cards.isEmpty) {
                         ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")

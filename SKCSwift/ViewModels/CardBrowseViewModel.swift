@@ -35,7 +35,7 @@ class CardBrowseViewModel {
                 self.filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters)
                 self.status = .done
             case .failure(_):
-                self.status = .error
+                self.status = .done
             }
         }
     }

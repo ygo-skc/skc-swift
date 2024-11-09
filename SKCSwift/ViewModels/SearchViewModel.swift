@@ -11,7 +11,7 @@ import Foundation
 class SearchViewModel {
     var searchText: String = ""
     
-    private(set) var status = DataTaskStatus.uninitiated
+    private(set) var dataTaskStatus = DataTaskStatus.uninitiated
     
     @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
@@ -31,9 +31,9 @@ class SearchViewModel {
             self.task = nil
             self.searchResults.removeAll()
             self.searchResultsIds.removeAll()
-            self.status = .done
+            self.dataTaskStatus = .done
         } else {
-            self.status = .pending
+            self.dataTaskStatus = .pending
             
             task = Task {
                 switch await data([Card].self, url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines))) {
@@ -41,7 +41,7 @@ class SearchViewModel {
                     if cards.isEmpty {
                         self.searchResults.removeAll()
                         self.searchResultsIds.removeAll()
-                        self.status = .done
+                        self.dataTaskStatus = .done
                         return
                     }
                     
@@ -54,12 +54,12 @@ class SearchViewModel {
                         }
                     }
                     
-                    self.status = .done
+                    self.dataTaskStatus = .done
                 case .failure(let error):
                     switch error {
                     case .cancelled: break    // do nothing
                     default:
-                        self.status = .error
+                        self.dataTaskStatus = .done
                     }
                 }
             }

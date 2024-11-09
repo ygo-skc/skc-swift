@@ -39,7 +39,7 @@ class ProductBrowseViewModel {
                 self.products = p.products
                 self.status = .done
             case .failure(_):
-                self.status = .error
+                self.status = .done
             }
         }
     }

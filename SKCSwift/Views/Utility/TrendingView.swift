@@ -12,7 +12,9 @@ struct TrendingView: View {
     
     var body: some View {
         VStack {
-            if model.trendingCardTask == .pending || model.trendingProductTask == .pending {
+            if let trendingCardError = model.trendingCardError, let trendingProductError = model.trendingProductError {
+                
+            } else if model.cards.isEmpty || model.products.isEmpty {
                 ProgressView("Loading...")
                     .controlSize(.large)
             } else {
