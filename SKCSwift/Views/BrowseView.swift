@@ -34,7 +34,7 @@ struct BrowseView: View {
                 .padding(.horizontal)
                 
                 switch focusedResource == .product ? productBrowseViewModel.status : cardBrowseViewModel.status {
-                case .pending:
+                case .pending, .uninitiated:
                     ProgressView("Loading...")
                         .controlSize(.large)
                         .task(priority: .userInitiated) {
@@ -46,7 +46,7 @@ struct BrowseView: View {
                             }
                         }
                         .frame(maxHeight: .infinity)
-                case .done, .error:
+                case .done, .error, .retry:
                     if (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
                         (focusedResource == .card && cardBrowseViewModel.cards.isEmpty) {
                         ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")

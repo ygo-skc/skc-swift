@@ -14,7 +14,7 @@ class ProductBrowseViewModel {
     var productTypeFilters: [FilteredItem] = []
     var productSubTypeFilters: [FilteredItem] = []
     
-    private(set) var status = DataTaskStatus.pending
+    private(set) var status = DataTaskStatus.uninitiated
     private(set) var areProductsFiltered = false
     private(set) var filteredProducts: [String: [Product]] = [:]
     

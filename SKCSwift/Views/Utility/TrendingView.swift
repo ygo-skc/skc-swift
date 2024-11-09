@@ -7,35 +7,44 @@
 
 import SwiftUI
 
-struct TrendingView: View, @preconcurrency Equatable {
-    let cardTrendingData: [TrendingMetric<Card>]
-    let productTrendingData: [TrendingMetric<Product>]
-    
-    @State private var focusedTrend = TrendingResourceType.card
-    
-    static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
-        lhs.focusedTrend == rhs.focusedTrend
-        && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID && $0.occurrences == $1.occurrences })
-        && lhs.productTrendingData.elementsEqual(rhs.productTrendingData, by: { $0.resource.productId == $1.resource.productId && $0.occurrences == $1.occurrences })
-    }
+struct TrendingView: View {
+    @Bindable var model: TrendingViewModel
     
     var body: some View {
-        SectionView(header: "Trending",
-                    variant: .plain,
-                    content: {
-            Picker("Select Trend Type", selection: $focusedTrend) {
-                ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                    Text(type.rawValue.capitalized).tag(type)
+        VStack {
+            if model.trendingCardTask == .pending || model.trendingProductTask == .pending {
+                ProgressView("Loading...")
+                    .controlSize(.large)
+            } else {
+                ScrollView() {
+                    SectionView(header: "Trending",
+                                variant: .plain,
+                                content: {
+                        Picker("Select Trend Type", selection: $model.focusedTrend) {
+                            ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                                Text(type.rawValue.capitalized).tag(type)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        
+                        
+                        switch model.focusedTrend {
+                        case .card:
+                            TrendingCardsView(trendingCards: model.cards)
+                        case .product:
+                            TrendingProductsView(trendingProducts: model.products)
+                        }
+                    })
+                    .modifier(ParentViewModifier())
                 }
             }
-            .pickerStyle(.segmented)
-            
-            if focusedTrend == .card {
-                TrendingCardsView(trendingCards: cardTrendingData)
-            } else if focusedTrend == .product {
-                TrendingProductsView(trendingProducts: productTrendingData)
-            }
-        })
+        }
+        .task(priority: .userInitiated) {
+            await model.fetchTrendingCards()
+        }
+        .task(priority: .medium) {
+            await model.fetchTrendingProducts()
+        }
     }
 }
 
@@ -113,12 +122,7 @@ private struct TrendChangeView: View, Equatable {
 }
 
 #Preview {
-    TrendingView(cardTrendingData: [
-        TrendingMetric(resource: Card(cardID: "40044918", cardName: "Elemental HERO Stratos", cardColor: "Effect",
-                                      cardAttribute: "Wind", cardEffect: "Draw 2", monsterType: "Warrior/Effect"), occurrences: 45, change: 3)],
-                 productTrendingData: [
-                    TrendingMetric(resource: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
-                                                     productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-03-03", productTotal: 101), occurrences: 23, change: -4)])
+    TrendingView(model: TrendingViewModel())
 }
 
 #Preview("Trend Change Positive") {

@@ -11,7 +11,7 @@ import Foundation
 class SearchViewModel {
     var searchText: String = ""
     
-    private(set) var status: DataTaskStatus?
+    private(set) var status = DataTaskStatus.uninitiated
     
     @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
@@ -57,7 +57,7 @@ class SearchViewModel {
                     self.status = .done
                 case .failure(let error):
                     switch error {
-                    case NetworkError.cancelled: break    // do nothing
+                    case .cancelled: break    // do nothing
                     default:
                         self.status = .error
                     }

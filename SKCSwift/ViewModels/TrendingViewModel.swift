@@ -9,35 +9,58 @@ import Foundation
 
 @Observable
 class TrendingViewModel {
-    private(set) var cards: [TrendingMetric<Card>]?
-    private(set) var products: [TrendingMetric<Product>]?
+    private static let invalidateDataThreshold = 1
+    
+    var focusedTrend = TrendingResourceType.card
+    
+    private(set) var cards: [TrendingMetric<Card>] = []
+    private(set) var products: [TrendingMetric<Product>] = []
+    
+    private(set) var trendingCardTask = DataTaskStatus.uninitiated
+    private(set) var trendingProductTask = DataTaskStatus.uninitiated
     
     @ObservationIgnored
-    private var trendingCardDataLastFetch = Date()
+    private var trendingCardDataLastFetch = Date.distantPast
     @ObservationIgnored
-    private var trendingProductDataLastFetch = Date()
+    private var trendingProductDataLastFetch = Date.distantPast
     
     @MainActor
     func fetchTrendingCards() async {
-        if cards == nil || trendingCardDataLastFetch.isDateInvalidated(5) {
+        if trendingCardDataLastFetch.isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
+            print("loading")
+            trendingCardTask = .pending
             switch await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
             case .success(let trending):
-                self.cards = trending.metrics
-            case .failure(_): break
+                cards = trending.metrics
+                trendingCardDataLastFetch = Date()
+                trendingCardTask = .done
+            case .failure(let error):
+                trendingCardTask = determineTaskState(error: error)
             }
-            trendingCardDataLastFetch = Date()
         }
     }
     
     @MainActor
     func fetchTrendingProducts() async {
-        if products == nil || trendingProductDataLastFetch.isDateInvalidated(5) {
+        if trendingProductDataLastFetch.isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
+            trendingProductTask = .pending
             switch await data(Trending<Product>.self, url: trendingUrl(resource: .product)) {
             case .success(let trending):
-                self.products = trending.metrics
-            case .failure(_): break
+                products = trending.metrics
+                trendingProductDataLastFetch = Date()
+                trendingProductTask = .done
+            case .failure(let error):
+                trendingProductTask = determineTaskState(error: error)
             }
-            trendingProductDataLastFetch = Date()
+        }
+    }
+    
+    private func determineTaskState(error: NetworkError) -> DataTaskStatus {
+        switch error {
+        case .timeout, .cancelled:
+            return .retry
+        default:
+            return .error
         }
     }
 }

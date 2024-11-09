@@ -13,7 +13,7 @@ class CardBrowseViewModel {
     var filters: CardFilters?
     var cards: [Card] = []
     
-    private(set) var status = DataTaskStatus.pending
+    private(set) var status = DataTaskStatus.uninitiated
     
     @ObservationIgnored
     private var cardBrowseCriteria: CardBrowseCriteria?

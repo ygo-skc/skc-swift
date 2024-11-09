@@ -60,7 +60,7 @@ enum TrendingResourceType: String, Codable, CaseIterable {
 }
 
 enum DataTaskStatus: String, Codable, CaseIterable {
-    case pending, done, error
+    case pending, done, error, retry, uninitiated
 }
 
 enum NetworkError: Error {

@@ -9,15 +9,15 @@ import SwiftUI
 
 struct SearchView: View {
     @State private var searchViewModel = SearchViewModel()
-    private let trendingViewModel = TrendingViewModel()
+    @State private var trendingViewModel = TrendingViewModel()
     
     var body: some View {
         NavigationStack {
             VStack {
                 switch searchViewModel.status {
-                case .done, .pending, .none:
-                    if searchViewModel.status == .none || searchViewModel.searchText.isEmpty {
-                        TrendingResultsView(cards: trendingViewModel.cards, products: trendingViewModel.products)
+                case .done, .pending, .uninitiated, .retry:
+                    if searchViewModel.status == .uninitiated || searchViewModel.searchText.isEmpty {
+                        TrendingView(model: trendingViewModel)
                     } else if !searchViewModel.searchResults.isEmpty {
                         SearchResultsView(searchResults: searchViewModel.searchResults)
                             .equatable()
@@ -43,12 +43,6 @@ struct SearchView: View {
             }
         }
         .disableAutocorrection(true)
-        .task(priority: .userInitiated) {
-            await trendingViewModel.fetchTrendingCards()
-        }
-        .task(priority: .medium) {
-            await trendingViewModel.fetchTrendingProducts()
-        }
     }
 }
 
@@ -74,26 +68,5 @@ private struct SearchResultsView: View, Equatable {
         .scrollDismissesKeyboard(.immediately)
         .listStyle(.plain)
         .ignoresSafeArea(.keyboard)
-    }
-}
-
-private struct TrendingResultsView: View {
-    let cards: [TrendingMetric<Card>]?
-    let products: [TrendingMetric<Product>]?
-    
-    var body: some View {
-        ScrollView() {
-            if let cards = cards, let products {
-                TrendingView(cardTrendingData: cards, productTrendingData: products)
-                    .equatable()
-                    .modifier(ParentViewModifier())
-            } else {
-                HStack {
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                }
-                .frame(maxWidth: .infinity)
-            }
-        }
     }
 }
