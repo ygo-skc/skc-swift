@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct NetworkErrorView: View {
-    var status: NetworkError
+    var error: NetworkError
     var action: () -> Void
     
     private var description: String {
-        return switch status {
+        return switch error {
         case .server: "Network error occurred"
         case .timeout: "Request timeout"
         default: ""
@@ -20,7 +20,7 @@ struct NetworkErrorView: View {
     }
     
     private var icon: String {
-        return switch status {
+        return switch error {
         case .server: "network.slash"
         case .timeout: "clock.badge.xmark"
         default: ""
@@ -28,7 +28,7 @@ struct NetworkErrorView: View {
     }
     
     var body: some View {
-        switch status {
+        switch error {
         case .server, .timeout:
             ContentUnavailableView {
                 Label(description, systemImage: icon)
@@ -45,9 +45,9 @@ struct NetworkErrorView: View {
 }
 
 #Preview("Server Error") {
-    NetworkErrorView(status: .server, action: { print("Retried") })
+    NetworkErrorView(error: .server, action: { print("Retried") })
 }
 
 #Preview("Timeout") {
-    NetworkErrorView(status: .timeout, action: { print("Retried") })
+    NetworkErrorView(error: .timeout, action: { print("Retried") })
 }

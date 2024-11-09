@@ -12,32 +12,45 @@ struct TrendingView: View {
     
     var body: some View {
         VStack {
-            if let trendingCardError = model.trendingCardError, let trendingProductError = model.trendingProductError {
-                
-            } else if model.cards.isEmpty || model.products.isEmpty {
+            switch (model.trendingCardStatus, model.trendingProductStatus) {
+            case (.uninitiated, .uninitiated) where model.cards.isEmpty && model.products.isEmpty,
+                (.pending, .pending) where model.cards.isEmpty && model.products.isEmpty,
+                (.uninitiated, _) where model.cards.isEmpty,
+                (.pending, _) where model.cards.isEmpty,
+                (_, .uninitiated) where model.products.isEmpty,
+                (_, .pending) where model.products.isEmpty:
                 ProgressView("Loading...")
                     .controlSize(.large)
-            } else {
-                ScrollView() {
-                    SectionView(header: "Trending",
-                                variant: .plain,
-                                content: {
-                        Picker("Select Trend Type", selection: $model.focusedTrend) {
-                            ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                                Text(type.rawValue.capitalized).tag(type)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        
-                        
-                        switch model.focusedTrend {
-                        case .card:
-                            TrendingCardsView(trendingCards: model.cards)
-                        case .product:
-                            TrendingProductsView(trendingProducts: model.products)
+            default:
+                if let error = model.trendingCardError ?? model.trendingProductError {
+                    NetworkErrorView(error: error, action: {
+                        Task {
+                            await model.fetchTrendingCards(forceRefresh: true)
+                            await model.fetchTrendingProducts(forceRefresh: true)
                         }
                     })
-                    .modifier(ParentViewModifier())
+                } else {
+                    ScrollView() {
+                        SectionView(header: "Trending",
+                                    variant: .plain,
+                                    content: {
+                            Picker("Select Trend Type", selection: $model.focusedTrend) {
+                                ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                                    Text(type.rawValue.capitalized).tag(type)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            
+                            
+                            switch model.focusedTrend {
+                            case .card:
+                                TrendingCardsView(trendingCards: model.cards)
+                            case .product:
+                                TrendingProductsView(trendingProducts: model.products)
+                            }
+                        })
+                        .modifier(ParentViewModifier())
+                    }
                 }
             }
         }
