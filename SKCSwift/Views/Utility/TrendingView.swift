@@ -15,15 +15,8 @@ struct TrendingView: View {
             if !Set([.uninitiated, .pending]).isDisjoint(with: Set(model.trendingDataTaskStatuses.values)) {
                 ProgressView("Loading...")
                     .controlSize(.large)
-            } else if let error = model.trendingRequestErrors[.card] ?? model.trendingRequestErrors[.product] {
-                NetworkErrorView(error: error!, action: {
-                    Task {
-                        await model.fetchTrendingCards(forceRefresh: true)
-                        await model.fetchTrendingProducts(forceRefresh: true)
-                    }
-                })
             } else {
-                ScrollView() {
+                ScrollView {
                     SectionView(header: "Trending",
                                 variant: .plain,
                                 content: {
@@ -37,13 +30,18 @@ struct TrendingView: View {
                         
                         switch model.focusedTrend {
                         case .card:
-                            TrendingCardsView(trendingCards: model.cards)
+                            TrendingCardsView(trendingCards: model.cards,
+                                              networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
+                                              refreshAction: model.fetchTrendingCards)
                         case .product:
-                            TrendingProductsView(trendingProducts: model.products)
+                            TrendingProductsView(trendingProducts: model.products,
+                                                 networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
+                                                 refreshAction: model.fetchTrendingProducts)
                         }
                     })
                     .modifier(ParentViewModifier())
                 }
+                .scrollDisabled(model.trendingRequestErrors[model.focusedTrend] != nil)
             }
         }
         .task(priority: .userInitiated) {
@@ -56,20 +54,31 @@ struct TrendingView: View {
 }
 
 private struct TrendingCardsView: View {
-    let trendingCards: [TrendingMetric<Card>]
+    var trendingCards: [TrendingMetric<Card>]
+    var networkError: NetworkError?
+    var refreshAction: (Bool) async -> Void
     
     var body: some View {
-        LazyVStack {
-            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
-                let card = m.resource
-                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                        CardListItemView(card: card)
-                            .equatable()
-                    }
-                    .groupBoxStyle(.listItem)
-                })
-                .buttonStyle(.plain)
+        if let networkError {
+            NetworkErrorView(error: networkError, action: {
+                Task {
+                    await refreshAction(true)
+                }
+            })
+            .padding(.top, 20)
+        } else {
+            LazyVStack {
+                ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
+                    let card = m.resource
+                    NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                            CardListItemView(card: card)
+                                .equatable()
+                        }
+                        .groupBoxStyle(.listItem)
+                    })
+                    .buttonStyle(.plain)
+                }
             }
         }
     }
@@ -77,8 +86,17 @@ private struct TrendingCardsView: View {
 
 private struct TrendingProductsView: View {
     let trendingProducts: [TrendingMetric<Product>]
+    var networkError: NetworkError?
+    var refreshAction: (Bool) async -> Void
     
-    var body: some View {
+    var body: some View {if let networkError {
+        NetworkErrorView(error: networkError, action: {
+            Task {
+                await refreshAction(true)
+            }
+        })
+        .padding(.top, 20)
+    } else {
         LazyVStack {
             ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
@@ -92,6 +110,7 @@ private struct TrendingProductsView: View {
                 .buttonStyle(.plain)
             }
         }
+    }
     }
 }
 
