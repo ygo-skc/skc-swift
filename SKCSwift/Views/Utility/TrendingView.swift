@@ -68,10 +68,10 @@ private struct TrendingCardsView: View {
     
     var body: some View {
         LazyVStack {
-            ForEach(trendingCards, id: \.resource.cardID) { m in
+            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
                 let card = m.resource
                 NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                    GroupBox(label: TrendChangeView(trendChange: m.change, hits: m.occurrences)) {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
                         CardListItemView(card: card)
                             .equatable()
                     }
@@ -88,10 +88,10 @@ private struct TrendingProductsView: View {
     
     var body: some View {
         LazyVStack {
-            ForEach(trendingProducts, id: \.resource.productId) { m in
+            ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
                 NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                    GroupBox(label: TrendChangeView(trendChange: m.change, hits: m.occurrences)) {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
                         ProductListItemView(product: product)
                             .equatable()
                     }
@@ -105,11 +105,12 @@ private struct TrendingProductsView: View {
 
 
 private struct TrendChangeView: View, Equatable {
+    private let position: Int
     private let trendLabel: String
     private let trendColor: Color
     private let trendImage: String
     
-    init(trendChange: Int, hits: Int) {
+    init(position: Int, trendChange: Int, hits: Int) {
         if trendChange > 0 {
             trendLabel = "+\(trendChange) • \(hits) hits"
             trendColor = .mint
@@ -123,15 +124,22 @@ private struct TrendChangeView: View, Equatable {
             trendColor = .normalYGOCard
             trendImage = "chart.line.flattrend.xyaxis"
         }
+        self.position = position
     }
     
     var body: some View {
-        Label {
-            Text(trendLabel)
-                .foregroundColor(.secondary)
-        } icon: {
-            Image(systemName: trendImage)
-                .foregroundColor(trendColor)
+        HStack {
+            Label {
+                Text(trendLabel)
+                    .foregroundColor(.secondary)
+            } icon: {
+                Image(systemName: trendImage)
+                    .foregroundColor(trendColor)
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            Text("#\(position)")
+                .font(.headline)
+                .foregroundStyle(.secondary )
         }
     }
 }
@@ -141,13 +149,13 @@ private struct TrendChangeView: View, Equatable {
 }
 
 #Preview("Trend Change Positive") {
-    TrendChangeView(trendChange: 1, hits: 1040)
+    TrendChangeView(position: 1, trendChange: 1, hits: 1040)
 }
 
 #Preview("Trend Change Negative") {
-    TrendChangeView(trendChange: -1, hits: 100203)
+    TrendChangeView(position: 2, trendChange: -1, hits: 100203)
 }
 
 #Preview("Trend Change Neutral") {
-    TrendChangeView(trendChange: 0, hits: 10)
+    TrendChangeView(position: 4, trendChange: 0, hits: 10)
 }
