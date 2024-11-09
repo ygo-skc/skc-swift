@@ -12,6 +12,7 @@ class SearchViewModel {
     var searchText: String = ""
     
     private(set) var dataTaskStatus = DataTaskStatus.uninitiated
+    private(set) var requestError: NetworkError?
     
     @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
@@ -22,46 +23,43 @@ class SearchViewModel {
     private var task: Task<(), any Error>?
     
     @MainActor
-    func newSearchSubject(value: String) async {
+    func newSearchSubject(oldValue: String, newValue: String) async {
+        if requestError != .notFound || (requestError == .notFound && oldValue.count > newValue.count) {
+            requestError = nil
+        }
+        
         if let task {
             task.cancel()
         }
         
-        if value == "" {
-            self.task = nil
-            self.searchResults.removeAll()
-            self.searchResultsIds.removeAll()
-            self.dataTaskStatus = .done
+        if newValue == "" {
+            task = nil
+            searchResults.removeAll()
+            searchResultsIds.removeAll()
         } else {
-            self.dataTaskStatus = .pending
+            dataTaskStatus = .pending
             
             task = Task {
-                switch await data([Card].self, url: searchCardURL(cardName: value.trimmingCharacters(in: .whitespacesAndNewlines))) {
+                switch await data([Card].self, url: searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines))) {
                 case .success(let cards):
                     if cards.isEmpty {
-                        self.searchResults.removeAll()
-                        self.searchResultsIds.removeAll()
-                        self.dataTaskStatus = .done
-                        return
-                    }
-                    
-                    let (sections, searchResultsIds, results, shouldUpdateUI) = await partitionResults(cards)
-                    if (shouldUpdateUI) {
-                        self.searchResults.removeAll()
-                        self.searchResultsIds = searchResultsIds
-                        for section in sections {
-                            self.searchResults.append(SearchResults(section: section, results: results[section]!))
+                        searchResults.removeAll()
+                        searchResultsIds.removeAll()
+                        requestError = .notFound
+                    } else {
+                        let (sections, searchResultsIds, results, shouldUpdateUI) = await partitionResults(cards)
+                        if (shouldUpdateUI) {
+                            searchResults.removeAll()
+                            self.searchResultsIds = searchResultsIds
+                            for section in sections {
+                                searchResults.append(SearchResults(section: section, results: results[section]!))
+                            }
                         }
                     }
-                    
-                    self.dataTaskStatus = .done
                 case .failure(let error):
-                    switch error {
-                    case .cancelled: break    // do nothing
-                    default:
-                        self.dataTaskStatus = .done
-                    }
+                    requestError = error
                 }
+                dataTaskStatus = .done
             }
         }
     }

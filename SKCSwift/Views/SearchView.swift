@@ -15,8 +15,8 @@ struct SearchView: View {
         NavigationStack {
             VStack {
                 switch searchViewModel.dataTaskStatus {
-                case .done where !searchViewModel.searchText.isEmpty && searchViewModel.searchResults.isEmpty,
-                    .pending where !searchViewModel.searchText.isEmpty && searchViewModel.searchResults.isEmpty:
+                case .done where searchViewModel.requestError == .notFound,
+                        .pending where searchViewModel.requestError == .notFound:
                     ContentUnavailableView.search
                 case .done where !searchViewModel.searchText.isEmpty && !searchViewModel.searchResults.isEmpty, .pending:
                     SearchResultsView(searchResults: searchViewModel.searchResults)
@@ -34,9 +34,9 @@ struct SearchView: View {
             .navigationTitle("Search")
         }
         .searchable(text: $searchViewModel.searchText, prompt: "Search for card...")
-        .onChange(of: searchViewModel.searchText, initial: false) { _, newValue in
+        .onChange(of: searchViewModel.searchText, initial: false) { oldValue, newValue in
             Task(priority: .userInitiated) {
-                await searchViewModel.newSearchSubject(value: newValue)
+                await searchViewModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
             }
         }
         .disableAutocorrection(true)
