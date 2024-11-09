@@ -66,7 +66,7 @@ class SearchViewModel {
         }
     }
     
-    nonisolated private func partitionResults(_ cards: [Card]) async -> ([String], [String],  [String : [Card]], Bool) {
+    private func partitionResults(_ cards: [Card]) async -> ([String], [String],  [String : [Card]], Bool) {
         var sections = [String]()
         var searchResultsIds = [String]()
         let results = cards.reduce(into: [String: [Card]]()) { results, card in
