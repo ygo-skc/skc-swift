@@ -14,48 +14,47 @@ class TrendingViewModel {
     private(set) var cards: [TrendingMetric<Card>] = []
     private(set) var products: [TrendingMetric<Product>] = []
     
-    private(set) var trendingCardStatus = DataTaskStatus.uninitiated
-    private(set) var trendingProductStatus = DataTaskStatus.uninitiated
-    
-    private(set) var trendingCardError: NetworkError? = nil
-    private(set) var trendingProductError: NetworkError? = nil
+    // init values with .uninitiated so progress view can be displayed
+    private(set) var trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: TrendingResourceType.allCases.map { ($0, .uninitiated) })
+    private(set) var trendingRequestErrors: [TrendingResourceType: NetworkError?] = [:]
     
     @ObservationIgnored
-    private var trendingCardDataLastFetch = Date.distantPast
-    @ObservationIgnored
-    private var trendingProductDataLastFetch = Date.distantPast
+    private var trendingDataLastFetched: [TrendingResourceType: Date] = [:]
     
     private static let invalidateDataThreshold = 5
     
     @MainActor
     func fetchTrendingCards(forceRefresh: Bool = false) async {
-        if forceRefresh || trendingCardDataLastFetch.isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
-            trendingCardStatus = .pending
-            switch await data(Trending<Card>.self, url: trendingUrl(resource: .card)) {
-            case .success(let trending):
-                cards = trending.metrics
-                trendingCardDataLastFetch = Date()
-                trendingCardError = nil
-            case .failure(let error):
-                trendingCardError = error
-            }
-            trendingCardStatus = .done
+        await fetchTrendingData(forceRefresh: forceRefresh, resource: .card) {
+            await data(Trending<Card>.self, url: trendingUrl(resource: .card))
         }
     }
     
     @MainActor
     func fetchTrendingProducts(forceRefresh: Bool = false) async {
-        if forceRefresh || trendingProductDataLastFetch.isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
-            trendingProductStatus = .pending
-            switch await data(Trending<Product>.self, url: trendingUrl(resource: .product)) {
+        await fetchTrendingData(forceRefresh: forceRefresh, resource: .product) {
+            await data(Trending<Product>.self, url: trendingUrl(resource: .product))
+        }
+    }
+    
+    @MainActor
+    private func fetchTrendingData<T: Codable>(forceRefresh: Bool, resource: TrendingResourceType, dataFetcher: @escaping @MainActor () async -> Result<Trending<T>, NetworkError>) async {
+        if forceRefresh || trendingDataLastFetched[.product, default: .distantPast].isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
+            trendingDataTaskStatuses[resource] = .pending
+            switch await dataFetcher() {
             case .success(let trending):
-                products = trending.metrics
-                trendingProductDataLastFetch = Date()
-                trendingProductError = nil
+                if let products = trending.metrics as? [TrendingMetric<Product>] {
+                    self.products = products
+                } else if let cards = trending.metrics as? [TrendingMetric<Card>] {
+                    self.cards = cards
+                }
+                
+                trendingDataLastFetched[resource] = Date()
+                trendingRequestErrors[resource] = nil
             case .failure(let error):
-                trendingProductError = error
+                trendingRequestErrors[resource] = error
             }
-            trendingProductStatus = .done
+            trendingDataTaskStatuses[resource] = .done
         }
     }
 }

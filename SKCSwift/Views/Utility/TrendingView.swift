@@ -12,45 +12,37 @@ struct TrendingView: View {
     
     var body: some View {
         VStack {
-            switch (model.trendingCardStatus, model.trendingProductStatus) {
-            case (.uninitiated, .uninitiated) where model.cards.isEmpty && model.products.isEmpty,
-                (.pending, .pending) where model.cards.isEmpty && model.products.isEmpty,
-                (.uninitiated, _) where model.cards.isEmpty,
-                (.pending, _) where model.cards.isEmpty,
-                (_, .uninitiated) where model.products.isEmpty,
-                (_, .pending) where model.products.isEmpty:
+            if !Set([.uninitiated, .pending]).isDisjoint(with: Set(model.trendingDataTaskStatuses.values)) {
                 ProgressView("Loading...")
                     .controlSize(.large)
-            default:
-                if let error = model.trendingCardError ?? model.trendingProductError {
-                    NetworkErrorView(error: error, action: {
-                        Task {
-                            await model.fetchTrendingCards(forceRefresh: true)
-                            await model.fetchTrendingProducts(forceRefresh: true)
+            } else if let error = model.trendingRequestErrors[.card] ?? model.trendingRequestErrors[.product] {
+                NetworkErrorView(error: error!, action: {
+                    Task {
+                        await model.fetchTrendingCards(forceRefresh: true)
+                        await model.fetchTrendingProducts(forceRefresh: true)
+                    }
+                })
+            } else {
+                ScrollView() {
+                    SectionView(header: "Trending",
+                                variant: .plain,
+                                content: {
+                        Picker("Select Trend Type", selection: $model.focusedTrend) {
+                            ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                                Text(type.rawValue.capitalized).tag(type)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        
+                        
+                        switch model.focusedTrend {
+                        case .card:
+                            TrendingCardsView(trendingCards: model.cards)
+                        case .product:
+                            TrendingProductsView(trendingProducts: model.products)
                         }
                     })
-                } else {
-                    ScrollView() {
-                        SectionView(header: "Trending",
-                                    variant: .plain,
-                                    content: {
-                            Picker("Select Trend Type", selection: $model.focusedTrend) {
-                                ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                                    Text(type.rawValue.capitalized).tag(type)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            
-                            
-                            switch model.focusedTrend {
-                            case .card:
-                                TrendingCardsView(trendingCards: model.cards)
-                            case .product:
-                                TrendingProductsView(trendingProducts: model.products)
-                            }
-                        })
-                        .modifier(ParentViewModifier())
-                    }
+                    .modifier(ParentViewModifier())
                 }
             }
         }
