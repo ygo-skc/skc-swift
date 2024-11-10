@@ -23,16 +23,12 @@ class HomeViewModel {
     @MainActor
     func fetchData(refresh: Bool) async {
         if lastRefreshTimestamp == nil || (refresh && lastRefreshTimestamp!.isDateInvalidated(5)) {
-            //            await withTaskGroup(of: Void.self) { @MainActor taskGroup in
-            //                taskGroup.addTask { await self.fetchDBStatsData() }
-            //                taskGroup.addTask { await self.fetchCardOfTheDayData() }
-            //                taskGroup.addTask { await self.fetchUpcomingTCGProducts() }
-            //                taskGroup.addTask(priority: .medium) { await self.fetchYouTubeUploadsData() }
-            //            }
-            await self.fetchDBStatsData()
-            await self.fetchCardOfTheDayData()
-            await self.fetchUpcomingTCGProducts()
-            await self.fetchYouTubeUploadsData()
+            await withTaskGroup(of: Void.self) { taskGroup in
+                taskGroup.addTask { @Sendable @MainActor in await self.fetchDBStatsData() }
+                taskGroup.addTask { @Sendable @MainActor in await self.fetchCardOfTheDayData() }
+                taskGroup.addTask { @Sendable @MainActor in await self.fetchUpcomingTCGProducts() }
+                taskGroup.addTask(priority: .medium) { @Sendable @MainActor in await self.fetchYouTubeUploadsData() }
+            }
             lastRefreshTimestamp = Date()
         }
     }
