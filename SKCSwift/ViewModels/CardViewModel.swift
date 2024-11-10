@@ -9,7 +9,7 @@ import Foundation
 @Observable
 final class CardViewModel {
     private(set) var card: Card?
-    var error: NetworkError?
+    private(set) var error: NetworkError?
     
     private(set) var areSuggestionsLoaded = false
     private(set) var isSupportLoaded = false
@@ -31,11 +31,12 @@ final class CardViewModel {
     }
     
     @MainActor
-    func fetchCardData() async {
-        if self.card == nil {
+    func fetchCardData(forceRefresh: Bool = false) async {
+        if forceRefresh || self.card == nil {
             switch await data(Card.self, url: cardInfoURL(cardID: cardID)) {
             case .success(let card):
                 self.card = card
+                self.error = nil
             case .failure(let error):
                 self.error = error
             }

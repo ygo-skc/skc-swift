@@ -25,21 +25,18 @@ private struct CardView: View {
     }
     
     var body: some View {
-        if let error = model.error {
-            switch error {
+        if let networkError = model.error {
+            switch networkError {
             case .badRequest, .unprocessableEntity:
                 ContentUnavailableView("Card not currently supported",
                                        systemImage: "exclamationmark.square.fill",
                                        description: Text("Please check back later"))
             default:
-                ContentUnavailableView {
-                    Label("Could not fetch content", systemImage: "network.slash")
-                } description: {
-                    Button(action: { model.error = nil }) {
-                        Label("Retry", systemImage: "arrow.clockwise")
+                NetworkErrorView(error: networkError, action: {
+                    Task {
+                        await model.fetchCardData(forceRefresh: true)
                     }
-                    .buttonStyle(.borderedProminent)
-                }
+                })
             }
         } else {
             TabView {
