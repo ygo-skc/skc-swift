@@ -25,7 +25,7 @@ private struct CardView: View {
     }
     
     var body: some View {
-        if let networkError = model.error {
+        if let networkError = model.requestErrors[.card, default: nil] {
             switch networkError {
             case .badRequest, .unprocessableEntity:
                 ContentUnavailableView("Card not currently supported",

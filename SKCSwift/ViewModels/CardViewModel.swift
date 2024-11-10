@@ -9,7 +9,7 @@ import Foundation
 @Observable
 final class CardViewModel {
     private(set) var card: Card?
-    private(set) var error: NetworkError?
+    private(set) var requestErrors: [CardModelDataType: NetworkError?] = [:]
     
     private(set) var areSuggestionsLoaded = false
     private(set) var isSupportLoaded = false
@@ -32,13 +32,13 @@ final class CardViewModel {
     
     @MainActor
     func fetchCardData(forceRefresh: Bool = false) async {
-        if forceRefresh || self.card == nil {
+        if forceRefresh || card == nil {
             switch await data(Card.self, url: cardInfoURL(cardID: cardID)) {
             case .success(let card):
                 self.card = card
-                self.error = nil
+                requestErrors[.card] = nil
             case .failure(let error):
-                self.error = error
+                requestErrors[.card] = error
             }
         }
     }
@@ -48,9 +48,9 @@ final class CardViewModel {
         if !areSuggestionsLoaded {
             switch await data(CardSuggestions.self, url: cardSuggestionsURL(cardID: cardID)) {
             case .success(let suggestions):
-                self.namedMaterials = suggestions.namedMaterials
-                self.namedReferences = suggestions.namedReferences
-                self.areSuggestionsLoaded = true
+                namedMaterials = suggestions.namedMaterials
+                namedReferences = suggestions.namedReferences
+                areSuggestionsLoaded = true
             case.failure(_): break
             }
         }
@@ -61,11 +61,15 @@ final class CardViewModel {
         if !isSupportLoaded {
             switch await data(CardSupport.self, url: cardSupportURL(cardID: cardID)) {
             case .success(let support):
-                self.referencedBy = support.referencedBy
-                self.materialFor = support.materialFor
-                self.isSupportLoaded = true
+                referencedBy = support.referencedBy
+                materialFor = support.materialFor
+                isSupportLoaded = true
             case .failure(_): break
             }
         }
+    }
+    
+    enum CardModelDataType: String, Codable, CaseIterable {
+        case card, suggestions, support
     }
 }
