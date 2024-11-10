@@ -19,7 +19,16 @@ struct CardSuggestionsView: View {
             namedMaterials: model.namedMaterials,
             namedReferences: model.namedReferences,
             referencedBy: model.referencedBy,
-            materialFor: model.materialFor
+            materialFor: model.materialFor,
+            networkError: model.requestErrors[.suggestions, default: nil] ?? model.requestErrors[.support, default: nil],
+            action: {
+                Task {
+                    await model.fetchSuggestions(forceRefresh: true)
+                }
+                Task {
+                    await model.fetchSupport(forceRefresh: true)
+                }
+            }
         )
         .task(priority: .userInitiated) {
             await model.fetchSuggestions()
@@ -55,7 +64,9 @@ struct ProductCardSuggestionsView: View {
             namedMaterials: suggestions?.suggestions.namedMaterials,
             namedReferences: suggestions?.suggestions.namedReferences,
             referencedBy: suggestions?.support.referencedBy,
-            materialFor: suggestions?.support.materialFor
+            materialFor: suggestions?.support.materialFor,
+            networkError: nil,
+            action: {}
         )
         .task(priority: .userInitiated) {
             await fetch()
@@ -78,6 +89,9 @@ private struct SuggestionsView: View {
     let namedReferences: [CardReference]?
     let referencedBy: [CardReference]?
     let materialFor: [CardReference]?
+    
+    let networkError: NetworkError?
+    let action: () -> Void
     
     private var namedMaterialSubHeader: String {
         switch subjectType {
@@ -130,7 +144,9 @@ private struct SuggestionsView: View {
             }
             .padding(.bottom)
             
-            if areSuggestionsLoaded, let namedMaterials, let namedReferences , let materialFor, let referencedBy {
+            if let networkError {
+                NetworkErrorView(error: networkError, action: action)
+            } else if areSuggestionsLoaded, let namedMaterials, let namedReferences , let materialFor, let referencedBy {
                 if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
                     ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
                 } else {

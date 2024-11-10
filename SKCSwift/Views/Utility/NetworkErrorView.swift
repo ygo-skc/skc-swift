@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct NetworkErrorView: View {
-    var error: NetworkError
-    var action: () -> Void
+    let error: NetworkError
+    let action: () -> Void
     
     private var description: String {
         return switch error {

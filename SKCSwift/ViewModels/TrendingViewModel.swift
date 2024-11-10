@@ -8,7 +8,7 @@
 import Foundation
 
 @Observable
-class TrendingViewModel {
+final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
     
     private(set) var cards: [TrendingMetric<Card>] = []

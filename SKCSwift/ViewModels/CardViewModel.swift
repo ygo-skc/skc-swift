@@ -44,27 +44,31 @@ final class CardViewModel {
     }
     
     @MainActor
-    func fetchSuggestions() async {
-        if !areSuggestionsLoaded {
+    func fetchSuggestions(forceRefresh: Bool = false) async {
+        if forceRefresh || !areSuggestionsLoaded {
             switch await data(CardSuggestions.self, url: cardSuggestionsURL(cardID: cardID)) {
             case .success(let suggestions):
                 namedMaterials = suggestions.namedMaterials
                 namedReferences = suggestions.namedReferences
                 areSuggestionsLoaded = true
-            case.failure(_): break
+                requestErrors[.suggestions] = nil
+            case .failure(let error):
+                requestErrors[.suggestions] = error
             }
         }
     }
     
     @MainActor
-    func fetchSupport() async {
-        if !isSupportLoaded {
+    func fetchSupport(forceRefresh: Bool = false) async {
+        if forceRefresh || !isSupportLoaded {
             switch await data(CardSupport.self, url: cardSupportURL(cardID: cardID)) {
             case .success(let support):
                 referencedBy = support.referencedBy
                 materialFor = support.materialFor
                 isSupportLoaded = true
-            case .failure(_): break
+                requestErrors[.support] = nil
+            case .failure(let error):
+                requestErrors[.support] = error
             }
         }
     }
