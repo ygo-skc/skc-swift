@@ -8,27 +8,24 @@
 import SwiftUI
 
 struct CardSuggestionsView: View {
-    let cardID: String
-    let cardName: String?
-    
-    private let suggestionViewModel = CardSuggestionViewModel()
+    @Bindable var model: CardViewModel
     
     var body: some View {
         SuggestionsView(
-            subjectID: cardID,
-            subjectName: cardName,
+            subjectID: model.cardID,
+            subjectName: model.card?.cardName ?? "",
             subjectType: .card,
-            areSuggestionsLoaded: suggestionViewModel.areSuggestionsLoaded && suggestionViewModel.isSupportLoaded,
-            namedMaterials: suggestionViewModel.namedMaterials,
-            namedReferences: suggestionViewModel.namedReferences,
-            referencedBy: suggestionViewModel.referencedBy,
-            materialFor: suggestionViewModel.materialFor
+            areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
+            namedMaterials: model.namedMaterials,
+            namedReferences: model.namedReferences,
+            referencedBy: model.referencedBy,
+            materialFor: model.materialFor
         )
         .task(priority: .userInitiated) {
-            await suggestionViewModel.fetchSuggestions(cardID: cardID)
+            await model.fetchSuggestions()
         }
         .task(priority: .userInitiated) {
-            await suggestionViewModel.fetchSupport(cardID: cardID)
+            await model.fetchSupport()
         }
     }
 }
@@ -238,16 +235,26 @@ struct CarouselItemViewModifier: ViewModifier {
 }
 
 #Preview("Air Neos Suggestions") {
+    let model = CardViewModel(cardID: "11502550")
+    
     ScrollView {
-        CardSuggestionsView(cardID: "11502550", cardName: "Elemental HERO Air Neos")
+        CardSuggestionsView(model: model)
             .padding(.horizontal)
+    }
+    .task {
+        await model.fetchCardData()
     }
 }
 
 #Preview("Dark Magician Girl Suggestions") {
+    let model = CardViewModel(cardID: "38033121")
+    
     ScrollView {
-        CardSuggestionsView(cardID: "38033121", cardName: "Dark Magician Girl")
+        CardSuggestionsView(model: model)
             .padding(.horizontal)
+    }
+    .task {
+        await model.fetchCardData()
     }
 }
 
