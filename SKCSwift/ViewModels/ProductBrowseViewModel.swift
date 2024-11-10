@@ -62,7 +62,7 @@ class ProductBrowseViewModel {
         self.areProductsFiltered = true
     }
     
-    private static nonisolated func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem]) {
+    private static func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem]) {
         var uniqueProductTypes = Set<String>()
         var uniqueProductSubTypes = Set<String>()
         var productTypeByProductSubType = [String: String]()
@@ -81,13 +81,13 @@ class ProductBrowseViewModel {
         return (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters)
     }
     
-    private static nonisolated func initProductSubTypeFilters(uniqueProductSubTypes: Set<String>) async -> [FilteredItem] {
+    private static func initProductSubTypeFilters(uniqueProductSubTypes: Set<String>) async -> [FilteredItem] {
         return uniqueProductSubTypes.sorted().reduce(into: [FilteredItem]()) {
             $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
         }
     }
     
-    private static nonisolated func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem>.Change?, productSubTypeFilters: [FilteredItem],
+    private static func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem>.Change?, productSubTypeFilters: [FilteredItem],
                                                                 productTypeByProductSubType: [String: String]) async -> [FilteredItem] {
         switch insertion {
         case .insert(_, let changeElement, _):
@@ -100,7 +100,7 @@ class ProductBrowseViewModel {
         }
     }
     
-    private static nonisolated func filteredProducts(productSubTypeFilters: [FilteredItem], products: [Product]?) async -> [String : [Product]] {
+    private static func filteredProducts(productSubTypeFilters: [FilteredItem], products: [Product]?) async -> [String : [Product]] {
         let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
         
         return products?
