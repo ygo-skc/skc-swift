@@ -11,8 +11,9 @@ import Foundation
 final class CardBrowseViewModel {
     var showFilters = false
     var filters: CardFilters?
-    var cards: [Card] = []
     
+    private(set) var cards: [Card] = []
+    private(set) var requestError: NetworkError?
     private(set) var status = DataTaskStatus.uninitiated
     
     @ObservationIgnored

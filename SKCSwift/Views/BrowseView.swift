@@ -34,16 +34,18 @@ struct BrowseView: View {
                 .padding(.horizontal)
                 
                 switch (focusedResource == .product ? productBrowseViewModel.status : cardBrowseViewModel.status, focusedResource) {
-                case (.pending, _), (.uninitiated, _):
+                case (.pending, .card), (.uninitiated, .card):
                     ProgressView("Loading...")
                         .controlSize(.large)
                         .task(priority: .userInitiated) {
-                            switch focusedResource {
-                            case .card:
-                                await cardBrowseViewModel.fetchCardBrowseCriteria()
-                            case .product:
-                                await productBrowseViewModel.fetchProductBrowseData()
-                            }
+                            await cardBrowseViewModel.fetchCardBrowseCriteria()
+                        }
+                        .frame(maxHeight: .infinity)
+                case (.pending, .product), (.uninitiated, .product):
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                        .task(priority: .userInitiated) {
+                            await productBrowseViewModel.fetchProductBrowseData()
                         }
                         .frame(maxHeight: .infinity)
                 case (.done, _) where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
