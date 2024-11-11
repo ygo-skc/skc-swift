@@ -36,8 +36,7 @@ final class ProductBrowseViewModel {
         if dataError != nil || products.isEmpty {
             switch await data(Products.self, url: productsURL()) {
             case .success(let p):
-                (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await ProductBrowseViewModel
-                    .configureProductBrowseData(products: p.products)
+                (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureProductBrowseData(products: p.products)
                 products = p.products
                 dataError = nil
             case .failure(let error):
@@ -52,20 +51,21 @@ final class ProductBrowseViewModel {
         areProductsFiltered = false
         // init case
         if insertions.count == uniqueProductTypes.count {
-            productSubTypeFilters = await ProductBrowseViewModel.initProductSubTypeFilters(uniqueProductSubTypes: uniqueProductSubTypes)
+            productSubTypeFilters = await initProductSubTypeFilters(uniqueProductSubTypes: uniqueProductSubTypes)
         } else {
-            productSubTypeFilters = await ProductBrowseViewModel.updateProductSubTypeFilters(insertion: insertions.first, productSubTypeFilters: productSubTypeFilters,
+            productSubTypeFilters = await updateProductSubTypeFilters(insertion: insertions.first, productSubTypeFilters: productSubTypeFilters,
                                                                                              productTypeByProductSubType: productTypeByProductSubType)
         }
     }
     
     @MainActor
     func updateProductList() async {
-        filteredProducts = await ProductBrowseViewModel.filteredProducts(productSubTypeFilters: productSubTypeFilters, products: products)
+        filteredProducts = await filteredProducts(productSubTypeFilters: productSubTypeFilters, products: products)
         areProductsFiltered = true
     }
     
-    private static func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem]) {
+    @MainActor
+    private func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem]) {
         var uniqueProductTypes = Set<String>()
         var uniqueProductSubTypes = Set<String>()
         var productTypeByProductSubType = [String: String]()
@@ -84,13 +84,15 @@ final class ProductBrowseViewModel {
         return (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters)
     }
     
-    private static func initProductSubTypeFilters(uniqueProductSubTypes: Set<String>) async -> [FilteredItem] {
+    @MainActor
+    private func initProductSubTypeFilters(uniqueProductSubTypes: Set<String>) async -> [FilteredItem] {
         return uniqueProductSubTypes.sorted().reduce(into: [FilteredItem]()) {
             $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
         }
     }
     
-    private static func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem>.Change?, productSubTypeFilters: [FilteredItem],
+    @MainActor
+    private func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem>.Change?, productSubTypeFilters: [FilteredItem],
                                                     productTypeByProductSubType: [String: String]) async -> [FilteredItem] {
         switch insertion {
         case .insert(_, let changeElement, _):
@@ -103,7 +105,8 @@ final class ProductBrowseViewModel {
         }
     }
     
-    private static func filteredProducts(productSubTypeFilters: [FilteredItem], products: [Product]?) async -> [String : [Product]] {
+    @MainActor
+    private func filteredProducts(productSubTypeFilters: [FilteredItem], products: [Product]?) async -> [String : [Product]] {
         let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
         
         return products?
