@@ -33,8 +33,8 @@ struct BrowseView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
-                switch focusedResource == .product ? productBrowseViewModel.status : cardBrowseViewModel.status {
-                case .pending, .uninitiated:
+                switch (focusedResource == .product ? productBrowseViewModel.status : cardBrowseViewModel.status, focusedResource) {
+                case (.pending, _), (.uninitiated, _):
                     ProgressView("Loading...")
                         .controlSize(.large)
                         .task(priority: .userInitiated) {
@@ -46,17 +46,16 @@ struct BrowseView: View {
                             }
                         }
                         .frame(maxHeight: .infinity)
-                case .done where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
+                case (.done, _) where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
                     (focusedResource == .card && cardBrowseViewModel.cards.isEmpty):
                     ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
-                case .done:
+                case (.done, .card):
                     ScrollView {
-                        switch focusedResource {
-                        case .card:
-                            CardBrowseView(filteredCards: cardBrowseViewModel.cards)
-                        case .product:
-                            ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
-                        }
+                        CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                    }
+                case (.done, .product):
+                    ScrollView {
+                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
                     }
                 }
             }
