@@ -46,18 +46,16 @@ struct BrowseView: View {
                             }
                         }
                         .frame(maxHeight: .infinity)
+                case .done where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
+                    (focusedResource == .card && cardBrowseViewModel.cards.isEmpty):
+                    ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
                 case .done:
-                    if (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
-                        (focusedResource == .card && cardBrowseViewModel.cards.isEmpty) {
-                        ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
-                    } else {
-                        ScrollView {
-                            switch focusedResource {
-                            case .card:
-                                CardBrowseView(filteredCards: cardBrowseViewModel.cards)
-                            case .product:
-                                ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
-                            }
+                    ScrollView {
+                        switch focusedResource {
+                        case .card:
+                            CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                        case .product:
+                            ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
                         }
                     }
                 }
