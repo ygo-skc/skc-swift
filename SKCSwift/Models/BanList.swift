@@ -23,6 +23,5 @@ struct BanListDates: Codable, Hashable {
 }
 
 struct BanListDate: Codable, Hashable {
-    let format: String
     let effectiveDate: String
 }

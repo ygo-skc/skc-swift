@@ -18,7 +18,7 @@ struct ContentView: View, Equatable {
                 }
 //            BannedContent()
 //                .tabItem {
-//                    Image(systemName: "x.square")
+//                    Label("Ban Lists", systemImage: "x.square")
 //                }
             BrowseView()
                 .tabItem {

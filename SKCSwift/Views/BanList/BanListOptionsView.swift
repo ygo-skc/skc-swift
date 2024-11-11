@@ -8,37 +8,18 @@
 import SwiftUI
 
 struct BanListOptionsView: View {
-    @Binding var chosenFormat: BanListFormat
-    @Binding var chosenDateRange: Int
-    @Binding var banListDates: [BanListDate]
+    @Bindable var model: BannedContentViewModel
     
     var body: some View {
         VStack {
-            BanListFormatsView(chosenFormat: $chosenFormat)
-            BanListDatesView(chosenFormat: $chosenFormat, chosenDateRange: $chosenDateRange, banListDates: $banListDates)
+            BanListFormatsView(chosenFormat: $model.chosenFormat)
+            BanListDatesView(model: model)
         }
     }
 }
 
 private struct BanListDatesView: View {
-    @Binding var chosenFormat: BanListFormat
-    @Binding var chosenDateRange: Int
-    @Binding var banListDates: [BanListDate]
-    
-    @State private var isDataLoaded = false
-    @State private var showDateSelectorSheet = false
-    
-    private func fetchData() async {
-        if !isDataLoaded {
-            switch await data(BanListDates.self, url: banListDatesURL(format: "\(chosenFormat)")) {
-            case .success(let dates):
-                self.banListDates = dates.banListDates
-                self.chosenDateRange = 0
-                self.isDataLoaded = true
-            case .failure(_): break
-            }
-        }
-    }
+    @Bindable var model: BannedContentViewModel
     
     var body: some View {
         HStack {
@@ -48,10 +29,11 @@ private struct BanListDatesView: View {
                 .padding(.trailing)
             
             Button() {
-                showDateSelectorSheet.toggle()
+                model.showDateSelectorSheet.toggle()
             } label: {
-                if !banListDates.isEmpty {
-                    BanListDateRangeView(fromDate: banListDates[chosenDateRange].effectiveDate, toDate: (chosenDateRange == 0) ? nil : banListDates[chosenDateRange - 1].effectiveDate)
+                if let banListDates = model.banListDates, !banListDates.isEmpty {
+                    BanListDateRangeView(fromDate: banListDates[model.chosenDateRange].effectiveDate,
+                                         toDate: (model.chosenDateRange == 0) ? nil : banListDates[model.chosenDateRange - 1].effectiveDate)
                 }
             }
             .buttonStyle(.bordered)
@@ -59,15 +41,14 @@ private struct BanListDatesView: View {
             .foregroundColor(.black)
             .frame(maxWidth: .infinity)
         }
-        .onChange(of: $chosenFormat.wrappedValue, initial: true) {
-            self.isDataLoaded = false
+        .onChange(of: $model.chosenFormat.wrappedValue, initial: true) {
             Task {
                 // TODO: can this be improved?
-                await fetchData()
+                await model.fetchBanListDates()
             }
         }
-        .popover(isPresented: $showDateSelectorSheet) {
-            BanListDateRangePicker(chosenDateRange: $chosenDateRange, showDateSelectorSheet: $showDateSelectorSheet, banListDates: banListDates)
+        .popover(isPresented: $model.showDateSelectorSheet) {
+            BanListDateRangePicker(chosenDateRange: $model.chosenDateRange, showDateSelectorSheet: $model.showDateSelectorSheet, banListDates: model.banListDates ?? [])
         }
     }
 }
@@ -220,22 +201,6 @@ struct BanListFormatsView: View {
     }
 }
 
-struct BanListOptionsView_Previews: PreviewProvider {
-    static var previews: some View {
-        _BanListOptionsView()
-    }
-    
-    private struct _BanListOptionsView : View {
-        @State private var chosenFormat: BanListFormat = .tcg
-        @State private var chosenDateRange: Int = 0
-        @State private var banListDates = [BanListDate]()
-        
-        var body: some View {
-            BanListOptionsView(chosenFormat: $chosenFormat, chosenDateRange: $chosenDateRange, banListDates: $banListDates)
-        }
-    }
-}
-
 struct BanListFormatsView_Previews: PreviewProvider {
     static var previews: some View {
         _BanListFormatsView()
@@ -250,18 +215,3 @@ struct BanListFormatsView_Previews: PreviewProvider {
     }
 }
 
-struct BanListDatesView_Previews: PreviewProvider {
-    static var previews: some View {
-        _BanListDatesView()
-    }
-    
-    private struct _BanListDatesView : View {
-        @State private var chosenFormat: BanListFormat = .tcg
-        @State private var chosenDateRange: Int = 0
-        @State private var banListDates = [BanListDate]()
-        
-        var body: some View {
-            BanListDatesView(chosenFormat: $chosenFormat, chosenDateRange: $chosenDateRange, banListDates: $banListDates)
-        }
-    }
-}
