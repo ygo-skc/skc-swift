@@ -10,7 +10,7 @@ import SwiftUI
 
 @Observable
 final class HomeViewModel {
-    private(set) var requestErrors: [String: NetworkError?] = [:]
+    private(set) var requestErrors: [HomeModelDataType: NetworkError?] = [:]
     
     private(set) var dbStats: SKCDatabaseStats?
     private(set) var cardOfTheDay: CardOfTheDay?
@@ -40,9 +40,9 @@ final class HomeViewModel {
         switch await data(SKCDatabaseStats.self, url: dbStatsURL()) {
         case .success(let dbStats):
             self.dbStats = dbStats
-            requestErrors["dbStats"] = nil
+            requestErrors[.dbStats] = nil
         case .failure(let error):
-            requestErrors["dbStats"] = error
+            requestErrors[.dbStats] = error
         }
     }
     
@@ -51,9 +51,9 @@ final class HomeViewModel {
         switch await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
         case .success(let cardOfTheDay):
             self.cardOfTheDay = cardOfTheDay
-            requestErrors["cardOfTheDay"] = nil
+            requestErrors[.cardOfTheDay] = nil
         case .failure(let error):
-            requestErrors["cardOfTheDay"] = error
+            requestErrors[.cardOfTheDay] = error
         }
     }
     
@@ -62,9 +62,9 @@ final class HomeViewModel {
         switch await data(Events.self, url: upcomingEventsURL()) {
         case .success(let upcomingTCGProducts):
             self.upcomingTCGProducts = upcomingTCGProducts.events
-            requestErrors["upcomingTCGProducts"] = nil
+            requestErrors[.upcomingTCGProducts] = nil
         case .failure(let error):
-            requestErrors["upcomingTCGProducts"] = error
+            requestErrors[.upcomingTCGProducts] = error
         }
     }
     
@@ -73,9 +73,9 @@ final class HomeViewModel {
         switch await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
         case .success(let uploadData):
             self.ytUploads = uploadData.videos
-            requestErrors["youtubeUploads"] = nil
+            requestErrors[.youtubeUploads] = nil
         case .failure(let error):
-            requestErrors["youtubeUploads"] = error
+            requestErrors[.youtubeUploads] = error
         }
     }
     
@@ -87,5 +87,9 @@ final class HomeViewModel {
             return .handled
         }
         return .systemAction
+    }
+    
+    enum HomeModelDataType {
+        case dbStats, cardOfTheDay, upcomingTCGProducts, youtubeUploads
     }
 }

@@ -13,7 +13,7 @@ struct DBStatsView: View {
     var body: some View {
         SectionView(header: "Content",
                     content: {
-            if let networkError = model.requestErrors["dbStats", default: nil] {
+            if let networkError = model.requestErrors[.dbStats, default: nil] {
                 NetworkErrorView(error: networkError, action: { Task { await model.fetchDBStatsData() } })
             } else {
                 VStack(spacing: 5) {

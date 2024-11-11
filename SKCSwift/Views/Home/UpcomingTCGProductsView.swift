@@ -14,7 +14,7 @@ struct UpcomingTCGProductsView: View {
         SectionView(header: "Upcoming products",
                     variant: .plain,
                     content: {
-            if let networkError = model.requestErrors["upcomingTCGProducts", default: nil] {
+            if let networkError = model.requestErrors[.upcomingTCGProducts, default: nil] {
                 NetworkErrorView(error: networkError, action: { Task { await model.fetchUpcomingTCGProducts() } })
             } else {
                 VStack(alignment: .leading, spacing: 5) {

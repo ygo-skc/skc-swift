@@ -14,7 +14,7 @@ struct YouTubeUploadsView: View {
         SectionView(header: "YouTube videos",
                     variant: .plain,
                     content: {
-            if let networkError = model.requestErrors["youtubeUploads", default: nil] {
+            if let networkError = model.requestErrors[.youtubeUploads, default: nil] {
                 NetworkErrorView(error: networkError, action: { Task { await model.fetchYouTubeUploadsData() } })
             } else {
                 VStack {

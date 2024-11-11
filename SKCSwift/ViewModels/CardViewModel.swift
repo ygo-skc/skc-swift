@@ -73,7 +73,7 @@ final class CardViewModel {
         }
     }
     
-    enum CardModelDataType: String, Codable, CaseIterable {
+    enum CardModelDataType {
         case card, suggestions, support
     }
 }

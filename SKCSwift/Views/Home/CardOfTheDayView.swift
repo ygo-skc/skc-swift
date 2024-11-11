@@ -17,7 +17,7 @@ struct CardOfTheDayView: View {
             SectionView(
                 header: "Card of the day",
                 content: {
-                    if let networkError = model.requestErrors["cardOfTheDay", default: nil] {
+                    if let networkError = model.requestErrors[.cardOfTheDay, default: nil] {
                         NetworkErrorView(error: networkError, action: { Task { await model.fetchCardOfTheDayData() } })
                     } else {
                         HStack(alignment: .top, spacing: 20) {
