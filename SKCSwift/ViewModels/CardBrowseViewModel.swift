@@ -8,7 +8,7 @@
 import Foundation
 
 @Observable
-class CardBrowseViewModel {
+final class CardBrowseViewModel {
     var showFilters = false
     var filters: CardFilters?
     var cards: [Card] = []

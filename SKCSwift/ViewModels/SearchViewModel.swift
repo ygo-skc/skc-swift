@@ -8,7 +8,7 @@
 import Foundation
 
 @Observable
-class SearchViewModel {
+final class SearchViewModel {
     var searchText: String = ""
     
     private(set) var dataTaskStatus = DataTaskStatus.uninitiated

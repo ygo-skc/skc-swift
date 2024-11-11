@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @Observable
-class HomeViewModel {
+final class HomeViewModel {
     private(set) var requestErrors: [String: NetworkError?] = [:]
     
     private(set) var dbStats: SKCDatabaseStats?

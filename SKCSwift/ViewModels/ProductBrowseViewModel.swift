@@ -8,7 +8,7 @@
 import Foundation
 
 @Observable
-class ProductBrowseViewModel {
+final class ProductBrowseViewModel {
     var showFilters = false
     
     var productTypeFilters: [FilteredItem] = []
