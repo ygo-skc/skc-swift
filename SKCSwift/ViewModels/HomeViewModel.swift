@@ -10,6 +10,8 @@ import SwiftUI
 
 @Observable
 class HomeViewModel {
+    private(set) var requestErrors: [String: NetworkError?] = [:]
+    
     private(set) var dbStats: SKCDatabaseStats?
     private(set) var cardOfTheDay: CardOfTheDay?
     private(set) var upcomingTCGProducts: [Event]?
@@ -34,38 +36,46 @@ class HomeViewModel {
     }
     
     @MainActor
-    private func fetchDBStatsData() async {
+    func fetchDBStatsData() async {
         switch await data(SKCDatabaseStats.self, url: dbStatsURL()) {
         case .success(let dbStats):
             self.dbStats = dbStats
-        case .failure(_): break
+            requestErrors["dbStats"] = nil
+        case .failure(let error):
+            requestErrors["dbStats"] = error
         }
     }
     
     @MainActor
-    private func fetchCardOfTheDayData() async {
+    func fetchCardOfTheDayData() async {
         switch await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
         case .success(let cardOfTheDay):
             self.cardOfTheDay = cardOfTheDay
-        case .failure(_): break
+            requestErrors["cardOfTheDay"] = nil
+        case .failure(let error):
+            requestErrors["cardOfTheDay"] = error
         }
     }
     
     @MainActor
-    private func fetchUpcomingTCGProducts() async {
+    func fetchUpcomingTCGProducts() async {
         switch await data(Events.self, url: upcomingEventsURL()) {
         case .success(let upcomingTCGProducts):
             self.upcomingTCGProducts = upcomingTCGProducts.events
-        case .failure(_): break
+            requestErrors["upcomingTCGProducts"] = nil
+        case .failure(let error):
+            requestErrors["upcomingTCGProducts"] = error
         }
     }
     
     @MainActor
-    private func fetchYouTubeUploadsData() async {
+    func fetchYouTubeUploadsData() async {
         switch await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
         case .success(let uploadData):
             self.ytUploads = uploadData.videos
-        case .failure(_): break
+            requestErrors["youtubeUploads"] = nil
+        case .failure(let error):
+            requestErrors["youtubeUploads"] = error
         }
     }
     
