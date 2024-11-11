@@ -18,34 +18,34 @@ struct CardLinkDestinationView: View {
 }
 
 private struct CardView: View {
-    let cardID: String
-    private let cardViewModel = CardViewModel()
+    private let model: CardViewModel
+    
+    init(cardID: String) {
+        self.model = .init(cardID: cardID)
+    }
     
     var body: some View {
-        if let error = cardViewModel.error {
-            switch error {
+        if let networkError = model.requestErrors[.card, default: nil] {
+            switch networkError {
             case .badRequest, .unprocessableEntity:
                 ContentUnavailableView("Card not currently supported",
                                        systemImage: "exclamationmark.square.fill",
                                        description: Text("Please check back later"))
             default:
-                ContentUnavailableView {
-                    Label("Could not fetch content", systemImage: "network.slash")
-                } description: {
-                    Button(action: { cardViewModel.error = nil }) {
-                        Label("Retry", systemImage: "arrow.clockwise")
+                NetworkErrorView(error: networkError, action: {
+                    Task {
+                        await model.fetchCardData(forceRefresh: true)
                     }
-                    .buttonStyle(.borderedProminent)
-                }
+                })
             }
         } else {
             TabView {
                 ScrollView {
-                    YGOCardView(cardID: cardID, card: cardViewModel.card)
+                    YGOCardView(cardID: model.cardID, card: model.card)
                         .equatable()
                         .padding(.bottom)
                     
-                    if let card = cardViewModel.card {
+                    if let card = model.card {
                         RelatedContentView(
                             cardName: card.cardName,
                             cardColor: card.cardColor,
@@ -63,7 +63,7 @@ private struct CardView: View {
                 }
                 
                 ScrollView {
-                    CardSuggestionsView(cardID: cardID, cardName: cardViewModel.card?.cardName)
+                    CardSuggestionsView(model: model)
                         .modifier(ParentViewModifier(alignment: .center))
                         .padding(.bottom, 30)
                 }
@@ -71,7 +71,7 @@ private struct CardView: View {
             .tabViewStyle(.page(indexDisplayMode: .always))
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             .task(priority: .userInitiated) {
-                await cardViewModel.fetchData(cardID: cardID)
+                await model.fetchCardData()
             }
         }
     }

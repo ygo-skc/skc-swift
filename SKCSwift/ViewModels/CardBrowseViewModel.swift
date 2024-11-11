@@ -8,19 +8,23 @@
 import Foundation
 
 @Observable
-class CardBrowseViewModel {
+final class CardBrowseViewModel {
     var showFilters = false
     var filters: CardFilters?
-    var cards: [Card] = []
     
-    private(set) var status = DataTaskStatus.pending
+    private(set) var cards: [Card] = []
+    
+    private(set) var criteriaError: NetworkError?
+    private(set) var criteriaStatus = DataTaskStatus.uninitiated
+    private(set) var dataError: NetworkError?
+    private(set) var dataStatus = DataTaskStatus.uninitiated
     
     @ObservationIgnored
     private var cardBrowseCriteria: CardBrowseCriteria?
     
     @MainActor
     func fetchCardBrowseCriteria() async {
-        if cardBrowseCriteria == nil {
+        if criteriaError != nil || cardBrowseCriteria == nil {
             switch await data(CardBrowseCriteria.self, url: cardBrowseCriteriaURL()) {
             case .success(let cardBrowseCriteria):
                 self.cardBrowseCriteria = cardBrowseCriteria
@@ -32,11 +36,12 @@ class CardBrowseViewModel {
                     FilteredItem(category: cardColor, isToggled: false, disableToggle: false)
                 }
                 
-                self.filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters)
-                self.status = .done
-            case .failure(_):
-                self.status = .error
+                filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters)
+                criteriaError = nil
+            case .failure(let error):
+                criteriaError = error
             }
+            criteriaStatus = .done
         }
     }
     
@@ -49,9 +54,12 @@ class CardBrowseViewModel {
             if !attributes.isEmpty || !colors.isEmpty {
                 switch await data(CardBrowseResults.self, url: cardBrowseURL(attributes: attributes, colors: colors)) {
                 case .success(let r):
-                    self.cards = r.results
-                case .failure(_): break
+                    cards = r.results
+                    dataError = nil
+                case .failure(let error):
+                    dataError = error
                 }
+                dataStatus = .done
             }
         }
     }

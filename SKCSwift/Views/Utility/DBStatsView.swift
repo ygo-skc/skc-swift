@@ -7,38 +7,46 @@
 
 import SwiftUI
 
-struct DBStatsView: View, Equatable {
-    let stats: SKCDatabaseStats?
+struct DBStatsView: View {
+    @Bindable var model: HomeViewModel
     
     var body: some View {
         SectionView(header: "Content",
                     content: {
-            VStack(spacing: 5) {
-                Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
-                    .padding(.bottom)
-                    .font(.body)
-                    .multilineTextAlignment(.center)
-                
-                Text("DB Stats")
-                    .font(.title3)
-                HStack {
-                    Group {
-                        DBStatView(count: stats?.cardTotal, stat: "Cards")
-                        DBStatView(count: stats?.banListTotal, stat: "Ban Lists")
-                        DBStatView(count: stats?.productTotal, stat: "Products")
+            if let networkError = model.requestErrors["dbStats", default: nil] {
+                NetworkErrorView(error: networkError, action: { Task { await model.fetchDBStatsData() } })
+            } else {
+                VStack(spacing: 5) {
+                    Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
+                        .padding(.bottom)
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                    
+                    Text("DB Stats")
+                        .font(.title3)
+                    HStack {
+                        Group {
+                            DBStatView(count: model.dbStats?.cardTotal, stat: "Cards")
+                            DBStatView(count: model.dbStats?.banListTotal, stat: "Ban Lists")
+                            DBStatView(count: model.dbStats?.productTotal, stat: "Products")
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
+                    .padding(.bottom)
+                    
+                    Group {
+                        Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
+                        Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
+                        if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+                           let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+                            Text("v\(appVersion)(\(build))")
+                        }
+                    }
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
                 }
-                .padding(.bottom)
-                
-                Group {
-                    Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
-                    Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
-                }
-                .font(.footnote)
-                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
         })
     }
 }
@@ -68,9 +76,14 @@ private struct DBStatView: View {
 }
 
 #Preview {
-    DBStatsView(stats: nil)
+    let model = HomeViewModel()
+    DBStatsView(model: model)
 }
 
 #Preview {
-    DBStatsView(stats: SKCDatabaseStats(productTotal: 100, cardTotal: 5000, banListTotal: 30))
+    let model = HomeViewModel()
+    DBStatsView(model: model)
+        .task {
+            await model.fetchDBStatsData()
+        }
 }

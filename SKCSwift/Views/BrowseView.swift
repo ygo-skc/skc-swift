@@ -33,31 +33,40 @@ struct BrowseView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
-                switch focusedResource == .product ? productBrowseViewModel.status : cardBrowseViewModel.status {
-                case .pending:
+                switch (focusedResource == .product ? productBrowseViewModel.dataStatus : cardBrowseViewModel.criteriaStatus, focusedResource) {
+                case (.pending, .card), (.uninitiated, .card):
                     ProgressView("Loading...")
                         .controlSize(.large)
                         .task(priority: .userInitiated) {
-                            switch focusedResource {
-                            case .card:
-                                await cardBrowseViewModel.fetchCardBrowseCriteria()
-                            case .product:
-                                await productBrowseViewModel.fetchProductBrowseData()
-                            }
+                            await cardBrowseViewModel.fetchCardBrowseCriteria()
                         }
                         .frame(maxHeight: .infinity)
-                case .done, .error:
-                    if (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
-                        (focusedResource == .card && cardBrowseViewModel.cards.isEmpty) {
-                        ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
-                    } else {
+                case (.pending, .product), (.uninitiated, .product):
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                        .task(priority: .userInitiated) {
+                            await productBrowseViewModel.fetchProductBrowseData()
+                        }
+                        .frame(maxHeight: .infinity)
+                case (.done, _) where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
+                    (focusedResource == .card && cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil):
+                    ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
+                case (.done, .card):
+                    if let networkError = cardBrowseViewModel.criteriaError {
+                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCardBrowseCriteria() } })
+                    } else if let networkError = cardBrowseViewModel.dataError {
+                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCards() } })
+                    } else{
                         ScrollView {
-                            switch focusedResource {
-                            case .card:
-                                CardBrowseView(filteredCards: cardBrowseViewModel.cards)
-                            case .product:
-                                ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
-                            }
+                            CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                        }
+                    }
+                case (.done, .product):
+                    if let networkError = productBrowseViewModel.dataError {
+                        NetworkErrorView(error: networkError, action: { Task{ await productBrowseViewModel.fetchProductBrowseData() } })
+                    } else{
+                        ScrollView {
+                            ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
                         }
                     }
                 }
@@ -70,11 +79,17 @@ struct BrowseView: View {
                             CardFiltersView(filters: filters)
                         }
                     }
+                    .if(cardBrowseViewModel.criteriaError != nil ) {
+                        $0.hidden()
+                    }
                 case .product:
                     FilterButton(showFilters: $productBrowseViewModel.showFilters) {
                         ProductFiltersView(
                             productTypeFilters: $productBrowseViewModel.productTypeFilters,
                             productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
+                    }
+                    .if(productBrowseViewModel.dataError != nil ) {
+                        $0.hidden()
                     }
                 }
             }

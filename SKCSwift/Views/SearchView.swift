@@ -9,23 +9,27 @@ import SwiftUI
 
 struct SearchView: View {
     @State private var searchViewModel = SearchViewModel()
-    private let trendingViewModel = TrendingViewModel()
+    @State private var trendingViewModel = TrendingViewModel()
     
     var body: some View {
         NavigationStack {
             VStack {
-                switch searchViewModel.status {
-                case .done, .pending, .none:
-                    if searchViewModel.status == .none || searchViewModel.searchText.isEmpty {
-                        TrendingResultsView(cards: trendingViewModel.cards, products: trendingViewModel.products)
-                    } else if !searchViewModel.searchResults.isEmpty {
+                switch (searchViewModel.dataTaskStatus, searchViewModel.requestError) {
+                case (.done, .notFound), (.pending, .notFound):
+                    ContentUnavailableView.search
+                case (.done, _) where searchViewModel.searchText.isEmpty, (.pending, _) where searchViewModel.searchText.isEmpty, (.uninitiated, _):
+                    TrendingView(model: trendingViewModel)
+                case (.done, _), (.pending, _):
+                    if let error = searchViewModel.requestError, error != .cancelled {
+                        NetworkErrorView(error: error, action: {
+                            Task {
+                                await searchViewModel.newSearchSubject(oldValue: searchViewModel.searchText, newValue: searchViewModel.searchText)
+                            }
+                        })
+                    } else {
                         SearchResultsView(searchResults: searchViewModel.searchResults)
                             .equatable()
-                    } else if searchViewModel.status == .done && !searchViewModel.searchText.isEmpty && searchViewModel.searchResults.isEmpty {
-                        ContentUnavailableView.search
                     }
-                case .error:
-                    Text("Error")
                 }
             }
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
@@ -37,18 +41,12 @@ struct SearchView: View {
             .navigationTitle("Search")
         }
         .searchable(text: $searchViewModel.searchText, prompt: "Search for card...")
-        .onChange(of: searchViewModel.searchText, initial: false) { _, newValue in
+        .onChange(of: searchViewModel.searchText, initial: false) { oldValue, newValue in
             Task(priority: .userInitiated) {
-                await searchViewModel.newSearchSubject(value: newValue)
+                await searchViewModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
             }
         }
         .disableAutocorrection(true)
-        .task(priority: .userInitiated) {
-            await trendingViewModel.fetchTrendingCards()
-        }
-        .task(priority: .medium) {
-            await trendingViewModel.fetchTrendingProducts()
-        }
     }
 }
 
@@ -74,26 +72,5 @@ private struct SearchResultsView: View, Equatable {
         .scrollDismissesKeyboard(.immediately)
         .listStyle(.plain)
         .ignoresSafeArea(.keyboard)
-    }
-}
-
-private struct TrendingResultsView: View {
-    let cards: [TrendingMetric<Card>]?
-    let products: [TrendingMetric<Product>]?
-    
-    var body: some View {
-        ScrollView() {
-            if let cards = cards, let products {
-                TrendingView(cardTrendingData: cards, productTrendingData: products)
-                    .equatable()
-                    .modifier(ParentViewModifier())
-            } else {
-                HStack {
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                }
-                .frame(maxWidth: .infinity)
-            }
-        }
     }
 }

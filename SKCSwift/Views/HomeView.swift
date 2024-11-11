@@ -8,21 +8,17 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var homeViewModel = HomeViewModel()
+    @State private var model = HomeViewModel()
     
     var body: some View {
-        NavigationStack(path: $homeViewModel.navigationPath) {
+        NavigationStack(path: $model.navigationPath) {
             ScrollView {
                 VStack(spacing: 30) {
-                    DBStatsView(stats: homeViewModel.dbStats)
-                        .equatable()
-                    CardOfTheDayView(cardOfTheDay: homeViewModel.cardOfTheDay)
-                        .equatable()
-                    UpcomingTCGProductsView(events: homeViewModel.upcomingTCGProducts)
-                        .equatable()
-                    YouTubeUploadsView(videos: homeViewModel.ytUploads)
-                        .equatable()
-                        .if(homeViewModel.upcomingTCGProducts == nil) { view in
+                    DBStatsView(model: model)
+                    CardOfTheDayView(model: model)
+                    UpcomingTCGProductsView(model: model)
+                    YouTubeUploadsView(model: model)
+                        .if(model.upcomingTCGProducts == nil) { view in
                             view.hidden()
                         }
                 }
@@ -31,17 +27,17 @@ struct HomeView: View {
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
                 CardLinkDestinationView(cardLinkDestinationValue: card)
             }
-            .environment(\.openURL, OpenURLAction(handler: homeViewModel.handleURLClick))
+            .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
             .refreshable {
                 // below code is needed else refreshable task will be cancelled https://stackoverflow.com/questions/74977787/why-is-async-task-cancelled-in-a-refreshable-modifier-on-a-scrollview-ios-16
                 await Task(priority: .userInitiated) {
-                    await homeViewModel.fetchData(refresh: true)
+                    await model.fetchData(refresh: true)
                 }.value
             }
             .task(priority: .userInitiated) {
-                await homeViewModel.fetchData(refresh: false)
+                await model.fetchData(refresh: false)
             }
         }
     }

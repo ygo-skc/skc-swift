@@ -7,53 +7,78 @@
 
 import SwiftUI
 
-struct TrendingView: View, @preconcurrency Equatable {
-    let cardTrendingData: [TrendingMetric<Card>]
-    let productTrendingData: [TrendingMetric<Product>]
-    
-    @State private var focusedTrend = TrendingResourceType.card
-    
-    static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
-        lhs.focusedTrend == rhs.focusedTrend
-        && lhs.cardTrendingData.elementsEqual(rhs.cardTrendingData, by: { $0.resource.cardID == $1.resource.cardID && $0.occurrences == $1.occurrences })
-        && lhs.productTrendingData.elementsEqual(rhs.productTrendingData, by: { $0.resource.productId == $1.resource.productId && $0.occurrences == $1.occurrences })
-    }
+struct TrendingView: View {
+    @Bindable var model: TrendingViewModel
     
     var body: some View {
-        SectionView(header: "Trending",
-                    variant: .plain,
-                    content: {
-            Picker("Select Trend Type", selection: $focusedTrend) {
-                ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                    Text(type.rawValue.capitalized).tag(type)
+        VStack {
+            if !Set([.uninitiated, .pending]).isDisjoint(with: Set(model.trendingDataTaskStatuses.values)) {
+                ProgressView("Loading...")
+                    .controlSize(.large)
+            } else {
+                ScrollView {
+                    SectionView(header: "Trending",
+                                variant: .plain,
+                                content: {
+                        Picker("Select Trend Type", selection: $model.focusedTrend) {
+                            ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                                Text(type.rawValue.capitalized).tag(type)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        
+                        
+                        switch model.focusedTrend {
+                        case .card:
+                            TrendingCardsView(trendingCards: model.cards,
+                                              networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
+                                              refreshAction: model.fetchTrendingCards)
+                        case .product:
+                            TrendingProductsView(trendingProducts: model.products,
+                                                 networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
+                                                 refreshAction: model.fetchTrendingProducts)
+                        }
+                    })
+                    .modifier(ParentViewModifier())
                 }
+                .scrollDisabled(model.trendingRequestErrors[model.focusedTrend] != nil)
             }
-            .pickerStyle(.segmented)
-            
-            if focusedTrend == .card {
-                TrendingCardsView(trendingCards: cardTrendingData)
-            } else if focusedTrend == .product {
-                TrendingProductsView(trendingProducts: productTrendingData)
-            }
-        })
+        }
+        .task(priority: .userInitiated) {
+            await model.fetchTrendingCards()
+        }
+        .task(priority: .medium) {
+            await model.fetchTrendingProducts()
+        }
     }
 }
 
 private struct TrendingCardsView: View {
-    let trendingCards: [TrendingMetric<Card>]
+    var trendingCards: [TrendingMetric<Card>]
+    var networkError: NetworkError?
+    var refreshAction: (Bool) async -> Void
     
     var body: some View {
-        LazyVStack {
-            ForEach(trendingCards, id: \.resource.cardID) { m in
-                let card = m.resource
-                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                    GroupBox(label: TrendChangeView(trendChange: m.change, hits: m.occurrences)) {
-                        CardListItemView(card: card)
-                            .equatable()
-                    }
-                    .groupBoxStyle(.listItem)
-                })
-                .buttonStyle(.plain)
+        if let networkError {
+            NetworkErrorView(error: networkError, action: {
+                Task {
+                    await refreshAction(true)
+                }
+            })
+            .padding(.top, 20)
+        } else {
+            LazyVStack {
+                ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
+                    let card = m.resource
+                    NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                            CardListItemView(card: card)
+                                .equatable()
+                        }
+                        .groupBoxStyle(.listItem)
+                    })
+                    .buttonStyle(.plain)
+                }
             }
         }
     }
@@ -61,13 +86,22 @@ private struct TrendingCardsView: View {
 
 private struct TrendingProductsView: View {
     let trendingProducts: [TrendingMetric<Product>]
+    var networkError: NetworkError?
+    var refreshAction: (Bool) async -> Void
     
-    var body: some View {
+    var body: some View {if let networkError {
+        NetworkErrorView(error: networkError, action: {
+            Task {
+                await refreshAction(true)
+            }
+        })
+        .padding(.top, 20)
+    } else {
         LazyVStack {
-            ForEach(trendingProducts, id: \.resource.productId) { m in
+            ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
                 NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                    GroupBox(label: TrendChangeView(trendChange: m.change, hits: m.occurrences)) {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
                         ProductListItemView(product: product)
                             .equatable()
                     }
@@ -77,15 +111,17 @@ private struct TrendingProductsView: View {
             }
         }
     }
+    }
 }
 
 
 private struct TrendChangeView: View, Equatable {
+    private let position: Int
     private let trendLabel: String
     private let trendColor: Color
     private let trendImage: String
     
-    init(trendChange: Int, hits: Int) {
+    init(position: Int, trendChange: Int, hits: Int) {
         if trendChange > 0 {
             trendLabel = "+\(trendChange) • \(hits) hits"
             trendColor = .mint
@@ -99,36 +135,38 @@ private struct TrendChangeView: View, Equatable {
             trendColor = .normalYGOCard
             trendImage = "chart.line.flattrend.xyaxis"
         }
+        self.position = position
     }
     
     var body: some View {
-        Label {
-            Text(trendLabel)
-                .foregroundColor(.secondary)
-        } icon: {
-            Image(systemName: trendImage)
-                .foregroundColor(trendColor)
+        HStack {
+            Label {
+                Text(trendLabel)
+                    .foregroundColor(.secondary)
+            } icon: {
+                Image(systemName: trendImage)
+                    .foregroundColor(trendColor)
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            Text("#\(position)")
+                .font(.headline)
+                .foregroundStyle(.secondary )
         }
     }
 }
 
 #Preview {
-    TrendingView(cardTrendingData: [
-        TrendingMetric(resource: Card(cardID: "40044918", cardName: "Elemental HERO Stratos", cardColor: "Effect",
-                                      cardAttribute: "Wind", cardEffect: "Draw 2", monsterType: "Warrior/Effect"), occurrences: 45, change: 3)],
-                 productTrendingData: [
-                    TrendingMetric(resource: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
-                                                     productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-03-03", productTotal: 101), occurrences: 23, change: -4)])
+    TrendingView(model: TrendingViewModel())
 }
 
 #Preview("Trend Change Positive") {
-    TrendChangeView(trendChange: 1, hits: 1040)
+    TrendChangeView(position: 1, trendChange: 1, hits: 1040)
 }
 
 #Preview("Trend Change Negative") {
-    TrendChangeView(trendChange: -1, hits: 100203)
+    TrendChangeView(position: 2, trendChange: -1, hits: 100203)
 }
 
 #Preview("Trend Change Neutral") {
-    TrendChangeView(trendChange: 0, hits: 10)
+    TrendChangeView(position: 4, trendChange: 0, hits: 10)
 }

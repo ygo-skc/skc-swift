@@ -8,27 +8,33 @@
 import SwiftUI
 
 struct CardSuggestionsView: View {
-    let cardID: String
-    let cardName: String?
-    
-    private let suggestionViewModel = CardSuggestionViewModel()
+    @Bindable var model: CardViewModel
     
     var body: some View {
         SuggestionsView(
-            subjectID: cardID,
-            subjectName: cardName,
+            subjectID: model.cardID,
+            subjectName: model.card?.cardName ?? "",
             subjectType: .card,
-            areSuggestionsLoaded: suggestionViewModel.areSuggestionsLoaded && suggestionViewModel.isSupportLoaded,
-            namedMaterials: suggestionViewModel.namedMaterials,
-            namedReferences: suggestionViewModel.namedReferences,
-            referencedBy: suggestionViewModel.referencedBy,
-            materialFor: suggestionViewModel.materialFor
+            areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
+            namedMaterials: model.namedMaterials,
+            namedReferences: model.namedReferences,
+            referencedBy: model.referencedBy,
+            materialFor: model.materialFor,
+            networkError: model.requestErrors[.suggestions, default: nil] ?? model.requestErrors[.support, default: nil],
+            action: {
+                Task {
+                    await model.fetchSuggestions(forceRefresh: true)
+                }
+                Task {
+                    await model.fetchSupport(forceRefresh: true)
+                }
+            }
         )
         .task(priority: .userInitiated) {
-            await suggestionViewModel.fetchSuggestions(cardID: cardID)
+            await model.fetchSuggestions()
         }
         .task(priority: .userInitiated) {
-            await suggestionViewModel.fetchSupport(cardID: cardID)
+            await model.fetchSupport()
         }
     }
 }
@@ -58,7 +64,9 @@ struct ProductCardSuggestionsView: View {
             namedMaterials: suggestions?.suggestions.namedMaterials,
             namedReferences: suggestions?.suggestions.namedReferences,
             referencedBy: suggestions?.support.referencedBy,
-            materialFor: suggestions?.support.materialFor
+            materialFor: suggestions?.support.materialFor,
+            networkError: nil,
+            action: {}
         )
         .task(priority: .userInitiated) {
             await fetch()
@@ -81,6 +89,9 @@ private struct SuggestionsView: View {
     let namedReferences: [CardReference]?
     let referencedBy: [CardReference]?
     let materialFor: [CardReference]?
+    
+    let networkError: NetworkError?
+    let action: () -> Void
     
     private var namedMaterialSubHeader: String {
         switch subjectType {
@@ -133,7 +144,9 @@ private struct SuggestionsView: View {
             }
             .padding(.bottom)
             
-            if areSuggestionsLoaded, let namedMaterials, let namedReferences , let materialFor, let referencedBy {
+            if let networkError {
+                NetworkErrorView(error: networkError, action: action)
+            } else if areSuggestionsLoaded, let namedMaterials, let namedReferences , let materialFor, let referencedBy {
                 if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
                     ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
                 } else {
@@ -238,16 +251,26 @@ struct CarouselItemViewModifier: ViewModifier {
 }
 
 #Preview("Air Neos Suggestions") {
+    let model = CardViewModel(cardID: "11502550")
+    
     ScrollView {
-        CardSuggestionsView(cardID: "11502550", cardName: "Elemental HERO Air Neos")
+        CardSuggestionsView(model: model)
             .padding(.horizontal)
+    }
+    .task {
+        await model.fetchCardData()
     }
 }
 
 #Preview("Dark Magician Girl Suggestions") {
+    let model = CardViewModel(cardID: "38033121")
+    
     ScrollView {
-        CardSuggestionsView(cardID: "38033121", cardName: "Dark Magician Girl")
+        CardSuggestionsView(model: model)
             .padding(.horizontal)
+    }
+    .task {
+        await model.fetchCardData()
     }
 }
 

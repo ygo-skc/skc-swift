@@ -7,30 +7,34 @@
 
 import SwiftUI
 
-struct UpcomingTCGProductsView: View, Equatable {
-    let events: [Event]?
+struct UpcomingTCGProductsView: View {
+    @Bindable var model: HomeViewModel
     
     var body: some View {
         SectionView(header: "Upcoming products",
                     variant: .plain,
                     content: {
-            VStack(alignment: .leading, spacing: 5) {
-                if let events {
-                    Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
-                        .font(.body)
-                        .padding(.bottom)
-                    
-                    ForEach(events, id: \.name) { event in
-                        UpcomingTCGProductView(event: event)
-                            .equatable()
+            if let networkError = model.requestErrors["upcomingTCGProducts", default: nil] {
+                NetworkErrorView(error: networkError, action: { Task { await model.fetchUpcomingTCGProducts() } })
+            } else {
+                VStack(alignment: .leading, spacing: 5) {
+                    if let events = model.upcomingTCGProducts {
+                        Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
+                            .font(.body)
+                            .padding(.bottom)
+                        
+                        ForEach(events, id: \.name) { event in
+                            UpcomingTCGProductView(event: event)
+                                .equatable()
+                        }
+                    }
+                    else {
+                        ProgressView("Loading...")
+                            .controlSize(.large)
                     }
                 }
-                else {
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                }
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
         })
     }
 }
@@ -63,7 +67,15 @@ private struct UpcomingTCGProductView: View, Equatable {
     }
 }
 
-#Preview() {
-    UpcomingTCGProductsView(events: [Event(name: "Xyz", notes: "Yoooo", location: "", eventDate: "2024-08-23T05:00:00.000Z", url: "https://youtube.com")])
-        .padding(.horizontal)
+#Preview {
+    let model = HomeViewModel()
+    UpcomingTCGProductsView(model: model)
+}
+
+#Preview {
+    let model = HomeViewModel()
+    UpcomingTCGProductsView(model: model)
+        .task {
+            await model.fetchUpcomingTCGProducts()
+        }
 }
