@@ -40,36 +40,23 @@ struct CardSuggestionsView: View {
 }
 
 struct ProductCardSuggestionsView: View {
-    let productID: String
-    let productName: String?
-    
-    @State private var suggestions: ProductSuggestions? = nil
-    
-    private func fetch() async {
-        if suggestions == nil {
-            switch await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
-            case .success(let suggestions):
-                self.suggestions = suggestions
-            case .failure(_): break
-            }
-        }
-    }
+    @Bindable var model: ProductViewModel
     
     var body: some View {
         SuggestionsView(
-            subjectID: productID,
-            subjectName: productName,
+            subjectID: model.productID,
+            subjectName: model.product?.productName,
             subjectType: .product,
-            areSuggestionsLoaded: suggestions != nil,
-            namedMaterials: suggestions?.suggestions.namedMaterials,
-            namedReferences: suggestions?.suggestions.namedReferences,
-            referencedBy: suggestions?.support.referencedBy,
-            materialFor: suggestions?.support.materialFor,
+            areSuggestionsLoaded: model.suggestions != nil,
+            namedMaterials: model.suggestions?.suggestions.namedMaterials,
+            namedReferences: model.suggestions?.suggestions.namedReferences,
+            referencedBy: model.suggestions?.support.referencedBy,
+            materialFor: model.suggestions?.support.materialFor,
             networkError: nil,
             action: {}
         )
         .task(priority: .userInitiated) {
-            await fetch()
+            await model.fetchProductSuggestions()
         }
     }
 }

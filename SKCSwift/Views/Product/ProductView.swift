@@ -18,27 +18,19 @@ struct ProductLinkDestinationView: View {
 }
 
 struct ProductView: View {
-    let productID: String
+    private let model: ProductViewModel
     
-    @State private var product: Product? = nil
-    
-    private func fetch() async {
-        if product == nil {
-            switch await data(Product.self, url: productInfoURL(productID: productID)) {
-            case .success(let product):
-                self.product = product
-            case .failure(_): break
-            }
-        }
+    init(productID: String) {
+        self.model = .init(productID: productID)
     }
     
     var body: some View {
         TabView {
             ScrollView {
                 VStack{
-                    ProductImageView(width: 150, productID: productID, imgSize: .small)
+                    ProductImageView(width: 150, productID: model.productID, imgSize: .small)
                         .padding(.vertical)
-                    if let product {
+                    if let product = model.product {
                         InlineDateView(date: product.productReleaseDate)
                         Text([product.productType, product.productSubType].joined(separator: " | "))
                             .font(.subheadline)
@@ -48,7 +40,7 @@ struct ProductView: View {
                                 ForEach(content) { c in
                                     if let card = c.card {
                                         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                            GroupBox(label: Label("\(productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
+                                            GroupBox(label: Label("\(model.productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
                                                 CardListItemView(card: card, showAllInfo: true)
                                                     .equatable()
                                             }
@@ -68,12 +60,12 @@ struct ProductView: View {
                 .modifier(ParentViewModifier(alignment: .center))
                 .padding(.bottom, 40)
                 .task(priority: .userInitiated) {
-                    await fetch()
+                    await model.fetchProductData()
                 }
             }
             
             ScrollView {
-                ProductCardSuggestionsView(productID: productID, productName: product?.productName)
+                ProductCardSuggestionsView(model: model)
                     .modifier(ParentViewModifier(alignment: .center))
                     .padding(.bottom, 30)
             }
