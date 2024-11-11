@@ -33,7 +33,7 @@ struct BrowseView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
-                switch (focusedResource == .product ? productBrowseViewModel.status : cardBrowseViewModel.status, focusedResource) {
+                switch (focusedResource == .product ? productBrowseViewModel.dataStatus : cardBrowseViewModel.criteriaStatus, focusedResource) {
                 case (.pending, .card), (.uninitiated, .card):
                     ProgressView("Loading...")
                         .controlSize(.large)
@@ -49,15 +49,25 @@ struct BrowseView: View {
                         }
                         .frame(maxHeight: .infinity)
                 case (.done, _) where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
-                    (focusedResource == .card && cardBrowseViewModel.cards.isEmpty):
+                    (focusedResource == .card && cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil):
                     ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
                 case (.done, .card):
-                    ScrollView {
-                        CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                    if let networkError = cardBrowseViewModel.criteriaError {
+                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCardBrowseCriteria() } })
+                    } else if let networkError = cardBrowseViewModel.dataError {
+                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCards() } })
+                    } else{
+                        ScrollView {
+                            CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                        }
                     }
                 case (.done, .product):
-                    ScrollView {
-                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
+                    if let networkError = productBrowseViewModel.dataError {
+                        NetworkErrorView(error: networkError, action: { Task{ await productBrowseViewModel.fetchProductBrowseData() } })
+                    } else{
+                        ScrollView {
+                            ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
+                        }
                     }
                 }
             }
@@ -69,11 +79,17 @@ struct BrowseView: View {
                             CardFiltersView(filters: filters)
                         }
                     }
+                    .if(cardBrowseViewModel.criteriaError != nil ) {
+                        $0.hidden()
+                    }
                 case .product:
                     FilterButton(showFilters: $productBrowseViewModel.showFilters) {
                         ProductFiltersView(
                             productTypeFilters: $productBrowseViewModel.productTypeFilters,
                             productSubTypeFilters: $productBrowseViewModel.productSubTypeFilters)
+                    }
+                    .if(productBrowseViewModel.dataError != nil ) {
+                        $0.hidden()
                     }
                 }
             }
