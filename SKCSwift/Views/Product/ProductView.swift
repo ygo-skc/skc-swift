@@ -27,41 +27,47 @@ struct ProductView: View {
     var body: some View {
         TabView {
             ScrollView {
-                VStack{
-                    ProductImageView(width: 150, productID: model.productID, imgSize: .small)
-                        .padding(.vertical)
-                    if let product = model.product {
-                        InlineDateView(date: product.productReleaseDate)
-                        Text([product.productType, product.productSubType].joined(separator: " | "))
-                            .font(.subheadline)
-                        
-                        if let content = product.productContent {
-                            LazyVStack {
-                                ForEach(content) { c in
-                                    if let card = c.card {
-                                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                            GroupBox(label: Label("\(model.productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
-                                                CardListItemView(card: card, showAllInfo: true)
-                                                    .equatable()
-                                            }
-                                            .groupBoxStyle(.listItem)
-                                        })
-                                        .buttonStyle(.plain)
+                if let networkError = model.requestErrors[.product, default: nil] {
+                    NetworkErrorView(error: networkError, action: { Task{ await model.fetchProductData(forceRefresh: true)} })
+                        .padding(.top, 20)
+                } else {
+                    VStack{
+                        ProductImageView(width: 150, productID: model.productID, imgSize: .small)
+                            .padding(.vertical)
+                        if let product = model.product {
+                            InlineDateView(date: product.productReleaseDate)
+                            Text([product.productType, product.productSubType].joined(separator: " | "))
+                                .font(.subheadline)
+                            
+                            if let content = product.productContent {
+                                LazyVStack {
+                                    ForEach(content) { c in
+                                        if let card = c.card {
+                                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                                GroupBox(label: Label("\(model.productID)-\(c.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
+                                                    CardListItemView(card: card, showAllInfo: true)
+                                                        .equatable()
+                                                }
+                                                .groupBoxStyle(.listItem)
+                                            })
+                                            .buttonStyle(.plain)
+                                        }
                                     }
                                 }
+                                .frame(maxWidth: .infinity)
                             }
-                            .frame(maxWidth: .infinity)
+                        } else {
+                            ProgressView("Loading...")
+                                .controlSize(.large)
                         }
-                    } else {
-                        ProgressView("Loading...")
-                            .controlSize(.large)
                     }
+                    .modifier(ParentViewModifier(alignment: .center))
+                    .padding(.bottom, 40)
                 }
-                .modifier(ParentViewModifier(alignment: .center))
-                .padding(.bottom, 40)
-                .task(priority: .userInitiated) {
-                    await model.fetchProductData()
-                }
+            }
+            .scrollDisabled(model.requestErrors[.product, default: nil] != nil)
+            .task(priority: .userInitiated) {
+                await model.fetchProductData()
             }
             
             ScrollView {
@@ -69,6 +75,7 @@ struct ProductView: View {
                     .modifier(ParentViewModifier(alignment: .center))
                     .padding(.bottom, 30)
             }
+            .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))

@@ -11,6 +11,8 @@ import Foundation
 final class ProductViewModel {
     let productID: String
     
+    private(set) var requestErrors: [ProductModelDataType: NetworkError?] = [:]
+    
     private(set) var product: Product? = nil
     private(set) var suggestions: ProductSuggestions? = nil
     
@@ -19,23 +21,27 @@ final class ProductViewModel {
     }
     
     @MainActor
-    func fetchProductData() async {
-        if product == nil {
+    func fetchProductData(forceRefresh: Bool = false) async {
+        if forceRefresh || product == nil {
             switch await data(Product.self, url: productInfoURL(productID: productID)) {
             case .success(let product):
                 self.product = product
-            case .failure(_): break
+                requestErrors[.product] = nil
+            case .failure(let error):
+                requestErrors[.product] = error
             }
         }
     }
     
     @MainActor
-    func fetchProductSuggestions() async {
-        if suggestions == nil {
+    func fetchProductSuggestions(forceRefresh: Bool = false) async {
+        if forceRefresh || suggestions == nil {
             switch await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
             case .success(let suggestions):
                 self.suggestions = suggestions
-            case .failure(_): break
+                requestErrors[.suggestions] = nil
+            case .failure(let error):
+                requestErrors[.suggestions] = error
             }
         }
     }

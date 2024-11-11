@@ -52,8 +52,8 @@ struct ProductCardSuggestionsView: View {
             namedReferences: model.suggestions?.suggestions.namedReferences,
             referencedBy: model.suggestions?.support.referencedBy,
             materialFor: model.suggestions?.support.materialFor,
-            networkError: nil,
-            action: {}
+            networkError: model.requestErrors[.suggestions, default: nil],
+            action: { Task { await model.fetchProductSuggestions(forceRefresh: true) } }
         )
         .task(priority: .userInitiated) {
             await model.fetchProductSuggestions()
