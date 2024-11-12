@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardOfTheDayView: View {
-    @Bindable var model: HomeViewModel
+    let model: HomeViewModel
     
     private static let IMAGE_SIZE: CGFloat = 90
     

@@ -18,7 +18,7 @@ struct CardLinkDestinationView: View {
 }
 
 private struct CardView: View {
-    private let model: CardViewModel
+    @State private var model: CardViewModel
     
     init(cardID: String) {
         self.model = .init(cardID: cardID)

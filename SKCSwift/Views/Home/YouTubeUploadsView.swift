@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct YouTubeUploadsView: View {
-    @Bindable var model: HomeViewModel
+    let model: HomeViewModel
     
     var body: some View {
         SectionView(header: "YouTube videos",

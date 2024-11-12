@@ -18,7 +18,7 @@ struct ProductLinkDestinationView: View {
 }
 
 struct ProductView: View {
-    private let model: ProductViewModel
+    @State var model: ProductViewModel
     
     init(productID: String) {
         self.model = .init(productID: productID)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UpcomingTCGProductsView: View {
-    @Bindable var model: HomeViewModel
+    let model: HomeViewModel
     
     var body: some View {
         SectionView(header: "Upcoming products",

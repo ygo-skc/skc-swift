@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DBStatsView: View {
-    @Bindable var model: HomeViewModel
+    let model: HomeViewModel
     
     var body: some View {
         SectionView(header: "Content",

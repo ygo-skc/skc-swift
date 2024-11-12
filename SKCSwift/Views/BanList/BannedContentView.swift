@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BannedContent: View {
-    private var model = BannedContentViewModel()
+    @State private var model = BannedContentViewModel()
     
     var body: some View {
         SegmentedView(mainContent: {

@@ -8,26 +8,26 @@
 import SwiftUI
 
 struct SearchView: View {
-    @State private var searchViewModel = SearchViewModel()
-    @State private var trendingViewModel = TrendingViewModel()
+    @State private var searchModel = SearchViewModel()
+    @State private var trendingModel = TrendingViewModel()
     
     var body: some View {
         NavigationStack {
             VStack {
-                switch (searchViewModel.dataTaskStatus, searchViewModel.requestError) {
+                switch (searchModel.dataTaskStatus, searchModel.requestError) {
                 case (.done, .notFound), (.pending, .notFound):
                     ContentUnavailableView.search
-                case (.done, _) where searchViewModel.searchText.isEmpty, (.pending, _) where searchViewModel.searchText.isEmpty, (.uninitiated, _):
-                    TrendingView(model: trendingViewModel)
+                case (.done, _) where searchModel.searchText.isEmpty, (.pending, _) where searchModel.searchText.isEmpty, (.uninitiated, _):
+                    TrendingView(model: trendingModel)
                 case (.done, _), (.pending, _):
-                    if let error = searchViewModel.requestError, error != .cancelled {
+                    if let error = searchModel.requestError, error != .cancelled {
                         NetworkErrorView(error: error, action: {
                             Task {
-                                await searchViewModel.newSearchSubject(oldValue: searchViewModel.searchText, newValue: searchViewModel.searchText)
+                                await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)
                             }
                         })
                     } else {
-                        SearchResultsView(searchResults: searchViewModel.searchResults)
+                        SearchResultsView(searchResults: searchModel.searchResults)
                             .equatable()
                     }
                 }
@@ -40,10 +40,10 @@ struct SearchView: View {
             }
             .navigationTitle("Search")
         }
-        .searchable(text: $searchViewModel.searchText, prompt: "Search for card...")
-        .onChange(of: searchViewModel.searchText, initial: false) { oldValue, newValue in
+        .searchable(text: $searchModel.searchText, prompt: "Search for card...")
+        .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
             Task(priority: .userInitiated) {
-                await searchViewModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
+                await searchModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
             }
         }
         .disableAutocorrection(true)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardSuggestionsView: View {
-    @Bindable var model: CardViewModel
+    let model: CardViewModel
     
     var body: some View {
         SuggestionsView(
@@ -40,7 +40,7 @@ struct CardSuggestionsView: View {
 }
 
 struct ProductCardSuggestionsView: View {
-    @Bindable var model: ProductViewModel
+    let model: ProductViewModel
     
     var body: some View {
         SuggestionsView(
