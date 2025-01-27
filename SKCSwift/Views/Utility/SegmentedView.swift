@@ -89,8 +89,10 @@ private struct BottomSheet<SheetContent: View>: View {
                     }
                 }
             )
-            .onPreferenceChange(BottomSheetMinHeightPreferenceKey.self) {
-                bottomSheetHeight = $0 + 20
+            .onPreferenceChange(BottomSheetMinHeightPreferenceKey.self) { newValue in
+                Task { @MainActor in
+                    bottomSheetHeight = newValue + 20
+                }
             }
         
         

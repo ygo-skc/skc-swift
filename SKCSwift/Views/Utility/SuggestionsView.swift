@@ -231,8 +231,10 @@ struct CarouselItemViewModifier: ViewModifier {
                         value: geometry.size.height
                     )
                 })
-            .onPreferenceChange(SuggestionHeightPreferenceKey.self) {
-                height = $0
+            .onPreferenceChange(SuggestionHeightPreferenceKey.self) { h in
+                Task { @MainActor in
+                    height = h
+                }
             }
     }
 }
