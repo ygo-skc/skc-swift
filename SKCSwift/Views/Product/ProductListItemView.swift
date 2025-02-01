@@ -33,12 +33,11 @@ struct ProductListItemView: View, Equatable {
                     .font(.subheadline)
                 
                 if let contents = product.productContent, !contents.isEmpty {
-                    HStack(alignment: .top) {
-                        Text("Rarities")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                        Text(contents[0].rarities.joined(separator: ", "))
-                            .font(.callout)
+                    FlowLayout(spacing: 6) {
+                        ForEach(contents[0].rarities, id: \.self) { rarity in
+                            Text(rarity.cardRarityShortHand())
+                                .modifier(TagModifier())
+                        }
                     }
                 }
             }
