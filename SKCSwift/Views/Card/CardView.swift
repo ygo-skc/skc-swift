@@ -18,6 +18,8 @@ struct CardLinkDestinationView: View {
 }
 
 private struct CardView: View {
+    @Environment(\.modelContext) var modelContext
+    
     @State private var model: CardViewModel
     
     init(cardID: String) {
@@ -71,6 +73,10 @@ private struct CardView: View {
             .tabViewStyle(.page(indexDisplayMode: .always))
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             .task(priority: .userInitiated) {
+                // Ideally, only want to add to history if data wasn't fetched yet - meaning user didn't close/open screen
+                if model.card == nil {
+                    modelContext.insert(History(resource: .card, id: model.cardID))
+                }
                 await model.fetchCardData()
             }
         }
