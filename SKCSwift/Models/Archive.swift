@@ -30,12 +30,16 @@ class Favorite {
 
 
 @Model
-class History {
-    var resource: ArchiveResource = ArchiveResource.card
+final class History {
+    var resource: String = ArchiveResource.card.rawValue
     var id: String = ""
+    var lastAccessDate: Date = Date()
+    var timesAccessed: Int = 0
     
-    init(resource: ArchiveResource, id: String) {
-        self.resource = resource
+    init(resource: ArchiveResource, id: String, lastAccessDate: Date = Date(), timesAccessed: Int = 0) {
+        self.resource = resource.rawValue
         self.id = id
+        self.lastAccessDate = lastAccessDate
+        self.timesAccessed = timesAccessed
     }
 }
