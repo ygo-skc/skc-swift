@@ -31,15 +31,20 @@ class Favorite {
 
 @Model
 final class History {
-    var resource: String = ArchiveResource.card.rawValue
-    var id: String = ""
-    var lastAccessDate: Date = Date()
-    var timesAccessed: Int = 0
+    private(set) var resource: String = ArchiveResource.card.rawValue
+    private(set) var id: String = ""
+    private(set) var lastAccessDate: Date = Date()
+    private(set) var timesAccessed: Int = 0
     
     init(resource: ArchiveResource, id: String, lastAccessDate: Date = Date(), timesAccessed: Int = 0) {
         self.resource = resource.rawValue
         self.id = id
         self.lastAccessDate = lastAccessDate
         self.timesAccessed = timesAccessed
+    }
+    
+    func updateAccess(timesAccessed: Int = 1) {
+        lastAccessDate = Date()
+        self.timesAccessed += timesAccessed
     }
 }

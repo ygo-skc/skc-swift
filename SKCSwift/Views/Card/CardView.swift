@@ -97,8 +97,7 @@ private struct CardView: View {
             if history.isEmpty {
                 modelContext.insert(History(resource: .card, id: model.cardID, timesAccessed: 1))
             } else if let h1 = history.first, h1.lastAccessDate.timeIntervalSinceNow(millisConversion: .minutes) >= 3 && model.card == nil {
-                h1.timesAccessed += 1
-                h1.lastAccessDate = Date()
+                h1.updateAccess()
             }
             await model.fetchCardData()
         }
