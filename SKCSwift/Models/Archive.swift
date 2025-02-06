@@ -15,7 +15,7 @@ enum ArchiveResource: String, Codable {
 
 @Model
 class Favorite {
-//    #Unique<Favorite>([\.type, \.id])
+    //    #Unique<Favorite>([\.type, \.id])
     
     var type: String = "favorites"
     var resource: ArchiveResource = ArchiveResource.card
@@ -46,5 +46,17 @@ final class History {
     func updateAccess(timesAccessed: Int = 1) {
         lastAccessDate = Date()
         self.timesAccessed += timesAccessed
+    }
+    
+    // there should only be one history record per ID/resource type, this method will consolidate multiple history records into one - deleting the others
+    static func consolidate(history: [History], modelContext: ModelContext) {
+        if history.count > 1 {
+            for i in 1..<history.count {
+                if history[0].id == history[i].id && history[0].resource == history[i].resource {
+                    history[0].updateAccess(timesAccessed: history[i].timesAccessed)
+                    modelContext.delete(history[i])
+                }
+            }
+        }
     }
 }

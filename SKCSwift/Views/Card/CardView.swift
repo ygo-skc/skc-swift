@@ -99,6 +99,9 @@ private struct CardView: View {
             } else if let h1 = history.first, h1.lastAccessDate.timeIntervalSinceNow(millisConversion: .minutes) >= 3 && model.card == nil {
                 h1.updateAccess()
             }
+            
+            History.consolidate(history: history, modelContext: modelContext)
+            
             await model.fetchCardData()
         }
         .toolbar {
