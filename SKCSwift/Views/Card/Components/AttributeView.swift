@@ -9,21 +9,22 @@ import SwiftUI
 
 struct AttributeView: View, Equatable {
     var attribute: Attribute
+    var variant: IconVariant
     
-    private static let ICON_SIZE: CGFloat = 30.0
+    init(attribute: Attribute, variant: IconVariant = .large) {
+        self.attribute = attribute
+        self.variant = variant
+    }
     
     var body: some View {
         if (attribute == .unknown) {
             Image(systemName: "questionmark.circle.fill")
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: AttributeView.ICON_SIZE - 5, height: AttributeView.ICON_SIZE - 5)
+                .modifier(IconViewModifier(variant: variant))
         } else {
             Image(attribute.rawValue.lowercased())
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: AttributeView.ICON_SIZE, height: AttributeView.ICON_SIZE)
-                .cornerRadius(AttributeView.ICON_SIZE)
+                .modifier(IconViewModifier(variant: variant))
         }
     }
 }

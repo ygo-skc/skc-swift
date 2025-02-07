@@ -40,12 +40,6 @@ enum YGOCardViewVariant {
     case listView
 }
 
-enum CardColorIndicatorVariant {
-    case small
-    case regular
-    case large
-}
-
 enum YGOCardImageVariant {
     case round
     case roundedCorner
