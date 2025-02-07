@@ -77,6 +77,7 @@ private struct TrendingCardsView: View {
                         }
                         .groupBoxStyle(.listItem)
                     })
+                    .dynamicTypeSize(...DynamicTypeSize.medium)
                     .buttonStyle(.plain)
                 }
             }
