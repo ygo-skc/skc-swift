@@ -26,12 +26,14 @@ struct CardListItemView: View, Equatable {
                 
                 HStack {
                     Text(card.monsterType ?? card.cardColor)
-                        .font(.caption)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                     
                     Text(card.cardID)
                         .font(.caption)
+                        .foregroundColor(.secondary)
                         .fontWeight(.light)
                 }
                 

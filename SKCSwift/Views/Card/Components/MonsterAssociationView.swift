@@ -74,7 +74,7 @@ private struct LevelAssociationView: View, Equatable {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 3) {
             Image(.level)
                 .resizable()
                 .modifier(IconViewModifier(variant: variant))
@@ -94,7 +94,7 @@ private struct PendulumAssociationView: View, Equatable {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 3) {
             Image(.pendScale)
                 .resizable()
                 .modifier(IconViewModifier(variant: variant))
@@ -114,7 +114,7 @@ private struct RankAssociationView: View, Equatable {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 3) {
             Image(.rank)
                 .resizable()
                 .modifier(IconViewModifier(variant: variant))

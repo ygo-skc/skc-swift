@@ -92,9 +92,9 @@ private struct SuggestionsView: View {
     private var namedReferenceSubHeader: String {
         switch subjectType {
         case .card:
-            return "Cards found in the text of **\(subjectName ?? "")** - non materials."
+            return "Cards found in the text of **\(subjectName ?? "")** but aren't explicitly listed as a summoning material."
         case .product:
-            return "Cards found in the text of a card included in **\(subjectName ?? "")** which cannot be used a summoning material."
+            return "Cards found in the text of a card included in **\(subjectName ?? "")** but aren't explicitly listed as a summoning material."
         }
     }
     
@@ -110,7 +110,7 @@ private struct SuggestionsView: View {
     private var referencedBySubHeader: String {
         switch subjectType {
         case .card:
-            return "Cards that reference **\(subjectName ?? "")** excluding ED cards that reference this card as a summoning material."
+            return "Cards that reference **\(subjectName ?? "")** excluding ED cards that reference **\(subjectName ?? "")** as a summoning material."
         case .product:
             return "Cards that reference a card found in **\(subjectName ?? "")** excluding ED cards that reference a card in this set as a summoning material."
         }
@@ -120,7 +120,7 @@ private struct SuggestionsView: View {
         VStack {
             Label {
                 Text("Suggestions")
-                    .font(.title2)
+                    .font(.title)
             } icon: {
                 switch subjectType {
                 case .card:
@@ -188,8 +188,10 @@ private struct SuggestionCarouselView: View {
     var body: some View {
         if (!references.isEmpty) {
             Text("\(header) (\(references.count))")
-                .font(.title3)
+                .font(.headline)
+                .fontWeight(.heavy)
             Text(LocalizedStringKey(subHeader))
+                .font(.callout)
                 .padding(.bottom)
             
             ScrollView(.horizontal) {

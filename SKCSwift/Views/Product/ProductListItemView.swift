@@ -19,18 +19,16 @@ struct ProductListItemView: View, Equatable {
                 InlineDateView(date: product.productReleaseDate)
                     .equatable()
                     .padding(.bottom, 2)
-                Text(product.productIDWithContentTotal())
-                    .frame(alignment: .trailing)
-                    .font(.subheadline)
-                    .fontWeight(.light)
-                Text(product.productName)
-                    .fontWeight(.bold)
-                    .font(.headline)
-                    .lineLimit(1)
-                    .padding(.bottom, 0)
-                Text(product.productCategory())
-                    .frame(alignment: .trailing)
-                    .font(.subheadline)
+                Group {
+                    Text(product.productIDWithContentTotal())
+                        .foregroundColor(.secondary)
+                    Text(product.productName)
+                        .fontWeight(.bold)
+                    Text(product.productCategory())
+                        .foregroundColor(.secondary)
+                }
+                .font(.subheadline)
+                .lineLimit(1)
                 
                 if let contents = product.productContent, !contents.isEmpty {
                     FlowLayout(spacing: 6) {
@@ -42,6 +40,7 @@ struct ProductListItemView: View, Equatable {
                 }
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

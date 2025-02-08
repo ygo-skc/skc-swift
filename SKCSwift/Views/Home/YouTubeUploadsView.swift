@@ -20,7 +20,7 @@ struct YouTubeUploadsView: View {
                 VStack {
                     if let videos = model.ytUploads {
                         Text("Did you know I make YouTube videos? Keep tabs on the TCG, watch the best un-boxings on YouTube or watch some dope Master Duel replays. Don't forget to sub.")
-                            .font(.body)
+                            .font(.callout)
                         
                         LazyVStack(alignment: .leading, spacing: 5) {
                             ForEach(videos, id: \.id) { video in
@@ -62,12 +62,8 @@ private struct YouTubeUploadView: View, Equatable {
             HStack(spacing: 15)  {
                 RoundedRectImage(width: YouTubeUploadView.UPLOAD_IMG_WIDTH, height: YouTubeUploadView.UPLOAD_IMG_HEIGHT, imageUrl: videoThumbnailUrl, cornerRadius: 8)
                     .equatable()
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(videoTitle)
-                        .font(.callout)
-                        .fontWeight(.regular)
-                }
-                .frame(maxHeight: .infinity)
+                Text(videoTitle)
+                    .font(.subheadline)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())

@@ -106,6 +106,7 @@ private struct TrendingProductsView: View {
                         ProductListItemView(product: product)
                             .equatable()
                     }
+                    .dynamicTypeSize(...DynamicTypeSize.medium)
                     .groupBoxStyle(.listItem)
                 })
                 .buttonStyle(.plain)

@@ -20,7 +20,7 @@ struct UpcomingTCGProductsView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     if let events = model.upcomingTCGProducts {
                         Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
-                            .font(.body)
+                            .font(.callout)
                             .padding(.bottom)
                         
                         ForEach(events, id: \.name) { event in
