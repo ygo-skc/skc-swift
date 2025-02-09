@@ -34,7 +34,7 @@ struct CardOfTheDayView: View {
                                     Text(cardOfTheDay.card.cardName)
                                         .lineLimit(2)
                                         .font(.headline)
-                                        .fontWeight(.black)
+                                        .fontWeight(.semibold)
                                     
                                     Text(cardOfTheDay.card.cardType)
                                         .font(.headline)

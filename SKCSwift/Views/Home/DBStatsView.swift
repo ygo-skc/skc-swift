@@ -34,7 +34,7 @@ struct DBStatsView: View {
                     }
                     
                     Divider()
-                        .padding(.vertical)
+                        .padding(.bottom)
                     
                     Group {
                         Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
