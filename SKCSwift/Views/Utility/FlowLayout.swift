@@ -54,8 +54,12 @@ struct TagModifier: ViewModifier {
             .padding(.horizontal, 4)
             .padding(.vertical, 2)
             .font(.caption)
-            .background(Color.accentColor)
-            .foregroundColor(Color(UIColor { $0.userInterfaceStyle == .dark ? .black : .white }))
+            .background(LinearGradient(
+                gradient: Gradient(colors: [Color.accentColor, Color.accentColor.opacity(0.8)]),
+                startPoint: .leading,
+                endPoint: .trailing
+            ))
+            .foregroundColor(.white)
             .cornerRadius(6)
             .lineLimit(1)
             .dynamicTypeSize(...DynamicTypeSize.medium)

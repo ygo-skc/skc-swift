@@ -24,7 +24,7 @@ struct PieChartGroupView: View {
     let data: [ChartData]
     
     var body: some View {
-        GroupBox {
+        GroupBox(label: Label(dataTitle, systemImage: "chart.pie.fill").foregroundColor(.accentColor).padding(.bottom)) {
             Text(LocalizedStringKey(description))
                 .font(.headline)
             Divider()
@@ -32,7 +32,7 @@ struct PieChartGroupView: View {
             PieChartView(data: data, dataTitle: dataTitle)
         }
         .padding(.bottom)
-        .groupBoxStyle(.sectionContent)
+        .groupBoxStyle(.listItem)
     }
 }
 
@@ -48,11 +48,11 @@ struct PieChartView: View {
     private var total: Int
     
     private var selectedCategory: String {
-        return selectedDataPoint != nil ? selectedDataPoint!.category : dataTitle
+        return selectedDataPoint != nil ? selectedDataPoint!.category : "Total"
     }
     
     private var selectedTotal: String {
-        return selectedDataPoint != nil ? "\(selectedDataPoint!.count)/\(total)" : "Total: \(total)"
+        return selectedDataPoint != nil ? "\(selectedDataPoint!.count)/\(total)" : "\(total)"
     }
     
     init(data: [ChartData], dataTitle: String) {
