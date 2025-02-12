@@ -54,3 +54,8 @@ struct CardOfTheDay: Codable, Equatable {
 struct CardDetailsRequest: Codable {
     let cardIDs: [String]
 }
+
+struct CardDetailsResponse: Codable {
+    let cardInfo: [String: Card]
+    let unknownResources: [String]
+}

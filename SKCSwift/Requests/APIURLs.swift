@@ -8,10 +8,6 @@
 import Foundation
 
 struct RequestHelper {
-    static let decoder = JSONDecoder()
-    
-    static let GET: StaticString = "GET"
-    
     // Headers
     static let CLIENT_ID: StaticString = "SKCSwift"
     
@@ -33,6 +29,7 @@ struct RequestHelper {
     static let SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
     static let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
     static let SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
+    static let SKC_SUGGESTION_ENGINE_CARD_DETAILS_ENDPOINT: StaticString = "/api/v1/suggestions/card-details"
     
     // Heart API request helpers
     static let HEART_API_BASE_URL: StaticString = "heart-api.com"
@@ -186,6 +183,14 @@ func trendingUrl(resource: TrendingResourceType) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT.description, resource.rawValue)
+    )
+    return createURL(components: components)
+}
+
+func cardDetailsUrl() -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_DETAILS_ENDPOINT.description
     )
     return createURL(components: components)
 }
