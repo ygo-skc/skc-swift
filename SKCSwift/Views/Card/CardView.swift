@@ -52,8 +52,7 @@ private struct CardView: View {
                                     cardColor: card.cardColor,
                                     products: card.getProducts(),
                                     tcgBanLists: card.getBanList(format: BanListFormat.tcg),
-                                    mdBanLists: card.getBanList(format: BanListFormat.md),
-                                    dlBanLists: card.getBanList(format: BanListFormat.dl)
+                                    mdBanLists: card.getBanList(format: BanListFormat.md)
                                 )
                                 .modifier(ParentViewModifier())
                                 .padding(.bottom, 50)

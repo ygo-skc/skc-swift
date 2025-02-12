@@ -12,7 +12,7 @@ enum Attribute: String {
 }
 
 enum BanListFormat: String {
-    case tcg = "TCG", md = "Master Duel", dl = "Duel Links"
+    case tcg = "TCG", md = "Master Duel"
 }
 
 enum RelatedContentType: String {

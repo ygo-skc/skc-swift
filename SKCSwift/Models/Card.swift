@@ -83,8 +83,6 @@ struct Card: Codable, Equatable {
             return restrictedIn?.TCG ?? [BanList]()
         case .md:
             return restrictedIn?.MD ?? [BanList]()
-        case .dl:
-            return restrictedIn?.DL ?? [BanList]()
         }
     }
 }

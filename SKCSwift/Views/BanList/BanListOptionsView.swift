@@ -183,7 +183,7 @@ struct BanListFormatsView: View {
     
     @Namespace private var animation
     
-    private static let formats: [BanListFormat] = [.tcg, .md, .dl]
+    private static let formats: [BanListFormat] = [.tcg, .md]
     
     var body: some View {
         HStack {
