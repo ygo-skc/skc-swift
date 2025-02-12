@@ -67,7 +67,7 @@ private struct ProductInfoView: View {
                 InlineDateView(date: product.productReleaseDate)
                 
                 Button {
-                    showStats.toggle()
+                    showStats = true
                 } label: {
                     Label("Metrics", systemImage: "chart.bar.fill")
                         .frame(width: 200)
@@ -123,8 +123,9 @@ private struct ProductStatsView: View {
         
         monsterColorData = cards
            .filter { $0.attribute != .spell && $0.attribute != .trap }
-           .reduce(into: [String: Int]()) { counts, card in
-               counts[card.cardColor, default: 0] += 1
+           .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
+           .reduce(into: [String: Int]()) { counts, color in
+               counts[color, default: 0] += 1
            }
            .map { ChartData(name: $0.key, count: $0.value) }
         
