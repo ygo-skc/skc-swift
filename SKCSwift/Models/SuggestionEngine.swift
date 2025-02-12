@@ -50,3 +50,7 @@ struct CardOfTheDay: Codable, Equatable {
     let version: UInt8
     let card: Card
 }
+
+struct CardDetailsRequest: Codable {
+    let cardIDs: [String]
+}

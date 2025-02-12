@@ -23,7 +23,7 @@ final class ProductViewModel {
     @MainActor
     func fetchProductData(forceRefresh: Bool = false) async {
         if forceRefresh || product == nil {
-            switch await data(Product.self, url: productInfoURL(productID: productID)) {
+            switch await data(productInfoURL(productID: productID), resType: Product.self) {
             case .success(let product):
                 self.product = product
                 requestErrors[.product] = nil
@@ -36,7 +36,7 @@ final class ProductViewModel {
     @MainActor
     func fetchProductSuggestions(forceRefresh: Bool = false) async {
         if forceRefresh || suggestions == nil {
-            switch await data(ProductSuggestions.self, url: productSuggestionsURL(productID: productID)) {
+            switch await data(productSuggestionsURL(productID: productID), resType: ProductSuggestions.self) {
             case .success(let suggestions):
                 self.suggestions = suggestions
                 requestErrors[.suggestions] = nil

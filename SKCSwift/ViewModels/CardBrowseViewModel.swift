@@ -25,7 +25,7 @@ final class CardBrowseViewModel {
     @MainActor
     func fetchCardBrowseCriteria() async {
         if criteriaError != nil || cardBrowseCriteria == nil {
-            switch await data(CardBrowseCriteria.self, url: cardBrowseCriteriaURL()) {
+            switch await data(cardBrowseCriteriaURL(), resType: CardBrowseCriteria.self) {
             case .success(let cardBrowseCriteria):
                 self.cardBrowseCriteria = cardBrowseCriteria
                 
@@ -52,7 +52,7 @@ final class CardBrowseViewModel {
             let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }
             
             if !attributes.isEmpty || !colors.isEmpty {
-                switch await data(CardBrowseResults.self, url: cardBrowseURL(attributes: attributes, colors: colors)) {
+                switch await data(cardBrowseURL(attributes: attributes, colors: colors), resType: CardBrowseResults.self) {
                 case .success(let r):
                     cards = r.results
                     dataError = nil

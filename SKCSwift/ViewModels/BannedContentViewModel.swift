@@ -18,7 +18,7 @@ final class BannedContentViewModel {
     
     @MainActor
     func fetchBanListDates() async {
-        switch await data(BanListDates.self, url: banListDatesURL(format: "\(chosenFormat)")) {
+        switch await data(banListDatesURL(format: "\(chosenFormat)"), resType: BanListDates.self) {
         case .success(let dates):
             banListDates = dates.banListDates
             chosenDateRange = 0

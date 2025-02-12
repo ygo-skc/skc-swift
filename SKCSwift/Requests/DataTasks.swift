@@ -7,9 +7,11 @@
 
 import Foundation
 
-fileprivate func baseRequest(url: URL) -> URLRequest {
+fileprivate struct NilReqBody: Codable {}
+
+fileprivate func baseRequest(url: URL, httpMethod: String = "GET") -> URLRequest {
     var request = URLRequest(url: url)
-    request.httpMethod = RequestHelper.GET.description
+    request.httpMethod = httpMethod
     request.addValue(RequestHelper.CLIENT_ID.description, forHTTPHeaderField: "CLIENT_ID")
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     request.addValue("keep-alive", forHTTPHeaderField: "Connection")
@@ -39,12 +41,16 @@ fileprivate func validateResponse(response: URLResponse?) throws {
     }
 }
 
-func data<T>(_ type: T.Type, url: URL) async -> sending Result<T, NetworkError> where T: Decodable {
+func data<U>(_ url: URL, resType: U.Type) async -> sending Result<U, NetworkError> where U: Decodable {
+    await data(url, reqBody: Optional<NilReqBody>.none, resType: resType)
+}
+
+func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type) async -> sending Result<U, NetworkError> where T: Codable, U: Decodable {
     do {
         let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url))
         try Task.checkCancellation()
         try validateResponse(response: response)
-        return .success(try RequestHelper.decoder.decode(type, from: body))
+        return .success(try RequestHelper.decoder.decode(resType, from: body))
     } catch let networkError as NetworkError {
         print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")
         return .failure(networkError)

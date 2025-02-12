@@ -33,7 +33,7 @@ final class CardViewModel {
     @MainActor
     func fetchCardData(forceRefresh: Bool = false) async {
         if forceRefresh || card == nil {
-            switch await data(Card.self, url: cardInfoURL(cardID: cardID)) {
+            switch await data(cardInfoURL(cardID: cardID), resType: Card.self) {
             case .success(let card):
                 self.card = card
                 requestErrors[.card] = nil
@@ -46,7 +46,7 @@ final class CardViewModel {
     @MainActor
     func fetchSuggestions(forceRefresh: Bool = false) async {
         if forceRefresh || !areSuggestionsLoaded {
-            switch await data(CardSuggestions.self, url: cardSuggestionsURL(cardID: cardID)) {
+            switch await data(cardSuggestionsURL(cardID: cardID), resType: CardSuggestions.self) {
             case .success(let suggestions):
                 namedMaterials = suggestions.namedMaterials
                 namedReferences = suggestions.namedReferences
@@ -61,7 +61,7 @@ final class CardViewModel {
     @MainActor
     func fetchSupport(forceRefresh: Bool = false) async {
         if forceRefresh || !isSupportLoaded {
-            switch await data(CardSupport.self, url: cardSupportURL(cardID: cardID)) {
+            switch await data(cardSupportURL(cardID: cardID), resType: CardSupport.self) {
             case .success(let support):
                 referencedBy = support.referencedBy
                 materialFor = support.materialFor
