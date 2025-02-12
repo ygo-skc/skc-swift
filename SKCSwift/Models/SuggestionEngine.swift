@@ -29,3 +29,24 @@ struct ProductSuggestions: Codable {
     let suggestions: CardSuggestions
     let support: CardSupport
 }
+
+struct TrendingMetric<R:Codable>: Codable {
+    let resource: R
+    let occurrences: Int
+    let change: Int
+}
+
+struct Trending<R:Codable>: Codable {
+    let resourceName: TrendingResourceType
+    let metrics: [TrendingMetric<R>]
+}
+
+struct CardOfTheDay: Codable, Equatable {
+    static func == (lhs: CardOfTheDay, rhs: CardOfTheDay) -> Bool {
+        lhs.date == rhs.date && lhs.card.cardID == rhs.card.cardID
+    }
+    
+    let date: String
+    let version: UInt8
+    let card: Card
+}

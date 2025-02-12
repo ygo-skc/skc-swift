@@ -1,9 +1,17 @@
 //
-//  SKCDatabaseStats.swift
+//  SKCAPI.swift
 //  SKCSwift
 //
-//  Created by Javi Gomez on 4/27/23.
+//  Created by Javi Gomez on 2/11/25.
 //
+
+import Foundation
+
+struct SearchResults: Identifiable, Equatable {
+    let id = UUID()
+    let section: String
+    let results: [Card]
+}
 
 struct SKCDatabaseStats: Codable, Equatable {
     static func == (lhs: SKCDatabaseStats, rhs: SKCDatabaseStats) -> Bool {
