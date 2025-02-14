@@ -77,24 +77,34 @@ private struct RecentlyBrowsedView: View {
     
     var body: some View {
         ScrollView {
-            SectionView(header: "Recently Browsed",
-                        variant: .plain,
-                        content: {
-                LazyVStack {
-                    ForEach(recentCards, id: \.cardID) { card in
-                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                            GroupBox() {
-                                CardListItemView(card: card)
-                                    .equatable()
-                            }
-                            .groupBoxStyle(.listItem)
-                        })
-                        .dynamicTypeSize(...DynamicTypeSize.medium)
-                        .buttonStyle(.plain)
+            if !recentCards.isEmpty {
+                SectionView(header: "Recently Browsed",
+                            variant: .plain,
+                            content: {
+                    LazyVStack {
+                        ForEach(recentCards, id: \.cardID) { card in
+                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                GroupBox() {
+                                    CardListItemView(card: card)
+                                        .equatable()
+                                }
+                                .groupBoxStyle(.listItem)
+                            })
+                            .dynamicTypeSize(...DynamicTypeSize.medium)
+                            .buttonStyle(.plain)
+                        }
                     }
+                })
+                .modifier(ParentViewModifier())
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .overlay {
+            if recentCards.isEmpty {
+                ContentUnavailableView {
+                    Label("Type to search 😉", systemImage: "text.magnifyingglass")
                 }
-            })
-            .modifier(ParentViewModifier())
+            }
         }
     }
 }
