@@ -27,6 +27,9 @@ struct SearchView: View {
                     (.uninitiated, _):
                     if searchModel.isSearching {
                         RecentlyBrowsedView(recentCards: searchModel.recentlyBrowsedDetails)
+                            .task {
+                                await searchModel.fetchRecentlyBrowsedDetails(recentlyBrowsed: Array(history.prefix(15)))
+                            }
                     } else {
                         TrendingView(model: trendingModel)
                     }
@@ -51,8 +54,8 @@ struct SearchView: View {
             }
             .navigationTitle("Search")
         }
-        .task {
-            await searchModel.fetchRecentlyBrowsedDetails(recentlyBrowsed: Array(history.prefix(15)))
+        .transaction {
+            $0.animation = nil
         }
         .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, prompt: "Search for card...")
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
