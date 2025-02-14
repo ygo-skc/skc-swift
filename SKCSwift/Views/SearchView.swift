@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SearchView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
+    
+    @Query(sort: \History.lastAccessDate, order: .reverse) private var history: [History]
     
     var body: some View {
         NavigationStack {
@@ -17,8 +22,14 @@ struct SearchView: View {
                 switch (searchModel.dataTaskStatus, searchModel.requestError) {
                 case (.done, .notFound), (.pending, .notFound):
                     ContentUnavailableView.search
-                case (.done, _) where searchModel.searchText.isEmpty, (.pending, _) where searchModel.searchText.isEmpty, (.uninitiated, _):
-                    TrendingView(model: trendingModel)
+                case (.done, _) where searchModel.searchText.isEmpty,
+                    (.pending, _) where searchModel.searchText.isEmpty,
+                    (.uninitiated, _):
+                    if searchModel.isSearching {
+                        RecentlyBrowsedView(recentCards: searchModel.recentlyBrowsedDetails)
+                    } else {
+                        TrendingView(model: trendingModel)
+                    }
                 case (.done, _), (.pending, _):
                     if let error = searchModel.requestError, error != .cancelled {
                         NetworkErrorView(error: error, action: {
@@ -40,18 +51,49 @@ struct SearchView: View {
             }
             .navigationTitle("Search")
         }
-        .searchable(text: $searchModel.searchText, prompt: "Search for card...")
+        .task {
+            await searchModel.fetchRecentlyBrowsedDetails(recentlyBrowsed: Array(history.prefix(15)))
+        }
+        .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, prompt: "Search for card...")
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
             Task(priority: .userInitiated) {
                 await searchModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
             }
         }
+        .scrollDismissesKeyboard(.immediately)
         .disableAutocorrection(true)
     }
 }
 
 #Preview("Card Search View") {
     SearchView()
+}
+
+private struct RecentlyBrowsedView: View {
+    let recentCards: [Card]
+    
+    var body: some View {
+        ScrollView {
+            SectionView(header: "Recently Browsed",
+                        variant: .plain,
+                        content: {
+                LazyVStack {
+                    ForEach(recentCards, id: \.cardID) { card in
+                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                            GroupBox() {
+                                CardListItemView(card: card)
+                                    .equatable()
+                            }
+                            .groupBoxStyle(.listItem)
+                        })
+                        .dynamicTypeSize(...DynamicTypeSize.medium)
+                        .buttonStyle(.plain)
+                    }
+                }
+            })
+            .modifier(ParentViewModifier())
+        }
+    }
 }
 
 private struct SearchResultsView: View, Equatable {
@@ -69,7 +111,6 @@ private struct SearchResultsView: View, Equatable {
                     }
                 }
         }
-        .scrollDismissesKeyboard(.immediately)
         .listStyle(.plain)
         .ignoresSafeArea(.keyboard)
     }

@@ -19,7 +19,7 @@ struct CardLinkDestinationView: View {
 }
 
 private struct CardView: View {
-    @Environment(\.modelContext) var modelContext
+    @Environment(\.modelContext) private var modelContext
     
     @State private var model: CardViewModel
     
@@ -29,11 +29,10 @@ private struct CardView: View {
     init(cardID: String) {
         self.model = .init(cardID: cardID)
         
-        let predicate = #Predicate<History> { h in
-            h.id == cardID
-        }
-        
-        _history = Query(filter: predicate, sort: [SortDescriptor(\.timesAccessed, order: .reverse)])
+        _history = Query(
+            filter: #Predicate<History> { h in
+                h.id == cardID
+            }, sort: [SortDescriptor(\.timesAccessed, order: .reverse)])
     }
     
     var body: some View {
