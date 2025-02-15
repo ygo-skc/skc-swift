@@ -94,18 +94,6 @@ private struct CardView: View {
         .task {
             await model.fetchCardData()
         }
-        .toolbar {
-            if model.requestErrors[.card, default: nil] == nil {
-                Button {
-                    //                    modelContext.insert(Favorite(resource: .card, id: model.cardID))
-                    try! modelContext.delete(model: History.self, where: #Predicate { f in
-                        f.id == "82570174"
-                    })
-                } label: {
-                    Image(systemName: "heart")
-                }
-            }
-        }
         .onChange(of: model.card) {
             Task {
                 /*
