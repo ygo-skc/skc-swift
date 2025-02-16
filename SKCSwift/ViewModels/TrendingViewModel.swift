@@ -26,14 +26,14 @@ final class TrendingViewModel {
     @MainActor
     func fetchTrendingCards(forceRefresh: Bool = false) async {
         await fetchTrendingData(forceRefresh: forceRefresh, resource: .card) {
-            await data(Trending<Card>.self, url: trendingUrl(resource: .card))
+            await data(trendingUrl(resource: .card), resType: Trending<Card>.self)
         }
     }
     
     @MainActor
     func fetchTrendingProducts(forceRefresh: Bool = false) async {
         await fetchTrendingData(forceRefresh: forceRefresh, resource: .product) {
-            await data(Trending<Product>.self, url: trendingUrl(resource: .product))
+            await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
         }
     }
     

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardOfTheDayView: View {
-    @Bindable var model: HomeViewModel
+    let model: HomeViewModel
     
     private static let IMAGE_SIZE: CGFloat = 90
     
@@ -17,7 +17,7 @@ struct CardOfTheDayView: View {
             SectionView(
                 header: "Card of the day",
                 content: {
-                    if let networkError = model.requestErrors["cardOfTheDay", default: nil] {
+                    if let networkError = model.requestErrors[.cardOfTheDay, default: nil] {
                         NetworkErrorView(error: networkError, action: { Task { await model.fetchCardOfTheDayData() } })
                     } else {
                         HStack(alignment: .top, spacing: 20) {
@@ -33,11 +33,12 @@ struct CardOfTheDayView: View {
                                         .equatable()
                                     Text(cardOfTheDay.card.cardName)
                                         .lineLimit(2)
-                                        .font(.title3)
-                                        .fontWeight(.bold)
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
                                     
                                     Text(cardOfTheDay.card.cardType)
                                         .font(.headline)
+                                        .foregroundColor(.secondary)
                                         .lineLimit(1)
                                 } else {
                                     PlaceholderView(width: 200, height: 18, radius: 5)

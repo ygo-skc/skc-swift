@@ -8,22 +8,22 @@
 import SwiftUI
 
 struct DBStatsView: View {
-    @Bindable var model: HomeViewModel
+    let model: HomeViewModel
     
     var body: some View {
         SectionView(header: "Content",
                     content: {
-            if let networkError = model.requestErrors["dbStats", default: nil] {
+            if let networkError = model.requestErrors[.dbStats, default: nil] {
                 NetworkErrorView(error: networkError, action: { Task { await model.fetchDBStatsData() } })
             } else {
                 VStack(spacing: 5) {
                     Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
-                        .padding(.bottom)
-                        .font(.body)
+                        .font(.callout)
                         .multilineTextAlignment(.center)
+                        .padding(.bottom)
                     
                     Text("DB Stats")
-                        .font(.title3)
+                        .font(.headline)
                     HStack {
                         Group {
                             DBStatView(count: model.dbStats?.cardTotal, stat: "Cards")
@@ -32,7 +32,9 @@ struct DBStatsView: View {
                         }
                         .padding(.horizontal)
                     }
-                    .padding(.bottom)
+                    
+                    Divider()
+                        .padding(.bottom)
                     
                     Group {
                         Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
@@ -69,8 +71,8 @@ private struct DBStatView: View {
                 PlaceholderView(width: 25, height: 20, radius: 5)
             }
             Text(stat)
-                .font(.headline)
-                .fontWeight(.bold)
+                .font(.subheadline)
+                .fontWeight(.heavy)
         }
     }
 }

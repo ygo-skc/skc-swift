@@ -47,7 +47,6 @@ struct TabButton_Previews: PreviewProvider {
         HStack {
             TabButton(selected: $format, value: .tcg, animmation: animation)
             TabButton(selected: $format, value: .md, animmation: animation)
-            TabButton(selected: $format, value: .dl, animmation: animation)
         }
     }
 }

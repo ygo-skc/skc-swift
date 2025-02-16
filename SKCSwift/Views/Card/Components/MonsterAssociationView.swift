@@ -14,29 +14,32 @@ struct MonsterAssociationView: View, Equatable {
     let monsterAssociation: MonsterAssociation?
     let attribute: Attribute
     let variant: YGOCardViewVariant
+    let iconVariant: IconVariant
     
-    init(monsterAssociation: MonsterAssociation? = nil, attribute: Attribute, variant: YGOCardViewVariant = .normal) {
+    init(monsterAssociation: MonsterAssociation? = nil, attribute: Attribute,
+         variant: YGOCardViewVariant = .normal, iconVariant: IconVariant = .large) {
         self.monsterAssociation = monsterAssociation
         self.attribute = attribute
         self.variant = variant
+        self.iconVariant = iconVariant
     }
     
     var body: some View {
         HStack {
             HStack {
-                AttributeView(attribute: attribute)
+                AttributeView(attribute: attribute, variant: iconVariant)
                     .equatable()
                 
                 if let level = monsterAssociation?.level {
-                    LevelAssociationView(level: level)
+                    LevelAssociationView(level: level, variant: iconVariant)
                 } else if let rank = monsterAssociation?.rank {
-                    RankAssociationView(rank: rank)
+                    RankAssociationView(rank: rank, variant: iconVariant)
                 } else if let linkRating = monsterAssociation?.linkRating, let linkArrows = monsterAssociation?.linkArrows {
                     LinkAssociationView(linkRating: linkRating, linkArrows: linkArrows)
                 }
                 
                 if let scaleRating = monsterAssociation?.scaleRating {
-                    PendulumAssociationView(pendScale: scaleRating)
+                    PendulumAssociationView(pendScale: scaleRating,variant: iconVariant)
                 }
             }
             .modifier(MonsterAssociationViewModifier(variant: variant))
@@ -63,13 +66,18 @@ private struct MonsterAssociationViewModifier: ViewModifier {
 
 private struct LevelAssociationView: View, Equatable {
     var level: UInt8
+    var variant: IconVariant
+    
+    init(level: UInt8, variant: IconVariant = .large) {
+        self.level = level
+        self.variant = variant
+    }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 3) {
             Image(.level)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: ICON_SIZE, height: ICON_SIZE)
+                .modifier(IconViewModifier(variant: variant))
             Text("x\(level)")
                 .fontWeight(.semibold)
         }
@@ -78,13 +86,18 @@ private struct LevelAssociationView: View, Equatable {
 
 private struct PendulumAssociationView: View, Equatable {
     var pendScale: UInt8
+    var variant: IconVariant
+    
+    init(pendScale: UInt8, variant: IconVariant = .large) {
+        self.pendScale = pendScale
+        self.variant = variant
+    }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 3) {
             Image(.pendScale)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: ICON_SIZE, height: ICON_SIZE)
+                .modifier(IconViewModifier(variant: variant))
             Text("x\(pendScale)")
                 .fontWeight(.semibold)
         }
@@ -93,13 +106,18 @@ private struct PendulumAssociationView: View, Equatable {
 
 private struct RankAssociationView: View, Equatable {
     var rank: UInt8
+    var variant: IconVariant
+    
+    init(rank: UInt8, variant: IconVariant = .large) {
+        self.rank = rank
+        self.variant = variant
+    }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 3) {
             Image(.rank)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: ICON_SIZE, height: ICON_SIZE)
+                .modifier(IconViewModifier(variant: variant))
             Text("x\(rank)")
                 .fontWeight(.semibold)
         }

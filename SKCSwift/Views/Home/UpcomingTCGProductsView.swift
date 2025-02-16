@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct UpcomingTCGProductsView: View {
-    @Bindable var model: HomeViewModel
+    let model: HomeViewModel
     
     var body: some View {
         SectionView(header: "Upcoming products",
                     variant: .plain,
                     content: {
-            if let networkError = model.requestErrors["upcomingTCGProducts", default: nil] {
+            if let networkError = model.requestErrors[.upcomingTCGProducts, default: nil] {
                 NetworkErrorView(error: networkError, action: { Task { await model.fetchUpcomingTCGProducts() } })
             } else {
                 VStack(alignment: .leading, spacing: 5) {
                     if let events = model.upcomingTCGProducts {
                         Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
-                            .font(.body)
+                            .font(.callout)
                             .padding(.bottom)
                         
                         ForEach(events, id: \.name) { event in

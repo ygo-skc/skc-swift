@@ -13,17 +13,15 @@ struct RelatedContentView: View {
     let products:[Product]
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
-    let dlBanLists: [BanList]
     
     private let latestReleaseInfo: String
     
-    init(cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList], dlBanLists: [BanList]) {
+    init(cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList]) {
         self.cardName = cardName
         self.cardColor = cardColor
         self.products = products
         self.tcgBanLists = tcgBanLists
         self.mdBanLists = mdBanLists
-        self.dlBanLists = dlBanLists
         
         if (!products.isEmpty) {
             let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
@@ -87,14 +85,6 @@ struct RelatedContentView: View {
                         RelatedContentsView(header: "Occurrences: \(mdBanLists.count)",
                                             subHeader: "\(BanListFormat.md.rawValue) ban lists \(cardName) was restricted in...") {
                             BanListItemViewModel(banList: mdBanLists)
-                        }
-                    }
-                    
-                    // DL ban list deets
-                    RelatedContentSheetButton(format: "Duel Links", contentCount: dlBanLists.count, contentType: .banLists) {
-                        RelatedContentsView(header: "Occurrences: \(dlBanLists.count)",
-                                            subHeader: "\(BanListFormat.dl.rawValue) ban lists \(cardName) was restricted in...") {
-                            BanListItemViewModel(banList: dlBanLists)
                         }
                     }
                 }

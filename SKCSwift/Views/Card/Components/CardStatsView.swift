@@ -90,7 +90,8 @@ private struct CardNameModifier: ViewModifier {
                 .lineLimit(1)
         case .condensed, .listView:
             content
-                .font(.headline)
+                .font(.subheadline)
+                .fontWeight(.medium)
                 .lineLimit(1)
                 .padding(.vertical, -1)
         }

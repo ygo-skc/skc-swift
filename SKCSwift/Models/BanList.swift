@@ -15,7 +15,6 @@ struct BanList: Codable, Equatable {
 struct BanListsForCard: Codable, Equatable {
     let TCG: [BanList]?
     let MD: [BanList]?
-    let DL: [BanList]?
 }
 
 struct BanListDates: Codable, Hashable {
@@ -23,6 +22,5 @@ struct BanListDates: Codable, Hashable {
 }
 
 struct BanListDate: Codable, Hashable {
-    let format: String
     let effectiveDate: String
 }

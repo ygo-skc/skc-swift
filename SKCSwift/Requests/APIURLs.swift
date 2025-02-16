@@ -8,10 +8,6 @@
 import Foundation
 
 struct RequestHelper {
-    static let decoder = JSONDecoder()
-    
-    static let GET: StaticString = "GET"
-    
     // Headers
     static let CLIENT_ID: StaticString = "SKCSwift"
     
@@ -33,6 +29,7 @@ struct RequestHelper {
     static let SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
     static let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
     static let SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
+    static let SKC_SUGGESTION_ENGINE_CARD_DETAILS_ENDPOINT: StaticString = "/api/v1/suggestions/card-details"
     
     // Heart API request helpers
     static let HEART_API_BASE_URL: StaticString = "heart-api.com"
@@ -60,13 +57,11 @@ private func baseURLComponents(host: String, path: String, queryItems: [URLQuery
 }
 
 func cardInfoURL(cardID: String) -> URL {
-    var components = baseURLComponents(
+    let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_API_CARD_INFORMATION_ENDPOINT.description, cardID)
+        path: String(format: RequestHelper.SKC_API_CARD_INFORMATION_ENDPOINT.description, cardID),
+        queryItems: [URLQueryItem(name: "allInfo", value: "true")]
     )
-    components.queryItems = [
-        URLQueryItem(name: "allInfo", value: "true")
-    ]
     
     return createURL(components: components)
 }
@@ -111,19 +106,18 @@ func cardBrowseURL(attributes: [String], colors: [String]) -> URL {
 }
 
 func searchCardURL(cardName: String) -> URL {
-    var components = baseURLComponents(
+    let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
-        path: RequestHelper.SKC_API_SEARCH_ENDPOINT.description
+        path: RequestHelper.SKC_API_SEARCH_ENDPOINT.description,
+        queryItems: cardName.allSatisfy { $0.isNumber } ? [
+            URLQueryItem(name: "limit", value: "10"),
+            URLQueryItem(name: "cId", value: cardName),
+            URLQueryItem(name: "cName", value: cardName)
+        ] : [
+            URLQueryItem(name: "limit", value: "10"),
+            URLQueryItem(name: "cName", value: cardName)
+        ]
     )
-    
-    components.queryItems = cardName.allSatisfy { $0.isNumber } ? [
-        URLQueryItem(name: "limit", value: "10"),
-        URLQueryItem(name: "cId", value: cardName),
-        URLQueryItem(name: "cName", value: cardName)
-    ] : [
-        URLQueryItem(name: "limit", value: "10"),
-        URLQueryItem(name: "cName", value: cardName)
-    ]
     
     return createURL(components: components)
 }
@@ -137,13 +131,11 @@ func dbStatsURL() -> URL {
 }
 
 func banListDatesURL(format: String) -> URL {
-    var components = baseURLComponents(
+    let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
-        path: RequestHelper.SKC_API_BAN_LIST_DATES_ENDPOINT.description
+        path: RequestHelper.SKC_API_BAN_LIST_DATES_ENDPOINT.description,
+        queryItems: [URLQueryItem(name: "format", value: format)]
     )
-    components.queryItems = [
-        URLQueryItem(name: "format", value: format)
-    ]
     
     return createURL(components: components)
 }
@@ -190,29 +182,32 @@ func trendingUrl(resource: TrendingResourceType) -> URL {
     return createURL(components: components)
 }
 
+func cardDetailsUrl() -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_DETAILS_ENDPOINT.description
+    )
+    return createURL(components: components)
+}
+
 // Heart API URL creation methods
 
 func upcomingEventsURL() -> URL {
-    var components = baseURLComponents(
+    let components = baseURLComponents(
         host: RequestHelper.HEART_API_BASE_URL.description,
-        path: RequestHelper.HEART_API_EVENT_ENDPOINT.description
+        path: RequestHelper.HEART_API_EVENT_ENDPOINT.description,
+        queryItems: [URLQueryItem(name: "service", value: "skc"), URLQueryItem(name: "tags", value: "product-release")]
     )
-    components.queryItems = [
-        URLQueryItem(name: "service", value: "skc"),
-        URLQueryItem(name: "tags", value: "product-release")
-    ]
     
     return createURL(components: components)
 }
 
 func ytUploadsURL(ytChannelId: String) -> URL {
-    var components = baseURLComponents(
+    let components = baseURLComponents(
         host: RequestHelper.HEART_API_BASE_URL.description,
-        path: RequestHelper.HEART_API_YT_UPLOADS_ENDPOINT.description
+        path: RequestHelper.HEART_API_YT_UPLOADS_ENDPOINT.description,
+        queryItems: [URLQueryItem(name: "channelId", value: ytChannelId)]
     )
-    components.queryItems = [
-        URLQueryItem(name: "channelId", value: ytChannelId)
-    ]
     
     return createURL(components: components)
 }

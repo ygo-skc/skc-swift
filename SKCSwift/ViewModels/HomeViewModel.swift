@@ -10,7 +10,7 @@ import SwiftUI
 
 @Observable
 final class HomeViewModel {
-    private(set) var requestErrors: [String: NetworkError?] = [:]
+    private(set) var requestErrors: [HomeModelDataType: NetworkError?] = [:]
     
     private(set) var dbStats: SKCDatabaseStats?
     private(set) var cardOfTheDay: CardOfTheDay?
@@ -37,45 +37,45 @@ final class HomeViewModel {
     
     @MainActor
     func fetchDBStatsData() async {
-        switch await data(SKCDatabaseStats.self, url: dbStatsURL()) {
+        switch await data(dbStatsURL(), resType: SKCDatabaseStats.self) {
         case .success(let dbStats):
             self.dbStats = dbStats
-            requestErrors["dbStats"] = nil
+            requestErrors[.dbStats] = nil
         case .failure(let error):
-            requestErrors["dbStats"] = error
+            requestErrors[.dbStats] = error
         }
     }
     
     @MainActor
     func fetchCardOfTheDayData() async {
-        switch await data(CardOfTheDay.self, url: cardOfTheDayURL()) {
+        switch await data(cardOfTheDayURL(), resType: CardOfTheDay.self) {
         case .success(let cardOfTheDay):
             self.cardOfTheDay = cardOfTheDay
-            requestErrors["cardOfTheDay"] = nil
+            requestErrors[.cardOfTheDay] = nil
         case .failure(let error):
-            requestErrors["cardOfTheDay"] = error
+            requestErrors[.cardOfTheDay] = error
         }
     }
     
     @MainActor
     func fetchUpcomingTCGProducts() async {
-        switch await data(Events.self, url: upcomingEventsURL()) {
+        switch await data(upcomingEventsURL(), resType: Events.self) {
         case .success(let upcomingTCGProducts):
             self.upcomingTCGProducts = upcomingTCGProducts.events
-            requestErrors["upcomingTCGProducts"] = nil
+            requestErrors[.upcomingTCGProducts] = nil
         case .failure(let error):
-            requestErrors["upcomingTCGProducts"] = error
+            requestErrors[.upcomingTCGProducts] = error
         }
     }
     
     @MainActor
     func fetchYouTubeUploadsData() async {
-        switch await data(YouTubeUploads.self, url: ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ")) {
+        switch await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self) {
         case .success(let uploadData):
             self.ytUploads = uploadData.videos
-            requestErrors["youtubeUploads"] = nil
+            requestErrors[.youtubeUploads] = nil
         case .failure(let error):
-            requestErrors["youtubeUploads"] = error
+            requestErrors[.youtubeUploads] = error
         }
     }
     
@@ -87,5 +87,9 @@ final class HomeViewModel {
             return .handled
         }
         return .systemAction
+    }
+    
+    enum HomeModelDataType {
+        case dbStats, cardOfTheDay, upcomingTCGProducts, youtubeUploads
     }
 }

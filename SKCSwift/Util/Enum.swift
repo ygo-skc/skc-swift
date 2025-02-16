@@ -12,7 +12,7 @@ enum Attribute: String {
 }
 
 enum BanListFormat: String {
-    case tcg = "TCG", md = "Master Duel", dl = "Duel Links"
+    case tcg = "TCG", md = "Master Duel"
 }
 
 enum RelatedContentType: String {
@@ -40,12 +40,6 @@ enum YGOCardViewVariant {
     case listView
 }
 
-enum CardColorIndicatorVariant {
-    case small
-    case regular
-    case large
-}
-
 enum YGOCardImageVariant {
     case round
     case roundedCorner
@@ -69,7 +63,8 @@ enum NetworkError: Error {
     case badRequest
     case notFound
     case unprocessableEntity
-    case bodyParse
+    case reqEncode
+    case resDecode
     case cancelled
     case timeout
     case unknown
@@ -78,7 +73,7 @@ enum NetworkError: Error {
 extension NetworkError: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .client:
+        case .client, .reqEncode:
             return "Client error"
         case .server:
             return "Server error"
@@ -88,7 +83,7 @@ extension NetworkError: CustomStringConvertible {
             return "404 not found"
         case .unprocessableEntity:
             return "422 unproccessable entity"
-        case .bodyParse:
+        case .resDecode:
             return "Cannot parse body"
         case .cancelled:
             return "Request cancelled by client"
@@ -103,7 +98,7 @@ extension NetworkError: CustomStringConvertible {
 extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .client, .server, .badRequest, .notFound, .unprocessableEntity, .bodyParse, .cancelled, .timeout, .unknown:
+        case .client, .server, .badRequest, .notFound, .unprocessableEntity, .reqEncode, .resDecode, .cancelled, .timeout, .unknown:
             return self.description
         }
     }

@@ -9,7 +9,8 @@ import Foundation
 
 @Observable
 final class SearchViewModel {
-    var searchText: String = ""
+    var isSearching = false
+    var searchText = ""
     
     private(set) var dataTaskStatus = DataTaskStatus.uninitiated
     private(set) var requestError: NetworkError?
@@ -21,6 +22,9 @@ final class SearchViewModel {
     private var searchResultsIds = [String]()
     @ObservationIgnored
     private var task: Task<(), any Error>?
+    
+    // recently browsed state
+    private(set) var recentlyBrowsedDetails = [Card]()
     
     @MainActor
     func newSearchSubject(oldValue: String, newValue: String) async {
@@ -40,7 +44,7 @@ final class SearchViewModel {
             dataTaskStatus = .pending
             
             task = Task {
-                switch await data([Card].self, url: searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines))) {
+                switch await data(searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
                 case .success(let cards):
                     if cards.isEmpty {
                         searchResults.removeAll()
@@ -61,6 +65,17 @@ final class SearchViewModel {
                 }
                 dataTaskStatus = .done
             }
+        }
+    }
+    
+    @MainActor
+    func fetchRecentlyBrowsedDetails(recentlyBrowsed: [History]) async {
+        let body = CardDetailsRequest(cardIDs: recentlyBrowsed.map { $0.id })
+        
+        switch await data(cardDetailsUrl(), reqBody: body, resType: CardDetailsResponse.self, httpMethod: "POST") {
+        case .success(let cardDetails):
+            recentlyBrowsedDetails = recentlyBrowsed.map{ cardDetails.cardInfo[$0.id] }.compactMap{ $0 }
+        case .failure(_): break
         }
     }
     

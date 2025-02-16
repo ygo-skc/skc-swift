@@ -7,9 +7,12 @@
 
 import Foundation
 
-fileprivate func baseRequest(url: URL) -> URLRequest {
+fileprivate struct NilReqBody: Encodable {}
+
+fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
     var request = URLRequest(url: url)
-    request.httpMethod = RequestHelper.GET.description
+    request.httpMethod = httpMethod
+    request.httpBody = reqBody
     request.addValue(RequestHelper.CLIENT_ID.description, forHTTPHeaderField: "CLIENT_ID")
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     request.addValue("keep-alive", forHTTPHeaderField: "Connection")
@@ -39,12 +42,17 @@ fileprivate func validateResponse(response: URLResponse?) throws {
     }
 }
 
-func data<T>(_ type: T.Type, url: URL) async -> sending Result<T, NetworkError> where T: Decodable {
+func data<U>(_ url: URL, resType: U.Type) async -> sending Result<U, NetworkError> where U: Decodable {
+    await data(url, reqBody: Optional<NilReqBody>.none, resType: resType)
+}
+
+func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async -> sending Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
-        let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url))
+        let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
+        let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url, httpMethod: httpMethod, reqBody: bodyData))
         try Task.checkCancellation()
         try validateResponse(response: response)
-        return .success(try RequestHelper.decoder.decode(type, from: body))
+        return .success(try JSONDecoder().decode(resType, from: body))
     } catch let networkError as NetworkError {
         print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")
         return .failure(networkError)
@@ -57,14 +65,17 @@ func data<T>(_ type: T.Type, url: URL) async -> sending Result<T, NetworkError> 
             return .failure(NetworkError.timeout)
         case .badServerResponse, .cannotDecodeContentData, .cannotParseResponse:
             print("Server responded with bad data for url: \(url.absoluteString)")
-            return .failure(NetworkError.bodyParse)
+            return .failure(NetworkError.resDecode)
         default:
             print("Unknown URLError occurred while calling \(url.absoluteString) - error: \(urlError)")
             return .failure(NetworkError.unknown)
         }
     } catch let decodeError as DecodingError {
         print("Error decoding output for url: \(url.absoluteString) - error: \(decodeError)")
-        return .failure(NetworkError.bodyParse)
+        return .failure(NetworkError.resDecode)
+    } catch let encodeError as EncodingError {
+        print("Error encoding request body for url: \(url.absoluteString) - error: \(encodeError)")
+        return .failure(NetworkError.reqEncode)
     } catch let error {
         print("Unknown error occurred while calling \(url.absoluteString) - error: \(error)")
         return .failure(NetworkError.unknown)

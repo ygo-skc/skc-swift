@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CardLinkDestinationView: View {
     let cardLinkDestinationValue: CardLinkDestinationValue
@@ -18,60 +19,106 @@ struct CardLinkDestinationView: View {
 }
 
 private struct CardView: View {
-    private let model: CardViewModel
+    @Environment(\.modelContext) private var modelContext
+    
+    @State private var model: CardViewModel
+    
+    @Query
+    private var history: [History]
     
     init(cardID: String) {
         self.model = .init(cardID: cardID)
+        
+        _history = Query(
+            filter: #Predicate<History> { h in
+                h.id == cardID
+            }, sort: [SortDescriptor(\.timesAccessed, order: .reverse)])
     }
     
     var body: some View {
-        if let networkError = model.requestErrors[.card, default: nil] {
-            switch networkError {
-            case .badRequest, .unprocessableEntity:
-                ContentUnavailableView("Card not currently supported",
-                                       systemImage: "exclamationmark.square.fill",
-                                       description: Text("Please check back later"))
-            default:
-                NetworkErrorView(error: networkError, action: {
-                    Task {
-                        await model.fetchCardData(forceRefresh: true)
+        VStack {
+            if model.requestErrors[.card, default: nil] == nil {
+                TabView {
+                    Tab("Info", systemImage: "info.circle.fill") {
+                        ScrollView {
+                            YGOCardView(cardID: model.cardID, card: model.card)
+                                .equatable()
+                                .padding(.bottom)
+                            
+                            if let card = model.card {
+                                RelatedContentView(
+                                    cardName: card.cardName,
+                                    cardColor: card.cardColor,
+                                    products: card.getProducts(),
+                                    tcgBanLists: card.getBanList(format: BanListFormat.tcg),
+                                    mdBanLists: card.getBanList(format: BanListFormat.md)
+                                )
+                                .modifier(ParentViewModifier())
+                                .padding(.bottom, 50)
+                            } else {
+                                ProgressView("Loading...")
+                                    .controlSize(.large)
+                            }
+                        }
                     }
-                })
-            }
-        } else {
-            TabView {
-                ScrollView {
-                    YGOCardView(cardID: model.cardID, card: model.card)
-                        .equatable()
-                        .padding(.bottom)
                     
-                    if let card = model.card {
-                        RelatedContentView(
-                            cardName: card.cardName,
-                            cardColor: card.cardColor,
-                            products: card.getProducts(),
-                            tcgBanLists: card.getBanList(format: BanListFormat.tcg),
-                            mdBanLists: card.getBanList(format: BanListFormat.md),
-                            dlBanLists: card.getBanList(format: BanListFormat.dl)
-                        )
-                        .modifier(ParentViewModifier())
-                        .padding(.bottom, 50)
-                    } else {
-                        ProgressView("Loading...")
-                            .controlSize(.large)
+                    Tab("Suggestions", systemImage: "sparkles") {
+                        ScrollView {
+                            CardSuggestionsView(model: model)
+                                .modifier(ParentViewModifier(alignment: .center))
+                                .padding(.bottom, 30)
+                        }
                     }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+            }
+        }
+        .frame(maxWidth:.infinity, maxHeight: .infinity)
+        .overlay {
+            if let networkError = model.requestErrors[.card, default: nil] {
+                switch networkError {
+                case .badRequest, .unprocessableEntity:
+                    ContentUnavailableView("Card not currently supported",
+                                           systemImage: "exclamationmark.square.fill",
+                                           description: Text("Please check back later"))
+                default:
+                    NetworkErrorView(error: networkError, action: {
+                        Task {
+                            await model.fetchCardData(forceRefresh: true)
+                        }
+                    })
+                }
+            }
+        }
+        .task {
+            await model.fetchCardData()
+        }
+        .toolbar {
+            if model.requestErrors[.card, default: nil] == nil {
+                Button {
+                    //                    modelContext.insert(Favorite(resource: .card, id: model.cardID))
+                    try! modelContext.delete(model: History.self, where: #Predicate { f in
+                        f.id == "82570174"
+                    })
+                } label: {
+                    Image(systemName: "heart")
+                }
+            }
+        }
+        .onChange(of: model.card) {
+            Task {
+                /*
+                 If no history, create new instance in table
+                 Else if there is at least one history record for card, update the last modified date and access time for the first record
+                 */
+                if history.isEmpty {
+                    modelContext.insert(History(resource: .card, id: model.cardID, timesAccessed: 1))
+                } else if let h1 = history.first, h1.lastAccessDate.timeIntervalSinceNow(millisConversion: .seconds) >= 3 {
+                    h1.updateAccess()
                 }
                 
-                ScrollView {
-                    CardSuggestionsView(model: model)
-                        .modifier(ParentViewModifier(alignment: .center))
-                        .padding(.bottom, 30)
-                }
-            }
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
-            .task(priority: .userInitiated) {
-                await model.fetchCardData()
+                History.consolidate(history: history, modelContext: modelContext)
             }
         }
     }

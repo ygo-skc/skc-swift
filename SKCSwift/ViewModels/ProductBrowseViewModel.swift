@@ -34,7 +34,7 @@ final class ProductBrowseViewModel {
     @MainActor
     func fetchProductBrowseData() async {
         if dataError != nil || products.isEmpty {
-            switch await data(Products.self, url: productsURL()) {
+            switch await data(productsURL(), resType: Products.self) {
             case .success(let p):
                 (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureProductBrowseData(products: p.products)
                 products = p.products

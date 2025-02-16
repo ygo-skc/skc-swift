@@ -19,30 +19,28 @@ struct ProductListItemView: View, Equatable {
                 InlineDateView(date: product.productReleaseDate)
                     .equatable()
                     .padding(.bottom, 2)
-                Text(product.productIDWithContentTotal())
-                    .frame(alignment: .trailing)
-                    .font(.subheadline)
-                    .fontWeight(.light)
-                Text(product.productName)
-                    .fontWeight(.bold)
-                    .font(.headline)
-                    .lineLimit(1)
-                    .padding(.bottom, 0)
-                Text(product.productCategory())
-                    .frame(alignment: .trailing)
-                    .font(.subheadline)
+                Group {
+                    Text(product.productIDWithContentTotal())
+                        .foregroundColor(.secondary)
+                    Text(product.productName)
+                        .fontWeight(.bold)
+                    Text(product.productCategory())
+                        .foregroundColor(.secondary)
+                }
+                .font(.subheadline)
+                .lineLimit(1)
                 
                 if let contents = product.productContent, !contents.isEmpty {
-                    HStack(alignment: .top) {
-                        Text("Rarities")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                        Text(contents[0].rarities.joined(separator: ", "))
-                            .font(.callout)
+                    FlowLayout(spacing: 6) {
+                        ForEach(contents[0].rarities, id: \.self) { rarity in
+                            Text(rarity.cardRarityShortHand())
+                                .modifier(TagModifier())
+                        }
                     }
                 }
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.medium)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

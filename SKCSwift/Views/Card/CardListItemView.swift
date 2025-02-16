@@ -13,45 +13,49 @@ struct CardListItemView: View, Equatable {
     let showAllInfo: Bool
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                CardColorIndicatorView(cardColor: card.cardColor)
-                    .equatable()
+        
+        HStack(alignment: .top, spacing: 15) {
+            CardImageView(length: 60, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
+                .equatable()
+                .padding(.trailing, 3)
+            VStack(alignment: .leading) {
                 Text(card.cardName)
                     .fontWeight(.bold)
-                    .font(.headline)
+                    .font(.subheadline)
                     .lineLimit(1)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .padding(.bottom, -3)
-                Text(card.cardID)
-                    .font(.footnote)
-                    .fontWeight(.light)
-            }
-            
-            HStack(alignment: .top, spacing: 15) {
-                CardImageView(length: 55, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
-                    .equatable()
-                    .padding(.trailing, 3)
-                VStack(alignment: .leading) {
+                
+                HStack {
+                    Text(card.monsterType ?? card.cardColor)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                    
+                    Text(card.cardID)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fontWeight(.light)
+                }
+                
+                HStack {
+                    CardColorIndicatorView(cardColor: card.cardColor, variant: .regular)
+                        .equatable()
                     if showAllInfo {
                         MonsterAssociationView(monsterAssociation: card.monsterAssociation,
                                                attribute: card.attribute,
-                                               variant: .listView)
+                                               variant: .listView,
+                                               iconVariant: .regular)
                         .equatable()
                     } else {
-                        AttributeView(attribute: card.attribute)
+                        AttributeView(attribute: card.attribute, variant: .regular)
                             .equatable()
                     }
-                    
-                    Text(card.monsterType ?? card.cardColor)
-                        .font(.subheadline)
-                        .lineLimit(1)
                 }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
-        .frame(maxWidth: .infinity)
+        .dynamicTypeSize(...DynamicTypeSize.medium)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 }
 

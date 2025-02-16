@@ -9,9 +9,9 @@ import SwiftUI
 
 struct CardColorIndicatorView: View, Equatable {
     let cardColor: String
-    let variant: CardColorIndicatorVariant
+    let variant: IconVariant
     
-    init(cardColor: String, variant: CardColorIndicatorVariant = .regular) {
+    init(cardColor: String, variant: IconVariant = .regular) {
         self.cardColor = cardColor
         self.variant = variant
     }
@@ -23,25 +23,7 @@ struct CardColorIndicatorView: View, Equatable {
             } else: {
                 $0.fill(cardColorUI(cardColor: cardColor))
             }
-            .modifier(CardColorIndicatorViewModifier(variant: variant))
-    }
-}
-
-private struct CardColorIndicatorViewModifier: ViewModifier {
-    var variant: CardColorIndicatorVariant
-    
-    func body(content: Content) -> some View {
-        switch(variant) {
-        case .small:
-            content
-                .frame(width: 15)
-        case .regular:
-            content
-                .frame(width: 18)
-        case .large:
-            content
-                .frame(width: 30)
-        }
+            .modifier(IconViewModifier(variant: variant))
     }
 }
 

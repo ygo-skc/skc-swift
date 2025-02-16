@@ -15,10 +15,10 @@ struct NetworkErrorView: View {
         return switch error {
         case .server: "Server ran into an issue while processing your request"
         case .timeout: "Request timed out"
-        case .client, .unknown: "Error occurred while fetching data"
+        case .client, .reqEncode, .unknown: "Error occurred while fetching data"
         case .badRequest, .unprocessableEntity: "Request could not be processed"
         case .notFound: "Resource does not exist"
-        case .bodyParse: "Error decoding request"
+        case .resDecode: "Error decoding request"
         case .cancelled: "Request was cancelled before completion"
         }
     }
@@ -27,7 +27,7 @@ struct NetworkErrorView: View {
         return switch error {
         case .server: "network.slash"
         case .timeout: "clock.badge.xmark"
-        case .client, .badRequest, .unprocessableEntity, .bodyParse, .unknown: "exclamationmark.circle"
+        case .client, .badRequest, .unprocessableEntity, .resDecode, .reqEncode, .unknown: "exclamationmark.circle"
         case .notFound, .cancelled: "nosign"
         }
     }
@@ -69,8 +69,12 @@ struct NetworkErrorView: View {
     NetworkErrorView(error: .notFound, action: { print("Retried") })
 }
 
+#Preview("Request Body Encode Error") {
+    NetworkErrorView(error: .reqEncode, action: { print("Retried") })
+}
+
 #Preview("Body Parse Error") {
-    NetworkErrorView(error: .bodyParse, action: { print("Retried") })
+    NetworkErrorView(error: .resDecode, action: { print("Retried") })
 }
 
 #Preview("Cancelled") {

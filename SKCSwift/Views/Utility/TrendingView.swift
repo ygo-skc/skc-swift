@@ -77,6 +77,7 @@ private struct TrendingCardsView: View {
                         }
                         .groupBoxStyle(.listItem)
                     })
+                    .dynamicTypeSize(...DynamicTypeSize.medium)
                     .buttonStyle(.plain)
                 }
             }
@@ -105,6 +106,7 @@ private struct TrendingProductsView: View {
                         ProductListItemView(product: product)
                             .equatable()
                     }
+                    .dynamicTypeSize(...DynamicTypeSize.medium)
                     .groupBoxStyle(.listItem)
                 })
                 .buttonStyle(.plain)
