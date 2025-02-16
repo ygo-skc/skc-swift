@@ -14,7 +14,14 @@ struct SearchView: View {
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
     
-    @Query(sort: \History.lastAccessDate, order: .reverse) private var history: [History]
+    @Query private var history: [History]
+    
+    init() {
+        let c = ArchiveResource.card.rawValue
+        _history = Query(filter: #Predicate<History> { h in
+            h.resource == c
+        }, sort: \History.lastAccessDate, order: .reverse)
+    }
     
     var body: some View {
         NavigationStack {
@@ -26,7 +33,7 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyBrowsedView(recentCards: searchModel.recentlyBrowsedDetails)
+                        RecentlyBrowsedView(recentCards: searchModel.recentlyBrowsedDetails, hasHistory: !history.isEmpty)
                             .task {
                                 await searchModel.fetchRecentlyBrowsedDetails(recentlyBrowsed: Array(history.prefix(15)))
                             }
@@ -74,6 +81,7 @@ struct SearchView: View {
 
 private struct RecentlyBrowsedView: View {
     let recentCards: [Card]
+    let hasHistory: Bool
     
     var body: some View {
         ScrollView {
@@ -100,10 +108,13 @@ private struct RecentlyBrowsedView: View {
         }
         .frame(maxWidth: .infinity)
         .overlay {
-            if recentCards.isEmpty {
+            if !hasHistory {
                 ContentUnavailableView {
                     Label("Type to search 😉", systemImage: "text.magnifyingglass")
                 }
+            } else if recentCards.isEmpty {
+                ProgressView("Loading...")
+                    .controlSize(.large)
             }
         }
     }
