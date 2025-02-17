@@ -33,7 +33,7 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyBrowsedView(recentCards: searchModel.recentlyBrowsedDetails, hasHistory: !history.isEmpty)
+                        RecentlyViewedView(recentCards: searchModel.recentlyBrowsedDetails, hasHistory: !history.isEmpty)
                             .task {
                                 await searchModel.fetchRecentlyBrowsedDetails(recentlyBrowsed: Array(history.prefix(15)))
                             }
@@ -79,14 +79,14 @@ struct SearchView: View {
     SearchView()
 }
 
-private struct RecentlyBrowsedView: View {
+private struct RecentlyViewedView: View {
     let recentCards: [Card]
     let hasHistory: Bool
     
     var body: some View {
         ScrollView {
             if !recentCards.isEmpty {
-                SectionView(header: "Recently Browsed",
+                SectionView(header: "Recently Viewed",
                             variant: .plain,
                             content: {
                     LazyVStack {
