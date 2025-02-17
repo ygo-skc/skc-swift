@@ -161,8 +161,7 @@ private struct ProductStatsView: View {
                     description: "Monster cards printed in **\(productName)** categorized by their attribute.",
                     dataTitle: "Monster Attribute", data: monsterAttributeData)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.all)
+            .modifier(ParentViewModifier())
         }
     }
 }
