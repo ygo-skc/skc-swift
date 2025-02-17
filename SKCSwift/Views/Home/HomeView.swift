@@ -54,41 +54,82 @@ struct HomeView: View {
 }
 
 private struct SettingsView: View {
-    @State var cachedDataSize = URLCache.shared.currentDiskUsage / (1024 * 1024)    // in MB
+    // in MB
+    @State var networkCacheSize: Double = 0
+    @State var fileCacheSize: Double = 0
     @State var isDeleting = false
+    
+    private let fileManager = FileManager.default
+    
+    private func calculateFileCacheSize() -> Double {
+        var fileCacheSizeInBytes: UInt64 = 0
+        if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            do {
+                fileCacheSizeInBytes = try cacheDirectory.calculateDirectorySize(manager: fileManager)
+            } catch {
+                print("Error calculating cache size: \(error.localizedDescription)")
+            }
+        }
+        
+        return Double(fileCacheSizeInBytes) / (1024 * 1024)
+    }
     
     var body: some View {
         ScrollView {
             VStack {
                 Text("Settings")
                     .font(.title)
-                
                 SectionView(header: "Data",
                             content: {
-                    Text("Network Cache (~\(cachedDataSize) MB)")
-                        .font(.headline)
-                    Text("Note: cache data is used to speed up loading times and improve performance.")
-                        .font(.footnote)
-                    
-                    Button {
-                        URLCache.shared.removeAllCachedResponses()
-                        isDeleting = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                            Task {
-                                cachedDataSize = URLCache.shared.currentDiskUsage / (1024 * 1024)
-                                isDeleting = false
+                    SettingsModule(
+                        moduleHeader: "Network Cache (~\(String(format: "%.2f", networkCacheSize)) MB)",
+                        moduleFootnote: "Note: cache data is used to speed up loading times and improve performance.") {
+                            URLCache.shared.removeAllCachedResponses()
+                            isDeleting = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                                Task {
+                                    networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
+                                    fileCacheSize = calculateFileCacheSize()
+                                    isDeleting = false
+                                }
                             }
+                        } label: {
+                            Label("Delete Network Cache", systemImage: "trash.fill")
+                                .frame(maxWidth: .infinity)
                         }
-                    } label: {
-                        Label("Delete Cache", systemImage: "trash.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.regular)
+                        .padding(.bottom)
+                    
+                    
+                    SettingsModule(
+                        moduleHeader: "Cache Files (~\(String(format: "%.2f", fileCacheSize)) MB)",
+                        moduleFootnote: "Note: this will also delete network cache.") {
+                            if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
+                                do {
+                                    try cacheDirectory.deleteContents(manager: fileManager)
+                                    isDeleting = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                                        Task {
+                                            networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
+                                            fileCacheSize = calculateFileCacheSize()
+                                            isDeleting = false
+                                        }
+                                    }
+                                } catch {
+                                    print("Error calculating cache size: \(error.localizedDescription)")
+                                }
+                            }
+                        } label: {
+                            Label("Delete File Cache", systemImage: "trash.fill")
+                                .frame(maxWidth: .infinity)
+                        }
                 })
             }
             .allowsHitTesting(!isDeleting)
             .modifier(ParentViewModifier())
+        }
+        .task {
+            networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
+            fileCacheSize = calculateFileCacheSize()
         }
         .overlay {
             if isDeleting {
@@ -96,6 +137,29 @@ private struct SettingsView: View {
                     .controlSize(.large)
             }
         }
+    }
+}
+
+private struct SettingsModule<Label: View>: View {
+    let moduleHeader: String
+    let moduleFootnote: String?
+    let action: () -> Void
+    @ViewBuilder let label: () -> Label
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(moduleHeader)
+                .font(.headline)
+            if let moduleFootnote = moduleFootnote {
+                Text(moduleFootnote)
+                    .font(.footnote)
+            }
+            
+            Button(action: action, label: label)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
