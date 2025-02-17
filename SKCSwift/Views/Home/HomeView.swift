@@ -76,6 +76,18 @@ private struct SettingsView: View {
         return Double(fileCacheSizeInBytes) / (1024 * 1024)
     }
     
+    @MainActor
+    private func reCalculateCacheSizes() {
+        isDeleting = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+            Task {
+                networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
+                fileCacheSize = calculateFileCacheSize()
+                isDeleting = false
+            }
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -87,14 +99,7 @@ private struct SettingsView: View {
                         moduleHeader: "Network Cache (~\(String(format: "%.2f", networkCacheSize)) MB)",
                         moduleFootnote: "Cache data is used to speed up loading times and improve performance.") {
                             URLCache.shared.removeAllCachedResponses()
-                            isDeleting = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                                Task {
-                                    networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
-                                    fileCacheSize = calculateFileCacheSize()
-                                    isDeleting = false
-                                }
-                            }
+                            reCalculateCacheSizes()
                         } label: {
                             Label("Delete Network Cache", systemImage: "trash.fill")
                                 .frame(maxWidth: .infinity)
@@ -107,14 +112,7 @@ private struct SettingsView: View {
                             if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
                                 do {
                                     try cacheDirectory.deleteContents(manager: fileManager)
-                                    isDeleting = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                                        Task {
-                                            networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
-                                            fileCacheSize = calculateFileCacheSize()
-                                            isDeleting = false
-                                        }
-                                    }
+                                    reCalculateCacheSizes()
                                 } catch {
                                     print("Error calculating cache size: \(error.localizedDescription)")
                                 }
@@ -128,11 +126,9 @@ private struct SettingsView: View {
                     SettingsModule(
                         moduleHeader: "Recently Viewed",
                         moduleFootnote: "Recently viewed data allows you to quickly access previously viewed content. Deleting this means you will lose access to this data accross all devices.") {
-                            isDeleting = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                                try? modelContext.delete(model: History.self)
-                                isDeleting = false
-                            }
+                            try? modelContext.delete(model: History.self)
+                            reCalculateCacheSizes()
+                            try? modelContext.save()
                         } label: {
                             Label("Delete History", systemImage: "trash.fill")
                                 .frame(maxWidth: .infinity)
