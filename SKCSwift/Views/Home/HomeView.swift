@@ -22,10 +22,20 @@ struct HomeView: View {
                             view.hidden()
                         }
                 }
+                .toolbar {
+                    Button {
+                        model.isSettingsSheetPresented = true
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                    .sheet(isPresented: $model.isSettingsSheetPresented) {
+                        SettingsView()
+                    }
+                }
+                .navigationDestination(for: CardLinkDestinationValue.self) { card in
+                    CardLinkDestinationView(cardLinkDestinationValue: card)
+                }
                 .modifier(ParentViewModifier())
-            }
-            .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                CardLinkDestinationView(cardLinkDestinationValue: card)
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
             .navigationBarTitle("Home")
@@ -38,6 +48,52 @@ struct HomeView: View {
             }
             .task(priority: .userInitiated) {
                 await model.fetchData(refresh: false)
+            }
+        }
+    }
+}
+
+private struct SettingsView: View {
+    @State var cachedDataSize = URLCache.shared.currentDiskUsage / (1024 * 1024)    // in MB
+    @State var isDeleting = false
+    
+    var body: some View {
+        ScrollView {
+            VStack {
+                Text("Settings")
+                    .font(.title)
+                
+                SectionView(header: "Data",
+                            content: {
+                    Text("Network Cache (~\(cachedDataSize) MB)")
+                        .font(.headline)
+                    Text("Note: cache data is used to speed up loading times and improve performance.")
+                        .font(.footnote)
+                    
+                    Button {
+                        URLCache.shared.removeAllCachedResponses()
+                        isDeleting = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                            Task {
+                                cachedDataSize = URLCache.shared.currentDiskUsage / (1024 * 1024)
+                                isDeleting = false
+                            }
+                        }
+                    } label: {
+                        Label("Delete Cache", systemImage: "trash.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.regular)
+                })
+            }
+            .allowsHitTesting(!isDeleting)
+            .modifier(ParentViewModifier())
+        }
+        .overlay {
+            if isDeleting {
+                ProgressView("Deleting...")
+                    .controlSize(.large)
             }
         }
     }
