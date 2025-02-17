@@ -54,6 +54,8 @@ struct HomeView: View {
 }
 
 private struct SettingsView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     // in MB
     @State var networkCacheSize: Double = 0
     @State var fileCacheSize: Double = 0
@@ -83,7 +85,7 @@ private struct SettingsView: View {
                             content: {
                     SettingsModule(
                         moduleHeader: "Network Cache (~\(String(format: "%.2f", networkCacheSize)) MB)",
-                        moduleFootnote: "Note: cache data is used to speed up loading times and improve performance.") {
+                        moduleFootnote: "Cache data is used to speed up loading times and improve performance.") {
                             URLCache.shared.removeAllCachedResponses()
                             isDeleting = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
@@ -99,10 +101,9 @@ private struct SettingsView: View {
                         }
                         .padding(.bottom)
                     
-                    
                     SettingsModule(
                         moduleHeader: "Cache Files (~\(String(format: "%.2f", fileCacheSize)) MB)",
-                        moduleFootnote: "Note: this will also delete network cache.") {
+                        moduleFootnote: "This will also delete network cache.") {
                             if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
                                 do {
                                     try cacheDirectory.deleteContents(manager: fileManager)
@@ -120,6 +121,20 @@ private struct SettingsView: View {
                             }
                         } label: {
                             Label("Delete File Cache", systemImage: "trash.fill")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .padding(.bottom)
+                    
+                    SettingsModule(
+                        moduleHeader: "Recently Viewed",
+                        moduleFootnote: "Recently viewed data allows you to quickly access previously viewed content. Deleting this means you will lose access to this data accross all devices.") {
+                            isDeleting = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                                try? modelContext.delete(model: History.self)
+                                isDeleting = false
+                            }
+                        } label: {
+                            Label("Delete History", systemImage: "trash.fill")
                                 .frame(maxWidth: .infinity)
                         }
                 })
