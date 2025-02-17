@@ -8,9 +8,9 @@
 import Foundation
 
 extension URL {
-    func calculateDirectorySize(exclude protectedDirs: Set<String>, manager fileManager: FileManager) throws -> UInt64  {
+    func calculateDirectorySize(exclude protectedDirs: Set<String> = Set(), manager fileManager: FileManager) throws -> UInt64  {
         var dirSize: UInt64 = 0
-        let urlKeys: [URLResourceKey] = [.isDirectoryKey, .fileSizeKey]
+        let urlKeys: [URLResourceKey] = [.isDirectoryKey, .totalFileAllocatedSizeKey]
         let files = try fileManager.contentsOfDirectory(at: self, includingPropertiesForKeys: urlKeys)
         
         for file in files {
@@ -20,14 +20,14 @@ extension URL {
                     dirSize += try file.calculateDirectorySize(exclude: protectedDirs,
                                                           manager: fileManager)
                 }
-            } else if let fileSize = resourceValues.fileSize {
+            } else if let fileSize = resourceValues.totalFileAllocatedSize {
                 dirSize += UInt64(fileSize)
             }
         }
         return dirSize  // in bytes
     }
     
-    func deleteContents(exclude protectedDirs: Set<String>, manager fileManager: FileManager) throws {
+    func deleteContents(exclude protectedDirs: Set<String> = Set(), manager fileManager: FileManager) throws {
         let files = try fileManager.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
         
         for file in files {
