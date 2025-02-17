@@ -33,10 +33,7 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(recentCards: searchModel.recentlyBrowsedDetails, hasHistory: !history.isEmpty)
-                            .task {
-                                await searchModel.fetchRecentlyBrowsedDetails(recentlyBrowsed: Array(history.prefix(15)))
-                            }
+                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails, hasHistory: !history.isEmpty)
                     } else {
                         TrendingView(model: trendingModel)
                     }
@@ -53,6 +50,11 @@ struct SearchView: View {
                     }
                 }
             }
+            .onAppear {
+                Task {
+                    await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
+                }
+            }
             .navigationDestination(for: CardLinkDestinationValue.self) { card in
                 CardLinkDestinationView(cardLinkDestinationValue: card)
             }
@@ -60,11 +62,13 @@ struct SearchView: View {
                 ProductLinkDestinationView(productLinkDestinationValue: product)
             }
             .navigationTitle("Search")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
+
         }
         .transaction {
             $0.animation = nil
         }
-        .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, prompt: "Search for card...")
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
             Task(priority: .userInitiated) {
                 await searchModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
