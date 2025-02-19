@@ -124,8 +124,8 @@ private struct SettingsView: View {
                         .padding(.bottom)
                     
                     SettingsModule(
-                        moduleHeader: "Recently Viewed",
-                        moduleFootnote: "Recently viewed data allows you to quickly access previously viewed content. Deleting this means you will lose access to this data accross all devices.") {
+                        moduleHeader: "Recently Viewed History",
+                        moduleFootnote: "Recently viewed data facilitates going back to previously viewed items. Deleting this means you will lose access to this data accross all devices.") {
                             try? modelContext.delete(model: History.self)
                             reCalculateCacheSizes()
                             try? modelContext.save()
