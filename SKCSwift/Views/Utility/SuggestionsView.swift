@@ -27,10 +27,7 @@ struct CardSuggestionsView: View {
             .padding(.bottom, 30)
         }
         .task(priority: .userInitiated) {
-            await model.fetchSuggestions()
-        }
-        .task(priority: .userInitiated) {
-            await model.fetchSupport()
+            await model.fetchAllSuggestions(forceRefresh: true)
         }
         .overlay {
             SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
@@ -39,8 +36,7 @@ struct CardSuggestionsView: View {
                                   action: {
                 Task {
                     model.resetSuggestionErrors()
-                    await model.fetchSuggestions(forceRefresh: true)
-                    await model.fetchSupport(forceRefresh: true)
+                    await model.fetchAllSuggestions(forceRefresh: true)
                 }
             })
         }
