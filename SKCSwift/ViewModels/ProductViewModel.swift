@@ -46,6 +46,23 @@ final class ProductViewModel {
         }
     }
     
+    func hasSuggestions() -> Bool {
+        if let namedMaterials = suggestions?.suggestions.namedMaterials, let namedReferences = suggestions?.suggestions.namedReferences,
+           let referencedBy = suggestions?.support.referencedBy, let materialFor = suggestions?.support.materialFor,
+            namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
+            return false
+        }
+        return true
+    }
+    
+    func resetProductError() {
+        requestErrors[.product] = nil
+    }
+    
+    func resetSuggestionErrors() {
+        requestErrors[.suggestions] = nil
+    }
+    
     enum ProductModelDataType {
         case product, suggestions
     }

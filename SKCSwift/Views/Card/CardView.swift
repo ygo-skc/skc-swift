@@ -63,11 +63,7 @@ private struct CardView: View {
                     }
                     
                     Tab("Suggestions", systemImage: "sparkles") {
-                        ScrollView {
-                            CardSuggestionsView(model: model)
-                                .modifier(ParentViewModifier(alignment: .center))
-                                .padding(.bottom, 30)
-                        }
+                        CardSuggestionsView(model: model)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .always))
@@ -85,6 +81,7 @@ private struct CardView: View {
                 default:
                     NetworkErrorView(error: networkError, action: {
                         Task {
+                            model.resetCardError()
                             await model.fetchCardData(forceRefresh: true)
                         }
                     })

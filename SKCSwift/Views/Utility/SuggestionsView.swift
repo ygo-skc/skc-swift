@@ -11,30 +11,57 @@ struct CardSuggestionsView: View {
     let model: CardViewModel
     
     var body: some View {
-        SuggestionsView(
-            subjectID: model.cardID,
-            subjectName: model.card?.cardName ?? "",
-            subjectType: .card,
-            areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
-            namedMaterials: model.namedMaterials,
-            namedReferences: model.namedReferences,
-            referencedBy: model.referencedBy,
-            materialFor: model.materialFor,
-            networkError: model.requestErrors[.suggestions, default: nil] ?? model.requestErrors[.support, default: nil],
-            action: {
-                Task {
-                    await model.fetchSuggestions(forceRefresh: true)
-                }
-                Task {
-                    await model.fetchSupport(forceRefresh: true)
-                }
-            }
-        )
+        ScrollView {
+            SuggestionsView(
+                subjectID: model.cardID,
+                subjectName: model.card?.cardName ?? "",
+                subjectType: .card,
+                areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
+                hasSuggestions: model.hasSuggestions(),
+                namedMaterials: model.namedMaterials ?? [],
+                namedReferences: model.namedReferences ?? [],
+                referencedBy: model.referencedBy ?? [],
+                materialFor: model.materialFor ?? []
+            )
+            .modifier(ParentViewModifier(alignment: .center))
+            .padding(.bottom, 30)
+        }
         .task(priority: .userInitiated) {
             await model.fetchSuggestions()
         }
         .task(priority: .userInitiated) {
             await model.fetchSupport()
+        }
+        .overlay {
+            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
+                                  noSuggestionsFound: !model.hasSuggestions(),
+                                  networkError: model.requestErrors[.suggestions, default: nil] ?? model.requestErrors[.support, default: nil],
+                                  action: {
+                Task {
+                    model.resetSuggestionErrors()
+                    await model.fetchSuggestions(forceRefresh: true)
+                    await model.fetchSupport(forceRefresh: true)
+                }
+            })
+        }
+    }
+}
+
+struct SuggestionOverlayView: View {
+    let areSuggestionsLoaded: Bool
+    let noSuggestionsFound: Bool
+    
+    let networkError: NetworkError?
+    let action: () -> Void
+    
+    var body: some View {
+        if let networkError {
+            NetworkErrorView(error: networkError, action: action)
+        } else if areSuggestionsLoaded, noSuggestionsFound {
+            ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
+        } else if !areSuggestionsLoaded {
+            ProgressView("Loading...")
+                .controlSize(.large)
         }
     }
 }
@@ -43,20 +70,35 @@ struct ProductCardSuggestionsView: View {
     let model: ProductViewModel
     
     var body: some View {
-        SuggestionsView(
-            subjectID: model.productID,
-            subjectName: model.product?.productName,
-            subjectType: .product,
-            areSuggestionsLoaded: model.suggestions != nil,
-            namedMaterials: model.suggestions?.suggestions.namedMaterials,
-            namedReferences: model.suggestions?.suggestions.namedReferences,
-            referencedBy: model.suggestions?.support.referencedBy,
-            materialFor: model.suggestions?.support.materialFor,
-            networkError: model.requestErrors[.suggestions, default: nil],
-            action: { Task { await model.fetchProductSuggestions(forceRefresh: true) } }
-        )
+        ScrollView {
+            SuggestionsView(
+                subjectID: model.productID,
+                subjectName: model.product?.productName,
+                subjectType: .product,
+                areSuggestionsLoaded: model.suggestions != nil,
+                hasSuggestions: model.hasSuggestions(),
+                namedMaterials: model.suggestions?.suggestions.namedMaterials ?? [],
+                namedReferences: model.suggestions?.suggestions.namedReferences ?? [],
+                referencedBy: model.suggestions?.support.referencedBy ?? [],
+                materialFor: model.suggestions?.support.materialFor ?? []
+            )
+            .modifier(ParentViewModifier(alignment: .center))
+            .padding(.bottom, 30)
+        }
+        .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
         .task(priority: .userInitiated) {
             await model.fetchProductSuggestions()
+        }
+        .overlay {
+            SuggestionOverlayView(areSuggestionsLoaded: model.suggestions != nil,
+                                  noSuggestionsFound: !model.hasSuggestions(),
+                                  networkError: model.requestErrors[.suggestions, default: nil],
+                                  action: {
+                Task {
+                    model.resetSuggestionErrors()
+                    await model.fetchProductSuggestions(forceRefresh: true)
+                }
+            })
         }
     }
 }
@@ -72,13 +114,11 @@ private struct SuggestionsView: View {
     let subjectType: CardSuggestionSubject
     
     let areSuggestionsLoaded: Bool
-    let namedMaterials: [CardReference]?
-    let namedReferences: [CardReference]?
-    let referencedBy: [CardReference]?
-    let materialFor: [CardReference]?
-    
-    let networkError: NetworkError?
-    let action: () -> Void
+    let hasSuggestions: Bool
+    let namedMaterials: [CardReference]
+    let namedReferences: [CardReference]
+    let referencedBy: [CardReference]
+    let materialFor: [CardReference]
     
     private var namedMaterialSubHeader: String {
         switch subjectType {
@@ -131,34 +171,25 @@ private struct SuggestionsView: View {
             }
             .padding(.bottom)
             
-            if let networkError {
-                NetworkErrorView(error: networkError, action: action)
-            } else if areSuggestionsLoaded, let namedMaterials, let namedReferences , let materialFor, let referencedBy {
-                if namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
-                    ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
-                } else {
-                    VStack(alignment: .leading, spacing: 5) {
-                        SuggestionCarouselView(header: "Named Materials",
-                                               subHeader: namedMaterialSubHeader,
-                                               references: namedMaterials,
-                                               variant: .suggestion)
-                        SuggestionCarouselView(header: "Named References",
-                                               subHeader: namedReferenceSubHeader,
-                                               references: namedReferences,
-                                               variant: .suggestion)
-                        SuggestionCarouselView(header: "Material For",
-                                               subHeader: materialForSubHeader,
-                                               references: materialFor,
-                                               variant: .support)
-                        SuggestionCarouselView(header: "Referenced By",
-                                               subHeader: referencedBySubHeader,
-                                               references: referencedBy,
-                                               variant: .support)
-                    }
+            if areSuggestionsLoaded && hasSuggestions {
+                VStack(alignment: .leading, spacing: 5) {
+                    SuggestionCarouselView(header: "Named Materials",
+                                           subHeader: namedMaterialSubHeader,
+                                           references: namedMaterials,
+                                           variant: .suggestion)
+                    SuggestionCarouselView(header: "Named References",
+                                           subHeader: namedReferenceSubHeader,
+                                           references: namedReferences,
+                                           variant: .suggestion)
+                    SuggestionCarouselView(header: "Material For",
+                                           subHeader: materialForSubHeader,
+                                           references: materialFor,
+                                           variant: .support)
+                    SuggestionCarouselView(header: "Referenced By",
+                                           subHeader: referencedBySubHeader,
+                                           references: referencedBy,
+                                           variant: .support)
                 }
-            } else {
-                ProgressView("Loading...")
-                    .controlSize(.large)
             }
         }
     }

@@ -28,10 +28,7 @@ struct ProductView: View {
         TabView {
             Tab("Info", systemImage: "info.circle.fill") {
                 ScrollView {
-                    if let networkError = model.requestErrors[.product, default: nil] {
-                        NetworkErrorView(error: networkError, action: { Task{ await model.fetchProductData(forceRefresh: true)} })
-                            .padding(.top, 20)
-                    } else {
+                    if model.requestErrors[.product, default: nil] == nil {
                         ProductInfoView(productID: model.productID, product: model.product)
                     }
                 }
@@ -42,12 +39,20 @@ struct ProductView: View {
             }
             
             Tab("Suggestions", systemImage: "sparkles") {
-                ScrollView {
-                    ProductCardSuggestionsView(model: model)
-                        .modifier(ParentViewModifier(alignment: .center))
-                        .padding(.bottom, 30)
+                ProductCardSuggestionsView(model: model)
+            }
+        }
+        .frame(maxWidth:.infinity, maxHeight: .infinity)
+        .overlay {
+            if let networkError = model.requestErrors[.product, default: nil] {
+                NetworkErrorView(error: networkError, action: {
+                    Task{
+                        model.resetProductError()
+                        await model.fetchProductData(forceRefresh: true)
+                    }
                 }
-                .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
+                )
+                .padding(.top, 20)
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .always))

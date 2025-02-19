@@ -73,6 +73,23 @@ final class CardViewModel {
         }
     }
     
+    func hasSuggestions() -> Bool {
+        if let namedMaterials, let namedReferences, let referencedBy, let materialFor,
+            namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
+            return false
+        }
+        return true
+    }
+    
+    func resetCardError() {
+        requestErrors[.card] = nil
+    }
+    
+    func resetSuggestionErrors() {
+        requestErrors[.suggestions] = nil
+        requestErrors[.support] = nil
+    }
+    
     enum CardModelDataType {
         case card, suggestions, support
     }
