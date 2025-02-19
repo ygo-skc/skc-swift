@@ -107,6 +107,7 @@ private struct CardView: View {
                 }
                 
                 History.consolidate(history: history, modelContext: modelContext)
+                try? modelContext.save()
             }
         }
     }
