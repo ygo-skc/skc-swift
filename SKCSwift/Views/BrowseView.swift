@@ -161,7 +161,7 @@ private struct CardBrowseView: View {
             ForEach(filteredCards, id: \.self.cardID) { card in
                 NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                     GroupBox {
-                        CardListItemView(card: card)
+                        CardListItemView(card: card, showAllInfo: true)
                             .equatable()
                     }
                     .groupBoxStyle(.listItem)
