@@ -241,11 +241,11 @@ private struct CardFiltersView: View {
                 .font(.callout)
                 .padding(.bottom)
             
+            CardFilterView(filters: $filters.attributes, filterInfo: "Filter by attribute") { attribute in
+                AttributeView(attribute: Attribute(rawValue: attribute) ?? .unknown)
+            }
             CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
                 CardColorIndicatorView(cardColor: category, variant: .large)
-            }
-            CardFilterView(filters: $filters.attributes, filterInfo: "Filter by attribute") { category in
-                AttributeView(attribute: Attribute(rawValue: category) ?? .unknown)
             }
         }
         .modifier(ParentViewModifier())

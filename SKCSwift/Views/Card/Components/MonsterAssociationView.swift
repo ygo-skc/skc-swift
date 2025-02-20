@@ -64,7 +64,7 @@ private struct MonsterAssociationViewModifier: ViewModifier {
     }
 }
 
-private struct LevelAssociationView: View, Equatable {
+struct LevelAssociationView: View, Equatable {
     var level: UInt8
     var variant: IconVariant
     
