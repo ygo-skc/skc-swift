@@ -13,7 +13,6 @@ struct ProductLinkDestinationView: View {
     var body: some View {
         ProductView(productID: productLinkDestinationValue.productID)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(productLinkDestinationValue.productName)
     }
 }
 
@@ -42,6 +41,7 @@ struct ProductView: View {
                 ProductCardSuggestionsView(model: model)
             }
         }
+        .navigationTitle(model.product?.productName ?? "")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
         .overlay {
             if let networkError = model.requestErrors[.product, default: nil] {

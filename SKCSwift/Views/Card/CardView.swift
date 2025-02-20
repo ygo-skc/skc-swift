@@ -14,7 +14,6 @@ struct CardLinkDestinationView: View {
     var body: some View {
         CardView(cardID: cardLinkDestinationValue.cardID)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(cardLinkDestinationValue.cardName)
     }
 }
 
@@ -70,6 +69,7 @@ private struct CardView: View {
                 .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
         }
+        .navigationTitle(model.card?.cardName ?? "")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
         .overlay {
             if let networkError = model.requestErrors[.card, default: nil] {

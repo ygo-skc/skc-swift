@@ -59,7 +59,7 @@ struct SearchView: View {
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
-
+            
         }
         .transaction {
             $0.animation = nil
@@ -88,7 +88,7 @@ private struct RecentlyViewedView: View {
                 SectionView(header: "Recently Viewed",
                             variant: .plain,
                             content: {
-                    LazyVStack {
+                    VStack {
                         ForEach(recentCards, id: \.cardID) { card in
                             NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                                 GroupBox() {
