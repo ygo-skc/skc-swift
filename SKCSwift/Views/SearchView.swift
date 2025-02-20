@@ -55,12 +55,7 @@ struct SearchView: View {
                     await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
                 }
             }
-            .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                CardLinkDestinationView(cardLinkDestinationValue: card)
-            }
-            .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-                ProductLinkDestinationView(productLinkDestinationValue: product)
-            }
+            .ygoNavigationDestination()
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")

@@ -77,13 +77,8 @@ struct BrowseView: View {
                     }
                 }
             }
+            .ygoNavigationDestination()
             .navigationTitle("Browse")
-            .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                CardLinkDestinationView(cardLinkDestinationValue: card)
-            }
-            .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-                ProductLinkDestinationView(productLinkDestinationValue: product)
-            }
             .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
                 Task {
                     await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)

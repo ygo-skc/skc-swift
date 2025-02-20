@@ -8,6 +8,15 @@
 import SwiftUI
 
 extension View {
+    func ygoNavigationDestination() -> some View {
+        self.navigationDestination(for: CardLinkDestinationValue.self) { card in
+            CardLinkDestinationView(cardLinkDestinationValue: card)
+        }
+        .navigationDestination(for: ProductLinkDestinationValue.self) { product in
+            ProductLinkDestinationView(productLinkDestinationValue: product)
+        }
+    }
+    
     @ViewBuilder
     func `if`<Transform: View>(
         _ condition: Bool,

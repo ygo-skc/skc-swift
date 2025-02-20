@@ -32,9 +32,7 @@ struct HomeView: View {
                         SettingsView()
                     }
                 }
-                .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                    CardLinkDestinationView(cardLinkDestinationValue: card)
-                }
+                .ygoNavigationDestination()
                 .modifier(ParentViewModifier())
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
