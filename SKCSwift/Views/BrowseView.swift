@@ -176,8 +176,8 @@ private struct CardBrowseView: View {
 }
 
 private struct ProductFiltersView: View {
-    @Binding var productTypeFilters: [FilteredItem]
-    @Binding var productSubTypeFilters: [FilteredItem]
+    @Binding var productTypeFilters: [FilteredItem<String>]
+    @Binding var productSubTypeFilters: [FilteredItem<String>]
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -202,7 +202,7 @@ private struct ProductFiltersView: View {
 }
 
 private struct ProductFilterView: View {
-    @Binding var filters: [FilteredItem]
+    @Binding var filters: [FilteredItem<String>]
     let filterInfo: String
     let filterImage: String
     let columns: [GridItem]
@@ -253,10 +253,10 @@ private struct CardFiltersView: View {
     }
 }
 
-private struct CardFilterView<Content: View>: View {
-    @Binding var filters: [FilteredItem]
+private struct CardFilterView<T: Equatable, Content: View>: View {
+    @Binding var filters: [FilteredItem<T>]
     let filterInfo: String
-    @ViewBuilder let content: (String) -> Content
+    @ViewBuilder let content: (T) -> Content
     
     var body: some View {
         GroupBox {
