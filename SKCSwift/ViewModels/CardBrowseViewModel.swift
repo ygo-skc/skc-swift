@@ -10,7 +10,7 @@ import Foundation
 @Observable
 final class CardBrowseViewModel {
     var showFilters = false
-    var filters: CardFilters?
+    var filters = CardFilters(attributes: [], colors: [], levels: [])
     
     private(set) var cards: [Card] = []
     
@@ -50,21 +50,19 @@ final class CardBrowseViewModel {
     
     @MainActor
     func fetchCards() async {
-        if let filters {
-            let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }
-            let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }
-            let levels = filters.levels.filter { $0.isToggled }.map{ String($0.category) }
-            
-            if !attributes.isEmpty || !colors.isEmpty || !levels.isEmpty {
-                switch await data(cardBrowseURL(attributes: attributes, colors: colors, levels: levels), resType: CardBrowseResults.self) {
-                case .success(let r):
-                    cards = r.results
-                    dataError = nil
-                case .failure(let error):
-                    dataError = error
-                }
-                dataStatus = .done
+        let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }
+        let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }
+        let levels = filters.levels.filter { $0.isToggled }.map{ String($0.category) }
+        
+        if !attributes.isEmpty || !colors.isEmpty || !levels.isEmpty {
+            switch await data(cardBrowseURL(attributes: attributes, colors: colors, levels: levels), resType: CardBrowseResults.self) {
+            case .success(let r):
+                cards = r.results
+                dataError = nil
+            case .failure(let error):
+                dataError = error
             }
+            dataStatus = .done
         }
     }
 }

@@ -16,7 +16,7 @@ struct BrowseView: View {
     private var noBrowseResults: String {
         switch focusedResource {
         case .card:
-            return "There are over 12k cards available to browse, try filtering to narrow down your search"
+            return "No cards found using the selected filters 😕"
         case .product:
             return "No filters selected - what were you expecting to see 🤔"
         }
@@ -77,8 +77,8 @@ struct BrowseView: View {
                 switch focusedResource {
                 case .card:
                     FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
-                        if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
-                            CardFiltersView(filters: filters)
+                        if cardBrowseViewModel.criteriaError == nil {
+                            CardFiltersView(filters: $cardBrowseViewModel.filters)
                         }
                     }
                     .if(cardBrowseViewModel.criteriaError != nil ) {
