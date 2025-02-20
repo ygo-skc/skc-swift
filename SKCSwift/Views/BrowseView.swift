@@ -33,23 +33,31 @@ struct BrowseView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
+                switch (focusedResource) {
+                case .card:
+                    ScrollView {
+                        CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                    }
+                    .task(priority: .userInitiated) {
+                        await cardBrowseViewModel.fetchCardBrowseCriteria()
+                    }
+                case .product:
+                    ScrollView {
+                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
+                    }
+                    .task(priority: .userInitiated) {
+                        await productBrowseViewModel.fetchProductBrowseData()
+                    }
+                }
+            }
+            .overlay {
                 switch (focusedResource == .product ? productBrowseViewModel.dataStatus : cardBrowseViewModel.criteriaStatus, focusedResource) {
-                case (.pending, .card), (.uninitiated, .card):
+                case (.pending, _), (.uninitiated, _):
                     ProgressView("Loading...")
                         .controlSize(.large)
-                        .task(priority: .userInitiated) {
-                            await cardBrowseViewModel.fetchCardBrowseCriteria()
-                        }
-                        .frame(maxHeight: .infinity)
-                case (.pending, .product), (.uninitiated, .product):
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                        .task(priority: .userInitiated) {
-                            await productBrowseViewModel.fetchProductBrowseData()
-                        }
-                        .frame(maxHeight: .infinity)
-                case (.done, _) where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
-                    (focusedResource == .card && cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil):
+                case (.done, .card) where cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil:
+                    ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
+                case (.done, .product) where productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty:
                     ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
                 case (.done, .card):
                     if let networkError = cardBrowseViewModel.criteriaError {
@@ -57,17 +65,11 @@ struct BrowseView: View {
                     } else if let networkError = cardBrowseViewModel.dataError {
                         NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCards() } })
                     } else{
-                        ScrollView {
-                            CardBrowseView(filteredCards: cardBrowseViewModel.cards)
-                        }
                     }
                 case (.done, .product):
                     if let networkError = productBrowseViewModel.dataError {
                         NetworkErrorView(error: networkError, action: { Task{ await productBrowseViewModel.fetchProductBrowseData() } })
                     } else{
-                        ScrollView {
-                            ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
-                        }
                     }
                 }
             }
