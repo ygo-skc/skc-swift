@@ -13,15 +13,6 @@ struct BrowseView: View {
     @State private var productBrowseViewModel = ProductBrowseViewModel()
     @State private var cardBrowseViewModel = CardBrowseViewModel()
     
-    private var noBrowseResults: String {
-        switch focusedResource {
-        case .card:
-            return "No cards found using the selected filters 😕"
-        case .product:
-            return "No filters selected - what were you expecting to see 🤔"
-        }
-    }
-    
     var body: some View {
         NavigationStack {
             VStack {
@@ -51,26 +42,17 @@ struct BrowseView: View {
                 }
             }
             .overlay {
-                switch (focusedResource == .product ? productBrowseViewModel.dataStatus : cardBrowseViewModel.criteriaStatus, focusedResource) {
-                case (.pending, _), (.uninitiated, _):
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                case (.done, .card) where cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil:
-                    ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
-                case (.done, .product) where productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty:
-                    ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
-                case (.done, .card):
-                    if let networkError = cardBrowseViewModel.criteriaError {
-                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCardBrowseCriteria() } })
-                    } else if let networkError = cardBrowseViewModel.dataError {
-                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCards() } })
-                    } else{
-                    }
-                case (.done, .product):
-                    if let networkError = productBrowseViewModel.dataError {
-                        NetworkErrorView(error: networkError, action: { Task{ await productBrowseViewModel.fetchProductBrowseData() } })
-                    } else{
-                    }
+                switch focusedResource {
+                case .card:
+                    CardBrowseOverlay(criteriaRequestStatus: cardBrowseViewModel.criteriaStatus,
+                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil,
+                                      criteriaRequestError: cardBrowseViewModel.criteriaError, dataRequestError: cardBrowseViewModel.dataError,
+                                      retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
+                case .product:
+                    ProductBrowseOverlay(dataRequestStatus: productBrowseViewModel.dataStatus,
+                                         noProductsFound: productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty,
+                                         dataRequestError: productBrowseViewModel.dataError,
+                                         retryDataRequest: productBrowseViewModel.fetchProductBrowseData)
                 }
             }
             .toolbar {
@@ -116,6 +98,52 @@ struct BrowseView: View {
                 Task {
                     await cardBrowseViewModel.fetchCards()
                 }
+            }
+        }
+    }
+}
+
+private struct CardBrowseOverlay: View {
+    let criteriaRequestStatus: DataTaskStatus
+    let noCardsFound: Bool
+    let criteriaRequestError: NetworkError?
+    let dataRequestError: NetworkError?
+    let retryCriteriaRequest: () async -> Void
+    let retryDataRequest: () async -> Void
+    
+    var body: some View {
+        switch criteriaRequestStatus {
+        case .pending, .uninitiated:
+            ProgressView("Loading...")
+                .controlSize(.large)
+        case .done where noCardsFound:
+            ContentUnavailableView("No cards found using the selected filters 😕", systemImage: "exclamationmark.square.fill")
+        case .done:
+            if let networkError = criteriaRequestError {
+                NetworkErrorView(error: networkError, action: { Task{ await retryCriteriaRequest() } })
+            } else if let networkError = dataRequestError {
+                NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
+            }
+        }
+    }
+}
+
+private struct ProductBrowseOverlay: View {
+    let dataRequestStatus: DataTaskStatus
+    let noProductsFound: Bool
+    let dataRequestError: NetworkError?
+    let retryDataRequest: () async -> Void
+    
+    var body: some View {
+        switch dataRequestStatus {
+        case .pending, .uninitiated:
+            ProgressView("Loading...")
+                .controlSize(.large)
+        case .done where noProductsFound:
+            ContentUnavailableView("Choose some filters to see products 😉", systemImage: "exclamationmark.square.fill")
+        case .done:
+            if let networkError = dataRequestError {
+                NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
             }
         }
     }
