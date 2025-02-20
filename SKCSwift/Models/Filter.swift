@@ -20,4 +20,5 @@ struct FilteredItem<T: Equatable>: Equatable, Identifiable {
 struct CardFilters: Equatable {
     var attributes: [FilteredItem<String>]
     var colors: [FilteredItem<String>]
+    var levels: [FilteredItem<UInt8>]
 }

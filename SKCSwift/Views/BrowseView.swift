@@ -234,37 +234,50 @@ private struct CardFiltersView: View {
     @Binding var filters: CardFilters
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Card filters")
-                .font(.headline)
-            Text("Filter cards by using card metadata")
-                .font(.callout)
-                .padding(.bottom)
-            
-            CardFilterView(filters: $filters.attributes, filterInfo: "Filter by attribute") { attribute in
-                AttributeView(attribute: Attribute(rawValue: attribute) ?? .unknown)
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text("Card filters")
+                    .font(.headline)
+                Text("Filter cards by using card metadata")
+                    .font(.callout)
+                    .padding(.bottom)
+                
+                CardFilterView(filters: $filters.attributes, filterInfo: "Filter by attribute") { attribute in
+                    AttributeView(attribute: Attribute(rawValue: attribute) ?? .unknown)
+                }
+                CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
+                    CardColorIndicatorView(cardColor: category, variant: .large)
+                }
+                CardFilterView(filters: $filters.levels, filterInfo: "Filter by monster level", gridItemCount: 4) { level in
+                    LevelAssociationView(level: level, variant: .regular)
+                }
             }
-            CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
-                CardColorIndicatorView(cardColor: category, variant: .large)
-            }
+            .modifier(ParentViewModifier())
         }
-        .modifier(ParentViewModifier())
-        .padding(.top)
     }
 }
 
 private struct CardFilterView<T: Equatable, Content: View>: View {
     @Binding var filters: [FilteredItem<T>]
     let filterInfo: String
+    let gridItemCount: Int
     @ViewBuilder let content: (T) -> Content
+    
+    init(filters: Binding<[FilteredItem<T>]>, filterInfo: String, gridItemCount: Int, content: @escaping (T) -> Content) {
+        self._filters = filters
+        self.filterInfo = filterInfo
+        self.gridItemCount = gridItemCount
+        self.content = content
+    }
     
     var body: some View {
         GroupBox {
             GroupBox {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: gridItemCount)) {
                     ForEach($filters) { $cardColorFilter in
                         Toggle(isOn: $cardColorFilter.isToggled) {
                             content(cardColorFilter.category)
+                                .frame(maxWidth: .infinity)
                         }
                         .modifier(.buttonToggle)
                     }
@@ -276,6 +289,12 @@ private struct CardFilterView<T: Equatable, Content: View>: View {
         }
         .groupBoxStyle(.filters)
         .padding(.bottom)
+    }
+}
+
+extension CardFilterView {
+    init(filters: Binding<[FilteredItem<T>]>, filterInfo: String, content: @escaping (T) -> Content) {
+        self.init(filters: filters, filterInfo: filterInfo, gridItemCount: 6, content: content)
     }
 }
 

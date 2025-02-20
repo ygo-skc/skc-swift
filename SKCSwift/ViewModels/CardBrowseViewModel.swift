@@ -35,8 +35,11 @@ final class CardBrowseViewModel {
                 let cardColorFilters = cardBrowseCriteria.cardColors.map { cardColor in
                     FilteredItem(category: cardColor, isToggled: false, disableToggle: false)
                 }
+                let monsterLevelFilters = cardBrowseCriteria.levels.map { level in
+                    FilteredItem(category: level, isToggled: false, disableToggle: false)
+                }
                 
-                filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters)
+                filters = CardFilters(attributes: attributeFilters, colors: cardColorFilters, levels: monsterLevelFilters)
                 criteriaError = nil
             case .failure(let error):
                 criteriaError = error
