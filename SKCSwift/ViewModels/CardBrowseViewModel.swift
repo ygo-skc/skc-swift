@@ -53,9 +53,10 @@ final class CardBrowseViewModel {
         if let filters {
             let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }
             let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }
+            let levels = filters.levels.filter { $0.isToggled }.map{ String($0.category) }
             
-            if !attributes.isEmpty || !colors.isEmpty {
-                switch await data(cardBrowseURL(attributes: attributes, colors: colors), resType: CardBrowseResults.self) {
+            if !attributes.isEmpty || !colors.isEmpty || !levels.isEmpty {
+                switch await data(cardBrowseURL(attributes: attributes, colors: colors, levels: levels), resType: CardBrowseResults.self) {
                 case .success(let r):
                     cards = r.results
                     dataError = nil
