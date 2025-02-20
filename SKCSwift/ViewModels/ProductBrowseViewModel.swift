@@ -31,15 +31,21 @@ final class ProductBrowseViewModel {
     @ObservationIgnored
     private var uniqueProductSubTypes = Set<String>()
     
+    @ObservationIgnored
+    private var lastRefreshTimestamp = Date.distantPast
+    
     @MainActor
     func fetchProductBrowseData() async {
-        if dataError != nil || dataStatus == .uninitiated {
+        if dataError != nil || dataStatus == .uninitiated || lastRefreshTimestamp.isDateInvalidated(1, millisConversion: .seconds) {
             dataStatus = .pending
             switch await data(productsURL(), resType: Products.self) {
             case .success(let p):
-                (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureProductBrowseData(products: p.products)
-                products = p.products
+                if products != p.products {
+                    (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureProductBrowseData(products: p.products)
+                    products = p.products
+                }
                 dataError = nil
+                lastRefreshTimestamp = Date()
             case .failure(let error):
                 dataError = error
             }
@@ -55,7 +61,7 @@ final class ProductBrowseViewModel {
             productSubTypeFilters = uniqueProductSubTypes.sorted().reduce(into: [FilteredItem]()) {
                 $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
             }
-        } else {
+        } else if insertions.count > 0 {
             productSubTypeFilters = await updateProductSubTypeFilters(insertion: insertions.first, productSubTypeFilters: productSubTypeFilters,
                                                                                              productTypeByProductSubType: productTypeByProductSubType)
         }
