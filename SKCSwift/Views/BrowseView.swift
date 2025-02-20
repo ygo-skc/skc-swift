@@ -182,10 +182,9 @@ private struct ProductFiltersView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Product filters")
-                .font(.title2)
-            Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
                 .font(.headline)
-                .fontWeight(.light)
+            Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
+                .font(.callout)
                 .padding(.bottom)
             
             ProductFilterView(filters: $productTypeFilters,
@@ -237,10 +236,9 @@ private struct CardFiltersView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Card filters")
-                .font(.title2)
-            Text("Filter cards by using card metadata")
                 .font(.headline)
-                .fontWeight(.light)
+            Text("Filter cards by using card metadata")
+                .font(.callout)
                 .padding(.bottom)
             
             CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
