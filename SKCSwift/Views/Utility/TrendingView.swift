@@ -12,36 +12,37 @@ struct TrendingView: View {
     
     var body: some View {
         VStack {
+            ScrollView {
+                SectionView(header: "Trending",
+                            variant: .plain,
+                            content: {
+                    Picker("Select Trend Type", selection: $model.focusedTrend) {
+                        ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    
+                    
+                    switch model.focusedTrend {
+                    case .card:
+                        TrendingCardsView(trendingCards: model.cards,
+                                          networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
+                                          refreshAction: model.fetchTrendingCards)
+                    case .product:
+                        TrendingProductsView(trendingProducts: model.products,
+                                             networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
+                                             refreshAction: model.fetchTrendingProducts)
+                    }
+                })
+                .modifier(ParentViewModifier())
+            }
+            .scrollDisabled(model.trendingRequestErrors[model.focusedTrend] != nil)
+        }
+        .overlay {
             if !Set([.uninitiated, .pending]).isDisjoint(with: Set(model.trendingDataTaskStatuses.values)) {
                 ProgressView("Loading...")
                     .controlSize(.large)
-            } else {
-                ScrollView {
-                    SectionView(header: "Trending",
-                                variant: .plain,
-                                content: {
-                        Picker("Select Trend Type", selection: $model.focusedTrend) {
-                            ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                                Text(type.rawValue.capitalized).tag(type)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        
-                        
-                        switch model.focusedTrend {
-                        case .card:
-                            TrendingCardsView(trendingCards: model.cards,
-                                              networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
-                                              refreshAction: model.fetchTrendingCards)
-                        case .product:
-                            TrendingProductsView(trendingProducts: model.products,
-                                                 networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
-                                                 refreshAction: model.fetchTrendingProducts)
-                        }
-                    })
-                    .modifier(ParentViewModifier())
-                }
-                .scrollDisabled(model.trendingRequestErrors[model.focusedTrend] != nil)
             }
         }
         .task(priority: .userInitiated) {
@@ -67,7 +68,7 @@ private struct TrendingCardsView: View {
             })
             .padding(.top, 20)
         } else {
-            LazyVStack {
+            VStack {
                 ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
                     let card = m.resource
                     NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
@@ -98,7 +99,7 @@ private struct TrendingProductsView: View {
         })
         .padding(.top, 20)
     } else {
-        LazyVStack {
+        VStack {
             ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
                 NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {

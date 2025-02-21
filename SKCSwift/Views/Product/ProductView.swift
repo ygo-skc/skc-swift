@@ -13,7 +13,6 @@ struct ProductLinkDestinationView: View {
     var body: some View {
         ProductView(productID: productLinkDestinationValue.productID)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(productLinkDestinationValue.productName)
     }
 }
 
@@ -26,25 +25,35 @@ struct ProductView: View {
     
     var body: some View {
         TabView {
-            ScrollView {
-                if let networkError = model.requestErrors[.product, default: nil] {
-                    NetworkErrorView(error: networkError, action: { Task{ await model.fetchProductData(forceRefresh: true)} })
-                        .padding(.top, 20)
-                } else {
-                    ProductInfoView(productID: model.productID, product: model.product)
+            Tab("Info", systemImage: "info.circle.fill") {
+                ScrollView {
+                    if model.requestErrors[.product, default: nil] == nil {
+                        ProductInfoView(productID: model.productID, product: model.product)
+                    }
+                }
+                .scrollDisabled(model.requestErrors[.product, default: nil] != nil)
+                .task(priority: .userInitiated) {
+                    await model.fetchProductData()
                 }
             }
-            .scrollDisabled(model.requestErrors[.product, default: nil] != nil)
-            .task(priority: .userInitiated) {
-                await model.fetchProductData()
-            }
             
-            ScrollView {
+            Tab("Suggestions", systemImage: "sparkles") {
                 ProductCardSuggestionsView(model: model)
-                    .modifier(ParentViewModifier(alignment: .center))
-                    .padding(.bottom, 30)
             }
-            .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
+        }
+        .navigationTitle(model.product?.productName ?? "")
+        .frame(maxWidth:.infinity, maxHeight: .infinity)
+        .overlay {
+            if let networkError = model.requestErrors[.product, default: nil] {
+                NetworkErrorView(error: networkError, action: {
+                    Task{
+                        model.resetProductError()
+                        await model.fetchProductData(forceRefresh: true)
+                    }
+                }
+                )
+                .padding(.top, 20)
+            }
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))
@@ -122,12 +131,12 @@ private struct ProductStatsView: View {
             .map { ChartData(name: $0.key, count: $0.value) }
         
         monsterColorData = cards
-           .filter { $0.attribute != .spell && $0.attribute != .trap }
-           .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
-           .reduce(into: [String: Int]()) { counts, color in
-               counts[color, default: 0] += 1
-           }
-           .map { ChartData(name: $0.key, count: $0.value) }
+            .filter { $0.attribute != .spell && $0.attribute != .trap }
+            .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
+            .reduce(into: [String: Int]()) { counts, color in
+                counts[color, default: 0] += 1
+            }
+            .map { ChartData(name: $0.key, count: $0.value) }
         
         monsterAttributeData = cards
             .filter { $0.attribute != .spell && $0.attribute != .trap }
@@ -161,8 +170,7 @@ private struct ProductStatsView: View {
                     description: "Monster cards printed in **\(productName)** categorized by their attribute.",
                     dataTitle: "Monster Attribute", data: monsterAttributeData)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.all)
+            .modifier(ParentViewModifier())
         }
     }
 }

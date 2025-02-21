@@ -19,6 +19,8 @@ final class HomeViewModel {
     
     var navigationPath = NavigationPath()
     
+    var isSettingsSheetPresented = false
+    
     @ObservationIgnored
     private var lastRefreshTimestamp: Date?
     
@@ -84,6 +86,9 @@ final class HomeViewModel {
         let path = url.relativePath
         if path.contains("/card/") {
             navigationPath.append(CardLinkDestinationValue(cardID: path.replacingOccurrences(of: "/card/", with: ""), cardName: ""))
+            return .handled
+        } else if path.contains("/product/") {
+            navigationPath.append(ProductLinkDestinationValue(productID: path.replacingOccurrences(of: "/product/", with: ""), productName: ""))
             return .handled
         }
         return .systemAction

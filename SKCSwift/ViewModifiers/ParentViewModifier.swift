@@ -17,6 +17,6 @@ struct ParentViewModifier: ViewModifier {
                 maxHeight: .infinity,
                 alignment: alignment
             )
-            .padding(.horizontal)
+            .padding(.all)
     }
 }

@@ -14,7 +14,6 @@ struct CardLinkDestinationView: View {
     var body: some View {
         CardView(cardID: cardLinkDestinationValue.cardID)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(cardLinkDestinationValue.cardName)
     }
 }
 
@@ -63,17 +62,14 @@ private struct CardView: View {
                     }
                     
                     Tab("Suggestions", systemImage: "sparkles") {
-                        ScrollView {
-                            CardSuggestionsView(model: model)
-                                .modifier(ParentViewModifier(alignment: .center))
-                                .padding(.bottom, 30)
-                        }
+                        CardSuggestionsView(model: model)
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .always))
                 .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
         }
+        .navigationTitle(model.card?.cardName ?? "")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
         .overlay {
             if let networkError = model.requestErrors[.card, default: nil] {
@@ -85,6 +81,7 @@ private struct CardView: View {
                 default:
                     NetworkErrorView(error: networkError, action: {
                         Task {
+                            model.resetCardError()
                             await model.fetchCardData(forceRefresh: true)
                         }
                     })
@@ -93,18 +90,6 @@ private struct CardView: View {
         }
         .task {
             await model.fetchCardData()
-        }
-        .toolbar {
-            if model.requestErrors[.card, default: nil] == nil {
-                Button {
-                    //                    modelContext.insert(Favorite(resource: .card, id: model.cardID))
-                    try! modelContext.delete(model: History.self, where: #Predicate { f in
-                        f.id == "82570174"
-                    })
-                } label: {
-                    Image(systemName: "heart")
-                }
-            }
         }
         .onChange(of: model.card) {
             Task {
@@ -119,6 +104,7 @@ private struct CardView: View {
                 }
                 
                 History.consolidate(history: history, modelContext: modelContext)
+                try? modelContext.save()
             }
         }
     }

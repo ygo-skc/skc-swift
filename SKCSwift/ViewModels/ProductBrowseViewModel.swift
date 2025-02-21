@@ -11,8 +11,8 @@ import Foundation
 final class ProductBrowseViewModel {
     var showFilters = false
     
-    var productTypeFilters: [FilteredItem] = []
-    var productSubTypeFilters: [FilteredItem] = []
+    var productTypeFilters: [FilteredItem<String>] = []
+    var productSubTypeFilters: [FilteredItem<String>] = []
     
     private(set) var dataError: NetworkError?
     private(set) var dataStatus = DataTaskStatus.uninitiated
@@ -31,14 +31,21 @@ final class ProductBrowseViewModel {
     @ObservationIgnored
     private var uniqueProductSubTypes = Set<String>()
     
+    @ObservationIgnored
+    private var lastRefreshTimestamp = Date.distantPast
+    
     @MainActor
     func fetchProductBrowseData() async {
-        if dataError != nil || products.isEmpty {
+        if dataError != nil || dataStatus == .uninitiated || lastRefreshTimestamp.isDateInvalidated(1, millisConversion: .seconds) {
+            dataStatus = .pending
             switch await data(productsURL(), resType: Products.self) {
             case .success(let p):
-                (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureProductBrowseData(products: p.products)
-                products = p.products
+                if products != p.products {
+                    (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureProductBrowseData(products: p.products)
+                    products = p.products
+                }
                 dataError = nil
+                lastRefreshTimestamp = Date()
             case .failure(let error):
                 dataError = error
             }
@@ -47,12 +54,14 @@ final class ProductBrowseViewModel {
     }
     
     @MainActor
-    func syncProductSubTypeFilters(insertions: [CollectionDifference<FilteredItem>.Change]) async {
+    func syncProductSubTypeFilters(insertions: [CollectionDifference<FilteredItem<String>>.Change]) async {
         areProductsFiltered = false
         // init case
         if insertions.count == uniqueProductTypes.count {
-            productSubTypeFilters = await initProductSubTypeFilters(uniqueProductSubTypes: uniqueProductSubTypes)
-        } else {
+            productSubTypeFilters = uniqueProductSubTypes.sorted().reduce(into: [FilteredItem]()) {
+                $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
+            }
+        } else if insertions.count > 0 {
             productSubTypeFilters = await updateProductSubTypeFilters(insertion: insertions.first, productSubTypeFilters: productSubTypeFilters,
                                                                                              productTypeByProductSubType: productTypeByProductSubType)
         }
@@ -60,16 +69,24 @@ final class ProductBrowseViewModel {
     
     @MainActor
     func updateProductList() async {
-        filteredProducts = await filteredProducts(productSubTypeFilters: productSubTypeFilters, products: products)
+        let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
+        
+        filteredProducts = products
+            .filter({toggledProductSubTypeFilters.contains($0.productSubType)})
+            .reduce(into: [String: [Product]]()) { productsByYear, product in
+                let year: String = String(product.productReleaseDate.split(separator: "-", maxSplits: 1)[0])
+                productsByYear[year, default: []].append(product)
+            }
+        
         areProductsFiltered = true
     }
     
     @MainActor
-    private func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem]) {
+    private func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem<String>]) {
         var uniqueProductTypes = Set<String>()
         var uniqueProductSubTypes = Set<String>()
         var productTypeByProductSubType = [String: String]()
-        var productTypeFilters: [FilteredItem] = []
+        var productTypeFilters: [FilteredItem<String>] = []
         
         products.forEach { product in
             uniqueProductTypes.insert(product.productType)
@@ -85,15 +102,8 @@ final class ProductBrowseViewModel {
     }
     
     @MainActor
-    private func initProductSubTypeFilters(uniqueProductSubTypes: Set<String>) async -> [FilteredItem] {
-        return uniqueProductSubTypes.sorted().reduce(into: [FilteredItem]()) {
-            $0.append(FilteredItem(category: $1, isToggled: true, disableToggle: false))
-        }
-    }
-    
-    @MainActor
-    private func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem>.Change?, productSubTypeFilters: [FilteredItem],
-                                                    productTypeByProductSubType: [String: String]) async -> [FilteredItem] {
+    private func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem<String>>.Change?, productSubTypeFilters: [FilteredItem<String>],
+                                                    productTypeByProductSubType: [String: String]) async -> [FilteredItem<String>] {
         switch insertion {
         case .insert(_, let changeElement, _):
             return productSubTypeFilters.map {
@@ -103,17 +113,5 @@ final class ProductBrowseViewModel {
         default:
             return []
         }
-    }
-    
-    @MainActor
-    private func filteredProducts(productSubTypeFilters: [FilteredItem], products: [Product]?) async -> [String : [Product]] {
-        let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
-        
-        return products?
-            .filter({toggledProductSubTypeFilters.contains($0.productSubType)})
-            .reduce(into: [String: [Product]]()) { productsByYear, product in
-                let year: String = String(product.productReleaseDate.split(separator: "-", maxSplits: 1)[0])
-                productsByYear[year, default: []].append(product)
-            } ?? [:]
     }
 }

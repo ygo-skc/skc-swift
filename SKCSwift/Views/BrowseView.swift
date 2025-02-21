@@ -13,15 +13,6 @@ struct BrowseView: View {
     @State private var productBrowseViewModel = ProductBrowseViewModel()
     @State private var cardBrowseViewModel = CardBrowseViewModel()
     
-    private var noBrowseResults: String {
-        switch focusedResource {
-        case .card:
-            return "There are over 12k cards available to browse, try filtering to narrow down your search"
-        case .product:
-            return "No filters selected - what were you expecting to see 🤔"
-        }
-    }
-    
     var body: some View {
         NavigationStack {
             VStack {
@@ -33,50 +24,43 @@ struct BrowseView: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
                 
-                switch (focusedResource == .product ? productBrowseViewModel.dataStatus : cardBrowseViewModel.criteriaStatus, focusedResource) {
-                case (.pending, .card), (.uninitiated, .card):
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                        .task(priority: .userInitiated) {
-                            await cardBrowseViewModel.fetchCardBrowseCriteria()
-                        }
-                        .frame(maxHeight: .infinity)
-                case (.pending, .product), (.uninitiated, .product):
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                        .task(priority: .userInitiated) {
-                            await productBrowseViewModel.fetchProductBrowseData()
-                        }
-                        .frame(maxHeight: .infinity)
-                case (.done, _) where (focusedResource == .product && productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty) ||
-                    (focusedResource == .card && cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil):
-                    ContentUnavailableView(noBrowseResults, systemImage: "exclamationmark.square.fill")
-                case (.done, .card):
-                    if let networkError = cardBrowseViewModel.criteriaError {
-                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCardBrowseCriteria() } })
-                    } else if let networkError = cardBrowseViewModel.dataError {
-                        NetworkErrorView(error: networkError, action: { Task{ await cardBrowseViewModel.fetchCards() } })
-                    } else{
-                        ScrollView {
-                            CardBrowseView(filteredCards: cardBrowseViewModel.cards)
-                        }
+                switch (focusedResource) {
+                case .card:
+                    ScrollView {
+                        CardBrowseView(filteredCards: cardBrowseViewModel.cards)
                     }
-                case (.done, .product):
-                    if let networkError = productBrowseViewModel.dataError {
-                        NetworkErrorView(error: networkError, action: { Task{ await productBrowseViewModel.fetchProductBrowseData() } })
-                    } else{
-                        ScrollView {
-                            ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
-                        }
+                    .task(priority: .userInitiated) {
+                        await cardBrowseViewModel.fetchCardBrowseCriteria()
                     }
+                case .product:
+                    ScrollView {
+                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
+                    }
+                    .task(priority: .userInitiated) {
+                        await productBrowseViewModel.fetchProductBrowseData()
+                    }
+                }
+            }
+            .overlay {
+                switch focusedResource {
+                case .card:
+                    CardBrowseOverlay(criteriaRequestStatus: cardBrowseViewModel.criteriaStatus,
+                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil,
+                                      criteriaRequestError: cardBrowseViewModel.criteriaError, dataRequestError: cardBrowseViewModel.dataError,
+                                      retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
+                case .product:
+                    ProductBrowseOverlay(dataRequestStatus: productBrowseViewModel.dataStatus,
+                                         noProductsFound: productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty,
+                                         dataRequestError: productBrowseViewModel.dataError,
+                                         retryDataRequest: productBrowseViewModel.fetchProductBrowseData)
                 }
             }
             .toolbar {
                 switch focusedResource {
                 case .card:
                     FilterButton(showFilters: $cardBrowseViewModel.showFilters) {
-                        if let filters = Binding<CardFilters>($cardBrowseViewModel.filters) {
-                            CardFiltersView(filters: filters)
+                        if cardBrowseViewModel.criteriaError == nil {
+                            CardFiltersView(filters: $cardBrowseViewModel.filters)
                         }
                     }
                     .if(cardBrowseViewModel.criteriaError != nil ) {
@@ -93,13 +77,8 @@ struct BrowseView: View {
                     }
                 }
             }
+            .ygoNavigationDestination()
             .navigationTitle("Browse")
-            .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                CardLinkDestinationView(cardLinkDestinationValue: card)
-            }
-            .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-                ProductLinkDestinationView(productLinkDestinationValue: product)
-            }
             .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
                 Task {
                     await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
@@ -114,6 +93,52 @@ struct BrowseView: View {
                 Task {
                     await cardBrowseViewModel.fetchCards()
                 }
+            }
+        }
+    }
+}
+
+private struct CardBrowseOverlay: View {
+    let criteriaRequestStatus: DataTaskStatus
+    let noCardsFound: Bool
+    let criteriaRequestError: NetworkError?
+    let dataRequestError: NetworkError?
+    let retryCriteriaRequest: () async -> Void
+    let retryDataRequest: () async -> Void
+    
+    var body: some View {
+        switch criteriaRequestStatus {
+        case .pending, .uninitiated:
+            ProgressView("Loading...")
+                .controlSize(.large)
+        case .done where noCardsFound:
+            ContentUnavailableView("No cards found using the selected filters 😕", systemImage: "exclamationmark.square.fill")
+        case .done:
+            if let networkError = criteriaRequestError {
+                NetworkErrorView(error: networkError, action: { Task{ await retryCriteriaRequest() } })
+            } else if let networkError = dataRequestError {
+                NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
+            }
+        }
+    }
+}
+
+private struct ProductBrowseOverlay: View {
+    let dataRequestStatus: DataTaskStatus
+    let noProductsFound: Bool
+    let dataRequestError: NetworkError?
+    let retryDataRequest: () async -> Void
+    
+    var body: some View {
+        switch dataRequestStatus {
+        case .pending, .uninitiated:
+            ProgressView("Loading...")
+                .controlSize(.large)
+        case .done where noProductsFound:
+            ContentUnavailableView("Choose some filters to see products 😉", systemImage: "exclamationmark.square.fill")
+        case .done:
+            if let networkError = dataRequestError {
+                NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
             }
         }
     }
@@ -159,7 +184,7 @@ private struct CardBrowseView: View {
             ForEach(filteredCards, id: \.self.cardID) { card in
                 NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                     GroupBox {
-                        CardListItemView(card: card)
+                        CardListItemView(card: card, showAllInfo: true)
                             .equatable()
                     }
                     .groupBoxStyle(.listItem)
@@ -174,16 +199,15 @@ private struct CardBrowseView: View {
 }
 
 private struct ProductFiltersView: View {
-    @Binding var productTypeFilters: [FilteredItem]
-    @Binding var productSubTypeFilters: [FilteredItem]
+    @Binding var productTypeFilters: [FilteredItem<String>]
+    @Binding var productSubTypeFilters: [FilteredItem<String>]
     
     var body: some View {
         VStack(alignment: .leading) {
             Text("Product filters")
-                .font(.title2)
-            Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
                 .font(.headline)
-                .fontWeight(.light)
+            Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
+                .font(.callout)
                 .padding(.bottom)
             
             ProductFilterView(filters: $productTypeFilters,
@@ -201,7 +225,7 @@ private struct ProductFiltersView: View {
 }
 
 private struct ProductFilterView: View {
-    @Binding var filters: [FilteredItem]
+    @Binding var filters: [FilteredItem<String>]
     let filterInfo: String
     let filterImage: String
     let columns: [GridItem]
@@ -233,38 +257,50 @@ private struct CardFiltersView: View {
     @Binding var filters: CardFilters
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Card filters")
-                .font(.title2)
-            Text("Filter cards by using card metadata")
-                .font(.headline)
-                .fontWeight(.light)
-                .padding(.bottom)
-            
-            CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
-                CardColorIndicatorView(cardColor: category, variant: .large)
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text("Card filters")
+                    .font(.headline)
+                Text("Filter cards by using card metadata")
+                    .font(.callout)
+                    .padding(.bottom)
+                
+                CardFilterView(filters: $filters.attributes, filterInfo: "Filter by attribute") { attribute in
+                    AttributeView(attribute: Attribute(rawValue: attribute) ?? .unknown)
+                }
+                CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
+                    CardColorIndicatorView(cardColor: category, variant: .large)
+                }
+                CardFilterView(filters: $filters.levels, filterInfo: "Filter by monster level", gridItemCount: 4) { level in
+                    LevelAssociationView(level: level, variant: .regular)
+                }
             }
-            CardFilterView(filters: $filters.attributes, filterInfo: "Filter by attribute") { category in
-                AttributeView(attribute: Attribute(rawValue: category) ?? .unknown)
-            }
+            .modifier(ParentViewModifier())
         }
-        .modifier(ParentViewModifier())
-        .padding(.top)
     }
 }
 
-private struct CardFilterView<Content: View>: View {
-    @Binding var filters: [FilteredItem]
+private struct CardFilterView<T: Equatable, Content: View>: View {
+    @Binding var filters: [FilteredItem<T>]
     let filterInfo: String
-    @ViewBuilder let content: (String) -> Content
+    let gridItemCount: Int
+    @ViewBuilder let content: (T) -> Content
+    
+    init(filters: Binding<[FilteredItem<T>]>, filterInfo: String, gridItemCount: Int, content: @escaping (T) -> Content) {
+        self._filters = filters
+        self.filterInfo = filterInfo
+        self.gridItemCount = gridItemCount
+        self.content = content
+    }
     
     var body: some View {
         GroupBox {
             GroupBox {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6)) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: gridItemCount)) {
                     ForEach($filters) { $cardColorFilter in
                         Toggle(isOn: $cardColorFilter.isToggled) {
                             content(cardColorFilter.category)
+                                .frame(maxWidth: .infinity)
                         }
                         .modifier(.buttonToggle)
                     }
@@ -276,6 +312,12 @@ private struct CardFilterView<Content: View>: View {
         }
         .groupBoxStyle(.filters)
         .padding(.bottom)
+    }
+}
+
+extension CardFilterView {
+    init(filters: Binding<[FilteredItem<T>]>, filterInfo: String, content: @escaping (T) -> Content) {
+        self.init(filters: filters, filterInfo: filterInfo, gridItemCount: 6, content: content)
     }
 }
 

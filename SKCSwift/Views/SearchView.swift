@@ -14,7 +14,14 @@ struct SearchView: View {
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
     
-    @Query(sort: \History.lastAccessDate, order: .reverse) private var history: [History]
+    @Query private var history: [History]
+    
+    init() {
+        let c = ArchiveResource.card.rawValue
+        _history = Query(filter: #Predicate<History> { h in
+            h.resource == c
+        }, sort: \History.lastAccessDate, order: .reverse)
+    }
     
     var body: some View {
         NavigationStack {
@@ -26,10 +33,7 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyBrowsedView(recentCards: searchModel.recentlyBrowsedDetails)
-                            .task {
-                                await searchModel.fetchRecentlyBrowsedDetails(recentlyBrowsed: Array(history.prefix(15)))
-                            }
+                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails, hasHistory: !history.isEmpty)
                     } else {
                         TrendingView(model: trendingModel)
                     }
@@ -46,18 +50,20 @@ struct SearchView: View {
                     }
                 }
             }
-            .navigationDestination(for: CardLinkDestinationValue.self) { card in
-                CardLinkDestinationView(cardLinkDestinationValue: card)
+            .onAppear {
+                Task {
+                    await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
+                }
             }
-            .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-                ProductLinkDestinationView(productLinkDestinationValue: product)
-            }
+            .ygoNavigationDestination()
             .navigationTitle("Search")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
+            
         }
         .transaction {
             $0.animation = nil
         }
-        .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, prompt: "Search for card...")
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
             Task(priority: .userInitiated) {
                 await searchModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
@@ -72,16 +78,17 @@ struct SearchView: View {
     SearchView()
 }
 
-private struct RecentlyBrowsedView: View {
+private struct RecentlyViewedView: View {
     let recentCards: [Card]
+    let hasHistory: Bool
     
     var body: some View {
         ScrollView {
             if !recentCards.isEmpty {
-                SectionView(header: "Recently Browsed",
+                SectionView(header: "Recently Viewed",
                             variant: .plain,
                             content: {
-                    LazyVStack {
+                    VStack {
                         ForEach(recentCards, id: \.cardID) { card in
                             NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                                 GroupBox() {
@@ -100,10 +107,13 @@ private struct RecentlyBrowsedView: View {
         }
         .frame(maxWidth: .infinity)
         .overlay {
-            if recentCards.isEmpty {
+            if !hasHistory {
                 ContentUnavailableView {
                     Label("Type to search 😉", systemImage: "text.magnifyingglass")
                 }
+            } else if recentCards.isEmpty {
+                ProgressView("Loading...")
+                    .controlSize(.large)
             }
         }
     }

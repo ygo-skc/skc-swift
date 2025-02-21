@@ -44,7 +44,15 @@ final class CardViewModel {
     }
     
     @MainActor
-    func fetchSuggestions(forceRefresh: Bool = false) async {
+    func fetchAllSuggestions(forceRefresh: Bool = false) async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { @Sendable @MainActor in await self.fetchSuggestions(forceRefresh: forceRefresh) }
+            taskGroup.addTask { @Sendable @MainActor in await self.fetchSupport(forceRefresh: forceRefresh) }
+        }
+    }
+    
+    @MainActor
+    private func fetchSuggestions(forceRefresh: Bool = false) async {
         if forceRefresh || !areSuggestionsLoaded {
             switch await data(cardSuggestionsURL(cardID: cardID), resType: CardSuggestions.self) {
             case .success(let suggestions):
@@ -59,7 +67,7 @@ final class CardViewModel {
     }
     
     @MainActor
-    func fetchSupport(forceRefresh: Bool = false) async {
+    private func fetchSupport(forceRefresh: Bool = false) async {
         if forceRefresh || !isSupportLoaded {
             switch await data(cardSupportURL(cardID: cardID), resType: CardSupport.self) {
             case .success(let support):
@@ -71,6 +79,23 @@ final class CardViewModel {
                 requestErrors[.support] = error
             }
         }
+    }
+    
+    func hasSuggestions() -> Bool {
+        if let namedMaterials, let namedReferences, let referencedBy, let materialFor,
+            namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
+            return false
+        }
+        return true
+    }
+    
+    func resetCardError() {
+        requestErrors[.card] = nil
+    }
+    
+    func resetSuggestionErrors() {
+        requestErrors[.suggestions] = nil
+        requestErrors[.support] = nil
     }
     
     enum CardModelDataType {

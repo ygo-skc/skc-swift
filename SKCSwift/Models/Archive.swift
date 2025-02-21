@@ -11,6 +11,7 @@ import SwiftData
 enum ArchiveResource: String, Codable {
     case card = "card"
     case product = "product"
+    case none = "none"
 }
 
 @Model
