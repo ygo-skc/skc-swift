@@ -6,6 +6,7 @@
 //
 import Foundation
 
+@MainActor
 @Observable
 final class CardViewModel {
     private(set) var card: Card?
@@ -30,7 +31,6 @@ final class CardViewModel {
         self.cardID = cardID
     }
     
-    @MainActor
     func fetchCardData(forceRefresh: Bool = false) async {
         if forceRefresh || card == nil {
             switch await data(cardInfoURL(cardID: cardID), resType: Card.self) {
@@ -43,7 +43,6 @@ final class CardViewModel {
         }
     }
     
-    @MainActor
     func fetchAllSuggestions(forceRefresh: Bool = false) async {
         await withTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask { @Sendable @MainActor in await self.fetchSuggestions(forceRefresh: forceRefresh) }
@@ -51,7 +50,6 @@ final class CardViewModel {
         }
     }
     
-    @MainActor
     private func fetchSuggestions(forceRefresh: Bool = false) async {
         if forceRefresh || !areSuggestionsLoaded {
             switch await data(cardSuggestionsURL(cardID: cardID), resType: CardSuggestions.self) {
@@ -66,7 +64,6 @@ final class CardViewModel {
         }
     }
     
-    @MainActor
     private func fetchSupport(forceRefresh: Bool = false) async {
         if forceRefresh || !isSupportLoaded {
             switch await data(cardSupportURL(cardID: cardID), resType: CardSupport.self) {

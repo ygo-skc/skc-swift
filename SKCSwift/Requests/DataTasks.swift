@@ -42,11 +42,11 @@ fileprivate func validateResponse(response: URLResponse?) throws {
     }
 }
 
-func data<U>(_ url: URL, resType: U.Type) async -> sending Result<U, NetworkError> where U: Decodable {
+nonisolated func data<U>(_ url: URL, resType: U.Type) async -> sending Result<U, NetworkError> where U: Decodable {
     await data(url, reqBody: Optional<NilReqBody>.none, resType: resType)
 }
 
-func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async -> sending Result<U, NetworkError> where T: Encodable, U: Decodable {
+nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async -> sending Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
         let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
         let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url, httpMethod: httpMethod, reqBody: bodyData))
