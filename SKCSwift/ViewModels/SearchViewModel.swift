@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 @Observable
 final class SearchViewModel {
     var isSearching = false
@@ -27,7 +28,6 @@ final class SearchViewModel {
     private(set) var recentlyViewedCardDetailsResponse: CardDetailsResponse?
     private(set) var recentlyViewedCardDetails = [Card]()
     
-    @MainActor
     func newSearchSubject(oldValue: String, newValue: String) async {
         if requestError != .notFound || (requestError == .notFound && oldValue.count > newValue.count) {
             requestError = nil
@@ -52,13 +52,11 @@ final class SearchViewModel {
                         searchResultsIds.removeAll()
                         requestError = .notFound
                     } else {
-                        let (sections, searchResultsIds, results, shouldUpdateUI) = await partitionResults(cards)
-                        if (shouldUpdateUI) {
-                            searchResults.removeAll()
+                        let (searchResultsIds, searchResults, shouldUpdateUI) = await partitionResults(newSearchResults: cards,
+                                                                                                       previousResultsIDs: searchResultsIds)
+                        if shouldUpdateUI {
                             self.searchResultsIds = searchResultsIds
-                            for section in sections {
-                                searchResults.append(SearchResults(section: section, results: results[section]!))
-                            }
+                            self.searchResults = searchResults
                         }
                     }
                 case .failure(let error):
@@ -69,25 +67,30 @@ final class SearchViewModel {
         }
     }
     
-    @MainActor
-    func fetchRecentlyViewedDetails(recentlyViewed: [History]) async {
-        let recentlyViewedCardIDs = recentlyViewed.map { $0.id }
-        // check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
-        if Set(recentlyViewedCardIDs) != Set(recentlyViewedCardDetails.map { $0.cardID }) {
-            let body = CardDetailsRequest(cardIDs: recentlyViewedCardIDs)
+    func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
+        if let body = recentlyViewedRequestBody(newHistory: newHistory, previousCardDetails: recentlyViewedCardDetails) {
             switch await data(cardDetailsUrl(), reqBody: body, resType: CardDetailsResponse.self, httpMethod: "POST") {
             case .success(let cardDetails):
                 recentlyViewedCardDetailsResponse = cardDetails
+                recentlyViewedCardDetails = newHistory.map{ cardDetails.cardInfo[$0.id] }.compactMap{ $0 }
             case .failure(_): break
             }
         }
-        recentlyViewedCardDetails = recentlyViewed.map{ recentlyViewedCardDetailsResponse?.cardInfo[$0.id] }.compactMap{ $0 }
     }
     
-    private func partitionResults(_ cards: [Card]) async -> ([String], [String],  [String : [Card]], Bool) {
+    /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
+    private nonisolated func recentlyViewedRequestBody(newHistory: [History], previousCardDetails: [Card]) -> CardDetailsRequest? {
+        let recentlyViewedCardIDs = newHistory.map { $0.id }
+        if Set(recentlyViewedCardIDs) != Set(previousCardDetails.map { $0.cardID })  {
+            return CardDetailsRequest(cardIDs: recentlyViewedCardIDs)
+        }
+        return nil
+    }
+    
+    private nonisolated func partitionResults(newSearchResults: [Card], previousResultsIDs: [String]) async -> ([String], [SearchResults], Bool) {
         var sections = [String]()
         var searchResultsIds = [String]()
-        let results = cards.reduce(into: [String: [Card]]()) { results, card in
+        let results = newSearchResults.reduce(into: [String: [Card]]()) { results, card in
             let section = card.cardColor
             results[section, default: []].append(card)
             if !sections.contains(section) {
@@ -96,7 +99,7 @@ final class SearchViewModel {
             searchResultsIds.append(card.cardID)
         }
         
-        let shouldUpdateUI = self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds
-        return (sections, searchResultsIds, results, shouldUpdateUI)
+        let shouldUpdateUI = previousResultsIDs != searchResultsIds
+        return (searchResultsIds, sections.map { SearchResults(section: $0, results: results[$0]!) }, shouldUpdateUI)
     }
 }
