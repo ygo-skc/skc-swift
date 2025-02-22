@@ -203,9 +203,9 @@ private struct ProductFiltersView: View {
     @Binding var productSubTypeFilters: [FilteredItem<String>]
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack {
             Text("Product filters")
-                .font(.headline)
+                .font(.title)
             Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
                 .font(.callout)
                 .padding(.bottom)
@@ -258,9 +258,9 @@ private struct CardFiltersView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack {
                 Text("Card filters")
-                    .font(.headline)
+                    .font(.title)
                 Text("Filter cards by using card metadata")
                     .font(.callout)
                     .padding(.bottom)

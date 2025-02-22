@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RelatedContentView: View {
+    let cardID: String
     let cardName: String
     let cardColor: String
     let products:[Product]
@@ -16,7 +17,8 @@ struct RelatedContentView: View {
     
     private let latestReleaseInfo: String
     
-    init(cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList]) {
+    init(cardID: String, cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList]) {
+        self.cardID = cardID
         self.cardName = cardName
         self.cardColor = cardColor
         self.products = products
@@ -45,8 +47,8 @@ struct RelatedContentView: View {
                         .font(.headline)
                     
                     RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
-                        RelatedContentsView(header: "Printings: \(products.count)",
-                                            subHeader: "\(cardName) was printed in...") {
+                        RelatedContentsView(header: "Products",
+                                            subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
                             LazyVStack {
                                 ForEach(products, id: \.id) { product in
                                     GroupBox {
@@ -74,16 +76,16 @@ struct RelatedContentView: View {
                     
                     // TCG ban list deets
                     RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
-                        RelatedContentsView(header: "Occurrences: \(tcgBanLists.count)",
-                                            subHeader: "\(BanListFormat.tcg.rawValue) ban lists \(cardName) was restricted in...") {
+                        RelatedContentsView(header: "TCG F/L Hits",
+                                            subHeader: "\(cardName) was restricted at least \(tcgBanLists.count) times in the TCG format.", cardID: cardID) {
                             BanListItemViewModel(banList: tcgBanLists)
                         }
                     }
                     
                     // MD ban list deets
                     RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
-                        RelatedContentsView(header: "Occurrences: \(mdBanLists.count)",
-                                            subHeader: "\(BanListFormat.md.rawValue) ban lists \(cardName) was restricted in...") {
+                        RelatedContentsView(header: "Master Duel F/L Hits",
+                                            subHeader: "\(cardName) was restricted at least \(mdBanLists.count) times in the Master Duel format.", cardID: cardID) {
                             BanListItemViewModel(banList: mdBanLists)
                         }
                     }
@@ -125,43 +127,25 @@ private struct RelatedContentSheetButton<Content: View>: View {
 private struct RelatedContentsView<Content: View>: View {
     let header: String
     let subHeader: String
+    let cardID: String
     @ViewBuilder let content: () -> Content
     
-    @Environment(\.dismiss) private var dismiss
-    
     var body: some View {
-        VStack {
-            HStack {
-                VStack(alignment: .leading) {
+        ScrollView {
+            VStack {
+                Label {
                     Text(header)
                         .font(.title)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.leading)
-                        .padding(.top)
-                    Text(subHeader)
-                        .font(.headline)
-                        .fontWeight(.regular)
-                        .multilineTextAlignment(.leading)
+                } icon: {
+                    CardImageView(length: 50, cardID: cardID, imgSize: .tiny)
                 }
+                Text(subHeader)
+                    .font(.callout)
+                    .padding(.bottom)
                 
-                Spacer()
-                
-                Button(action: {
-                    dismiss()
-                }, label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 35, height: 35)
-                })
-            }
-            .padding(.horizontal)
-            
-            ScrollView {
                 content()
-                    .frame(maxWidth: .infinity)
-                    .modifier(ParentViewModifier())
             }
+            .modifier(ParentViewModifier())
         }
     }
 }

@@ -46,6 +46,7 @@ private struct CardView: View {
                             
                             if let card = model.card {
                                 RelatedContentView(
+                                    cardID: card.cardID,
                                     cardName: card.cardName,
                                     cardColor: card.cardColor,
                                     products: card.getProducts(),
