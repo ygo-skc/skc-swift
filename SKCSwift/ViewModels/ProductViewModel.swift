@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 @Observable
 final class ProductViewModel {
     let productID: String
@@ -20,7 +21,6 @@ final class ProductViewModel {
         self.productID = productID
     }
     
-    @MainActor
     func fetchProductData(forceRefresh: Bool = false) async {
         if forceRefresh || product == nil {
             switch await data(productInfoURL(productID: productID), resType: Product.self) {
@@ -33,7 +33,6 @@ final class ProductViewModel {
         }
     }
     
-    @MainActor
     func fetchProductSuggestions(forceRefresh: Bool = false) async {
         if forceRefresh || suggestions == nil {
             switch await data(productSuggestionsURL(productID: productID), resType: ProductSuggestions.self) {

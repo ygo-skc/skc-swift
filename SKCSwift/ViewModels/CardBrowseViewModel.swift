@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 @Observable
 final class CardBrowseViewModel {
     var showFilters = false
@@ -22,7 +23,6 @@ final class CardBrowseViewModel {
     @ObservationIgnored
     private var cardBrowseCriteria: CardBrowseCriteria?
     
-    @MainActor
     func fetchCardBrowseCriteria() async {
         if criteriaError != nil || cardBrowseCriteria == nil {
             switch await data(cardBrowseCriteriaURL(), resType: CardBrowseCriteria.self) {
@@ -48,7 +48,6 @@ final class CardBrowseViewModel {
         }
     }
     
-    @MainActor
     func fetchCards() async {
         let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }
         let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }

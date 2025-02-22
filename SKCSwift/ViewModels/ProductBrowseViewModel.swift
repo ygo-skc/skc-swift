@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 @Observable
 final class ProductBrowseViewModel {
     var showFilters = false
@@ -34,7 +35,6 @@ final class ProductBrowseViewModel {
     @ObservationIgnored
     private var lastRefreshTimestamp = Date.distantPast
     
-    @MainActor
     func fetchProductBrowseData() async {
         if dataError != nil || dataStatus == .uninitiated || lastRefreshTimestamp.isDateInvalidated(1, millisConversion: .seconds) {
             dataStatus = .pending
@@ -53,7 +53,6 @@ final class ProductBrowseViewModel {
         }
     }
     
-    @MainActor
     func syncProductSubTypeFilters(insertions: [CollectionDifference<FilteredItem<String>>.Change]) async {
         areProductsFiltered = false
         // init case
@@ -67,7 +66,6 @@ final class ProductBrowseViewModel {
         }
     }
     
-    @MainActor
     func updateProductList() async {
         let toggledProductSubTypeFilters = Set(productSubTypeFilters.filter({ $0.isToggled }).map({ $0.category }))
         
@@ -81,7 +79,6 @@ final class ProductBrowseViewModel {
         areProductsFiltered = true
     }
     
-    @MainActor
     private func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem<String>]) {
         var uniqueProductTypes = Set<String>()
         var uniqueProductSubTypes = Set<String>()
@@ -101,7 +98,6 @@ final class ProductBrowseViewModel {
         return (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters)
     }
     
-    @MainActor
     private func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem<String>>.Change?, productSubTypeFilters: [FilteredItem<String>],
                                                     productTypeByProductSubType: [String: String]) async -> [FilteredItem<String>] {
         switch insertion {
