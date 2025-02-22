@@ -280,7 +280,7 @@ private struct CardFiltersView: View {
     }
 }
 
-private struct CardFilterView<T: Equatable, Content: View>: View {
+private struct CardFilterView<T: Equatable & Sendable, Content: View>: View {
     @Binding var filters: [FilteredItem<T>]
     let filterInfo: String
     let gridItemCount: Int
