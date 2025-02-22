@@ -74,7 +74,6 @@ private struct SettingsView: View {
         return Double(fileCacheSizeInBytes) / (1024 * 1024)
     }
     
-    @MainActor
     private func reCalculateCacheSizes() {
         isDeleting = true
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {

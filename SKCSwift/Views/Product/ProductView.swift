@@ -113,14 +113,17 @@ private struct ProductStatsView: View {
     init(productID: String, productName: String, rarities: [String], cards: [Card]) {
         self.productID = productID
         self.productName = productName
-        
-        rarityData = rarities
+        (rarityData, mstData, monsterColorData, monsterAttributeData) = ProductStatsView.productData(rarities: rarities, cards: cards)
+    }
+    
+    private static nonisolated func productData(rarities: [String], cards: [Card]) -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
+        let rarityData = rarities
             .reduce(into: [String: Int]()) { counts, rarity in
                 counts[rarity.cardRarityShortHand(), default: 0] += 1
             }
             .map { ChartData(name: $0.key, count: $0.value) }
         
-        mstData = cards
+        let mstData = cards
             .reduce(into: [String: Int]()) { counts, card in
                 if card.attribute == .spell || card.attribute == .trap {
                     counts[card.attribute.rawValue, default: 0] += 1
@@ -130,7 +133,7 @@ private struct ProductStatsView: View {
             }
             .map { ChartData(name: $0.key, count: $0.value) }
         
-        monsterColorData = cards
+        let monsterColorData = cards
             .filter { $0.attribute != .spell && $0.attribute != .trap }
             .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
             .reduce(into: [String: Int]()) { counts, color in
@@ -138,12 +141,14 @@ private struct ProductStatsView: View {
             }
             .map { ChartData(name: $0.key, count: $0.value) }
         
-        monsterAttributeData = cards
+        let monsterAttributeData = cards
             .filter { $0.attribute != .spell && $0.attribute != .trap }
             .reduce(into: [String: Int]()) { counts, card in
                 counts[card.cardAttribute!, default: 0] += 1
             }
             .map { ChartData(name: $0.key, count: $0.value) }
+        
+        return (rarityData, mstData, monsterColorData, monsterAttributeData)
     }
     
     var body: some View {
