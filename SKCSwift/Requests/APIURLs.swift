@@ -37,7 +37,7 @@ struct RequestHelper {
     static let HEART_API_YT_UPLOADS_ENDPOINT: StaticString = "/api/v1/yt/channel/uploads"
 }
 
-fileprivate func createURL(components: URLComponents) -> URL {
+fileprivate nonisolated func createURL(components: URLComponents) -> URL {
     guard let url = components.url else {
         fatalError("URL is incorrect")
     }
@@ -46,7 +46,7 @@ fileprivate func createURL(components: URLComponents) -> URL {
 
 // SKC API URL creation methods
 
-private func baseURLComponents(host: String, path: String, queryItems: [URLQueryItem] = []) -> URLComponents {
+private nonisolated func baseURLComponents(host: String, path: String, queryItems: [URLQueryItem] = []) -> URLComponents {
     var components = URLComponents()
     components.scheme = "https"
     components.host = host
@@ -56,7 +56,7 @@ private func baseURLComponents(host: String, path: String, queryItems: [URLQuery
     return components
 }
 
-func cardInfoURL(cardID: String) -> URL {
+nonisolated func cardInfoURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: String(format: RequestHelper.SKC_API_CARD_INFORMATION_ENDPOINT.description, cardID),
@@ -66,7 +66,7 @@ func cardInfoURL(cardID: String) -> URL {
     return createURL(components: components)
 }
 
-func productInfoURL(productID: String) -> URL {
+nonisolated func productInfoURL(productID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: String(format: RequestHelper.SKC_API_PRODUCT_INFORMATION_ENDPOINT.description, productID)
@@ -75,7 +75,7 @@ func productInfoURL(productID: String) -> URL {
     return createURL(components: components)
 }
 
-func productsURL() -> URL {
+nonisolated func productsURL() -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_PRODUCTS_ENDPOINT.description
@@ -84,7 +84,7 @@ func productsURL() -> URL {
     return createURL(components: components)
 }
 
-func cardBrowseCriteriaURL() -> URL {
+nonisolated func cardBrowseCriteriaURL() -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_CARD_BROWSE_CRITERIA_ENDPOINT.description
@@ -92,7 +92,7 @@ func cardBrowseCriteriaURL() -> URL {
     return createURL(components: components)
 }
 
-func cardBrowseURL(attributes: [String], colors: [String], levels: [String]) -> URL {
+nonisolated func cardBrowseURL(attributes: [String], colors: [String], levels: [String]) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_CARD_BROWSE_ENDPOINT.description,
@@ -106,7 +106,7 @@ func cardBrowseURL(attributes: [String], colors: [String], levels: [String]) -> 
     return createURL(components: components)
 }
 
-func searchCardURL(cardName: String) -> URL {
+nonisolated func searchCardURL(cardName: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_SEARCH_ENDPOINT.description,
@@ -123,7 +123,7 @@ func searchCardURL(cardName: String) -> URL {
     return createURL(components: components)
 }
 
-func dbStatsURL() -> URL {
+nonisolated func dbStatsURL() -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_DB_STATS_ENDPOINT.description
@@ -131,7 +131,7 @@ func dbStatsURL() -> URL {
     return createURL(components: components)
 }
 
-func banListDatesURL(format: String) -> URL {
+nonisolated func banListDatesURL(format: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_BAN_LIST_DATES_ENDPOINT.description,
@@ -143,7 +143,7 @@ func banListDatesURL(format: String) -> URL {
 
 // SKC Suggestion Engine URL creation methods
 
-func cardSuggestionsURL(cardID: String) -> URL {
+nonisolated func cardSuggestionsURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description, cardID)
@@ -151,7 +151,7 @@ func cardSuggestionsURL(cardID: String) -> URL {
     return createURL(components: components)
 }
 
-func cardSupportURL(cardID: String) -> URL {
+nonisolated func cardSupportURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardID)
@@ -159,7 +159,7 @@ func cardSupportURL(cardID: String) -> URL {
     return createURL(components: components)
 }
 
-func productSuggestionsURL(productID: String) -> URL {
+nonisolated func productSuggestionsURL(productID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT.description, productID)
@@ -167,7 +167,7 @@ func productSuggestionsURL(productID: String) -> URL {
     return createURL(components: components)
 }
 
-func cardOfTheDayURL() -> URL {
+nonisolated func cardOfTheDayURL() -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT.description
@@ -175,7 +175,7 @@ func cardOfTheDayURL() -> URL {
     return createURL(components: components)
 }
 
-func trendingUrl(resource: TrendingResourceType) -> URL {
+nonisolated func trendingUrl(resource: TrendingResourceType) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT.description, resource.rawValue)
@@ -183,7 +183,7 @@ func trendingUrl(resource: TrendingResourceType) -> URL {
     return createURL(components: components)
 }
 
-func cardDetailsUrl() -> URL {
+nonisolated func cardDetailsUrl() -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_DETAILS_ENDPOINT.description
@@ -193,7 +193,7 @@ func cardDetailsUrl() -> URL {
 
 // Heart API URL creation methods
 
-func upcomingEventsURL() -> URL {
+nonisolated func upcomingEventsURL() -> URL {
     let components = baseURLComponents(
         host: RequestHelper.HEART_API_BASE_URL.description,
         path: RequestHelper.HEART_API_EVENT_ENDPOINT.description,
@@ -203,7 +203,7 @@ func upcomingEventsURL() -> URL {
     return createURL(components: components)
 }
 
-func ytUploadsURL(ytChannelId: String) -> URL {
+nonisolated func ytUploadsURL(ytChannelId: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.HEART_API_BASE_URL.description,
         path: RequestHelper.HEART_API_YT_UPLOADS_ENDPOINT.description,
