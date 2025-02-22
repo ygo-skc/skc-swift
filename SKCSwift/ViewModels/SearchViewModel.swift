@@ -42,9 +42,8 @@ final class SearchViewModel {
             searchResults.removeAll()
             searchResultsIds.removeAll()
         } else {
-            dataTaskStatus = .pending
-            
             task = Task {
+                dataTaskStatus = .pending
                 switch await data(searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
                 case .success(let cards):
                     if cards.isEmpty {
