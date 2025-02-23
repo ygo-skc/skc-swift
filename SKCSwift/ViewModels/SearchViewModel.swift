@@ -59,6 +59,31 @@ fileprivate final actor SearchResultsActor {
     }
 }
 
+fileprivate final actor TrendingResultsActor {
+    private var recentlyViewedCardInfo = [String: Card]()
+    
+    fileprivate func fetchRecentlyViewedDetails(newCardIDs newRecentlyViewed: [String]) async -> [Card] {
+        if let body = recentlyViewedRequestBody(newRecentlyViewed: newRecentlyViewed) {
+            switch await data(cardDetailsUrl(), reqBody: body, resType: CardDetailsResponse.self, httpMethod: "POST") {
+            case .success(let cardDetails):
+                recentlyViewedCardInfo = cardDetails.cardInfo
+                return newRecentlyViewed.map{ cardDetails.cardInfo[$0] }.compactMap{ $0 }
+            case .failure(_): break
+            }
+        }
+        return newRecentlyViewed.map{ recentlyViewedCardInfo[$0] }.compactMap{ $0 }
+    }
+    
+    /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
+    private func recentlyViewedRequestBody(newRecentlyViewed: [String]) -> CardDetailsRequest? {
+        let newRecentlyViewedSet = Set(newRecentlyViewed)
+        if newRecentlyViewedSet != Set(recentlyViewedCardInfo.values.map { $0.cardID })  {
+            return CardDetailsRequest(cardIDs: newRecentlyViewedSet)
+        }
+        return nil
+    }
+}
+
 @MainActor
 @Observable
 final class SearchViewModel {
@@ -75,7 +100,7 @@ final class SearchViewModel {
     
     // recently browsed state
     @ObservationIgnored
-    private var recentlyViewedCardDetailsResponse: CardDetailsResponse?
+    private let trendingResultsActor = TrendingResultsActor()
     private(set) var recentlyViewedCardDetails = [Card]()
     
     func newSearchSubject(oldValue: String,newValue: String) async {
@@ -91,22 +116,7 @@ final class SearchViewModel {
     }
     
     func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
-        if let body = recentlyViewedRequestBody(newHistory: newHistory, previousCardDetails: recentlyViewedCardDetails) {
-            switch await data(cardDetailsUrl(), reqBody: body, resType: CardDetailsResponse.self, httpMethod: "POST") {
-            case .success(let cardDetails):
-                recentlyViewedCardDetailsResponse = cardDetails
-                recentlyViewedCardDetails = newHistory.map{ cardDetails.cardInfo[$0.id] }.compactMap{ $0 }
-            case .failure(_): break
-            }
-        }
-    }
-    
-    /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
-    private nonisolated func recentlyViewedRequestBody(newHistory: [History], previousCardDetails: [Card]) -> CardDetailsRequest? {
         let recentlyViewedCardIDs = newHistory.map { $0.id }
-        if Set(recentlyViewedCardIDs) != Set(previousCardDetails.map { $0.cardID })  {
-            return CardDetailsRequest(cardIDs: recentlyViewedCardIDs)
-        }
-        return nil
+        recentlyViewedCardDetails = await trendingResultsActor.fetchRecentlyViewedDetails(newCardIDs: recentlyViewedCardIDs)
     }
 }
