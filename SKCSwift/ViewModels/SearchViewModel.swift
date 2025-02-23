@@ -7,6 +7,58 @@
 
 import Foundation
 
+fileprivate final actor SearchResultsActor {
+    private var cardIDs: Set<String> = []
+    private var results: [SearchResults] = []
+    private var task: Task<([SearchResults], NetworkError?), any Error>?
+    
+    fileprivate func search(newValue: String) async -> ([SearchResults], NetworkError?) {
+        task?.cancel()
+        if newValue == "" {
+            async let _ = reset()
+            return ([], nil)
+        }
+        
+        task = Task {
+            switch await data(searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
+            case .success(let cards):
+                if cards.isEmpty {
+                    async let _ = reset()
+                    return ([], NetworkError.notFound)
+                }
+                await partitionResults(newSearchResults: cards)
+                return (results, nil)
+            case .failure(let err):
+                return (results, err)
+            }
+        }
+        return try! await task?.value ?? (results, nil)
+    }
+    
+    private func reset() async {
+        cardIDs.removeAll()
+        results.removeAll()
+    }
+    
+    private func partitionResults(newSearchResults newResults: [Card]) async {
+        var sections: [String] = []
+        var cardIDs: Set<String> = []
+        
+        let newResultsByCardID = newResults.reduce(into: [String: [Card]]()) { results, card in
+            let section = card.cardColor
+            results[section, default: []].append(card)
+            if !sections.contains(section) {
+                sections.append(section)
+            }
+            cardIDs.insert(card.cardID)
+        }
+        
+        if self.cardIDs != cardIDs {
+            results = sections.map { SearchResults(section: $0, results: newResultsByCardID[$0]!) }
+        }
+    }
+}
+
 @MainActor
 @Observable
 final class SearchViewModel {
@@ -18,52 +70,24 @@ final class SearchViewModel {
     
     @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
-    
     @ObservationIgnored
-    private var searchResultsIds = [String]()
-    @ObservationIgnored
-    private var task: Task<(), any Error>?
+    private let searchResultsActor = SearchResultsActor()
     
     // recently browsed state
-    private(set) var recentlyViewedCardDetailsResponse: CardDetailsResponse?
+    @ObservationIgnored
+    private var recentlyViewedCardDetailsResponse: CardDetailsResponse?
     private(set) var recentlyViewedCardDetails = [Card]()
     
-    func newSearchSubject(oldValue: String, newValue: String) async {
-        if requestError != .notFound || (requestError == .notFound && oldValue.count > newValue.count) {
-            requestError = nil
+    func newSearchSubject(oldValue: String,newValue: String) async {
+        if requestError == .notFound && newValue.starts(with: oldValue) {
+            return
         }
         
-        if let task {
-            task.cancel()
-        }
+        requestError = nil
         
-        if newValue == "" {
-            task = nil
-            searchResults.removeAll()
-            searchResultsIds.removeAll()
-        } else {
-            task = Task {
-                dataTaskStatus = .pending
-                switch await data(searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
-                case .success(let cards):
-                    if cards.isEmpty {
-                        searchResults.removeAll()
-                        searchResultsIds.removeAll()
-                        requestError = .notFound
-                    } else {
-                        let (searchResultsIds, searchResults, shouldUpdateUI) = await partitionResults(newSearchResults: cards,
-                                                                                                       previousResultsIDs: searchResultsIds)
-                        if shouldUpdateUI {
-                            self.searchResultsIds = searchResultsIds
-                            self.searchResults = searchResults
-                        }
-                    }
-                case .failure(let error):
-                    requestError = error
-                }
-                dataTaskStatus = .done
-            }
-        }
+        dataTaskStatus = .pending
+        (searchResults, requestError) = await searchResultsActor.search(newValue: newValue)
+        dataTaskStatus = .done
     }
     
     func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
@@ -84,21 +108,5 @@ final class SearchViewModel {
             return CardDetailsRequest(cardIDs: recentlyViewedCardIDs)
         }
         return nil
-    }
-    
-    private nonisolated func partitionResults(newSearchResults: [Card], previousResultsIDs: [String]) async -> ([String], [SearchResults], Bool) {
-        var sections = [String]()
-        var searchResultsIds = [String]()
-        let results = newSearchResults.reduce(into: [String: [Card]]()) { results, card in
-            let section = card.cardColor
-            results[section, default: []].append(card)
-            if !sections.contains(section) {
-                sections.append(section)
-            }
-            searchResultsIds.append(card.cardID)
-        }
-        
-        let shouldUpdateUI = previousResultsIDs != searchResultsIds
-        return (searchResultsIds, sections.map { SearchResults(section: $0, results: results[$0]!) }, shouldUpdateUI)
     }
 }
