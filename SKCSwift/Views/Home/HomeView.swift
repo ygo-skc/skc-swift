@@ -14,11 +14,23 @@ struct HomeView: View {
         NavigationStack(path: $model.navigationPath) {
             ScrollView {
                 VStack(spacing: 30) {
-                    DBStatsView(model: model)
-                    CardOfTheDayView(model: model)
-                    UpcomingTCGProductsView(model: model)
-                    YouTubeUploadsView(model: model)
-                        .if(model.upcomingTCGProducts == nil) { view in
+                    DBStatsView(dbStats: model.dbStats,
+                                isDataLoaded: model.dataTaskStatus[.dbStats, default: .uninitiated] == .done,
+                                networkError: model.requestErrors[.dbStats, default: nil],
+                                retryCB: model.fetchDBStatsData)
+                    CardOfTheDayView(cotd: model.cardOfTheDay,
+                                     isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
+                                     networkError: model.requestErrors[.cardOfTheDay, default: nil],
+                                     retryCB: model.fetchCardOfTheDayData)
+                    UpcomingTCGProductsView(events: model.upcomingTCGProducts,
+                                            isDataLoaded: model.dataTaskStatus[.upcomingTCGProducts, default: .uninitiated] == .done,
+                                            networkError: model.requestErrors[.upcomingTCGProducts, default: nil],
+                                            retryCB: model.fetchUpcomingTCGProducts)
+                    YouTubeUploadsView(ytUplaods: model.ytUploads,
+                                       isDataLoaded: model.dataTaskStatus[.youtubeUploads, default: .uninitiated] == .done,
+                                       networkError: model.requestErrors[.youtubeUploads, default: nil],
+                                       retryCB: model.fetchYouTubeUploadsData)
+                        .if(model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] != .done) { view in
                             view.hidden()
                         }
                 }
@@ -41,11 +53,11 @@ struct HomeView: View {
             .refreshable {
                 // below code is needed else refreshable task will be cancelled https://stackoverflow.com/questions/74977787/why-is-async-task-cancelled-in-a-refreshable-modifier-on-a-scrollview-ios-16
                 await Task(priority: .userInitiated) {
-                    await model.fetchData(refresh: true)
+                    await model.fetchData(forceRefresh: true)
                 }.value
             }
             .task(priority: .userInitiated) {
-                await model.fetchData(refresh: false)
+                await model.fetchData(forceRefresh: false)
             }
         }
     }

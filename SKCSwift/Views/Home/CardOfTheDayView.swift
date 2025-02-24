@@ -8,35 +8,38 @@
 import SwiftUI
 
 struct CardOfTheDayView: View {
-    let model: HomeViewModel
+    let cotd: CardOfTheDay
+    let isDataLoaded: Bool
+    let networkError: NetworkError?
+    let retryCB: () async -> Void
     
     private static let IMAGE_SIZE: CGFloat = 90
     
     var body: some View {
-        NavigationLink(value: CardLinkDestinationValue(cardID: model.cardOfTheDay?.card.cardID ?? "", cardName: model.cardOfTheDay?.card.cardName ?? ""), label: {
+        NavigationLink(value: CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName), label: {
             SectionView(
                 header: "Card of the day",
                 content: {
-                    if let networkError = model.requestErrors[.cardOfTheDay, default: nil] {
-                        NetworkErrorView(error: networkError, action: { Task { await model.fetchCardOfTheDayData() } })
-                    } else {
-                        HStack(alignment: .top, spacing: 20) {
-                            if let card = model.cardOfTheDay?.card {
-                                CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: card.cardID, imgSize: .tiny, cardColor: card.cardColor)
+                    HStack(alignment: .top, spacing: 20) {
+                        if let networkError {
+                            NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+                        } else {
+                            if isDataLoaded || cotd.card.cardID != "" {
+                                CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
                                     .equatable()
                             } else {
                                 PlaceholderView(width: CardOfTheDayView.IMAGE_SIZE, height: CardOfTheDayView.IMAGE_SIZE, radius: CardOfTheDayView.IMAGE_SIZE)
                             }
                             VStack(alignment: .leading, spacing: 5) {
-                                if let cardOfTheDay = model.cardOfTheDay {
-                                    InlineDateView(date: cardOfTheDay.date)
+                                if isDataLoaded ||  cotd.card.cardID != "" {
+                                    InlineDateView(date: cotd.date)
                                         .equatable()
-                                    Text(cardOfTheDay.card.cardName)
+                                    Text(cotd.card.cardName)
                                         .lineLimit(2)
                                         .font(.headline)
                                         .fontWeight(.semibold)
                                     
-                                    Text(cardOfTheDay.card.cardType)
+                                    Text(cotd.card.cardType)
                                         .font(.headline)
                                         .foregroundColor(.secondary)
                                         .lineLimit(1)
@@ -53,19 +56,33 @@ struct CardOfTheDayView: View {
             .contentShape(Rectangle())
         })
         .buttonStyle(.plain)
-        .disabled(model.cardOfTheDay == nil && model.requestErrors[HomeViewModel.HomeModelDataType.cardOfTheDay] == nil)
+        .disabled(!isDataLoaded && networkError == nil)
     }
 }
 
-#Preview {
-    let model = HomeViewModel()
-    CardOfTheDayView(model: model)
+#Preview("Default") {
+    NavigationStack {
+        CardOfTheDayView(cotd: CardOfTheDay(date: "2025-02-24", version: 1,
+                                            card: Card(cardID: "68762510", cardName: "Lucky Pied Piper", cardColor: "Effect", cardAttribute: "Wind" , cardEffect: "")),
+                         isDataLoaded: true, networkError: nil, retryCB: {})
+        .padding(.horizontal)
+    }
 }
 
-#Preview {
-    let model = HomeViewModel()
-    CardOfTheDayView(model: model)
-        .task {
-            await model.fetchCardOfTheDayData()
-        }
+#Preview("Loading") {
+    NavigationStack {
+        CardOfTheDayView(cotd: CardOfTheDay(date: "2025-02-24", version: 1,
+                                            card: Card(cardID: "68762510", cardName: "Lucky Pied Piper", cardColor: "Effect", cardAttribute: "Wind" , cardEffect: "")),
+                         isDataLoaded: false, networkError: nil, retryCB: {})
+        .padding(.horizontal)
+    }
+}
+
+#Preview("Network Error") {
+    NavigationStack {
+        CardOfTheDayView(cotd: CardOfTheDay(date: "2025-02-24", version: 1,
+                                            card: Card(cardID: "68762510", cardName: "Lucky Pied Piper", cardColor: "Effect", cardAttribute: "Wind" , cardEffect: "")),
+                         isDataLoaded: false, networkError: .timeout, retryCB: {})
+        .padding(.horizontal)
+    }
 }

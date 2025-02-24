@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct DBStatsView: View {
-    let model: HomeViewModel
+    let dbStats: SKCDatabaseStats
+    let isDataLoaded: Bool
+    let networkError: NetworkError?
+    let retryCB: () async -> Void
     
     var body: some View {
         SectionView(header: "Content",
                     content: {
-            if let networkError = model.requestErrors[.dbStats, default: nil] {
-                NetworkErrorView(error: networkError, action: { Task { await model.fetchDBStatsData() } })
-            } else {
-                VStack(spacing: 5) {
+            VStack(spacing: 5) {
+                if let networkError {
+                    NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+                } else {
                     Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
                         .font(.callout)
                         .multilineTextAlignment(.center)
@@ -26,9 +29,9 @@ struct DBStatsView: View {
                         .font(.headline)
                     HStack {
                         Group {
-                            DBStatView(count: model.dbStats?.cardTotal, stat: "Cards")
-                            DBStatView(count: model.dbStats?.banListTotal, stat: "Ban Lists")
-                            DBStatView(count: model.dbStats?.productTotal, stat: "Products")
+                            DBStatView(count: (isDataLoaded) ? dbStats.cardTotal : -1, stat: "Cards")
+                            DBStatView(count: (isDataLoaded) ? dbStats.banListTotal : -1, stat: "Ban Lists")
+                            DBStatView(count: (isDataLoaded) ? dbStats.productTotal : -1, stat: "Products")
                         }
                         .padding(.horizontal)
                     }
@@ -47,25 +50,25 @@ struct DBStatsView: View {
                     .font(.footnote)
                     .multilineTextAlignment(.center)
                 }
-                .frame(maxWidth: .infinity)
             }
+            .frame(maxWidth: .infinity)
         })
     }
 }
 
 private struct DBStatView: View {
-    let count: String?
+    let count: Int
     let stat: String
     
-    init(count: Int?, stat: String) {
-        self.count = count?.decimal
+    init(count: Int, stat: String) {
+        self.count = count
         self.stat = stat
     }
     
     var body: some View {
         VStack {
-            if let count {
-                Text(count)
+            if count >= 0 {
+                Text(count.decimal)
                     .font(.title3)
             } else {
                 PlaceholderView(width: 25, height: 20, radius: 5)
@@ -77,15 +80,26 @@ private struct DBStatView: View {
     }
 }
 
-#Preview {
-    let model = HomeViewModel()
-    DBStatsView(model: model)
+#Preview("Default") {
+    DBStatsView(dbStats: SKCDatabaseStats(productTotal: 313, cardTotal: 13000, banListTotal: 67),
+                isDataLoaded: true, networkError: nil, retryCB: {})
+    .padding(.horizontal)
 }
 
-#Preview {
-    let model = HomeViewModel()
-    DBStatsView(model: model)
-        .task {
-            await model.fetchDBStatsData()
-        }
+#Preview("Loading") {
+    DBStatsView(dbStats: SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0),
+                isDataLoaded: false, networkError: nil, retryCB: {})
+    .padding(.horizontal)
+}
+
+#Preview("Loaded - No Content") {
+    DBStatsView(dbStats: SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0),
+                isDataLoaded: true, networkError: nil, retryCB: {})
+    .padding(.horizontal)
+}
+
+#Preview("Network Error") {
+    DBStatsView(dbStats: SKCDatabaseStats(productTotal: 313, cardTotal: 13000, banListTotal: 67),
+                isDataLoaded: true, networkError: .timeout, retryCB: {})
+    .padding(.horizontal)
 }
