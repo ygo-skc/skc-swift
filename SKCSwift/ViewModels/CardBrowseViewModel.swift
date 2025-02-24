@@ -74,12 +74,14 @@ final class CardBrowseViewModel {
     private let cardBrowseActor = CardBrowseActor()
     
     func fetchCardBrowseCriteria() async {
+        criteriaError = nil
         criteriaStatus = .pending
         (filters, criteriaError) = await cardBrowseActor.fetchCriteria(filters: filters)
         criteriaStatus = .done
     }
     
     func fetchCards() async {
+        dataError = nil
         dataStatus = .pending
         (cards, dataError) = await cardBrowseActor.fetchCards(filters: filters)
         dataStatus = .done
