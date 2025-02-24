@@ -95,6 +95,10 @@ final class CardViewModel {
         requestErrors[.support] = nil
     }
     
+    func suggestionRequestHasErrors() -> Bool {
+        return requestErrors[.suggestions] != nil && requestErrors[.support] != nil
+    }
+    
     enum CardModelDataType {
         case card, suggestions, support
     }

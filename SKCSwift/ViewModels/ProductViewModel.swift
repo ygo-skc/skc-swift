@@ -62,6 +62,10 @@ final class ProductViewModel {
         requestErrors[.suggestions] = nil
     }
     
+    func suggestionRequestHasErrors() -> Bool {
+        return requestErrors[.suggestions] != nil
+    }
+    
     enum ProductModelDataType {
         case product, suggestions
     }

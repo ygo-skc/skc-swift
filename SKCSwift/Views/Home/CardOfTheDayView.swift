@@ -53,7 +53,7 @@ struct CardOfTheDayView: View {
             .contentShape(Rectangle())
         })
         .buttonStyle(.plain)
-        .disabled(model.cardOfTheDay == nil)
+        .disabled(model.cardOfTheDay == nil && model.requestErrors[HomeViewModel.HomeModelDataType.cardOfTheDay] == nil)
     }
 }
 

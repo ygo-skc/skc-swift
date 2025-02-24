@@ -24,11 +24,13 @@ struct TrendingView: View {
                     .pickerStyle(.segmented)
                     
                     
-                    switch model.focusedTrend {
-                    case .card:
-                        TrendingCardsView(trendingCards: model.cards)
-                    case .product:
-                        TrendingProductsView(trendingProducts: model.products)
+                    if model.trendingRequestErrors[model.focusedTrend, default: nil] == nil  {
+                        switch model.focusedTrend {
+                        case .card:
+                            TrendingCardsView(trendingCards: model.cards)
+                        case .product:
+                            TrendingProductsView(trendingProducts: model.products)
+                        }
                     }
                 })
                 .modifier(ParentViewModifier())
@@ -36,28 +38,20 @@ struct TrendingView: View {
             .scrollDisabled(model.trendingRequestErrors[model.focusedTrend] != nil)
         }
         .overlay {
-            if !Set([.uninitiated, .pending]).isDisjoint(with: Set(model.trendingDataTaskStatuses.values)) {
-                ProgressView("Loading...")
-                    .controlSize(.large)
-            }
-            
-            switch model.focusedTrend {
-            case .card:
-                if let networkError = model.trendingRequestErrors[model.focusedTrend, default: nil] {
-                    NetworkErrorView(error: networkError, action: {
-                        Task {
+            if let networkError = model.trendingRequestErrors[model.focusedTrend, default: nil] {
+                NetworkErrorView(error: networkError, action: {
+                    Task {
+                        switch model.focusedTrend {
+                        case .card:
                             await model.fetchTrendingCards(forceRefresh: true)
-                        }
-                    })
-                }
-            case .product:
-                if let networkError = model.trendingRequestErrors[model.focusedTrend, default: nil] {
-                    NetworkErrorView(error: networkError, action: {
-                        Task {
+                        case .product:
                             await model.fetchTrendingProducts(forceRefresh: true)
                         }
-                    })
-                }
+                    }
+                })
+            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(model.trendingDataTaskStatuses[model.focusedTrend])  {
+                ProgressView("Loading...")
+                    .controlSize(.large)
             }
         }
         .task(priority: .userInitiated) {
