@@ -45,7 +45,8 @@ struct BrowseView: View {
                 switch focusedResource {
                 case .card:
                     CardBrowseOverlay(criteriaRequestStatus: cardBrowseViewModel.criteriaStatus,
-                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil,
+                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil
+                                      && cardBrowseViewModel.dataError == nil,
                                       criteriaRequestError: cardBrowseViewModel.criteriaError, dataRequestError: cardBrowseViewModel.dataError,
                                       retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
                 case .product:
