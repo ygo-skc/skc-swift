@@ -45,7 +45,8 @@ struct BrowseView: View {
                 switch focusedResource {
                 case .card:
                     CardBrowseOverlay(criteriaRequestStatus: cardBrowseViewModel.criteriaStatus,
-                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil,
+                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil
+                                      && cardBrowseViewModel.dataError == nil,
                                       criteriaRequestError: cardBrowseViewModel.criteriaError, dataRequestError: cardBrowseViewModel.dataError,
                                       retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
                 case .product:
@@ -203,9 +204,9 @@ private struct ProductFiltersView: View {
     @Binding var productSubTypeFilters: [FilteredItem<String>]
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack {
             Text("Product filters")
-                .font(.headline)
+                .font(.title)
             Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
                 .font(.callout)
                 .padding(.bottom)
@@ -258,9 +259,9 @@ private struct CardFiltersView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack {
                 Text("Card filters")
-                    .font(.headline)
+                    .font(.title)
                 Text("Filter cards by using card metadata")
                     .font(.callout)
                     .padding(.bottom)
@@ -280,7 +281,7 @@ private struct CardFiltersView: View {
     }
 }
 
-private struct CardFilterView<T: Equatable, Content: View>: View {
+private struct CardFilterView<T: Equatable & Sendable, Content: View>: View {
     @Binding var filters: [FilteredItem<T>]
     let filterInfo: String
     let gridItemCount: Int

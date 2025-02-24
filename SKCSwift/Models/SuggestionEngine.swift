@@ -52,7 +52,7 @@ struct CardOfTheDay: Codable, Equatable {
 }
 
 struct CardDetailsRequest: Codable {
-    let cardIDs: [String]
+    let cardIDs: Set<String>
 }
 
 struct CardDetailsResponse: Codable {

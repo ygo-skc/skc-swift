@@ -64,19 +64,65 @@ private struct ProductInfoView: View {
     let productID: String
     let product: Product?
     
+    @State private var chartData: ([ChartData], [ChartData], [ChartData], [ChartData])?
     @State private var showStats = false
+    
+    public nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
+        return await Task.detached {
+            let rarities = productContents.flatMap { $0.rarities }
+            let cards = productContents.compactMap { $0.card }
+            
+            let rarityData = rarities
+                .reduce(into: [String: Int]()) { counts, rarity in
+                    counts[rarity.cardRarityShortHand(), default: 0] += 1
+                }
+                .map { ChartData(name: $0.key, count: $0.value) }
+            
+            let mstData = cards
+                .reduce(into: [String: Int]()) { counts, card in
+                    if card.attribute == .spell || card.attribute == .trap {
+                        counts[card.attribute.rawValue, default: 0] += 1
+                    } else {
+                        counts["Monster", default: 0] += 1
+                    }
+                }
+                .map { ChartData(name: $0.key, count: $0.value) }
+            
+            let monsterColorData = cards
+                .filter { $0.attribute != .spell && $0.attribute != .trap }
+                .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
+                .reduce(into: [String: Int]()) { counts, color in
+                    counts[color, default: 0] += 1
+                }
+                .map { ChartData(name: $0.key, count: $0.value) }
+            
+            let monsterAttributeData = cards
+                .filter { $0.attribute != .spell && $0.attribute != .trap }
+                .reduce(into: [String: Int]()) { counts, card in
+                    counts[card.cardAttribute!, default: 0] += 1
+                }
+                .map { ChartData(name: $0.key, count: $0.value) }
+            
+            return (rarityData, mstData, monsterColorData, monsterAttributeData)
+        }.value
+    }
     
     var body: some View {
         VStack{
             ProductImageView(width: 150, productID: productID, imgSize: .small)
                 .padding(.vertical)
-            if let product = product, let contents = product.productContent {
+            if let product = product, let productContents = product.productContent {
                 Text([product.productId, product.productType, product.productSubType].joined(separator: " | "))
                     .font(.headline)
                 InlineDateView(date: product.productReleaseDate)
                 
                 Button {
                     showStats = true
+                    if chartData == nil {
+                        Task {
+                            await chartData = productData(productContents: productContents)
+                        }
+                    }
                 } label: {
                     Label("Metrics", systemImage: "chart.bar.fill")
                         .frame(width: 200)
@@ -84,7 +130,12 @@ private struct ProductInfoView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.large)
                 .sheet(isPresented: $showStats, onDismiss: {showStats = false}) {
-                    ProductStatsView(productID: product.productId, productName: product.productName, rarities: contents.flatMap { $0.rarities }, cards: contents.compactMap { $0.card })
+                    if let data = chartData {
+                        ProductStatsView(productID: product.productId, productName: product.productName, data: data)
+                    } else {
+                        ProgressView("Loading...")
+                            .controlSize(.large)
+                    }
                 }
                 .padding(.bottom)
                 
@@ -110,40 +161,10 @@ private struct ProductStatsView: View {
     private let monsterColorData: [ChartData]
     private let monsterAttributeData: [ChartData]
     
-    init(productID: String, productName: String, rarities: [String], cards: [Card]) {
+    init(productID: String, productName: String, data: ([ChartData], [ChartData], [ChartData], [ChartData])) {
         self.productID = productID
         self.productName = productName
-        
-        rarityData = rarities
-            .reduce(into: [String: Int]()) { counts, rarity in
-                counts[rarity.cardRarityShortHand(), default: 0] += 1
-            }
-            .map { ChartData(name: $0.key, count: $0.value) }
-        
-        mstData = cards
-            .reduce(into: [String: Int]()) { counts, card in
-                if card.attribute == .spell || card.attribute == .trap {
-                    counts[card.attribute.rawValue, default: 0] += 1
-                } else {
-                    counts["Monster", default: 0] += 1
-                }
-            }
-            .map { ChartData(name: $0.key, count: $0.value) }
-        
-        monsterColorData = cards
-            .filter { $0.attribute != .spell && $0.attribute != .trap }
-            .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
-            .reduce(into: [String: Int]()) { counts, color in
-                counts[color, default: 0] += 1
-            }
-            .map { ChartData(name: $0.key, count: $0.value) }
-        
-        monsterAttributeData = cards
-            .filter { $0.attribute != .spell && $0.attribute != .trap }
-            .reduce(into: [String: Int]()) { counts, card in
-                counts[card.cardAttribute!, default: 0] += 1
-            }
-            .map { ChartData(name: $0.key, count: $0.value) }
+        (rarityData, mstData, monsterColorData, monsterAttributeData) = data
     }
     
     var body: some View {

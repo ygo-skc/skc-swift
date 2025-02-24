@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 @Observable
 final class HomeViewModel {
     private(set) var requestErrors: [HomeModelDataType: NetworkError?] = [:]
@@ -24,7 +25,6 @@ final class HomeViewModel {
     @ObservationIgnored
     private var lastRefreshTimestamp: Date?
     
-    @MainActor
     func fetchData(refresh: Bool) async {
         if lastRefreshTimestamp == nil || (refresh && lastRefreshTimestamp!.isDateInvalidated(5)) {
             await withTaskGroup(of: Void.self) { taskGroup in
@@ -37,8 +37,8 @@ final class HomeViewModel {
         }
     }
     
-    @MainActor
     func fetchDBStatsData() async {
+        requestErrors[.dbStats] = nil
         switch await data(dbStatsURL(), resType: SKCDatabaseStats.self) {
         case .success(let dbStats):
             self.dbStats = dbStats
@@ -48,8 +48,8 @@ final class HomeViewModel {
         }
     }
     
-    @MainActor
     func fetchCardOfTheDayData() async {
+        requestErrors[.cardOfTheDay] = nil
         switch await data(cardOfTheDayURL(), resType: CardOfTheDay.self) {
         case .success(let cardOfTheDay):
             self.cardOfTheDay = cardOfTheDay
@@ -59,8 +59,8 @@ final class HomeViewModel {
         }
     }
     
-    @MainActor
     func fetchUpcomingTCGProducts() async {
+        requestErrors[.upcomingTCGProducts] = nil
         switch await data(upcomingEventsURL(), resType: Events.self) {
         case .success(let upcomingTCGProducts):
             self.upcomingTCGProducts = upcomingTCGProducts.events
@@ -70,8 +70,8 @@ final class HomeViewModel {
         }
     }
     
-    @MainActor
     func fetchYouTubeUploadsData() async {
+        requestErrors[.youtubeUploads] = nil
         switch await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self) {
         case .success(let uploadData):
             self.ytUploads = uploadData.videos
@@ -81,17 +81,22 @@ final class HomeViewModel {
         }
     }
     
-    @MainActor
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {
-        let path = url.relativePath
-        if path.contains("/card/") {
-            navigationPath.append(CardLinkDestinationValue(cardID: path.replacingOccurrences(of: "/card/", with: ""), cardName: ""))
-            return .handled
-        } else if path.contains("/product/") {
-            navigationPath.append(ProductLinkDestinationValue(productID: path.replacingOccurrences(of: "/product/", with: ""), productName: ""))
+        let (destination, type) = determineTypeOfURLClick(path: url.relativePath)
+        if let destination {
+            type == "product" ?  navigationPath.append(ProductLinkDestinationValue(productID: destination, productName: "")) : navigationPath.append(CardLinkDestinationValue(cardID: destination, cardName: ""))
             return .handled
         }
         return .systemAction
+    }
+    
+    private nonisolated func determineTypeOfURLClick(path: String) -> (String?, String) {
+        if path.contains("/card/") {
+            return (path.replacingOccurrences(of: "/card/", with: ""), "card")
+        } else if path.contains("/product/") {
+            return (path.replacingOccurrences(of: "/product/", with: ""), "product")
+        }
+        return( nil, "")
     }
     
     enum HomeModelDataType {

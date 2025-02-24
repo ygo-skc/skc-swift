@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FilteredItem<T: Equatable>: Equatable, Identifiable {
+struct FilteredItem<T: Equatable & Sendable>: Equatable, Identifiable, Sendable {
     let category: T
     var isToggled: Bool
     var disableToggle: Bool
@@ -17,7 +17,7 @@ struct FilteredItem<T: Equatable>: Equatable, Identifiable {
     }
 }
 
-struct CardFilters: Equatable {
+struct CardFilters: Equatable, Sendable {
     var attributes: [FilteredItem<String>]
     var colors: [FilteredItem<String>]
     var levels: [FilteredItem<UInt8>]

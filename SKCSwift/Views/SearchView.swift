@@ -26,19 +26,21 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                switch (searchModel.dataTaskStatus, searchModel.requestError) {
+                switch (searchModel.searchStatus, searchModel.searchError) {
                 case (.done, .notFound), (.pending, .notFound):
                     ContentUnavailableView.search
                 case (.done, _) where searchModel.searchText.isEmpty,
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails, hasHistory: !history.isEmpty)
+                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails, hasHistory: !history.isEmpty,
+                                           taskStatus: searchModel.recentlyViewedStatus, requestError: searchModel.recentlyViewedError,
+                                           retryCB: {await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))})
                     } else {
                         TrendingView(model: trendingModel)
                     }
                 case (.done, _), (.pending, _):
-                    if let error = searchModel.requestError, error != .cancelled {
+                    if let error = searchModel.searchError, error != .cancelled {
                         NetworkErrorView(error: error, action: {
                             Task {
                                 await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)
@@ -81,6 +83,9 @@ struct SearchView: View {
 private struct RecentlyViewedView: View {
     let recentCards: [Card]
     let hasHistory: Bool
+    let taskStatus: DataTaskStatus
+    let requestError: NetworkError?
+    let retryCB: () async -> Void
     
     var body: some View {
         ScrollView {
@@ -107,13 +112,24 @@ private struct RecentlyViewedView: View {
         }
         .frame(maxWidth: .infinity)
         .overlay {
-            if !hasHistory {
-                ContentUnavailableView {
-                    Label("Type to search 😉", systemImage: "text.magnifyingglass")
+            if let requestError {
+                NetworkErrorView(error: requestError, action: {
+                    Task {
+                        await retryCB()
+                    }
+                })
+            } else {
+                switch taskStatus {
+                case .uninitiated, .pending:
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                case .done where !hasHistory:
+                    ContentUnavailableView {
+                        Label("Type to search 😉", systemImage: "text.magnifyingglass")
+                    }
+                default:
+                    EmptyView()
                 }
-            } else if recentCards.isEmpty {
-                ProgressView("Loading...")
-                    .controlSize(.large)
             }
         }
     }

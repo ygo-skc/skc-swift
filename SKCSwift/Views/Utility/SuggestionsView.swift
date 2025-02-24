@@ -18,6 +18,7 @@ struct CardSuggestionsView: View {
                 subjectType: .card,
                 areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
                 hasSuggestions: model.hasSuggestions(),
+                hasError: model.suggestionRequestHasErrors(),
                 namedMaterials: model.namedMaterials ?? [],
                 namedReferences: model.namedReferences ?? [],
                 referencedBy: model.referencedBy ?? [],
@@ -73,6 +74,7 @@ struct ProductCardSuggestionsView: View {
                 subjectType: .product,
                 areSuggestionsLoaded: model.suggestions != nil,
                 hasSuggestions: model.hasSuggestions(),
+                hasError: model.suggestionRequestHasErrors(),
                 namedMaterials: model.suggestions?.suggestions.namedMaterials ?? [],
                 namedReferences: model.suggestions?.suggestions.namedReferences ?? [],
                 referencedBy: model.suggestions?.support.referencedBy ?? [],
@@ -111,6 +113,7 @@ private struct SuggestionsView: View {
     
     let areSuggestionsLoaded: Bool
     let hasSuggestions: Bool
+    let hasError: Bool
     let namedMaterials: [CardReference]
     let namedReferences: [CardReference]
     let referencedBy: [CardReference]
@@ -260,10 +263,8 @@ struct CarouselItemViewModifier: ViewModifier {
                         value: geometry.size.height
                     )
                 })
-            .onPreferenceChange(SuggestionHeightPreferenceKey.self) { h in
-                Task { @MainActor in
-                    height = h
-                }
+            .onPreferenceChange(SuggestionHeightPreferenceKey.self) { [$height] h in
+                $height.wrappedValue = h
             }
     }
 }

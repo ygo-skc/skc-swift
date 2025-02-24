@@ -7,96 +7,123 @@
 
 import Foundation
 
-@Observable
-final class SearchViewModel {
-    var isSearching = false
-    var searchText = ""
+fileprivate final actor SearchResultsActor {
+    private var cardIDs: Set<String> = []
+    private var results: [SearchResults] = []
+    private var task: Task<([SearchResults], NetworkError?), any Error>?
     
-    private(set) var dataTaskStatus = DataTaskStatus.uninitiated
-    private(set) var requestError: NetworkError?
-    
-    @ObservationIgnored
-    private(set) var searchResults = [SearchResults]()
-    
-    @ObservationIgnored
-    private var searchResultsIds = [String]()
-    @ObservationIgnored
-    private var task: Task<(), any Error>?
-    
-    // recently browsed state
-    private(set) var recentlyViewedCardDetailsResponse: CardDetailsResponse?
-    private(set) var recentlyViewedCardDetails = [Card]()
-    
-    @MainActor
-    func newSearchSubject(oldValue: String, newValue: String) async {
-        if requestError != .notFound || (requestError == .notFound && oldValue.count > newValue.count) {
-            requestError = nil
-        }
-        
-        if let task {
-            task.cancel()
-        }
-        
+    fileprivate func search(newValue: String) async -> ([SearchResults], NetworkError?) {
+        task?.cancel()
         if newValue == "" {
-            task = nil
-            searchResults.removeAll()
-            searchResultsIds.removeAll()
-        } else {
-            dataTaskStatus = .pending
-            
-            task = Task {
-                switch await data(searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
-                case .success(let cards):
-                    if cards.isEmpty {
-                        searchResults.removeAll()
-                        searchResultsIds.removeAll()
-                        requestError = .notFound
-                    } else {
-                        let (sections, searchResultsIds, results, shouldUpdateUI) = await partitionResults(cards)
-                        if (shouldUpdateUI) {
-                            searchResults.removeAll()
-                            self.searchResultsIds = searchResultsIds
-                            for section in sections {
-                                searchResults.append(SearchResults(section: section, results: results[section]!))
-                            }
-                        }
-                    }
-                case .failure(let error):
-                    requestError = error
+            async let _ = reset()
+            return ([], nil)
+        }
+        
+        task = Task {
+            switch await data(searchCardURL(cardName: newValue.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
+            case .success(let cards):
+                if cards.isEmpty {
+                    async let _ = reset()
+                    return ([], NetworkError.notFound)
                 }
-                dataTaskStatus = .done
+                await partitionResults(newSearchResults: cards)
+                return (results, nil)
+            case .failure(let err):
+                return (results, err)
             }
         }
+        return try! await task?.value ?? (results, nil)
     }
     
-    @MainActor
-    func fetchRecentlyViewedDetails(recentlyViewed: [History]) async {
-        let recentlyViewedCardIDs = recentlyViewed.map { $0.id }
-        // check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
-        if Set(recentlyViewedCardIDs) != Set(recentlyViewedCardDetails.map { $0.cardID }) {
-            let body = CardDetailsRequest(cardIDs: recentlyViewedCardIDs)
-            switch await data(cardDetailsUrl(), reqBody: body, resType: CardDetailsResponse.self, httpMethod: "POST") {
-            case .success(let cardDetails):
-                recentlyViewedCardDetailsResponse = cardDetails
-            case .failure(_): break
-            }
-        }
-        recentlyViewedCardDetails = recentlyViewed.map{ recentlyViewedCardDetailsResponse?.cardInfo[$0.id] }.compactMap{ $0 }
+    private func reset() async {
+        cardIDs.removeAll()
+        results.removeAll()
     }
     
-    private func partitionResults(_ cards: [Card]) async -> ([String], [String],  [String : [Card]], Bool) {
-        var sections = [String]()
-        var searchResultsIds = [String]()
-        let results = cards.reduce(into: [String: [Card]]()) { results, card in
+    private func partitionResults(newSearchResults newResults: [Card]) async {
+        var sections: [String] = []
+        var cardIDs: Set<String> = []
+        
+        let newResultsByCardID = newResults.reduce(into: [String: [Card]]()) { results, card in
             let section = card.cardColor
             results[section, default: []].append(card)
             if !sections.contains(section) {
                 sections.append(section)
             }
-            searchResultsIds.append(card.cardID)
+            cardIDs.insert(card.cardID)
         }
         
-        let shouldUpdateUI = self.searchResultsIds.count != searchResultsIds.count || self.searchResultsIds != searchResultsIds
-        return (sections, searchResultsIds, results, shouldUpdateUI)
+        if self.cardIDs != cardIDs {
+            results = sections.map { SearchResults(section: $0, results: newResultsByCardID[$0]!) }
+        }
+    }
+}
+
+fileprivate final actor TrendingResultsActor {
+    private var recentlyViewedCardInfo = [String: Card]()
+    
+    fileprivate func fetchRecentlyViewedDetails(newCardIDs newRecentlyViewed: [String]) async -> ([Card], NetworkError?){
+        if let body = recentlyViewedRequestBody(newRecentlyViewed: newRecentlyViewed) {
+            switch await data(cardDetailsUrl(), reqBody: body, resType: CardDetailsResponse.self, httpMethod: "POST") {
+            case .success(let cardDetails):
+                recentlyViewedCardInfo = cardDetails.cardInfo
+                return (newRecentlyViewed.map{ cardDetails.cardInfo[$0] }.compactMap{ $0 }, nil)
+            case .failure(let error):
+                return ([], error)
+            }
+        }
+        return (newRecentlyViewed.map{ recentlyViewedCardInfo[$0] }.compactMap{ $0 }, nil)
+    }
+    
+    /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
+    private func recentlyViewedRequestBody(newRecentlyViewed: [String]) -> CardDetailsRequest? {
+        let newRecentlyViewedSet = Set(newRecentlyViewed)
+        if newRecentlyViewedSet != Set(recentlyViewedCardInfo.values.map { $0.cardID })  {
+            return CardDetailsRequest(cardIDs: newRecentlyViewedSet)
+        }
+        return nil
+    }
+}
+
+@MainActor
+@Observable
+final class SearchViewModel {
+    var isSearching = false
+    var searchText = ""
+    
+    private(set) var searchStatus = DataTaskStatus.uninitiated
+    private(set) var searchError: NetworkError?
+    
+    private(set) var recentlyViewedStatus = DataTaskStatus.uninitiated
+    private(set) var recentlyViewedError: NetworkError?
+    
+    @ObservationIgnored
+    private(set) var searchResults = [SearchResults]()
+    @ObservationIgnored
+    private let searchResultsActor = SearchResultsActor()
+    
+    // recently browsed state
+    @ObservationIgnored
+    private let trendingResultsActor = TrendingResultsActor()
+    private(set) var recentlyViewedCardDetails = [Card]()
+    
+    func newSearchSubject(oldValue: String,newValue: String) async {
+        if searchError == .notFound && newValue.starts(with: oldValue) {
+            return
+        }
+        
+        searchError = nil
+        searchStatus = .pending
+        (searchResults, searchError) = await searchResultsActor.search(newValue: newValue)
+        searchStatus = .done
+    }
+    
+    func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
+        let recentlyViewedCardIDs = newHistory.map { $0.id }
+        
+        recentlyViewedError = nil
+        recentlyViewedStatus = .pending
+        (recentlyViewedCardDetails, recentlyViewedError) = await trendingResultsActor.fetchRecentlyViewedDetails(newCardIDs: recentlyViewedCardIDs)
+        recentlyViewedStatus = .done
     }
 }

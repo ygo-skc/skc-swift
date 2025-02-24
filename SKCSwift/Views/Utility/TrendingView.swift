@@ -24,15 +24,13 @@ struct TrendingView: View {
                     .pickerStyle(.segmented)
                     
                     
-                    switch model.focusedTrend {
-                    case .card:
-                        TrendingCardsView(trendingCards: model.cards,
-                                          networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
-                                          refreshAction: model.fetchTrendingCards)
-                    case .product:
-                        TrendingProductsView(trendingProducts: model.products,
-                                             networkError: model.trendingRequestErrors[model.focusedTrend, default: nil],
-                                             refreshAction: model.fetchTrendingProducts)
+                    if model.trendingRequestErrors[model.focusedTrend, default: nil] == nil  {
+                        switch model.focusedTrend {
+                        case .card:
+                            TrendingCardsView(trendingCards: model.cards)
+                        case .product:
+                            TrendingProductsView(trendingProducts: model.products)
+                        }
                     }
                 })
                 .modifier(ParentViewModifier())
@@ -40,7 +38,18 @@ struct TrendingView: View {
             .scrollDisabled(model.trendingRequestErrors[model.focusedTrend] != nil)
         }
         .overlay {
-            if !Set([.uninitiated, .pending]).isDisjoint(with: Set(model.trendingDataTaskStatuses.values)) {
+            if let networkError = model.trendingRequestErrors[model.focusedTrend, default: nil] {
+                NetworkErrorView(error: networkError, action: {
+                    Task {
+                        switch model.focusedTrend {
+                        case .card:
+                            await model.fetchTrendingCards(forceRefresh: true)
+                        case .product:
+                            await model.fetchTrendingProducts(forceRefresh: true)
+                        }
+                    }
+                })
+            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(model.trendingDataTaskStatuses[model.focusedTrend])  {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }
@@ -56,31 +65,20 @@ struct TrendingView: View {
 
 private struct TrendingCardsView: View {
     var trendingCards: [TrendingMetric<Card>]
-    var networkError: NetworkError?
-    var refreshAction: (Bool) async -> Void
     
     var body: some View {
-        if let networkError {
-            NetworkErrorView(error: networkError, action: {
-                Task {
-                    await refreshAction(true)
-                }
-            })
-            .padding(.top, 20)
-        } else {
-            VStack {
-                ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
-                    let card = m.resource
-                    NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                            CardListItemView(card: card)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    })
-                    .dynamicTypeSize(...DynamicTypeSize.medium)
-                    .buttonStyle(.plain)
-                }
+        VStack {
+            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
+                let card = m.resource
+                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
+                })
+                .dynamicTypeSize(...DynamicTypeSize.medium)
+                .buttonStyle(.plain)
             }
         }
     }
@@ -88,17 +86,8 @@ private struct TrendingCardsView: View {
 
 private struct TrendingProductsView: View {
     let trendingProducts: [TrendingMetric<Product>]
-    var networkError: NetworkError?
-    var refreshAction: (Bool) async -> Void
     
-    var body: some View {if let networkError {
-        NetworkErrorView(error: networkError, action: {
-            Task {
-                await refreshAction(true)
-            }
-        })
-        .padding(.top, 20)
-    } else {
+    var body: some View {
         VStack {
             ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
@@ -113,7 +102,6 @@ private struct TrendingProductsView: View {
                 .buttonStyle(.plain)
             }
         }
-    }
     }
 }
 

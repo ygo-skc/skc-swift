@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 @Observable
 final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
@@ -23,23 +24,22 @@ final class TrendingViewModel {
     
     private static let invalidateDataThreshold = 5
     
-    @MainActor
     func fetchTrendingCards(forceRefresh: Bool = false) async {
         await fetchTrendingData(forceRefresh: forceRefresh, resource: .card) {
             await data(trendingUrl(resource: .card), resType: Trending<Card>.self)
         }
     }
     
-    @MainActor
     func fetchTrendingProducts(forceRefresh: Bool = false) async {
         await fetchTrendingData(forceRefresh: forceRefresh, resource: .product) {
             await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
         }
     }
     
-    @MainActor
-    private func fetchTrendingData<T: Codable>(forceRefresh: Bool, resource: TrendingResourceType, dataFetcher: @escaping @MainActor () async -> Result<Trending<T>, NetworkError>) async {
+    private func fetchTrendingData<T: Codable>(forceRefresh: Bool, resource: TrendingResourceType,
+                                               dataFetcher: @MainActor () async -> Result<Trending<T>, NetworkError>) async {
         if forceRefresh || trendingDataLastFetched[.product, default: .distantPast].isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
+            trendingRequestErrors[resource] = nil
             trendingDataTaskStatuses[resource] = .pending
             switch await dataFetcher() {
             case .success(let trending):
