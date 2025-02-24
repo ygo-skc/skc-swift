@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct UpcomingTCGProductsView: View {
+struct UpcomingTCGProductsView: View, Equatable {
+    nonisolated static func == (lhs: UpcomingTCGProductsView, rhs: UpcomingTCGProductsView) -> Bool {
+        lhs.events == rhs.events && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+    }
+    
     let events: [Event]
     let isDataLoaded: Bool
     let networkError: NetworkError?

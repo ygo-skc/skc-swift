@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct CardOfTheDayView: View {
+struct CardOfTheDayView: View, Equatable {
+    nonisolated static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
+        lhs.cotd == rhs.cotd && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+    }
+    
     let cotd: CardOfTheDay
     let isDataLoaded: Bool
     let networkError: NetworkError?

@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct YouTubeUploadsView: View {
+struct YouTubeUploadsView: View, Equatable {
+    nonisolated static func == (lhs: YouTubeUploadsView, rhs: YouTubeUploadsView) -> Bool {
+        lhs.ytUplaods == rhs.ytUplaods && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+    }
+    
     let ytUplaods: [YouTubeVideos]
     let isDataLoaded: Bool
     let networkError: NetworkError?

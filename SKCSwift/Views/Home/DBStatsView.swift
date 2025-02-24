@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct DBStatsView: View {
+struct DBStatsView: View, Equatable {
+    nonisolated static func == (lhs: DBStatsView, rhs: DBStatsView) -> Bool {
+        lhs.dbStats == rhs.dbStats && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+    }
+    
     let dbStats: SKCDatabaseStats
     let isDataLoaded: Bool
     let networkError: NetworkError?

@@ -18,21 +18,28 @@ struct HomeView: View {
                                 isDataLoaded: model.dataTaskStatus[.dbStats, default: .uninitiated] == .done,
                                 networkError: model.requestErrors[.dbStats, default: nil],
                                 retryCB: model.fetchDBStatsData)
+                    .equatable()
+                    
                     CardOfTheDayView(cotd: model.cardOfTheDay,
                                      isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
                                      networkError: model.requestErrors[.cardOfTheDay, default: nil],
                                      retryCB: model.fetchCardOfTheDayData)
+                    .equatable()
+                    
                     UpcomingTCGProductsView(events: model.upcomingTCGProducts,
                                             isDataLoaded: model.dataTaskStatus[.upcomingTCGProducts, default: .uninitiated] == .done,
                                             networkError: model.requestErrors[.upcomingTCGProducts, default: nil],
                                             retryCB: model.fetchUpcomingTCGProducts)
+                    .equatable()
+                    
                     YouTubeUploadsView(ytUplaods: model.ytUploads,
                                        isDataLoaded: model.dataTaskStatus[.youtubeUploads, default: .uninitiated] == .done,
                                        networkError: model.requestErrors[.youtubeUploads, default: nil],
                                        retryCB: model.fetchYouTubeUploadsData)
-                        .if(model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] != .done) { view in
-                            view.hidden()
-                        }
+                    .equatable()
+                    .if(model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] != .done) { view in
+                        view.hidden()
+                    }
                 }
                 .toolbar {
                     Button {
