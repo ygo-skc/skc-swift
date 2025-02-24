@@ -39,6 +39,7 @@ final class TrendingViewModel {
     private func fetchTrendingData<T: Codable>(forceRefresh: Bool, resource: TrendingResourceType,
                                                dataFetcher: @MainActor () async -> Result<Trending<T>, NetworkError>) async {
         if forceRefresh || trendingDataLastFetched[.product, default: .distantPast].isDateInvalidated(TrendingViewModel.invalidateDataThreshold) {
+            trendingRequestErrors[resource] = nil
             trendingDataTaskStatuses[resource] = .pending
             switch await dataFetcher() {
             case .success(let trending):

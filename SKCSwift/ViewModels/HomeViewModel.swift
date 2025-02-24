@@ -38,6 +38,7 @@ final class HomeViewModel {
     }
     
     func fetchDBStatsData() async {
+        requestErrors[.dbStats] = nil
         switch await data(dbStatsURL(), resType: SKCDatabaseStats.self) {
         case .success(let dbStats):
             self.dbStats = dbStats
@@ -48,6 +49,7 @@ final class HomeViewModel {
     }
     
     func fetchCardOfTheDayData() async {
+        requestErrors[.cardOfTheDay] = nil
         switch await data(cardOfTheDayURL(), resType: CardOfTheDay.self) {
         case .success(let cardOfTheDay):
             self.cardOfTheDay = cardOfTheDay
@@ -58,6 +60,7 @@ final class HomeViewModel {
     }
     
     func fetchUpcomingTCGProducts() async {
+        requestErrors[.upcomingTCGProducts] = nil
         switch await data(upcomingEventsURL(), resType: Events.self) {
         case .success(let upcomingTCGProducts):
             self.upcomingTCGProducts = upcomingTCGProducts.events
@@ -68,6 +71,7 @@ final class HomeViewModel {
     }
     
     func fetchYouTubeUploadsData() async {
+        requestErrors[.youtubeUploads] = nil
         switch await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self) {
         case .success(let uploadData):
             self.ytUploads = uploadData.videos
