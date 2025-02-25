@@ -12,7 +12,7 @@ import SwiftUI
 @Observable
 final class HomeViewModel {
     private(set) var dataTaskStatus: [HomeModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: HomeModelDataType.allCases.map { ($0, .uninitiated) })
-    private(set) var requestErrors: [HomeModelDataType: NetworkError?] = [:]
+    private(set) var requestErrors = [HomeModelDataType: NetworkError?]()
     
     @ObservationIgnored
     private(set) var dbStats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)

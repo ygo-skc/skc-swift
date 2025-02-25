@@ -26,21 +26,31 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                switch (searchModel.searchStatus, searchModel.searchError) {
+                switch (searchModel.dataTaskStatus[.search, default: .uninitiated], searchModel.requestErrors[.search, default: nil]) {
                 case (.done, .notFound), (.pending, .notFound):
                     ContentUnavailableView.search
                 case (.done, _) where searchModel.searchText.isEmpty,
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails, hasHistory: !history.isEmpty,
-                                           taskStatus: searchModel.recentlyViewedStatus, requestError: searchModel.recentlyViewedError,
+                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails,
+                                           hasHistory: !history.isEmpty,
+                                           taskStatus: searchModel.dataTaskStatus[.recentlyViewed, default: .uninitiated],
+                                           requestError: searchModel.requestErrors[.recentlyViewed, default: nil],
                                            retryCB: {await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))})
+                        .equatable()
                     } else {
-                        TrendingView(model: trendingModel)
+                        TrendingView(focusedTrend: $trendingModel.focusedTrend,
+                                     cards: trendingModel.cards,
+                                     products: trendingModel.products,
+                                     trendingDataTaskStatuses: trendingModel.trendingDataTaskStatuses,
+                                     trendingRequestErrors: trendingModel.trendingRequestErrors,
+                                     fetchTrendingCards: trendingModel.fetchTrendingCards,
+                                     fetchTrendingProducts: trendingModel.fetchTrendingProducts)
+                        .equatable()
                     }
                 case (.done, _), (.pending, _):
-                    if let error = searchModel.searchError, error != .cancelled {
+                    if let error = searchModel.requestErrors[.search, default: nil], error != .cancelled {
                         NetworkErrorView(error: error, action: {
                             Task {
                                 await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)
@@ -80,7 +90,11 @@ struct SearchView: View {
     SearchView()
 }
 
-private struct RecentlyViewedView: View {
+private struct RecentlyViewedView: View, Equatable {
+    nonisolated static func == (lhs: RecentlyViewedView, rhs: RecentlyViewedView) -> Bool {
+        lhs.recentCards == rhs.recentCards && lhs.hasHistory == rhs.hasHistory && lhs.taskStatus == rhs.taskStatus && lhs.requestError == rhs.requestError
+    }
+    
     let recentCards: [Card]
     let hasHistory: Bool
     let taskStatus: DataTaskStatus
