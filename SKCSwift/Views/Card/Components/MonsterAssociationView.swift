@@ -104,7 +104,7 @@ private struct PendulumAssociationView: View, Equatable {
     }
 }
 
-private struct RankAssociationView: View, Equatable {
+struct RankAssociationView: View, Equatable {
     var rank: UInt8
     var variant: IconVariant
     
