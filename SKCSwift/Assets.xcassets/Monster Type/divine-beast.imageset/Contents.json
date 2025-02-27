@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "divine-beast.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

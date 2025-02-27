@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "insect.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
