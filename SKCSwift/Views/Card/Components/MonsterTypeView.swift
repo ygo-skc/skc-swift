@@ -12,7 +12,7 @@ struct MonsterTypeView: View {
     let variant: IconVariant
     
     init(monsterType: MonsterType, variant: IconVariant = .large) {
-        img = (monsterType == .unknown) ? Image(systemName: "questionmark.circle.fill") : Image(monsterType.rawValue.lowercased())
+        img = (monsterType == .unknown) ? Image(systemName: "questionmark.circle.fill") : Image(monsterType.rawValue.lowercased().replacingOccurrences(of: " ", with: "-"))
         self.variant = variant
     }
     

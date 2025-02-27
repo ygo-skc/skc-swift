@@ -272,6 +272,9 @@ private struct CardFiltersView: View {
                 CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
                     CardColorIndicatorView(cardColor: category, variant: .large)
                 }
+                CardFilterView(filters: $filters.monsterTypes, filterInfo: "Filter by monster type") { monsterType in
+                    MonsterTypeView(monsterType: monsterType, variant: .large)
+                }
                 CardFilterView(filters: $filters.levels, filterInfo: "Filter by monster level", gridItemCount: 4) { level in
                     LevelAssociationView(level: level, variant: .regular)
                 }

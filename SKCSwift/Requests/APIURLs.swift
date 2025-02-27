@@ -92,13 +92,15 @@ nonisolated func cardBrowseCriteriaURL() -> URL {
     return createURL(components: components)
 }
 
-nonisolated func cardBrowseURL(attributes: [String], colors: [String], levels: [String], ranks: [String], linkRatings: [String]) -> URL {
+nonisolated func cardBrowseURL(attributes: [String], colors: [String], monsterTypes: [String],
+                               levels: [String], ranks: [String], linkRatings: [String]) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_CARD_BROWSE_ENDPOINT.description,
         queryItems: [
             URLQueryItem(name: "attributes", value: attributes.joined(separator: ",")),
             URLQueryItem(name: "cardColors", value: colors.joined(separator: ",")),
+            URLQueryItem(name: "monsterTypes", value: monsterTypes.joined(separator: ",")),
             URLQueryItem(name: "levels", value: levels.joined(separator: ",")),
             URLQueryItem(name: "ranks", value: ranks.joined(separator: ",")),
             URLQueryItem(name: "linkRatings", value: linkRatings.joined(separator: ","))
