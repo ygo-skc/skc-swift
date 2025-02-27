@@ -72,37 +72,7 @@ struct HomeView: View {
 
 private struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
-    
-    // in MB
-    @State var networkCacheSize: Double = 0
-    @State var fileCacheSize: Double = 0
-    @State var isDeleting = false
-    
-    private let fileManager = FileManager.default
-    
-    private func calculateFileCacheSize() -> Double {
-        var fileCacheSizeInBytes: UInt64 = 0
-        if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
-            do {
-                fileCacheSizeInBytes = try cacheDirectory.calculateDirectorySize(manager: fileManager)
-            } catch {
-                print("Error calculating cache size: \(error.localizedDescription)")
-            }
-        }
-        
-        return Double(fileCacheSizeInBytes) / (1024 * 1024)
-    }
-    
-    private func reCalculateCacheSizes() {
-        isDeleting = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-            Task {
-                networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
-                fileCacheSize = calculateFileCacheSize()
-                isDeleting = false
-            }
-        }
-    }
+    @State private var model = SettingsViewModel()
     
     var body: some View {
         ScrollView {
@@ -112,28 +82,18 @@ private struct SettingsView: View {
                 SectionView(header: "Data",
                             content: {
                     SettingsModule(
-                        moduleHeader: "Network Cache (~\(String(format: "%.2f", networkCacheSize)) MB)",
-                        moduleFootnote: "Cache data is used to speed up loading times and improve performance.") {
-                            URLCache.shared.removeAllCachedResponses()
-                            reCalculateCacheSizes()
-                        } label: {
+                        moduleHeader: "Network Cache (~\(String(format: "%.2f", model.networkCacheSize)) MB)",
+                        moduleFootnote: "Cache data is used to speed up loading times and improve performance.",
+                        action: model.deleteNetworkCache) {
                             Label("Delete Network Cache", systemImage: "trash.fill")
                                 .frame(maxWidth: .infinity)
                         }
                         .padding(.bottom)
                     
                     SettingsModule(
-                        moduleHeader: "Cache Files (~\(String(format: "%.2f", fileCacheSize)) MB)",
-                        moduleFootnote: "This will also delete network cache.") {
-                            if let cacheDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first {
-                                do {
-                                    try cacheDirectory.deleteContents(manager: fileManager)
-                                    reCalculateCacheSizes()
-                                } catch {
-                                    print("Error calculating cache size: \(error.localizedDescription)")
-                                }
-                            }
-                        } label: {
+                        moduleHeader: "Cache Files (~\(String(format: "%.2f", model.fileCacheSize)) MB)",
+                        moduleFootnote: "This will also delete network cache.",
+                        action: model.deleteFileCache) {
                             Label("Delete File Cache", systemImage: "trash.fill")
                                 .frame(maxWidth: .infinity)
                         }
@@ -142,24 +102,21 @@ private struct SettingsView: View {
                     SettingsModule(
                         moduleHeader: "Recently Viewed History",
                         moduleFootnote: "Recently viewed data facilitates going back to previously viewed items. Deleting this means you will lose access to this data accross all devices.") {
-                            try? modelContext.delete(model: History.self)
-                            reCalculateCacheSizes()
-                            try? modelContext.save()
+                            model.deleteHistoryData(modelContext: modelContext)
                         } label: {
                             Label("Delete History", systemImage: "trash.fill")
                                 .frame(maxWidth: .infinity)
                         }
                 })
             }
-            .allowsHitTesting(!isDeleting)
+            .allowsHitTesting(!model.isDeleting)
             .modifier(ParentViewModifier())
         }
         .task {
-            networkCacheSize = Double(URLCache.shared.currentDiskUsage) / (1024 * 1024)
-            fileCacheSize = calculateFileCacheSize()
+            await model.calculateDataUsage()
         }
         .overlay {
-            if isDeleting {
+            if model.isDeleting {
                 ProgressView("Deleting...")
                     .controlSize(.large)
             }
