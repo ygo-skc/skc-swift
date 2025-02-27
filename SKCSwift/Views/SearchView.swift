@@ -27,8 +27,6 @@ struct SearchView: View {
         NavigationStack {
             VStack {
                 switch (searchModel.dataTaskStatus[.search, default: .uninitiated], searchModel.requestErrors[.search, default: nil]) {
-                case (.done, .notFound), (.pending, .notFound):
-                    ContentUnavailableView.search
                 case (.done, _) where searchModel.searchText.isEmpty,
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
@@ -50,16 +48,19 @@ struct SearchView: View {
                         .equatable()
                     }
                 case (.done, _), (.pending, _):
-                    if let error = searchModel.requestErrors[.search, default: nil], error != .cancelled {
-                        NetworkErrorView(error: error, action: {
-                            Task {
-                                await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)
-                            }
-                        })
-                    } else {
-                        SearchResultsView(searchResults: searchModel.searchResults)
-                            .equatable()
-                    }
+                    SearchResultsView(searchResults: searchModel.searchResults)
+                        .equatable()
+                }
+            }
+            .overlay {
+                if searchModel.requestErrors[.search, default: nil] == .notFound {
+                    ContentUnavailableView.search
+                } else if let error = searchModel.requestErrors[.search, default: nil], error != .cancelled {
+                    NetworkErrorView(error: error, action: {
+                        Task {
+                            await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)
+                        }
+                    })
                 }
             }
             .onAppear {
@@ -70,7 +71,8 @@ struct SearchView: View {
             .ygoNavigationDestination()
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
+            .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching,
+                        placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
             
         }
         .transaction {
@@ -116,10 +118,10 @@ private struct RecentlyViewedView: View, Equatable {
                                 }
                                 .groupBoxStyle(.listItem)
                             })
-                            .dynamicTypeSize(...DynamicTypeSize.medium)
                             .buttonStyle(.plain)
                         }
                     }
+                    .dynamicTypeSize(...DynamicTypeSize.medium)
                 })
                 .modifier(ParentViewModifier())
             }
@@ -160,6 +162,7 @@ private struct SearchResultsView: View, Equatable {
                     ForEach(sr.results, id: \.cardID) { card in
                         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                             CardListItemView(card: card)
+                                .equatable()
                         })
                     }
                 }
