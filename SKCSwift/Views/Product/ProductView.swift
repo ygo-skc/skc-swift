@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ProductLinkDestinationView: View {
     let productLinkDestinationValue: ProductLinkDestinationValue
@@ -17,10 +18,20 @@ struct ProductLinkDestinationView: View {
 }
 
 struct ProductView: View {
+    @Environment(\.modelContext) private var modelContext
+    
     @State var model: ProductViewModel
+    
+    @Query
+    private var history: [History]
     
     init(productID: String) {
         self.model = .init(productID: productID)
+        
+        _history = Query(
+            filter: #Predicate<History> { h in
+                h.id == productID
+            }, sort: [SortDescriptor(\.timesAccessed, order: .reverse)])
     }
     
     var body: some View {
@@ -57,6 +68,12 @@ struct ProductView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))
+        .onChange(of: model.product) {
+            Task {
+                let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
+                newItem.updateHistoryContext(history: history, modelContext: modelContext)
+            }
+        }
     }
 }
 

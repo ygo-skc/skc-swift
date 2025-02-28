@@ -94,18 +94,8 @@ private struct CardView: View {
         }
         .onChange(of: model.card) {
             Task {
-                /*
-                 If no history, create new instance in table
-                 Else if there is at least one history record for card, update the last modified date and access time for the first record
-                 */
-                if history.isEmpty {
-                    modelContext.insert(History(resource: .card, id: model.cardID, timesAccessed: 1))
-                } else if let h1 = history.first, h1.lastAccessDate.timeIntervalSinceNow(millisConversion: .seconds) >= 3 {
-                    h1.updateAccess()
-                }
-                
-                History.consolidate(history: history, modelContext: modelContext)
-                try? modelContext.save()
+                let newItem = History(resource: .card, id: model.cardID, timesAccessed: 1)
+                newItem.updateHistoryContext(history: history, modelContext: modelContext)
             }
         }
     }
