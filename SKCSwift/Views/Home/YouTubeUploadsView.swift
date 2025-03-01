@@ -29,7 +29,7 @@ struct YouTubeUploadsView: View, Equatable {
                         Text("Did you know I make YouTube videos? Keep tabs on the TCG, watch the best un-boxings on YouTube or watch some dope Master Duel replays. Don't forget to sub.")
                             .font(.callout)
                         
-                        LazyVStack(alignment: .leading, spacing: 5) {
+                        VStack(alignment: .leading, spacing: 5) {
                             ForEach(ytUplaods, id: \.id) { video in
                                 YouTubeUploadView(videoID: video.id, title: video.title, uploadUrl: video.url)
                                     .equatable()
