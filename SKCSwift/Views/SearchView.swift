@@ -48,19 +48,10 @@ struct SearchView: View {
                         .equatable()
                     }
                 case (.done, _), (.pending, _):
-                    SearchResultsView(searchResults: searchModel.searchResults)
-                        .equatable()
-                }
-            }
-            .overlay {
-                if searchModel.requestErrors[.search, default: nil] == .notFound {
-                    ContentUnavailableView.search
-                } else if let error = searchModel.requestErrors[.search, default: nil], error != .cancelled {
-                    NetworkErrorView(error: error, action: {
-                        Task {
-                            await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)
-                        }
-                    })
+                    SearchResultsView(searchResults: searchModel.searchResults,
+                                      requestError: searchModel.requestErrors[.search, default: nil],
+                                      retryCB: {await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)})
+                    .equatable()
                 }
             }
             .onAppear {
@@ -152,22 +143,46 @@ private struct RecentlyViewedView: View, Equatable {
 }
 
 private struct SearchResultsView: View, Equatable {
+    nonisolated static func == (lhs: SearchResultsView, rhs: SearchResultsView) -> Bool {
+        lhs.searchResults == rhs.searchResults && lhs.requestError == rhs.requestError
+    }
+    
     let searchResults: [SearchResults]
+    let requestError: NetworkError?
+    let retryCB: () async -> Void
     
     var body: some View {
-        List(searchResults) { sr in
-            Section(header:  Text(sr.section)
-                .font(.headline)
-                .fontWeight(.black) ) {
-                    ForEach(sr.results, id: \.cardID) { card in
-                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                            CardListItemView(card: card)
-                                .equatable()
-                        })
-                    }
+        VStack {
+            if requestError == nil {
+                List(searchResults) { sr in
+                    Section(header:  Text(sr.section)
+                        .font(.headline)
+                        .fontWeight(.black) ) {
+                            ForEach(sr.results, id: \.cardID) { card in
+                                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                    CardListItemView(card: card)
+                                        .equatable()
+                                })
+                            }
+                        }
                 }
+                .ignoresSafeArea(.keyboard)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay {
+            if let networkError = requestError {
+                if networkError == .notFound {
+                    ContentUnavailableView.search
+                } else if networkError != .cancelled {
+                    NetworkErrorView(error: networkError, action: {
+                        Task {
+                            await retryCB()
+                        }
+                    })
+                }
+            }
         }
         .listStyle(.plain)
-        .ignoresSafeArea(.keyboard)
     }
 }

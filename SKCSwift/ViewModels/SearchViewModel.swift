@@ -29,7 +29,7 @@ fileprivate final actor SearchResultsActor {
                 await partitionResults(newSearchResults: cards)
                 return (results, nil)
             case .failure(let err):
-                return (results, err)
+                return ([], err)
             }
         }
         return try! await task?.value ?? (results, nil)
