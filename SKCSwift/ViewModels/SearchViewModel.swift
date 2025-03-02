@@ -29,7 +29,7 @@ fileprivate final actor SearchResultsActor {
                 await partitionResults(newSearchResults: cards)
                 return (results, nil)
             case .failure(let err):
-                return (results, err)
+                return ([], err)
             }
         }
         return try! await task?.value ?? (results, nil)
@@ -91,11 +91,8 @@ final class SearchViewModel {
     var isSearching = false
     var searchText = ""
     
-    private(set) var searchStatus = DataTaskStatus.uninitiated
-    private(set) var searchError: NetworkError?
-    
-    private(set) var recentlyViewedStatus = DataTaskStatus.uninitiated
-    private(set) var recentlyViewedError: NetworkError?
+    private(set) var dataTaskStatus: [SearchModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: SearchModelDataType.allCases.map { ($0, .uninitiated) })
+    private(set) var requestErrors = [SearchModelDataType: NetworkError?]()
     
     @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
@@ -108,22 +105,26 @@ final class SearchViewModel {
     private(set) var recentlyViewedCardDetails = [Card]()
     
     func newSearchSubject(oldValue: String,newValue: String) async {
-        if searchError == .notFound && newValue.starts(with: oldValue) {
+        if requestErrors[.search] == .notFound && newValue.starts(with: oldValue) {
             return
         }
         
-        searchError = nil
-        searchStatus = .pending
-        (searchResults, searchError) = await searchResultsActor.search(newValue: newValue)
-        searchStatus = .done
+        requestErrors[.search] = nil
+        dataTaskStatus[.search] = .pending
+        (searchResults, requestErrors[.search]) = await searchResultsActor.search(newValue: newValue)
+        dataTaskStatus[.search] = .done
     }
     
     func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
         let recentlyViewedCardIDs = newHistory.map { $0.id }
         
-        recentlyViewedError = nil
-        recentlyViewedStatus = .pending
-        (recentlyViewedCardDetails, recentlyViewedError) = await trendingResultsActor.fetchRecentlyViewedDetails(newCardIDs: recentlyViewedCardIDs)
-        recentlyViewedStatus = .done
+        requestErrors[.recentlyViewed] = nil
+        dataTaskStatus[.recentlyViewed] = .pending
+        (recentlyViewedCardDetails, requestErrors[.recentlyViewed]) = await trendingResultsActor.fetchRecentlyViewedDetails(newCardIDs: recentlyViewedCardIDs)
+        dataTaskStatus[.recentlyViewed] = .done
     }
+}
+
+enum SearchModelDataType: CaseIterable {
+    case search, recentlyViewed
 }

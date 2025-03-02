@@ -7,23 +7,30 @@
 
 import SwiftUI
 
-struct YouTubeUploadsView: View {
-    let model: HomeViewModel
+struct YouTubeUploadsView: View, Equatable {
+    nonisolated static func == (lhs: YouTubeUploadsView, rhs: YouTubeUploadsView) -> Bool {
+        lhs.ytUplaods == rhs.ytUplaods && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+    }
+    
+    let ytUplaods: [YouTubeVideos]
+    let isDataLoaded: Bool
+    let networkError: NetworkError?
+    let retryCB: () async -> Void
     
     var body: some View {
         SectionView(header: "YouTube videos",
                     variant: .plain,
                     content: {
-            if let networkError = model.requestErrors[.youtubeUploads, default: nil] {
-                NetworkErrorView(error: networkError, action: { Task { await model.fetchYouTubeUploadsData() } })
-            } else {
-                VStack {
-                    if let videos = model.ytUploads {
+            VStack {
+                if let networkError {
+                    NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+                } else {
+                    if isDataLoaded || !ytUplaods.isEmpty {
                         Text("Did you know I make YouTube videos? Keep tabs on the TCG, watch the best un-boxings on YouTube or watch some dope Master Duel replays. Don't forget to sub.")
                             .font(.callout)
                         
-                        LazyVStack(alignment: .leading, spacing: 5) {
-                            ForEach(videos, id: \.id) { video in
+                        VStack(alignment: .leading, spacing: 5) {
+                            ForEach(ytUplaods, id: \.id) { video in
                                 YouTubeUploadView(videoID: video.id, title: video.title, uploadUrl: video.url)
                                     .equatable()
                             }
@@ -34,8 +41,8 @@ struct YouTubeUploadsView: View {
                             .controlSize(.large)
                     }
                 }
-                .frame(maxWidth: .infinity)
             }
+            .frame(maxWidth: .infinity)
         })
     }
 }
@@ -81,15 +88,18 @@ private struct YouTubeUploadView: View, Equatable {
     }
 }
 
-#Preview {
-    let model = HomeViewModel()
-    YouTubeUploadsView(model: model)
+#Preview("Default") {
+    YouTubeUploadsView(ytUplaods: [], isDataLoaded: true, networkError: nil, retryCB: {})
+        .padding(.horizontal)
 }
 
-#Preview {
-    let model = HomeViewModel()
-    YouTubeUploadsView(model: model)
-        .task {
-            await model.fetchYouTubeUploadsData()
-        }
+#Preview("Loading") {
+    YouTubeUploadsView(ytUplaods: [], isDataLoaded: false, networkError: nil, retryCB: {})
+        .padding(.horizontal)
 }
+
+#Preview("Network Error") {
+    YouTubeUploadsView(ytUplaods: [], isDataLoaded: true, networkError: .timeout, retryCB: {})
+        .padding(.horizontal)
+}
+

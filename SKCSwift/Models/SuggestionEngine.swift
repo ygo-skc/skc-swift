@@ -30,13 +30,13 @@ struct ProductSuggestions: Codable {
     let support: CardSupport
 }
 
-struct TrendingMetric<R:Codable>: Codable {
+struct TrendingMetric<R:Codable & Equatable>: Codable, Equatable {
     let resource: R
     let occurrences: Int
     let change: Int
 }
 
-struct Trending<R:Codable>: Codable {
+struct Trending<R:Codable & Equatable>: Codable, Equatable {
     let resourceName: TrendingResourceType
     let metrics: [TrendingMetric<R>]
 }

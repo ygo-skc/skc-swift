@@ -7,58 +7,69 @@
 
 import SwiftUI
 
-struct TrendingView: View {
-    @Bindable var model: TrendingViewModel
+struct TrendingView: View, Equatable {
+    nonisolated static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
+        MainActor.assumeIsolated {
+            return lhs.focusedTrend == rhs.focusedTrend && lhs.cards == rhs.cards && lhs.products == rhs.products
+            && lhs.trendingDataTaskStatuses == rhs.trendingDataTaskStatuses && lhs.trendingRequestErrors == rhs.trendingRequestErrors
+        }
+    }
+    
+    @Binding var focusedTrend: TrendingResourceType
+    let cards: [TrendingMetric<Card>]
+    let products: [TrendingMetric<Product>]
+    let trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus]
+    let trendingRequestErrors: [TrendingResourceType: NetworkError?]
+    let fetchTrendingCards: (Bool) async -> Void
+    let fetchTrendingProducts: (Bool) async -> Void
     
     var body: some View {
-        VStack {
-            ScrollView {
-                SectionView(header: "Trending",
-                            variant: .plain,
-                            content: {
-                    Picker("Select Trend Type", selection: $model.focusedTrend) {
-                        ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
-                        }
+        ScrollView {
+            SectionView(header: "Trending",
+                        variant: .plain,
+                        content: {
+                Picker("Select Trend Type", selection: $focusedTrend) {
+                    ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                        Text(type.rawValue.capitalized).tag(type)
                     }
-                    .pickerStyle(.segmented)
-                    
-                    
-                    if model.trendingRequestErrors[model.focusedTrend, default: nil] == nil  {
-                        switch model.focusedTrend {
-                        case .card:
-                            TrendingCardsView(trendingCards: model.cards)
-                        case .product:
-                            TrendingProductsView(trendingProducts: model.products)
-                        }
+                }
+                .pickerStyle(.segmented)
+                
+                
+                if trendingRequestErrors[focusedTrend, default: nil] == nil  {
+                    switch focusedTrend {
+                    case .card:
+                        TrendingCardsView(trendingCards: cards)
+                    case .product:
+                        TrendingProductsView(trendingProducts: products)
                     }
-                })
-                .modifier(ParentViewModifier())
-            }
-            .scrollDisabled(model.trendingRequestErrors[model.focusedTrend] != nil)
+                }
+            })
+            .modifier(ParentViewModifier())
         }
+        .scrollDisabled(trendingRequestErrors[focusedTrend] != nil)
         .overlay {
-            if let networkError = model.trendingRequestErrors[model.focusedTrend, default: nil] {
+            if let networkError = trendingRequestErrors[focusedTrend, default: nil] {
                 NetworkErrorView(error: networkError, action: {
                     Task {
-                        switch model.focusedTrend {
+                        switch focusedTrend {
                         case .card:
-                            await model.fetchTrendingCards(forceRefresh: true)
+                            await fetchTrendingCards(true)
                         case .product:
-                            await model.fetchTrendingProducts(forceRefresh: true)
+                            await fetchTrendingProducts(true)
                         }
                     }
                 })
-            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(model.trendingDataTaskStatuses[model.focusedTrend])  {
+            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingDataTaskStatuses[focusedTrend])  {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }
         }
         .task(priority: .userInitiated) {
-            await model.fetchTrendingCards()
+            await fetchTrendingCards(false)
         }
         .task(priority: .medium) {
-            await model.fetchTrendingProducts()
+            await fetchTrendingProducts(false)
         }
     }
 }
@@ -146,9 +157,9 @@ private struct TrendChangeView: View, Equatable {
     }
 }
 
-#Preview {
-    TrendingView(model: TrendingViewModel())
-}
+//#Preview {
+//    TrendingView(model: TrendingViewModel())
+//}
 
 #Preview("Trend Change Positive") {
     TrendChangeView(position: 1, trendChange: 1, hits: 1040)

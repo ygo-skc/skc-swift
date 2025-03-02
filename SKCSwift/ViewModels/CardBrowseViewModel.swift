@@ -24,8 +24,9 @@ fileprivate actor CardBrowseActor {
     }
     
     fileprivate func fetchCards(filters: CardFilters) async -> ([Card], NetworkError?) {
-        let (attributes, colors, levels) = await determineToggledFilters(filters)
-        switch await data(cardBrowseURL(attributes: attributes, colors: colors, levels: levels), resType: CardBrowseResults.self) {
+        let (attributes, colors, monsterTypes, levels, ranks, linkRatings) = await determineToggledFilters(filters)
+        switch await data(cardBrowseURL(attributes: attributes, colors: colors, monsterTypes: monsterTypes,
+                                        levels: levels, ranks: ranks, linkRatings: linkRatings), resType: CardBrowseResults.self) {
         case .success(let r):
             return (r.results, nil)
         case .failure(let error):
@@ -40,19 +41,32 @@ fileprivate actor CardBrowseActor {
         let cardColorFilters = cardBrowseCriteria.cardColors.map { cardColor in
             FilteredItem(category: cardColor, isToggled: false, disableToggle: false)
         }
+        let monsterTypeFilters = cardBrowseCriteria.monsterTypes.filter{ $0 != "Normal" }.map { monsterType in
+            FilteredItem(category: MonsterType(rawValue: monsterType) ?? .unknown, isToggled: false, disableToggle: false)
+        }
         let monsterLevelFilters = cardBrowseCriteria.levels.map { level in
             FilteredItem(category: level, isToggled: false, disableToggle: false)
         }
+        let monsterRankFilters = cardBrowseCriteria.ranks.map { rank in
+            FilteredItem(category: rank, isToggled: false, disableToggle: false)
+        }
+        let monsterLinkRatingFilter = cardBrowseCriteria.linkRatings.map { linkRating in
+            FilteredItem(category: linkRating, isToggled: false, disableToggle: false)
+        }
         
-        return CardFilters(attributes: attributeFilters, colors: cardColorFilters, levels: monsterLevelFilters)
+        return CardFilters(attributes: attributeFilters, colors: cardColorFilters, monsterTypes: monsterTypeFilters,
+                           levels: monsterLevelFilters, ranks: monsterRankFilters, linkRatings: monsterLinkRatingFilter)
     }
     
-    private func determineToggledFilters(_ filters: CardFilters) async -> ([String], [String], [String]) {
+    private func determineToggledFilters(_ filters: CardFilters) async -> ([String], [String], [String], [String], [String], [String]) {
         let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }
         let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }
+        let monsterTypes = filters.monsterTypes.filter { $0.isToggled }.map{ $0.category.rawValue }
         let levels = filters.levels.filter { $0.isToggled }.map{ String($0.category) }
+        let ranks = filters.ranks.filter { $0.isToggled }.map{ String($0.category) }
+        let linkRatings = filters.linkRatings.filter { $0.isToggled }.map{ String($0.category) }
         
-        return (attributes, colors, levels)
+        return (attributes, colors, monsterTypes, levels, ranks, linkRatings)
     }
 }
 
@@ -60,7 +74,7 @@ fileprivate actor CardBrowseActor {
 @Observable
 final class CardBrowseViewModel {
     var showFilters = false
-    var filters = CardFilters(attributes: [], colors: [], levels: [])
+    var filters = CardFilters()
     
     private(set) var cards: [Card] = []
     

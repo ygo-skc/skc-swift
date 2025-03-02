@@ -11,12 +11,17 @@ import SwiftUI
 @MainActor
 @Observable
 final class HomeViewModel {
-    private(set) var requestErrors: [HomeModelDataType: NetworkError?] = [:]
+    private(set) var dataTaskStatus: [HomeModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: HomeModelDataType.allCases.map { ($0, .uninitiated) })
+    private(set) var requestErrors = [HomeModelDataType: NetworkError?]()
     
-    private(set) var dbStats: SKCDatabaseStats?
-    private(set) var cardOfTheDay: CardOfTheDay?
-    private(set) var upcomingTCGProducts: [Event]?
-    private(set) var ytUploads: [YouTubeVideos]?
+    @ObservationIgnored
+    private(set) var dbStats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
+    @ObservationIgnored
+    private(set) var cardOfTheDay = CardOfTheDay(date: "", version: 1, card: Card(cardID: "", cardName: "", cardColor: "", cardAttribute: nil, cardEffect: ""))
+    @ObservationIgnored
+    private(set) var upcomingTCGProducts = [Event]()
+    @ObservationIgnored
+    private(set) var ytUploads = [YouTubeVideos]()
     
     var navigationPath = NavigationPath()
     
@@ -25,8 +30,8 @@ final class HomeViewModel {
     @ObservationIgnored
     private var lastRefreshTimestamp: Date?
     
-    func fetchData(refresh: Bool) async {
-        if lastRefreshTimestamp == nil || (refresh && lastRefreshTimestamp!.isDateInvalidated(5)) {
+    func fetchData(forceRefresh: Bool) async {
+        if lastRefreshTimestamp == nil || (forceRefresh && lastRefreshTimestamp!.isDateInvalidated(5)) {
             await withTaskGroup(of: Void.self) { taskGroup in
                 taskGroup.addTask { @Sendable @MainActor in await self.fetchDBStatsData() }
                 taskGroup.addTask { @Sendable @MainActor in await self.fetchCardOfTheDayData() }
@@ -39,6 +44,7 @@ final class HomeViewModel {
     
     func fetchDBStatsData() async {
         requestErrors[.dbStats] = nil
+        dataTaskStatus[.dbStats] = .pending
         switch await data(dbStatsURL(), resType: SKCDatabaseStats.self) {
         case .success(let dbStats):
             self.dbStats = dbStats
@@ -46,10 +52,12 @@ final class HomeViewModel {
         case .failure(let error):
             requestErrors[.dbStats] = error
         }
+        dataTaskStatus[.dbStats] = .done
     }
     
     func fetchCardOfTheDayData() async {
         requestErrors[.cardOfTheDay] = nil
+        dataTaskStatus[.cardOfTheDay] = .pending
         switch await data(cardOfTheDayURL(), resType: CardOfTheDay.self) {
         case .success(let cardOfTheDay):
             self.cardOfTheDay = cardOfTheDay
@@ -57,10 +65,12 @@ final class HomeViewModel {
         case .failure(let error):
             requestErrors[.cardOfTheDay] = error
         }
+        dataTaskStatus[.cardOfTheDay] = .done
     }
     
     func fetchUpcomingTCGProducts() async {
         requestErrors[.upcomingTCGProducts] = nil
+        dataTaskStatus[.upcomingTCGProducts] = .pending
         switch await data(upcomingEventsURL(), resType: Events.self) {
         case .success(let upcomingTCGProducts):
             self.upcomingTCGProducts = upcomingTCGProducts.events
@@ -68,10 +78,12 @@ final class HomeViewModel {
         case .failure(let error):
             requestErrors[.upcomingTCGProducts] = error
         }
+        dataTaskStatus[.upcomingTCGProducts] = .done
     }
     
     func fetchYouTubeUploadsData() async {
         requestErrors[.youtubeUploads] = nil
+        dataTaskStatus[.youtubeUploads] = .pending
         switch await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self) {
         case .success(let uploadData):
             self.ytUploads = uploadData.videos
@@ -79,6 +91,7 @@ final class HomeViewModel {
         case .failure(let error):
             requestErrors[.youtubeUploads] = error
         }
+        dataTaskStatus[.youtubeUploads] = .done
     }
     
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {
@@ -98,8 +111,8 @@ final class HomeViewModel {
         }
         return( nil, "")
     }
-    
-    enum HomeModelDataType {
-        case dbStats, cardOfTheDay, upcomingTCGProducts, youtubeUploads
-    }
+}
+
+enum HomeModelDataType: CaseIterable {
+    case dbStats, cardOfTheDay, upcomingTCGProducts, youtubeUploads
 }

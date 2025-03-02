@@ -7,18 +7,25 @@
 
 import SwiftUI
 
-struct UpcomingTCGProductsView: View {
-    let model: HomeViewModel
+struct UpcomingTCGProductsView: View, Equatable {
+    nonisolated static func == (lhs: UpcomingTCGProductsView, rhs: UpcomingTCGProductsView) -> Bool {
+        lhs.events == rhs.events && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+    }
+    
+    let events: [Event]
+    let isDataLoaded: Bool
+    let networkError: NetworkError?
+    let retryCB: () async -> Void
     
     var body: some View {
         SectionView(header: "Upcoming products",
                     variant: .plain,
                     content: {
-            if let networkError = model.requestErrors[.upcomingTCGProducts, default: nil] {
-                NetworkErrorView(error: networkError, action: { Task { await model.fetchUpcomingTCGProducts() } })
-            } else {
-                VStack(alignment: .leading, spacing: 5) {
-                    if let events = model.upcomingTCGProducts {
+            VStack(alignment: .leading, spacing: 5) {
+                if let networkError {
+                    NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+                } else {
+                    if isDataLoaded || !events.isEmpty {
                         Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
                             .font(.callout)
                             .padding(.bottom)
@@ -33,8 +40,8 @@ struct UpcomingTCGProductsView: View {
                             .controlSize(.large)
                     }
                 }
-                .frame(maxWidth: .infinity)
             }
+            .frame(maxWidth: .infinity)
         })
     }
 }
@@ -67,15 +74,18 @@ private struct UpcomingTCGProductView: View, Equatable {
     }
 }
 
-#Preview {
-    let model = HomeViewModel()
-    UpcomingTCGProductsView(model: model)
+#Preview("Default") {
+    UpcomingTCGProductsView(events: [], isDataLoaded: true, networkError: nil, retryCB: {})
+        .padding(.horizontal)
 }
 
-#Preview {
-    let model = HomeViewModel()
-    UpcomingTCGProductsView(model: model)
-        .task {
-            await model.fetchUpcomingTCGProducts()
-        }
+#Preview("Loading") {
+    UpcomingTCGProductsView(events: [], isDataLoaded: false, networkError: nil, retryCB: {})
+        .padding(.horizontal)
 }
+
+#Preview("Network Error") {
+    UpcomingTCGProductsView(events: [], isDataLoaded: true, networkError: .timeout, retryCB: {})
+        .padding(.horizontal)
+}
+

@@ -272,8 +272,19 @@ private struct CardFiltersView: View {
                 CardFilterView(filters: $filters.colors, filterInfo: "Filter by card color") { category in
                     CardColorIndicatorView(cardColor: category, variant: .large)
                 }
+                CardFilterView(filters: $filters.monsterTypes, filterInfo: "Filter by monster type") { monsterType in
+                    MonsterTypeView(monsterType: monsterType, variant: .large)
+                }
                 CardFilterView(filters: $filters.levels, filterInfo: "Filter by monster level", gridItemCount: 4) { level in
                     LevelAssociationView(level: level, variant: .regular)
+                }
+                CardFilterView(filters: $filters.ranks, filterInfo: "Filter by monster rank", gridItemCount: 4) { rank in
+                    RankAssociationView(rank: rank, variant: .regular)
+                }
+                CardFilterView(filters: $filters.linkRatings, filterInfo: "Filter by monster link rating", gridItemCount: 6) { linkRating in
+                    Text("\(linkRating)")
+                        .font(.headline)
+                        .fontWeight(.heavy)
                 }
             }
             .modifier(ParentViewModifier())

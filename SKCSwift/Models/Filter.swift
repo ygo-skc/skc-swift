@@ -20,5 +20,24 @@ struct FilteredItem<T: Equatable & Sendable>: Equatable, Identifiable, Sendable 
 struct CardFilters: Equatable, Sendable {
     var attributes: [FilteredItem<String>]
     var colors: [FilteredItem<String>]
+    var monsterTypes: [FilteredItem<MonsterType>]
     var levels: [FilteredItem<UInt8>]
+    var ranks: [FilteredItem<UInt8>]
+    var linkRatings: [FilteredItem<UInt8>]
+    
+    init(attributes: [FilteredItem<String>], colors: [FilteredItem<String>], monsterTypes: [FilteredItem<MonsterType>], levels: [FilteredItem<UInt8>],
+         ranks: [FilteredItem<UInt8>], linkRatings: [FilteredItem<UInt8>]) {
+        self.attributes = attributes
+        self.colors = colors
+        self.monsterTypes = monsterTypes
+        self.levels = levels
+        self.ranks = ranks
+        self.linkRatings = linkRatings
+    }
+}
+
+extension CardFilters {
+    init() {
+        self.init(attributes: [], colors: [], monsterTypes: [], levels: [], ranks: [], linkRatings: [])
+    }
 }
