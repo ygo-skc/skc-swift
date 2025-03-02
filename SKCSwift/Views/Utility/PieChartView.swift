@@ -8,16 +8,6 @@
 import SwiftUI
 import Charts
 
-struct ChartData: Hashable {
-    private(set) var category: String
-    private(set) var count: Int
-    
-    init(name: String, count: Int) {
-        self.category = name
-        self.count = count
-    }
-}
-
 struct PieChartGroupView: View {
     let description: String
     let dataTitle: String
@@ -44,8 +34,8 @@ struct PieChartView: View {
     @State private var selectedDataPoint: ChartData?
     @State private var previousRange: ClosedRange<Int>?
     
-    private var ranges: [(ChartData, ClosedRange<Int>)] = []
-    private var total: Int
+    private let ranges: [(ChartData, ClosedRange<Int>)]
+    private let total: Int
     
     private var selectedCategory: String {
         return selectedDataPoint != nil ? selectedDataPoint!.category : "Total"
@@ -58,13 +48,7 @@ struct PieChartView: View {
     init(data: [ChartData], dataTitle: String) {
         self.data = data.sorted { $0.count > $1.count }
         self.dataTitle = dataTitle
-        
-        var count = 0
-        for d in self.data {
-            ranges.append((d, count...(count+d.count)))
-            count += d.count
-        }
-        total = count
+        (total, ranges) = ChartData.ranges(from: self.data)
     }
     
     
@@ -92,10 +76,11 @@ struct PieChartView: View {
                     Text(selectedTotal)
                         .font(.subheadline)
                 }
+                .dynamicTypeSize(...DynamicTypeSize.medium)
                 .position(x: frame.midX, y: frame.midY)
             }
         }
-        .onChange(of: selectedAngle) { oldValue, newValue in
+        .onChange(of: selectedAngle) { _, newValue in
             if let newValue {
                 let angle = Int(ceil(newValue))
                 
