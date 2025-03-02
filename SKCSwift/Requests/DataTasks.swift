@@ -9,16 +9,31 @@ import Foundation
 
 fileprivate struct NilReqBody: Encodable {}
 
+fileprivate let customSession: URLSession = {
+    let configuration = URLSessionConfiguration.default
+    configuration.timeoutIntervalForRequest = 2
+    configuration.timeoutIntervalForResource = 5
+    configuration.multipathServiceType = .handover
+    configuration.requestCachePolicy = .returnCacheDataElseLoad
+    configuration.allowsCellularAccess = true
+    configuration.tlsMinimumSupportedProtocolVersion = .TLSv12
+    configuration.httpShouldUsePipelining = true
+    configuration.httpAdditionalHeaders = [
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Connection": "keep-alive",
+        "User-Agent": "\(RequestHelper.CLIENT_ID.description)/\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? "Unknown")",
+        "CLIENT_ID": "\(RequestHelper.CLIENT_ID.description)/\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? "Unknown")",
+        "Accept-Encoding": "gzip, deflate"
+    ]
+    return URLSession(configuration: configuration)
+}()
+
 fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = httpMethod
     request.httpBody = reqBody
-    request.addValue(RequestHelper.CLIENT_ID.description, forHTTPHeaderField: "CLIENT_ID")
-    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.addValue("keep-alive", forHTTPHeaderField: "Connection")
-    request.addValue("gzip", forHTTPHeaderField: "Accept-Encoding")
     
-    request.timeoutInterval = 5
     return request
 }
 
@@ -49,7 +64,8 @@ nonisolated func data<U>(_ url: URL, resType: U.Type) async -> sending Result<U,
 nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async -> sending Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
         let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
-        let (body, response) = try await URLSession.shared.data(for: baseRequest(url: url, httpMethod: httpMethod, reqBody: bodyData))
+        try Task.checkCancellation()
+        let (body, response) = try await customSession.data(for: baseRequest(url: url, httpMethod: httpMethod, reqBody: bodyData))
         try Task.checkCancellation()
         try validateResponse(response: response)
         return .success(try JSONDecoder().decode(resType, from: body))
