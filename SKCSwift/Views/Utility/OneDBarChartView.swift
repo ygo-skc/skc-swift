@@ -17,6 +17,14 @@ struct OneDBarChartView: View {
     private let ranges: [(ChartData, ClosedRange<Int>)]
     private let total: Int
     private let cornerRadius = 10.0
+    private let availableColors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink, .brown,
+                                            .cyan, .mint, .indigo, .teal, .synchroYGOCard, .dateRed]
+    
+    private func colorForCategory(_ category: String) -> Color {
+        let hashValue = abs(category.hash)
+        let index = hashValue % availableColors.count
+        return availableColors[index]
+    }
     
     private func clipShape(_ d: ChartData) -> some Shape {
         if data.count == 1 {
@@ -37,43 +45,60 @@ struct OneDBarChartView: View {
     }
     
     var body: some View {
-        Chart(data, id: \.category) { d in
-            BarMark(x: .value("Occurrences", d.count))
-                .foregroundStyle(by: .value("name", d.category))
-                .opacity(d.category == selectedDataPoint?.category ? 1 : 0.6)
-                .clipShape(clipShape(d))
-                .annotation(position: .automatic,
-                            spacing: 0,
-                            overflowResolution: .init(x: .fit, y: .disabled)) {
-                    if d.category == selectedDataPoint?.category {
-                        GroupBox() {
-                            Text(d.category)
-                                .font(.headline)
-                            Text("\(d.count)/\(total)")
-                                .font(.subheadline)
+        VStack(alignment: .leading) {
+            Chart(data, id: \.category) { d in
+                BarMark(x: .value("Occurrences", d.count))
+                    .foregroundStyle(colorForCategory(d.category))
+                    .opacity(d.category == selectedDataPoint?.category ? 1 : 0.6)
+                    .clipShape(clipShape(d))
+                    .annotation(position: .automatic,
+                                spacing: 0,
+                                overflowResolution: .init(x: .fit, y: .disabled)) {
+                        if d.category == selectedDataPoint?.category {
+                            GroupBox() {
+                                Text(d.category)
+                                    .font(.headline)
+                                Text("\(d.count)/\(total)")
+                                    .font(.subheadline)
+                            }
+                            .padding(.bottom)
                         }
-                        .padding(.bottom)
-                        .dynamicTypeSize(...DynamicTypeSize.medium)
+                    }
+                BarMark(x: .value("Divider", 0.01))
+                    .foregroundStyle(.clear)
+            }
+            .chartXAxis(.hidden)
+            .chartLegend(.hidden)
+            .chartXSelection(value: $selectedValue)
+            .frame(height: 35)
+            .onChange(of: selectedValue) { _, newValue in
+                if let newValue {
+                    let selected = Int(ceil(newValue))
+                    for (cd, range) in ranges {
+                        if range.contains(selected) {
+                            selectedDataPoint = cd
+                            break
+                        }
+                    }
+                } else {
+                    selectedDataPoint = nil
+                }
+            }
+            
+            FlowLayout {
+                ForEach(data.map { $0.category }, id: \.self) { category in
+                    HStack {
+                        BasicChartSymbolShape.circle
+                            .foregroundColor(colorForCategory(category))
+                            .frame(width: 8, height: 8)
+                        Text(category)
+                            .font(.caption)
                     }
                 }
-        }
-        .chartXAxis(.hidden)
-        .chartLegend(.hidden)
-        .chartXSelection(value: $selectedValue)
-        .frame(height: 30)
-        .onChange(of: selectedValue) { _, newValue in
-            if let newValue {
-                let selected = Int(ceil(newValue))
-                for (cd, range) in ranges {
-                    if range.contains(selected) {
-                        selectedDataPoint = cd
-                        break
-                    }
-                }
-            } else {
-                selectedDataPoint = nil
             }
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .dynamicTypeSize(...DynamicTypeSize.medium)
     }
 }
 
