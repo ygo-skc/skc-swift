@@ -11,13 +11,25 @@ import Charts
 struct OneDBarChartView: View {
     let data: [ChartData]
     
-    @State private var selectedValue: Int? = nil
+    @State private var selectedValue: Double? = nil
     @State private var selectedDataPoint: ChartData?
-    @State private var previousSelectedRange: ClosedRange<Int>?
     
     private let ranges: [(ChartData, ClosedRange<Int>)]
     private let total: Int
     private let cornerRadius = 10.0
+    
+    private func clipShape(_ d: ChartData) -> some Shape {
+        if data.count == 1 {
+            return UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
+        } else if d == data.first {
+            return UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .continuous)
+        } else if d == data.last {
+            return UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
+        } else {
+            return UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .continuous)
+        }
+        
+    }
     
     init(data: [ChartData]) {
         self.data = data.sorted { $0.count > $1.count }
@@ -29,6 +41,7 @@ struct OneDBarChartView: View {
             BarMark(x: .value("Occurrences", d.count))
                 .foregroundStyle(by: .value("name", d.category))
                 .opacity(d.category == selectedDataPoint?.category ? 1 : 0.6)
+                .clipShape(clipShape(d))
                 .annotation(position: .automatic,
                             spacing: 0,
                             overflowResolution: .init(x: .fit, y: .disabled)) {
@@ -36,47 +49,49 @@ struct OneDBarChartView: View {
                         GroupBox() {
                             Text(d.category)
                                 .font(.headline)
-                            Text(String(d.count))
+                            Text("\(d.count)/\(total)")
                                 .font(.subheadline)
                         }
                         .padding(.bottom)
                         .dynamicTypeSize(...DynamicTypeSize.medium)
                     }
                 }
-                .clipShape(
-                    d == data.last
-                    ? UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
-                    : d == data.first
-                    ? UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .continuous)
-                    : UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .continuous)
-                )
         }
         .chartXAxis(.hidden)
+        .chartLegend(.hidden)
         .chartXSelection(value: $selectedValue)
-        .frame(height: 50)
-        .scaledToFit()
+        .frame(height: 30)
         .onChange(of: selectedValue) { _, newValue in
             if let newValue {
-                if previousSelectedRange?.contains(newValue) != true {
-                    for (cd, range) in ranges {
-                        if range.contains(newValue) {
-                            selectedDataPoint = cd
-                            self.previousSelectedRange = range
-                            break
-                        }
+                let selected = Int(ceil(newValue))
+                for (cd, range) in ranges {
+                    if range.contains(selected) {
+                        selectedDataPoint = cd
+                        break
                     }
                 }
             } else {
                 selectedDataPoint = nil
-                previousSelectedRange = nil
             }
         }
     }
 }
 
-#Preview {
+#Preview("Default") {
     OneDBarChartView(data: [.init(category: "Rare", count: 7),
-                        .init(category: "Ultra Rare", count: 4),
-                        .init(category: "Super Rare", count: 10)])
+                            .init(category: "Ultra Rare", count: 4),
+                            .init(category: "Super Rare", count: 10),
+                            .init(category: "Ultra Pharaoh Rare", count: 1),
+                            .init(category: "Secret Pharaoh Rare", count: 1)])
     .padding(.horizontal)
+}
+
+#Preview("One Data Point") {
+    OneDBarChartView(data: [.init(category: "Rare", count: 7)])
+        .padding(.horizontal)
+}
+
+#Preview("Two Equal Data Point") {
+    OneDBarChartView(data: [.init(category: "Rare", count: 1), .init(category: "Super Rare", count: 1)])
+        .padding(.horizontal)
 }
