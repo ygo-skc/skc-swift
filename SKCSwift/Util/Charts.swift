@@ -31,10 +31,17 @@ struct Charts {
     static let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink, .brown,
                                   .cyan, .mint, .indigo, .teal, .synchroYGOCard, .dateRed, .effectYGOCard, .normalYGOCard, .fusionYGOCard]
     
+    nonisolated(unsafe) private static var colorCache: [String: Color] = [:]
+    
     static nonisolated func determineChartColor(_ category: String) -> Color {
-        let hashValue = abs(category.hash)
+        if let cachedColor = colorCache[category] {
+            return cachedColor
+        }
+        let hashValue = abs(category.hash) % 1000
         let index = hashValue % Charts.colors.count
-        return Charts.colors[index]
+        let color = Charts.colors[index]
+        colorCache[category] = color
+        return color
     }
     
     static nonisolated func sortChart(_ lhs: ChartData, _ rhs: ChartData) -> Bool {
