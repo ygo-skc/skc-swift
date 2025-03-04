@@ -18,7 +18,7 @@ struct OneDBarChartView: View {
     private let total: Int
     private let cornerRadius = 10.0
     private let availableColors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink, .brown,
-                                            .cyan, .mint, .indigo, .teal, .synchroYGOCard, .dateRed]
+                                            .cyan, .mint, .indigo, .teal, .synchroYGOCard, .dateRed, .effectYGOCard, .normalYGOCard, .fusionYGOCard]
     
     private func colorForCategory(_ category: String) -> Color {
         let hashValue = abs(category.hash)
@@ -49,7 +49,8 @@ struct OneDBarChartView: View {
             Chart(data, id: \.category) { d in
                 BarMark(x: .value("Occurrences", d.count))
                     .foregroundStyle(colorForCategory(d.category))
-                    .opacity(d.category == selectedDataPoint?.category ? 1 : 0.6)
+                    .opacity(selectedDataPoint == nil ? 1 :
+                                d.category == selectedDataPoint?.category ? 1 : 0.4)
                     .clipShape(clipShape(d))
                     .annotation(position: .automatic,
                                 spacing: 0,
@@ -64,8 +65,6 @@ struct OneDBarChartView: View {
                             .padding(.bottom)
                         }
                     }
-                BarMark(x: .value("Divider", 0.01))
-                    .foregroundStyle(.clear)
             }
             .chartXAxis(.hidden)
             .chartLegend(.hidden)
@@ -94,6 +93,8 @@ struct OneDBarChartView: View {
                         Text(category)
                             .font(.caption)
                     }
+                    .opacity(selectedDataPoint == nil ? 1 :
+                                category == selectedDataPoint?.category ? 1 : 0.4)
                 }
             }
         }
@@ -112,7 +113,7 @@ struct OneDBarChartView: View {
 }
 
 #Preview("One Data Point") {
-    OneDBarChartView(data: [.init(category: "Rare", count: 7)])
+    OneDBarChartView(data: [.init(category: "Rare", count: 1)])
         .padding(.horizontal)
 }
 
