@@ -9,24 +9,15 @@ import SwiftUI
 import Charts
 
 struct OneDBarChartView: View {
-    let data: [ChartData]
-    
     @State private var selectedValue: Double? = nil
     @State private var selectedDataPoint: ChartData?
     
+    private let data: [ChartData]
     private let ranges: [(ChartData, ClosedRange<Int>)]
     private let total: Int
     private let cornerRadius = 10.0
-    private let availableColors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink, .brown,
-                                            .cyan, .mint, .indigo, .teal, .synchroYGOCard, .dateRed, .effectYGOCard, .normalYGOCard, .fusionYGOCard]
     
-    private func colorForCategory(_ category: String) -> Color {
-        let hashValue = abs(category.hash)
-        let index = hashValue % availableColors.count
-        return availableColors[index]
-    }
-    
-    private func clipShape(_ d: ChartData) -> some Shape {
+    nonisolated private func clipShape(_ d: ChartData) -> some Shape {
         if data.count == 1 {
             return UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
         } else if d == data.first {
@@ -36,30 +27,29 @@ struct OneDBarChartView: View {
         } else {
             return UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .continuous)
         }
-        
     }
     
     init(data: [ChartData]) {
-        self.data = data.sorted { $0.count > $1.count }
+        self.data = data.sorted(by: Charts.sortChart)
         (total, ranges) = ChartData.ranges(from: self.data)
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            Chart(data, id: \.category) { d in
-                BarMark(x: .value("Occurrences", d.count))
-                    .foregroundStyle(colorForCategory(d.category))
+            Chart(data, id: \.category) { dataElement in
+                BarMark(x: .value("Occurrences", dataElement.count))
+                    .foregroundStyle(Charts.determineChartColor(dataElement.category))
                     .opacity(selectedDataPoint == nil ? 1 :
-                                d.category == selectedDataPoint?.category ? 1 : 0.4)
-                    .clipShape(clipShape(d))
+                                dataElement.category == selectedDataPoint?.category ? 1 : 0.4)
+                    .clipShape(clipShape(dataElement))
                     .annotation(position: .automatic,
                                 spacing: 0,
                                 overflowResolution: .init(x: .fit, y: .disabled)) {
-                        if d.category == selectedDataPoint?.category {
+                        if dataElement.category == selectedDataPoint?.category {
                             GroupBox() {
-                                Text(d.category)
+                                Text(dataElement.category)
                                     .font(.headline)
-                                Text("\(d.count)/\(total)")
+                                Text("\(dataElement.count)/\(total)")
                                     .font(.subheadline)
                             }
                             .padding(.bottom)
@@ -84,19 +74,8 @@ struct OneDBarChartView: View {
                 }
             }
             
-            FlowLayout {
-                ForEach(data.map { $0.category }, id: \.self) { category in
-                    HStack {
-                        BasicChartSymbolShape.circle
-                            .foregroundColor(colorForCategory(category))
-                            .frame(width: 8, height: 8)
-                        Text(category)
-                            .font(.caption)
-                    }
-                    .opacity(selectedDataPoint == nil ? 1 :
-                                category == selectedDataPoint?.category ? 1 : 0.4)
-                }
-            }
+            ChartLegend(data: data, selectedDataPoint: selectedDataPoint)
+                .equatable()
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .dynamicTypeSize(...DynamicTypeSize.medium)
