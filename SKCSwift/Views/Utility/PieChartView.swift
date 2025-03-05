@@ -29,7 +29,6 @@ struct PieChartGroupView: View {
 struct PieChartView: View {
     @State private var selectedAngle: Double?
     @State private var selectedDataPoint: ChartData?
-    @State private var previousRange: ClosedRange<Int>?
     
     private let data: [ChartData]
     private let dataTitle: String
@@ -84,18 +83,14 @@ struct PieChartView: View {
                 if let newValue {
                     let angle = Int(ceil(newValue))
                     
-                    if previousRange?.contains(angle) != true {
-                        for (cd, range) in ranges {
-                            if range.contains(angle) {
-                                selectedDataPoint = cd
-                                self.previousRange = range
-                                break
-                            }
+                    for (cd, range) in ranges {
+                        if range.contains(angle) {
+                            selectedDataPoint = cd
+                            break
                         }
                     }
                 } else {
                     selectedDataPoint = nil
-                    previousRange = nil
                 }
             }
             
