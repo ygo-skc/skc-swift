@@ -19,6 +19,7 @@ struct CardImageView: View, Equatable {
     private let radius: CGFloat
     
     private static let CARD_BACK_IMAGE = Image(.cardBackground)
+    private static var CARDS_WITH_NO_IMAGE = Set<String>()
     
     init(length: CGFloat, cardID: String, imgSize: ImageSize, cardColor: String? = nil, variant: YGOCardImageVariant = .round) {
         self.length = length
@@ -32,19 +33,27 @@ struct CardImageView: View, Equatable {
     }
     
     var body: some View {
-        CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!) { phase in
-            switch phase {
-            case .empty:
-                PlaceholderView(width: length, height: length, radius: radius)
-            case .success(let image):
-                image
-                    .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
-            default:
-                CardImageView.CARD_BACK_IMAGE
-                    .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
+        if CardImageView.CARDS_WITH_NO_IMAGE.contains(cardID) {
+            CardImageView.CARD_BACK_IMAGE
+                .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
+        } else {
+            CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!) { phase in
+                switch phase {
+                case .empty:
+                    PlaceholderView(width: length, height: length, radius: radius)
+                case .success(let image):
+                    image
+                        .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
+                default:
+                    CardImageView.CARD_BACK_IMAGE
+                        .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
+                        .task {
+                            CardImageView.CARDS_WITH_NO_IMAGE.insert(cardID)
+                        }
+                }
             }
+            .frame(width: length, height: length)
         }
-        .frame(width: length, height: length)
     }
 }
 
