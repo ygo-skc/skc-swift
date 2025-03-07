@@ -98,7 +98,7 @@ final class SearchViewModel {
     }
     
     func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
-        let recentlyViewedCardIDs = newHistory.map { $0.id }
+        let recentlyViewedCardIDs = Set(newHistory.map { $0.id })
         
         requestErrors[.recentlyViewed] = nil
         dataTaskStatus[.recentlyViewed] = .pending
@@ -110,10 +110,11 @@ final class SearchViewModel {
     
     /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
     /// If data for a particular card needs to be downloaded - make network call
-    nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: [String], recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?) {
-        let newRecentlyViewedSet = Set(newRecentlyViewed)
-        if newRecentlyViewedSet != Set(recentlyViewedCardInfo.values.map { $0.cardID })  {
-            switch await data(cardDetailsUrl(), reqBody: CardDetailsRequest(cardIDs: newRecentlyViewedSet), resType: CardDetailsResponse.self, httpMethod: "POST") {
+    nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
+                                                        recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?) {
+        if newRecentlyViewed != Set(recentlyViewedCardInfo.values.map { $0.cardID })  {
+            switch await data(cardDetailsUrl(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
+                              resType: CardDetailsResponse.self, httpMethod: "POST") {
             case .success(let cardDetails):
                 return (cardDetails.cardInfo, nil)
             case .failure(let error):
