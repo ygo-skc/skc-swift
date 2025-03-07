@@ -69,7 +69,7 @@ struct SearchView: View {
             $0.animation = nil
         }
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
-            Task(priority: .userInitiated) {
+            Task {
                 await searchModel.searchDB(oldValue: oldValue, newValue: newValue)
             }
         }
