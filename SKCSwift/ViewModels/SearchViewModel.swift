@@ -37,6 +37,8 @@ final class SearchViewModel {
         searchTask?.cancel()
         if newValue == "" {
             resetSearchResults()
+            requestErrors[.search] = nil
+            dataTaskStatus[.search] = .done
         } else {
             searchTask = Task {
                 requestErrors[.search] = nil
