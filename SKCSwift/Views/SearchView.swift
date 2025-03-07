@@ -43,8 +43,7 @@ struct SearchView: View {
                                      products: trendingModel.products,
                                      trendingDataTaskStatuses: trendingModel.trendingDataTaskStatuses,
                                      trendingRequestErrors: trendingModel.trendingRequestErrors,
-                                     fetchTrendingCards: trendingModel.fetchTrendingCards,
-                                     fetchTrendingProducts: trendingModel.fetchTrendingProducts)
+                                     fetchTrendingData: trendingModel.fetchTrendingData)
                         .equatable()
                     }
                 case (.done, _), (.pending, _):
