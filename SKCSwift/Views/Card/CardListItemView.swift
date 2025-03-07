@@ -13,8 +13,7 @@ struct CardListItemView: View, Equatable {
     let showAllInfo: Bool
     
     var body: some View {
-        
-        HStack(alignment: .top, spacing: 15) {
+        HStack(alignment: .top, spacing: 10) {
             CardImageView(length: 60, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
                 .equatable()
                 .padding(.trailing, 3)

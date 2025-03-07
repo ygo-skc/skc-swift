@@ -50,7 +50,7 @@ struct SearchView: View {
                 case (.done, _), (.pending, _):
                     SearchResultsView(searchResults: searchModel.searchResults,
                                       requestError: searchModel.requestErrors[.search, default: nil],
-                                      retryCB: {await searchModel.newSearchSubject(oldValue: searchModel.searchText, newValue: searchModel.searchText)})
+                                      retryCB: {await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText)})
                     .equatable()
                 }
             }
@@ -71,7 +71,7 @@ struct SearchView: View {
         }
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
             Task(priority: .userInitiated) {
-                await searchModel.newSearchSubject(oldValue: oldValue, newValue: newValue)
+                await searchModel.searchDB(oldValue: oldValue, newValue: newValue)
             }
         }
         .scrollDismissesKeyboard(.immediately)
