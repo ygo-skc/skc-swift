@@ -12,11 +12,15 @@ import Foundation
 final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
     
+    @ObservationIgnored
     private(set) var cards: [TrendingMetric<Card>] = []
+    @ObservationIgnored
     private(set) var products: [TrendingMetric<Product>] = []
     
     // init values with .uninitiated so progress view can be displayed
-    private(set) var trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: TrendingResourceType.allCases.map { ($0, .uninitiated) })
+    private(set) var trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: TrendingResourceType.allCases.map {
+        ($0, .uninitiated)
+    })
     private(set) var trendingRequestErrors: [TrendingResourceType: NetworkError?] = [:]
     
     @ObservationIgnored
