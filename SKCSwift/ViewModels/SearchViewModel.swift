@@ -45,8 +45,8 @@ final class SearchViewModel {
                 dataTaskStatus[.search] = .pending
                 
                 let (requestResults, searchErr) = await search(subject: newValue)
+                requestErrors[.search] = searchErr
                 if requestResults.isEmpty || searchErr != nil {
-                    requestErrors[.search] = searchErr
                     resetSearchResults()
                 } else {
                     let (newSearchResults, newSearchResultsCardIDs) = await partitionResults(newSearchResults: requestResults,
