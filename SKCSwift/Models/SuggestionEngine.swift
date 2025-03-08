@@ -51,7 +51,7 @@ struct CardOfTheDay: Codable, Equatable {
     let card: Card
 }
 
-struct CardDetailsRequest: Codable {
+struct BatchCardRequest: Codable {
     let cardIDs: Set<String>
 }
 
