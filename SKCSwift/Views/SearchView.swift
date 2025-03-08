@@ -31,11 +31,15 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails,
+                        RecentlyViewedView(recentCards: Array(searchModel.recentlyViewedCardInfo.values),
                                            hasHistory: !history.isEmpty,
                                            taskStatus: searchModel.dataTaskStatus[.recentlyViewed, default: .uninitiated],
                                            requestError: searchModel.requestErrors[.recentlyViewed, default: nil],
-                                           retryCB: {await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))})
+                                           recentlyViewedSuggestions: searchModel.recentlyViewedSuggestions,
+                                           retryCB: {
+                            let newRecentlyViewed = Set(history.map { $0.id })
+                            await searchModel.fetchRecentlyViewedDetails(newRecentlyViewed: newRecentlyViewed)
+                        })
                         .equatable()
                     } else {
                         TrendingView(focusedTrend: $trendingModel.focusedTrend,
@@ -55,7 +59,7 @@ struct SearchView: View {
             }
             .onAppear {
                 Task {
-                    await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
+                    await searchModel.fetchHistoryData(recentlyViewed: Array(history.prefix(15)))
                 }
             }
             .ygoNavigationDestination()
@@ -91,15 +95,25 @@ private struct RecentlyViewedView: View, Equatable {
     let hasHistory: Bool
     let taskStatus: DataTaskStatus
     let requestError: NetworkError?
+    let recentlyViewedSuggestions: [CardReference]
     let retryCB: () async -> Void
     
     var body: some View {
         ScrollView {
             if !recentCards.isEmpty {
-                SectionView(header: "Recently Viewed",
+                SectionView(header: "History",
                             variant: .plain,
                             content: {
-                    VStack {
+                    LazyVStack(alignment: .leading) {
+                        Text("Suggestions")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                        SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
+                        
+                        Text("Recently viewed")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                            .padding(.top)
                         ForEach(recentCards, id: \.cardID) { card in
                             NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                                 GroupBox() {
@@ -111,11 +125,12 @@ private struct RecentlyViewedView: View, Equatable {
                             .buttonStyle(.plain)
                         }
                     }
-                    .dynamicTypeSize(...DynamicTypeSize.medium)
+                    .frame(maxWidth: .infinity)
                 })
                 .modifier(ParentViewModifier())
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.medium)
         .frame(maxWidth: .infinity)
         .overlay {
             if let requestError {
