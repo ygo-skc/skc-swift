@@ -51,11 +51,20 @@ struct CardOfTheDay: Codable, Equatable {
     let card: Card
 }
 
-struct CardDetailsRequest: Codable {
+struct BatchCardRequest: Codable {
     let cardIDs: Set<String>
 }
 
 struct CardDetailsResponse: Codable {
     let cardInfo: [String: Card]
     let unknownResources: [String]
+}
+
+struct BatchSuggestions: Codable {
+    let namedMaterials: [CardReference]
+    let namedReferences: [CardReference]
+    let materialArchetypes: Set<String>
+    let referencedArchetypes: Set<String>
+    let unknownResources: Set<String>
+    let falsePositives: Set<String>
 }

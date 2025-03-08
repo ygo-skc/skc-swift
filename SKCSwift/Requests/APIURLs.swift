@@ -24,6 +24,7 @@ struct RequestHelper {
     
     // SKC Suggestion request helpers
     static let SKC_SUGGESTION_ENGINE_BASE_URL: StaticString = "suggestions.skc-ygo-api.com"
+    static let SKC_SUGGESTION_ENGINE_BATCH_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card"
     static let SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
     static let SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support/%@"
     static let SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
@@ -146,6 +147,14 @@ nonisolated func banListDatesURL(format: String) -> URL {
 }
 
 // SKC Suggestion Engine URL creation methods
+
+nonisolated func batchCardSuggestionsURL() -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_BATCH_CARD_SUGGESTIONS_ENDPOINT.description
+    )
+    return createURL(components: components)
+}
 
 nonisolated func cardSuggestionsURL(cardID: String) -> URL {
     let components = baseURLComponents(

@@ -28,6 +28,7 @@ final class SearchViewModel {
     private(set) var recentlyViewedCardDetails = [Card]()
     @ObservationIgnored
     private var recentlyViewedCardInfo = [String: Card]()
+    private(set) var recentlyViewedSuggestions: [CardReference] = []
     
     func searchDB(oldValue: String, newValue: String) async {
         if requestErrors[.search] == .notFound && newValue.starts(with: oldValue) {
