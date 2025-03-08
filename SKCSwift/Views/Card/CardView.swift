@@ -25,6 +25,29 @@ private struct CardView: View {
     @Query
     private var history: [History]
     
+    private var latestReleaseInfo: String? {
+        if let products = model.card?.getProducts(), !products.isEmpty && products.count > 1 {
+            let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
+            if elapsedDays < 0 {
+                return "\(elapsedDays.decimal) day(s) until next printing"
+            } else {
+                return "\(elapsedDays.decimal) day(s) since last printing"
+            }
+        }
+        return nil
+    }
+    
+    private var initialReleaseInfo: String {
+        if let products = model.card?.getProducts(), !products.isEmpty {
+            let elapsedDays = products.last!.productReleaseDate.timeIntervalSinceNow()
+            if elapsedDays < 0 {
+                return "\(elapsedDays.decimal) day(s) till card debuts"
+            } else {
+                return "\(elapsedDays.decimal) day(s) since initial printing"            }
+        }
+        return "No products currently in DB have printed this card"
+    }
+    
     init(cardID: String) {
         self.model = .init(cardID: cardID)
         
@@ -45,6 +68,35 @@ private struct CardView: View {
                                 .padding(.bottom)
                             
                             if let card = model.card {
+                                SectionView(header: "Releases",
+                                            variant: .plain,
+                                            content: {
+                                    VStack(alignment: .leading) {
+                                        if !card.getProducts().isEmpty {
+                                            Text("Rarities")
+                                                .font(.headline)
+                                            Text("All the different rariites \(card.cardName) was printed in")
+                                                .font(.callout)
+                                            OneDBarChartView(data: card.getRarityDistribution()
+                                                .map { ChartData(category: $0.key, count: $0.value) }
+                                            )
+                                            Divider()
+                                                .padding(.vertical)
+                                        }
+                                        
+                                        Label(initialReleaseInfo, systemImage: "1.circle")
+                                            .font(.callout)
+                                            .padding(.bottom, 2)
+                                        if let latestReleaseInfo {
+                                            Label(latestReleaseInfo, systemImage: "calendar")
+                                                .font(.callout)
+                                        }
+                                        
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                                })
+                                .modifier(ParentViewModifier())
+                                
                                 RelatedContentView(
                                     cardID: card.cardID,
                                     cardName: card.cardName,

@@ -20,8 +20,7 @@ struct TrendingView: View, Equatable {
     let products: [TrendingMetric<Product>]
     let trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus]
     let trendingRequestErrors: [TrendingResourceType: NetworkError?]
-    let fetchTrendingCards: (Bool) async -> Void
-    let fetchTrendingProducts: (Bool) async -> Void
+    let fetchTrendingData: (Bool) async -> Void
     
     var body: some View {
         ScrollView {
@@ -52,12 +51,7 @@ struct TrendingView: View, Equatable {
             if let networkError = trendingRequestErrors[focusedTrend, default: nil] {
                 NetworkErrorView(error: networkError, action: {
                     Task {
-                        switch focusedTrend {
-                        case .card:
-                            await fetchTrendingCards(true)
-                        case .product:
-                            await fetchTrendingProducts(true)
-                        }
+                        await fetchTrendingData(true)
                     }
                 })
             } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingDataTaskStatuses[focusedTrend])  {
@@ -65,11 +59,8 @@ struct TrendingView: View, Equatable {
                     .controlSize(.large)
             }
         }
-        .task(priority: .userInitiated) {
-            await fetchTrendingCards(false)
-        }
-        .task(priority: .medium) {
-            await fetchTrendingProducts(false)
+        .task {
+            await fetchTrendingData(false)
         }
     }
 }

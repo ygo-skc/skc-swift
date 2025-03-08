@@ -93,7 +93,7 @@ private struct ProductInfoView: View {
                 .reduce(into: [String: Int]()) { counts, rarity in
                     counts[rarity.cardRarityShortHand(), default: 0] += 1
                 }
-                .map { ChartData(name: $0.key, count: $0.value) }
+                .map { ChartData(category: $0.key, count: $0.value) }
             
             let mstData = cards
                 .reduce(into: [String: Int]()) { counts, card in
@@ -103,7 +103,7 @@ private struct ProductInfoView: View {
                         counts["Monster", default: 0] += 1
                     }
                 }
-                .map { ChartData(name: $0.key, count: $0.value) }
+                .map { ChartData(category: $0.key, count: $0.value) }
             
             let monsterColorData = cards
                 .filter { $0.attribute != .spell && $0.attribute != .trap }
@@ -111,14 +111,14 @@ private struct ProductInfoView: View {
                 .reduce(into: [String: Int]()) { counts, color in
                     counts[color, default: 0] += 1
                 }
-                .map { ChartData(name: $0.key, count: $0.value) }
+                .map { ChartData(category: $0.key, count: $0.value) }
             
             let monsterAttributeData = cards
                 .filter { $0.attribute != .spell && $0.attribute != .trap }
                 .reduce(into: [String: Int]()) { counts, card in
                     counts[card.cardAttribute!, default: 0] += 1
                 }
-                .map { ChartData(name: $0.key, count: $0.value) }
+                .map { ChartData(category: $0.key, count: $0.value) }
             
             return (rarityData, mstData, monsterColorData, monsterAttributeData)
         }.value

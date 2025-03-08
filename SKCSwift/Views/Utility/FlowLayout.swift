@@ -9,7 +9,7 @@ import SwiftUI
 
 // stolen from https://gist.github.com/aheze/1cbd2d36764c978b28aa20a00cb4b5b6 (an amazing implementation I wish I understood and came up with)
 struct FlowLayout: Layout {
-    var spacing = CGFloat(10)
+    var spacing = CGFloat(5)
     
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let containerWidth = proposal.replacingUnspecifiedDimensions().width

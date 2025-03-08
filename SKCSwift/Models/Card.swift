@@ -77,6 +77,17 @@ struct Card: Codable, Equatable {
         return foundIn ?? [Product]()
     }
     
+    func getRarityDistribution() -> [String: Int] {
+        return getProducts()
+            .compactMap { $0.productContent }
+            .flatMap { $0 }
+            .map { $0.rarities }
+            .flatMap { $0 }
+            .reduce(into: [String: Int]()) { accumulator, rarity in
+                accumulator[rarity.cardRarityShortHand(), default: 0] += 1
+            }
+    }
+    
     func getBanList(format: BanListFormat) -> [BanList] {
         switch format {
         case .tcg:

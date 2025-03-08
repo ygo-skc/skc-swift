@@ -12,11 +12,15 @@ import Foundation
 final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
     
+    @ObservationIgnored
     private(set) var cards: [TrendingMetric<Card>] = []
+    @ObservationIgnored
     private(set) var products: [TrendingMetric<Product>] = []
     
     // init values with .uninitiated so progress view can be displayed
-    private(set) var trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: TrendingResourceType.allCases.map { ($0, .uninitiated) })
+    private(set) var trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: TrendingResourceType.allCases.map {
+        ($0, .uninitiated)
+    })
     private(set) var trendingRequestErrors: [TrendingResourceType: NetworkError?] = [:]
     
     @ObservationIgnored
@@ -24,13 +28,20 @@ final class TrendingViewModel {
     
     private static let invalidateDataThreshold = 5
     
-    func fetchTrendingCards(forceRefresh: Bool = false) async {
+    func fetchTrendingData(forceRefresh: Bool = false) async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { @Sendable in await self.fetchTrendingCards(forceRefresh: forceRefresh) }
+            taskGroup.addTask { @Sendable in await self.fetchTrendingProducts(forceRefresh: forceRefresh) }
+        }
+    }
+    
+    private func fetchTrendingCards(forceRefresh: Bool = false) async {
         await fetchTrendingData(forceRefresh: forceRefresh, resource: .card) {
             await data(trendingUrl(resource: .card), resType: Trending<Card>.self)
         }
     }
     
-    func fetchTrendingProducts(forceRefresh: Bool = false) async {
+    private func fetchTrendingProducts(forceRefresh: Bool = false) async {
         await fetchTrendingData(forceRefresh: forceRefresh, resource: .product) {
             await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
         }

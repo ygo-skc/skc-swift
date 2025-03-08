@@ -15,8 +15,6 @@ struct RelatedContentView: View {
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
-    private let latestReleaseInfo: String
-    
     init(cardID: String, cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList]) {
         self.cardID = cardID
         self.cardName = cardName
@@ -24,17 +22,6 @@ struct RelatedContentView: View {
         self.products = products
         self.tcgBanLists = tcgBanLists
         self.mdBanLists = mdBanLists
-        
-        if (!products.isEmpty) {
-            let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
-            if (products[0].productReleaseDate.timeIntervalSinceNow() < 0) {
-                latestReleaseInfo = "\(elapsedDays.decimal) day(s) until next printing"
-            } else {
-                latestReleaseInfo = "\(elapsedDays.decimal) day(s) since last printing"
-            }
-        } else {
-            latestReleaseInfo = "Last day printed not found in database"
-        }
     }
     
     var body: some View {
@@ -59,13 +46,7 @@ struct RelatedContentView: View {
                                 }
                             }
                         }
-                    }
-                    
-                    Label(latestReleaseInfo, systemImage: "calendar")
-                        .font(.subheadline)
-                        .fontWeight(.regular)
-                        .padding(.top)
-                }
+                    }                }
                 .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
                 
                 Divider()

@@ -8,16 +8,6 @@
 import SwiftUI
 import Charts
 
-struct ChartData: Hashable {
-    private(set) var category: String
-    private(set) var count: Int
-    
-    init(name: String, count: Int) {
-        self.category = name
-        self.count = count
-    }
-}
-
 struct PieChartGroupView: View {
     let description: String
     let dataTitle: String
@@ -37,15 +27,13 @@ struct PieChartGroupView: View {
 }
 
 struct PieChartView: View {
-    let data: [ChartData]
-    let dataTitle: String
-    
     @State private var selectedAngle: Double?
     @State private var selectedDataPoint: ChartData?
-    @State private var previousRange: ClosedRange<Int>?
     
-    private var ranges: [(ChartData, ClosedRange<Int>)] = []
-    private var total: Int
+    private let data: [ChartData]
+    private let dataTitle: String
+    private let ranges: [(ChartData, ClosedRange<Int>)]
+    private let total: Int
     
     private var selectedCategory: String {
         return selectedDataPoint != nil ? selectedDataPoint!.category : "Total"
@@ -58,61 +46,59 @@ struct PieChartView: View {
     init(data: [ChartData], dataTitle: String) {
         self.data = data.sorted { $0.count > $1.count }
         self.dataTitle = dataTitle
-        
-        var count = 0
-        for d in self.data {
-            ranges.append((d, count...(count+d.count)))
-            count += d.count
-        }
-        total = count
+        (total, ranges) = ChartData.ranges(from: self.data)
     }
     
     
     var body: some View {
-        Chart(data, id: \.category) { element in
-            SectorMark(
-                angle: .value("Count", element.count),
-                innerRadius: .ratio(0.618),
-                angularInset: 1.5
-            )
-            .cornerRadius(5)
-            .foregroundStyle(by: .value("name", element.category))
-            .opacity(element.category == selectedDataPoint?.category ? 1 : 0.6)
-        }
-        .scaledToFit()
-        .chartLegend(alignment: .leading, spacing: 8)
-        .chartAngleSelection(value: $selectedAngle)
-        .chartBackground { chartProxy in
-            GeometryReader { geometry in
-                let frame = geometry[chartProxy.plotFrame!]
-                VStack {
-                    Text(selectedCategory)
-                        .font(.headline)
-                        .fontWeight(.medium)
-                    Text(selectedTotal)
-                        .font(.subheadline)
-                }
-                .position(x: frame.midX, y: frame.midY)
+        VStack(alignment: .leading) {
+            Chart(data, id: \.category) { dataPoint in
+                SectorMark(
+                    angle: .value("Count", dataPoint.count),
+                    innerRadius: .ratio(0.618),
+                    angularInset: 1.5
+                )
+                .cornerRadius(5)
+                .foregroundStyle(Charts.determineChartColor(dataPoint.category))
+                .opacity(selectedDataPoint == nil ? 1 :
+                            dataPoint.category == selectedDataPoint?.category ? 1 : 0.4)
             }
-        }
-        .onChange(of: selectedAngle) { oldValue, newValue in
-            if let newValue {
-                let angle = Int(ceil(newValue))
-                
-                if previousRange?.contains(angle) != true {
+            .scaledToFit()
+            .chartLegend(.hidden)
+            .chartAngleSelection(value: $selectedAngle)
+            .chartBackground { chartProxy in
+                GeometryReader { geometry in
+                    let frame = geometry[chartProxy.plotFrame!]
+                    VStack {
+                        Text(selectedCategory)
+                            .font(.headline)
+                            .fontWeight(.medium)
+                        Text(selectedTotal)
+                            .font(.subheadline)
+                    }
+                    .position(x: frame.midX, y: frame.midY)
+                }
+            }
+            .onChange(of: selectedAngle) { _, newValue in
+                if let newValue {
+                    let angle = Int(ceil(newValue))
+                    
                     for (cd, range) in ranges {
                         if range.contains(angle) {
                             selectedDataPoint = cd
-                            self.previousRange = range
                             break
                         }
                     }
+                } else {
+                    selectedDataPoint = nil
                 }
-            } else {
-                selectedDataPoint = nil
-                previousRange = nil
             }
+            
+            ChartLegend(data: data, selectedDataPoint: selectedDataPoint)
+                .equatable()
+                .padding(.top)
         }
-        .padding(.horizontal)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .dynamicTypeSize(...DynamicTypeSize.medium)
     }
 }
