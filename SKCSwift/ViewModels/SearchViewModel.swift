@@ -126,25 +126,43 @@ final class SearchViewModel {
         }
     }
     
-    func fetchRecentlyViewedSuggestions(newRecentlyViewed: Set<String>) async {
-        recentlyViewedSuggestions = await fetchRecentlyViewedSuggestions(newRecentlyViewed: newRecentlyViewed)
+    private func fetchRecentlyViewedSuggestions(newRecentlyViewed: Set<String>) async {
+        async let suggestionAsync = fetchRecentlyViewedSuggestionData(newRecentlyViewed: newRecentlyViewed)
+        async let supportAsync = fetchRecentlyViewedSupportData(newRecentlyViewed: newRecentlyViewed)
+        
+        recentlyViewedSuggestions = await consolidateSuggestions(suggestions: await suggestionAsync, support: await supportAsync)
     }
     
-    nonisolated private func fetchRecentlyViewedSuggestions(newRecentlyViewed: Set<String>) async -> [CardReference] {
+    nonisolated private func fetchRecentlyViewedSuggestionData(newRecentlyViewed: Set<String>) async -> BatchSuggestions {
         switch await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
                           resType: BatchSuggestions.self, httpMethod: "POST") {
         case .success(let suggestions):
-            let s = suggestions.namedMaterials + suggestions.namedReferences
-            return Array(s
-                .reduce(into: [String: CardReference]()) { accumulator, ref in
-                    accumulator[ref.card.cardID] = ref
-                }
-                .values
-                .sorted(by: { $0.occurrences > $1.occurrences })
-                .prefix(8))
+            return suggestions
         default: break
         }
-        return []
+        return BatchSuggestions(namedMaterials: [], namedReferences: [], materialArchetypes: Set(), referencedArchetypes: Set(),
+                                unknownResources: Set(), falsePositives: Set())
+    }
+    
+    nonisolated private func fetchRecentlyViewedSupportData(newRecentlyViewed: Set<String>) async -> BatchSupport {
+        switch await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
+                          resType: BatchSupport.self, httpMethod: "POST") {
+        case .success(let suggestions):
+            return suggestions
+        default: break
+        }
+        return BatchSupport(referencedBy: [], materialFor: [], unknownResources: Set(), falsePositives: Set())
+    }
+    
+    nonisolated private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
+        let s = suggestions.namedMaterials + suggestions.namedReferences + support.materialFor + support.referencedBy
+        return Array(s
+            .reduce(into: [String: CardReference]()) { accumulator, ref in
+                accumulator[ref.card.cardID] = CardReference(occurrences: accumulator[ref.card.cardID]?.occurrences ?? 0 + ref.occurrences, card: ref.card)
+            }
+            .values
+            .sorted(by: { $0.occurrences > $1.occurrences })
+            .prefix(8))
     }
 }
 

@@ -68,3 +68,10 @@ struct BatchSuggestions: Codable {
     let unknownResources: Set<String>
     let falsePositives: Set<String>
 }
+
+struct BatchSupport: Codable {
+    let referencedBy: [CardReference]
+    let materialFor: [CardReference]
+    let unknownResources: Set<String>
+    let falsePositives: Set<String>
+}
