@@ -89,6 +89,7 @@ struct SearchView: View {
 private struct RecentlyViewedView: View, Equatable {
     nonisolated static func == (lhs: RecentlyViewedView, rhs: RecentlyViewedView) -> Bool {
         lhs.recentCards == rhs.recentCards && lhs.hasHistory == rhs.hasHistory && lhs.taskStatus == rhs.taskStatus && lhs.requestError == rhs.requestError
+        && lhs.recentlyViewedSuggestions == rhs.recentlyViewedSuggestions
     }
     
     let recentCards: [Card]

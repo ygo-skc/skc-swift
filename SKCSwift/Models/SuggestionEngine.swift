@@ -5,7 +5,7 @@
 //  Created by Javi Gomez on 1/22/23.
 //
 
-struct CardReference: Codable {
+struct CardReference: Codable, Equatable {
     let occurrences: Int
     let card: Card
 }
