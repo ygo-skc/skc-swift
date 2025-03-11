@@ -11,6 +11,7 @@ import SwiftData
 struct SearchView: View {
     @Environment(\.modelContext) private var modelContext
     
+    @State private var path = NavigationPath()
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
     
@@ -23,8 +24,12 @@ struct SearchView: View {
         }, sort: \History.lastAccessDate, order: .reverse)
     }
     
+    private func cardPressed(cardID: String, cardName: String) {
+        path.append(CardLinkDestinationValue(cardID: cardID, cardName: cardName))
+    }
+    
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack {
                 switch (searchModel.dataTaskStatus[.search, default: .uninitiated], searchModel.requestErrors[.search, default: nil]) {
                 case (.done, _) where searchModel.searchText.isEmpty,
@@ -38,7 +43,8 @@ struct SearchView: View {
                                            recentlyViewedSuggestions: searchModel.recentlyViewedSuggestions,
                                            retryCB: {
                             let newlyViewed = Set(history.prefix(15).map { $0.id })
-                            await searchModel.fetchRecentlyViewedDetails(newlyViewed: newlyViewed)
+                            await searchModel.fetchRecentlyViewedDetails(newlyViewed: newlyViewed),
+                            recentItemPressed: cardPressed
                         })
                         .equatable()
                     } else {
@@ -53,7 +59,8 @@ struct SearchView: View {
                 case (.done, _), (.pending, _):
                     SearchResultsView(searchResults: searchModel.searchResults,
                                       requestError: searchModel.requestErrors[.search, default: nil],
-                                      retryCB: {await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText)})
+                                      retryCB: {await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText)},
+                                      searchItemPressed: cardPressed)
                     .equatable()
                 }
             }
@@ -98,6 +105,7 @@ private struct RecentlyViewedView: View, Equatable {
     let requestError: NetworkError?
     let recentlyViewedSuggestions: [CardReference]
     let retryCB: () async -> Void
+    let recentItemPressed: (String, String) -> Void
     
     var body: some View {
         ScrollView {
@@ -116,14 +124,14 @@ private struct RecentlyViewedView: View, Equatable {
                             .fontWeight(.medium)
                             .padding(.top)
                         ForEach(recentCards, id: \.cardID) { card in
-                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                GroupBox() {
-                                    CardListItemView(card: card)
-                                        .equatable()
-                                }
-                                .groupBoxStyle(.listItem)
-                            })
-                            .buttonStyle(.plain)
+                            GroupBox() {
+                                CardListItemView(card: card)
+                                    .equatable()
+                            }
+                            .groupBoxStyle(.listItem)
+                            .onTapGesture {
+                                recentItemPressed(card.cardID, card.cardName)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -165,6 +173,7 @@ private struct SearchResultsView: View, Equatable {
     let searchResults: [SearchResults]
     let requestError: NetworkError?
     let retryCB: () async -> Void
+    let searchItemPressed: (String, String) -> Void
     
     var body: some View {
         VStack {
@@ -174,10 +183,12 @@ private struct SearchResultsView: View, Equatable {
                         .font(.headline)
                         .fontWeight(.black) ) {
                             ForEach(sr.results, id: \.cardID) { card in
-                                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                    CardListItemView(card: card)
-                                        .equatable()
-                                })
+                                CardListItemView(card: card)
+                                    .equatable()
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        searchItemPressed(card.cardID, card.cardName)
+                                    }
                             }
                         }
                 }

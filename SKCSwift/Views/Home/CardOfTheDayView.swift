@@ -20,47 +20,44 @@ struct CardOfTheDayView: View, Equatable {
     private static let IMAGE_SIZE: CGFloat = 90
     
     var body: some View {
-        NavigationLink(value: CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName), label: {
-            SectionView(
-                header: "Card of the day",
-                content: {
-                    HStack(alignment: .top, spacing: 20) {
-                        if let networkError {
-                            NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+        SectionView(
+            header: "Card of the day",
+            content: {
+                HStack(alignment: .top, spacing: 20) {
+                    if let networkError {
+                        NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+                    } else {
+                        if isDataLoaded || cotd.card.cardID != "" {
+                            CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
+                                .equatable()
                         } else {
-                            if isDataLoaded || cotd.card.cardID != "" {
-                                CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
+                            PlaceholderView(width: CardOfTheDayView.IMAGE_SIZE, height: CardOfTheDayView.IMAGE_SIZE, radius: CardOfTheDayView.IMAGE_SIZE)
+                        }
+                        VStack(alignment: .leading, spacing: 5) {
+                            if isDataLoaded ||  cotd.card.cardID != "" {
+                                InlineDateView(date: cotd.date)
                                     .equatable()
+                                Text(cotd.card.cardName)
+                                    .lineLimit(2)
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                
+                                Text(cotd.card.cardType)
+                                    .font(.headline)
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(1)
                             } else {
-                                PlaceholderView(width: CardOfTheDayView.IMAGE_SIZE, height: CardOfTheDayView.IMAGE_SIZE, radius: CardOfTheDayView.IMAGE_SIZE)
-                            }
-                            VStack(alignment: .leading, spacing: 5) {
-                                if isDataLoaded ||  cotd.card.cardID != "" {
-                                    InlineDateView(date: cotd.date)
-                                        .equatable()
-                                    Text(cotd.card.cardName)
-                                        .lineLimit(2)
-                                        .font(.headline)
-                                        .fontWeight(.semibold)
-                                    
-                                    Text(cotd.card.cardType)
-                                        .font(.headline)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(1)
-                                } else {
-                                    PlaceholderView(width: 200, height: 18, radius: 5)
-                                    PlaceholderView(width: 120, height: 18, radius: 5)
-                                    PlaceholderView(width: 60, height: 18, radius: 5)
-                                }
+                                PlaceholderView(width: 200, height: 18, radius: 5)
+                                PlaceholderView(width: 120, height: 18, radius: 5)
+                                PlaceholderView(width: 60, height: 18, radius: 5)
                             }
                         }
                     }
                 }
-            )
-            .contentShape(Rectangle())
-        })
-        .buttonStyle(.plain)
-        .disabled(!isDataLoaded && networkError == nil)
+            }
+        )
+        .opacity((!isDataLoaded && networkError == nil) ? 0.5 : 1)
+        .contentShape(Rectangle())
     }
 }
 
