@@ -24,7 +24,10 @@ final class SearchViewModel {
     private var searchTask: Task<(), any Error>?
     
     // recently browsed state
-    private(set) var recentlyViewedCardInfo = [String: Card]()
+    @ObservationIgnored
+    private var recentlyViewedCardInfo = [String: Card]()
+    private(set) var recentlyViewedCards = [Card]()
+    
     private(set) var recentlyViewedSuggestions: [CardReference] = []
     
     func searchDB(oldValue: String, newValue: String) async {
@@ -96,28 +99,29 @@ final class SearchViewModel {
         return (nil, cardIDs)
     }
     
-    func fetchHistoryData(recentlyViewed newHistory: [History]) async {
-        let newRecentlyViewed = Set(newHistory.map { $0.id })
+    func fetchHistoryData(newlyViewed newHistory: [History]) async {
+        let newlyViewed = Set(newHistory.map { $0.id })
         
-        if newRecentlyViewed != Set(recentlyViewedCardInfo.keys) {
+        if newlyViewed != Set(recentlyViewedCardInfo.keys) {
             await withTaskGroup(of: Void.self) { taskGroup in
-                taskGroup.addTask { @Sendable in await self.fetchRecentlyViewedDetails(newRecentlyViewed: newRecentlyViewed) }
-                taskGroup.addTask { @Sendable in await self.fetchRecentlyViewedSuggestions(newRecentlyViewed: newRecentlyViewed) }
+                taskGroup.addTask { @Sendable in await self.fetchRecentlyViewedDetails(newlyViewed: newlyViewed) }
+                taskGroup.addTask { @Sendable in await self.fetchRecentlyViewedSuggestions(newlyViewed: newlyViewed) }
             }
         }
+        recentlyViewedCards = newHistory.map{ recentlyViewedCardInfo[$0.id] }.compactMap{ $0 }
     }
     
-    func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>) async {
+    func fetchRecentlyViewedDetails(newlyViewed: Set<String>) async {
         requestErrors[.recentlyViewed] = nil
         dataTaskStatus[.recentlyViewed] = .pending
-        (recentlyViewedCardInfo, requestErrors[.recentlyViewed]) = await fetchRecentlyViewedDetails(newRecentlyViewed: newRecentlyViewed)
+        (recentlyViewedCardInfo, requestErrors[.recentlyViewed]) = await fetchRecentlyViewedDetails(newlyViewed: newlyViewed)
         dataTaskStatus[.recentlyViewed] = .done
     }
     
     /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
     /// If data for a particular card needs to be downloaded - make network call
-    nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>) async -> ([String: Card], NetworkError?) {
-        switch await data(cardDetailsUrl(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
+    nonisolated private func fetchRecentlyViewedDetails(newlyViewed: Set<String>) async -> ([String: Card], NetworkError?) {
+        switch await data(cardDetailsUrl(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                           resType: CardDetailsResponse.self, httpMethod: "POST") {
         case .success(let cardDetails):
             return (cardDetails.cardInfo, nil)
@@ -126,15 +130,15 @@ final class SearchViewModel {
         }
     }
     
-    private func fetchRecentlyViewedSuggestions(newRecentlyViewed: Set<String>) async {
-        async let suggestionAsync = fetchRecentlyViewedSuggestionData(newRecentlyViewed: newRecentlyViewed)
-        async let supportAsync = fetchRecentlyViewedSupportData(newRecentlyViewed: newRecentlyViewed)
+    private func fetchRecentlyViewedSuggestions(newlyViewed: Set<String>) async {
+        async let suggestionAsync = fetchRecentlyViewedSuggestionData(newlyViewed: newlyViewed)
+        async let supportAsync = fetchRecentlyViewedSupportData(newlyViewed: newlyViewed)
         
         recentlyViewedSuggestions = await consolidateSuggestions(suggestions: await suggestionAsync, support: await supportAsync)
     }
     
-    nonisolated private func fetchRecentlyViewedSuggestionData(newRecentlyViewed: Set<String>) async -> BatchSuggestions {
-        switch await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
+    nonisolated private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
+        switch await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                           resType: BatchSuggestions.self, httpMethod: "POST") {
         case .success(let suggestions):
             return suggestions
@@ -144,8 +148,8 @@ final class SearchViewModel {
                                 unknownResources: Set(), falsePositives: Set())
     }
     
-    nonisolated private func fetchRecentlyViewedSupportData(newRecentlyViewed: Set<String>) async -> BatchSupport {
-        switch await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
+    nonisolated private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
+        switch await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                           resType: BatchSupport.self, httpMethod: "POST") {
         case .success(let suggestions):
             return suggestions

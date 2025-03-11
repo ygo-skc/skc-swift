@@ -31,14 +31,14 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(recentCards: Array(searchModel.recentlyViewedCardInfo.values),
+                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCards,
                                            hasHistory: !history.isEmpty,
                                            taskStatus: searchModel.dataTaskStatus[.recentlyViewed, default: .uninitiated],
                                            requestError: searchModel.requestErrors[.recentlyViewed, default: nil],
                                            recentlyViewedSuggestions: searchModel.recentlyViewedSuggestions,
                                            retryCB: {
-                            let newRecentlyViewed = Set(history.map { $0.id })
-                            await searchModel.fetchRecentlyViewedDetails(newRecentlyViewed: newRecentlyViewed)
+                            let newlyViewed = Set(history.prefix(15).map { $0.id })
+                            await searchModel.fetchRecentlyViewedDetails(newlyViewed: newlyViewed)
                         })
                         .equatable()
                     } else {
@@ -59,7 +59,7 @@ struct SearchView: View {
             }
             .onAppear {
                 Task {
-                    await searchModel.fetchHistoryData(recentlyViewed: Array(history.prefix(15)))
+                    await searchModel.fetchHistoryData(newlyViewed: Array(history.prefix(15)))
                 }
             }
             .ygoNavigationDestination()
