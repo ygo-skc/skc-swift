@@ -24,10 +24,6 @@ struct SearchView: View {
         }, sort: \History.lastAccessDate, order: .reverse)
     }
     
-    private func cardPressed(cardID: String, cardName: String) {
-        path.append(CardLinkDestinationValue(cardID: cardID, cardName: cardName))
-    }
-    
     var body: some View {
         NavigationStack(path: $path) {
             VStack {
@@ -36,15 +32,14 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails,
+                        RecentlyViewedView(path: $path, recentCards: searchModel.recentlyViewedCardDetails,
                                            hasHistory: !history.isEmpty,
                                            taskStatus: searchModel.dataTaskStatus[.recentlyViewed, default: .uninitiated],
                                            requestError: searchModel.requestErrors[.recentlyViewed, default: nil],
-                                           retryCB: {await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))},
-                                           recentItemPressed: cardPressed)
+                                           retryCB: {await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))})
                         .equatable()
                     } else {
-                        TrendingView(focusedTrend: $trendingModel.focusedTrend,
+                        TrendingView(path: $path, focusedTrend: $trendingModel.focusedTrend,
                                      cards: trendingModel.cards,
                                      products: trendingModel.products,
                                      trendingDataTaskStatuses: trendingModel.trendingDataTaskStatuses,
@@ -53,10 +48,9 @@ struct SearchView: View {
                         .equatable()
                     }
                 case (.done, _), (.pending, _):
-                    SearchResultsView(searchResults: searchModel.searchResults,
+                    SearchResultsView(path: $path, searchResults: searchModel.searchResults,
                                       requestError: searchModel.requestErrors[.search, default: nil],
-                                      retryCB: {await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText)},
-                                      searchItemPressed: cardPressed)
+                                      retryCB: {await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText)})
                     .equatable()
                 }
             }
@@ -94,12 +88,12 @@ private struct RecentlyViewedView: View, Equatable {
         lhs.recentCards == rhs.recentCards && lhs.hasHistory == rhs.hasHistory && lhs.taskStatus == rhs.taskStatus && lhs.requestError == rhs.requestError
     }
     
+    @Binding var path: NavigationPath
     let recentCards: [Card]
     let hasHistory: Bool
     let taskStatus: DataTaskStatus
     let requestError: NetworkError?
     let retryCB: () async -> Void
-    let recentItemPressed: (String, String) -> Void
     
     var body: some View {
         ScrollView {
@@ -115,7 +109,7 @@ private struct RecentlyViewedView: View, Equatable {
                             }
                             .groupBoxStyle(.listItem)
                             .onTapGesture {
-                                recentItemPressed(card.cardID, card.cardName)
+                                path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
                             }
                         }
                     }
@@ -154,10 +148,10 @@ private struct SearchResultsView: View, Equatable {
         lhs.searchResults == rhs.searchResults && lhs.requestError == rhs.requestError
     }
     
+    @Binding var path: NavigationPath
     let searchResults: [SearchResults]
     let requestError: NetworkError?
     let retryCB: () async -> Void
-    let searchItemPressed: (String, String) -> Void
     
     var body: some View {
         VStack {
@@ -171,7 +165,7 @@ private struct SearchResultsView: View, Equatable {
                                     .equatable()
                                     .contentShape(Rectangle())
                                     .onTapGesture {
-                                        searchItemPressed(card.cardID, card.cardName)
+                                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
                                     }
                             }
                         }

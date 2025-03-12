@@ -15,6 +15,7 @@ struct TrendingView: View, Equatable {
         }
     }
     
+    @Binding var path: NavigationPath
     @Binding var focusedTrend: TrendingResourceType
     let cards: [TrendingMetric<Card>]
     let products: [TrendingMetric<Product>]
@@ -38,14 +39,15 @@ struct TrendingView: View, Equatable {
                 if trendingRequestErrors[focusedTrend, default: nil] == nil  {
                     switch focusedTrend {
                     case .card:
-                        TrendingCardsView(trendingCards: cards)
+                        TrendingCardsView(path: $path, trendingCards: cards)
                     case .product:
-                        TrendingProductsView(trendingProducts: products)
+                        TrendingProductsView(path: $path, trendingProducts: products)
                     }
                 }
             })
             .modifier(.parentView)
         }
+        .dynamicTypeSize(...DynamicTypeSize.medium)
         .scrollDisabled(trendingRequestErrors[focusedTrend] != nil)
         .overlay {
             if let networkError = trendingRequestErrors[focusedTrend, default: nil] {
@@ -66,42 +68,42 @@ struct TrendingView: View, Equatable {
 }
 
 private struct TrendingCardsView: View {
-    var trendingCards: [TrendingMetric<Card>]
+    @Binding var path: NavigationPath
+    let trendingCards: [TrendingMetric<Card>]
     
     var body: some View {
         VStack {
             ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
                 let card = m.resource
-                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                        CardListItemView(card: card)
-                            .equatable()
-                    }
-                    .groupBoxStyle(.listItem)
-                })
-                .dynamicTypeSize(...DynamicTypeSize.medium)
-                .buttonStyle(.plain)
+                GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                    CardListItemView(card: card)
+                        .equatable()
+                }
+                .groupBoxStyle(.listItem)
+                .onTapGesture {
+                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                }
             }
         }
     }
 }
 
 private struct TrendingProductsView: View {
+    @Binding var path: NavigationPath
     let trendingProducts: [TrendingMetric<Product>]
     
     var body: some View {
         VStack {
             ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
-                NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName), label: {
-                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                        ProductListItemView(product: product)
-                            .equatable()
-                    }
-                    .dynamicTypeSize(...DynamicTypeSize.medium)
-                    .groupBoxStyle(.listItem)
-                })
-                .buttonStyle(.plain)
+                GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                    ProductListItemView(product: product)
+                        .equatable()
+                }
+                .groupBoxStyle(.listItem)
+                .onTapGesture {
+                    path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
+                }
             }
         }
     }
@@ -147,10 +149,6 @@ private struct TrendChangeView: View, Equatable {
         }
     }
 }
-
-//#Preview {
-//    TrendingView(model: TrendingViewModel())
-//}
 
 #Preview("Trend Change Positive") {
     TrendChangeView(position: 1, trendChange: 1, hits: 1040)
