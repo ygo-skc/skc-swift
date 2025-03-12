@@ -43,9 +43,9 @@ struct SearchView: View {
                                            recentlyViewedSuggestions: searchModel.recentlyViewedSuggestions,
                                            retryCB: {
                             let newlyViewed = Set(history.prefix(15).map { $0.id })
-                            await searchModel.fetchRecentlyViewedDetails(newlyViewed: newlyViewed),
-                            recentItemPressed: cardPressed
-                        })
+                            await searchModel.fetchRecentlyViewedDetails(newlyViewed: newlyViewed)
+                        },
+                                           recentItemPressed: cardPressed)
                         .equatable()
                     } else {
                         TrendingView(focusedTrend: $trendingModel.focusedTrend,
