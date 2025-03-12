@@ -44,12 +44,12 @@ final class History {
         self.timesAccessed = timesAccessed
     }
     
-    private func updateAccess(timesAccessed: Int = 1) {
+    nonisolated private func updateAccess(timesAccessed: Int = 1) {
         lastAccessDate = Date()
         self.timesAccessed += timesAccessed
     }
     
-    func updateHistoryContext(history: [History], modelContext: ModelContext) {
+    nonisolated func updateHistoryContext(history: [History], modelContext: ModelContext) {
         /*
          If no history, create new instance in table
          Else if there is at least one history record for card, update the last modified date and access time for the first record
@@ -65,7 +65,7 @@ final class History {
     }
     
     /// there should only be one history record per ID/resource type, this method will consolidate multiple history records into one - deleting the others
-    private static func consolidate(history: [History], modelContext: ModelContext) {
+    private static nonisolated func consolidate(history: [History], modelContext: ModelContext) {
         if history.count > 1 {
             for i in 1..<history.count {
                 if history[0].id == history[i].id && history[0].resource == history[i].resource {

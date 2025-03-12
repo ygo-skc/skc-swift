@@ -18,14 +18,14 @@ struct Product: Codable, Equatable, Identifiable {
         }
     }
     
-    func productIDWithContentTotal() -> String {
+    nonisolated func productIDWithContentTotal() -> String {
         if let productTotal {
             return "\(productId) │ \(productTotal) Cards"
         }
         return productId
     }
     
-    func productCategory() -> String {
+    nonisolated func productCategory() -> String {
         return "\(productType) │ \(productSubType)"
     }
 }

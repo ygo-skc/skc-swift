@@ -164,7 +164,7 @@ private struct ProductInfoView: View {
                     .controlSize(.large)
             }
         }
-        .modifier(ParentViewModifier(alignment: .center))
+        .modifier(.centeredParentView)
         .padding(.bottom, 40)
     }
 }
@@ -208,7 +208,7 @@ private struct ProductStatsView: View {
                     description: "Monster cards printed in **\(productName)** categorized by their attribute.",
                     dataTitle: "Monster Attribute", data: monsterAttributeData)
             }
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
     }
 }

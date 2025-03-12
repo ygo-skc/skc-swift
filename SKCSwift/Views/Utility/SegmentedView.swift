@@ -18,7 +18,7 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
                 let frameMidX = reader.frame(in: .global).midX
                 
                 mainContent()
-                    .modifier(ParentViewModifier())
+                    .modifier(.parentView)
                 
                 
                 BottomSheet(frameHeight: frameHeight, frameMidX: frameMidX) {

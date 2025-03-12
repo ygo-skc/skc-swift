@@ -29,7 +29,7 @@ fileprivate let customSession: URLSession = {
     return URLSession(configuration: configuration)
 }()
 
-fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
+fileprivate nonisolated func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = httpMethod
     request.httpBody = reqBody
@@ -37,7 +37,7 @@ fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> UR
     return request
 }
 
-fileprivate func validateResponse(response: URLResponse?) throws {
+fileprivate nonisolated func validateResponse(response: URLResponse?) throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         switch code {

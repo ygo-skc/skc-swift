@@ -25,7 +25,7 @@ struct HomeView: View {
                                      networkError: model.requestErrors[.cardOfTheDay, default: nil],
                                      retryCB: model.fetchCardOfTheDayData)
                     .equatable()
-                    .onTapGesture{
+                    .onTapGesture {
                         if model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done && model.requestErrors[.cardOfTheDay, default: nil] == nil {
                             model.navigationPath.append(CardLinkDestinationValue(cardID: model.cardOfTheDay.card.cardID,
                                                                                  cardName: model.cardOfTheDay.card.cardName))
@@ -58,7 +58,7 @@ struct HomeView: View {
                     }
                 }
                 .ygoNavigationDestination()
-                .modifier(ParentViewModifier())
+                .modifier(.parentView)
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
             .navigationBarTitle("Home")
@@ -116,7 +116,7 @@ private struct SettingsView: View {
                 })
             }
             .allowsHitTesting(!model.isDeleting)
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
         .task {
             await model.calculateDataUsage()

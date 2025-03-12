@@ -136,7 +136,7 @@ private struct RecentlyViewedView: View, Equatable {
                     }
                     .frame(maxWidth: .infinity)
                 })
-                .modifier(ParentViewModifier())
+                .modifier(.parentView)
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.medium)

@@ -11,7 +11,7 @@ struct YouTubeUploads: Codable {
 }
 
 struct YouTubeVideos: Codable, Equatable {
-    static func == (lhs: YouTubeVideos, rhs: YouTubeVideos) -> Bool {
+    static nonisolated func == (lhs: YouTubeVideos, rhs: YouTubeVideos) -> Bool {
         lhs.id == rhs.id
     }
     
@@ -29,7 +29,7 @@ struct Events: Codable {
 }
 
 struct Event: Codable, Equatable {
-    static func == (lhs: Event, rhs: Event) -> Bool {
+    static nonisolated func == (lhs: Event, rhs: Event) -> Bool {
         lhs.name == rhs.name && lhs.eventDate == rhs.eventDate && lhs.url == rhs.url
     }
     

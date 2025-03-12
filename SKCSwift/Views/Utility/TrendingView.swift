@@ -44,7 +44,7 @@ struct TrendingView: View, Equatable {
                     }
                 }
             })
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
         .scrollDisabled(trendingRequestErrors[focusedTrend] != nil)
         .overlay {
