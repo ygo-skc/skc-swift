@@ -10,20 +10,20 @@ import SwiftData
 
 struct SearchView: View {
     @Environment(\.modelContext) private var modelContext
-
+    
     @State private var path = NavigationPath()
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
-
+    
     @Query private var history: [History]
-
+    
     init() {
         let c = ArchiveResource.card.rawValue
         _history = Query(filter: #Predicate<History> { h in
             h.resource == c
         }, sort: \History.lastAccessDate, order: .reverse)
     }
-
+    
     var body: some View {
         NavigationStack(path: $path) {
             VStack {
@@ -40,8 +40,7 @@ struct SearchView: View {
                                            retryCB: {
                             let newlyViewed = Set(history.prefix(15).map { $0.id })
                             await searchModel.fetchRecentlyViewedDetails(newlyViewed: newlyViewed)
-                        },
-                                           recentItemPressed: cardPressed)
+                        })
                         .equatable()
                     } else {
                         TrendingView(path: $path, focusedTrend: $trendingModel.focusedTrend,
@@ -69,7 +68,7 @@ struct SearchView: View {
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching,
                         placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
-
+            
         }
         .transaction {
             $0.animation = nil
@@ -93,7 +92,7 @@ private struct RecentlyViewedView: View, Equatable {
         lhs.recentCards == rhs.recentCards && lhs.hasHistory == rhs.hasHistory && lhs.taskStatus == rhs.taskStatus && lhs.requestError == rhs.requestError
         && lhs.recentlyViewedSuggestions == rhs.recentlyViewedSuggestions
     }
-
+    
     @Binding var path: NavigationPath
     let recentCards: [Card]
     let hasHistory: Bool
@@ -101,7 +100,7 @@ private struct RecentlyViewedView: View, Equatable {
     let requestError: NetworkError?
     let recentlyViewedSuggestions: [CardReference]
     let retryCB: () async -> Void
-
+    
     var body: some View {
         ScrollView {
             if !recentCards.isEmpty {
@@ -113,7 +112,7 @@ private struct RecentlyViewedView: View, Equatable {
                             .font(.headline)
                             .fontWeight(.medium)
                         SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
-
+                        
                         Text("Recently viewed")
                             .font(.headline)
                             .fontWeight(.medium)
@@ -164,12 +163,12 @@ private struct SearchResultsView: View, Equatable {
     nonisolated static func == (lhs: SearchResultsView, rhs: SearchResultsView) -> Bool {
         lhs.searchResults == rhs.searchResults && lhs.requestError == rhs.requestError
     }
-
+    
     @Binding var path: NavigationPath
     let searchResults: [SearchResults]
     let requestError: NetworkError?
     let retryCB: () async -> Void
-
+    
     var body: some View {
         VStack {
             if requestError == nil {
