@@ -28,7 +28,7 @@ struct ChartData: Hashable {
 }
 
 struct Charts {
-    static let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink, .brown,
+    static nonisolated let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink, .brown,
                                   .cyan, .mint, .indigo, .teal, .synchroYGOCard, .dateRed, .effectYGOCard, .normalYGOCard, .fusionYGOCard]
     
     nonisolated(unsafe) private static

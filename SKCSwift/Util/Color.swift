@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-func banStatusColor(status: String) -> Color {
+nonisolated func banStatusColor(status: String) -> Color {
     switch status {
     case "Forbidden":
         return .forbidden
@@ -22,7 +22,7 @@ func banStatusColor(status: String) -> Color {
     }
 }
 
-func cardColorUI(cardColor: String) -> Color {
+nonisolated func cardColorUI(cardColor: String) -> Color {
     switch cardColor {
     case "Normal":
         return .normalYGOCard
@@ -47,7 +47,7 @@ func cardColorUI(cardColor: String) -> Color {
     }
 }
 
-func cardColorGradient(cardColor: String) -> LinearGradient {
+nonisolated func cardColorGradient(cardColor: String) -> LinearGradient {
     switch cardColor {
     case "Pendulum-Normal":
         return LinearGradient(gradient: Gradient(stops: [Gradient.Stop(color: cardColorUI(cardColor: "Normal"), location: 0.4), Gradient.Stop(color: cardColorUI(cardColor: "Spell"), location: 0.6)]), startPoint: .top, endPoint: .bottom)
