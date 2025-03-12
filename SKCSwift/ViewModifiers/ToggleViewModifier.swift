@@ -17,7 +17,7 @@ struct ButtonToggleViewModifier: ViewModifier {
 }
 
 struct ButtonToggleTextViewModifier: ViewModifier {
-    func body(content: Content) -> some View {
+    nonisolated func body(content: Content) -> some View {
         content
             .font(.subheadline)
             .frame(maxWidth: .infinity)
