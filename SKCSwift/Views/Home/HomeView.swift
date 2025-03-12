@@ -58,7 +58,7 @@ struct HomeView: View {
                     }
                 }
                 .ygoNavigationDestination()
-                .modifier(ParentViewModifier())
+                .modifier(.parentView)
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
             .navigationBarTitle("Home")
@@ -116,7 +116,7 @@ private struct SettingsView: View {
                 })
             }
             .allowsHitTesting(!model.isDeleting)
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
         .task {
             await model.calculateDataUsage()

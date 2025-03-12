@@ -173,7 +173,7 @@ private struct ProductBrowseView: View {
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)
         }
-        .modifier(ParentViewModifier())
+        .modifier(.parentView)
     }
 }
 
@@ -195,7 +195,7 @@ private struct CardBrowseView: View {
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)
         }
-        .modifier(ParentViewModifier())
+        .modifier(.parentView)
     }
 }
 
@@ -220,7 +220,7 @@ private struct ProductFiltersView: View {
                               filterImage: "2.circle",
                               columns: Array(repeating: GridItem(.flexible()), count: 2))
         }
-        .modifier(ParentViewModifier())
+        .modifier(.parentView)
         .padding(.top)
     }
 }
@@ -287,7 +287,7 @@ private struct CardFiltersView: View {
                         .fontWeight(.heavy)
                 }
             }
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
     }
 }
