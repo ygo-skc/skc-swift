@@ -20,17 +20,19 @@ struct HomeView: View {
                                 retryCB: model.fetchDBStatsData)
                     .equatable()
                     
-                    CardOfTheDayView(cotd: model.cardOfTheDay,
-                                     isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
-                                     networkError: model.requestErrors[.cardOfTheDay, default: nil],
-                                     retryCB: model.fetchCardOfTheDayData)
-                    .equatable()
-                    .onTapGesture {
+                    Button {
                         if model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done && model.requestErrors[.cardOfTheDay, default: nil] == nil {
                             model.navigationPath.append(CardLinkDestinationValue(cardID: model.cardOfTheDay.card.cardID,
                                                                                  cardName: model.cardOfTheDay.card.cardName))
                         }
+                    } label: {
+                        CardOfTheDayView(cotd: model.cardOfTheDay,
+                                         isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
+                                         networkError: model.requestErrors[.cardOfTheDay, default: nil],
+                                         retryCB: model.fetchCardOfTheDayData)
+                        .equatable()
                     }
+                    .buttonStyle(.plain)
                     
                     UpcomingTCGProductsView(events: model.upcomingTCGProducts,
                                             isDataLoaded: model.dataTaskStatus[.upcomingTCGProducts, default: .uninitiated] == .done,
