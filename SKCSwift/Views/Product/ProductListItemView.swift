@@ -21,11 +21,11 @@ struct ProductListItemView: View, Equatable {
                     .padding(.bottom, 2)
                 Group {
                     Text(product.productIDWithContentTotal())
-                        .foregroundColor(.secondary)
+                        .fontWeight(.thin)
                     Text(product.productName)
                         .fontWeight(.bold)
                     Text(product.productCategory())
-                        .foregroundColor(.secondary)
+                        .fontWeight(.light)
                 }
                 .font(.subheadline)
                 .lineLimit(1)

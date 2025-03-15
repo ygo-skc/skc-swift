@@ -112,40 +112,50 @@ private struct TrendingProductsView: View {
 
 private struct TrendChangeView: View, Equatable {
     private let position: Int
+    private let hits: Int
     private let trendLabel: String
     private let trendColor: Color
     private let trendImage: String
     
     init(position: Int, trendChange: Int, hits: Int) {
         if trendChange > 0 {
-            trendLabel = "+\(trendChange) • \(hits) hits"
+            trendLabel = "+\(trendChange)"
             trendColor = .mint
             trendImage = "chart.line.uptrend.xyaxis"
         } else if trendChange < 0 {
-            trendLabel = "\(trendChange) • \(hits) hits"
+            trendLabel = "\(trendChange)"
             trendColor = .dateRed
             trendImage = "chart.line.downtrend.xyaxis"
         } else {
-            trendLabel = "±\(trendChange) • \(hits) hits"
-            trendColor = .normalYGOCard
+            trendLabel = "±\(trendChange)"
+            trendColor = .orange
             trendImage = "chart.line.flattrend.xyaxis"
         }
         self.position = position
+        self.hits = hits
     }
     
     var body: some View {
         HStack {
             Label {
                 Text(trendLabel)
-                    .foregroundColor(.secondary)
             } icon: {
                 Image(systemName: trendImage)
-                    .foregroundColor(trendColor)
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .foregroundColor(trendColor)
+            
+            Label {
+                Text(String(hits))
+            } icon: {
+                Image(systemName: "chart.bar.xaxis")
+            }
+            .foregroundColor(.secondary)
+            
+            Spacer()
+            
             Text("#\(position)")
                 .font(.headline)
-                .foregroundStyle(.secondary )
+                .fontWeight(.thin)
         }
     }
 }
