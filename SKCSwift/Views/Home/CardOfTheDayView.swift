@@ -30,7 +30,7 @@ struct CardOfTheDayView: View, Equatable {
                     Button {
                         path.append(CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName))
                     } label: {
-                        HStack(spacing: 20) {
+                        HStack(alignment: .top, spacing: 20) {
                             if isDataLoaded || cotd.card.cardID != "" {
                                 CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
                                     .equatable()
