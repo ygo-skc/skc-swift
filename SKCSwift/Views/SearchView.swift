@@ -103,14 +103,16 @@ private struct RecentlyViewedView: View, Equatable {
                             content: {
                     VStack {
                         ForEach(recentCards, id: \.cardID) { card in
-                            GroupBox() {
-                                CardListItemView(card: card)
-                                    .equatable()
-                            }
-                            .groupBoxStyle(.listItem)
-                            .onTapGesture {
+                            Button {
                                 path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                            } label: {
+                                GroupBox() {
+                                    CardListItemView(card: card)
+                                        .equatable()
+                                }
+                                .groupBoxStyle(.listItem)
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                     .dynamicTypeSize(...DynamicTypeSize.medium)

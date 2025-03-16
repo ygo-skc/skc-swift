@@ -75,14 +75,16 @@ private struct TrendingCardsView: View {
         VStack {
             ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
                 let card = m.resource
-                GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                    CardListItemView(card: card)
-                        .equatable()
-                }
-                .groupBoxStyle(.listItem)
-                .onTapGesture {
+                Button {
                     path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                } label: {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -96,14 +98,16 @@ private struct TrendingProductsView: View {
         VStack {
             ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
-                GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                    ProductListItemView(product: product)
-                        .equatable()
-                }
-                .groupBoxStyle(.listItem)
-                .onTapGesture {
+                Button {
                     path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
+                } label: {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                        ProductListItemView(product: product)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
                 }
+                .buttonStyle(.plain)
             }
         }
     }

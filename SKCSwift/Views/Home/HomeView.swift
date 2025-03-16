@@ -7,11 +7,20 @@
 
 import SwiftUI
 
+struct RoundedAndShadowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.8 : 1)
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.default, value: configuration.isPressed)
+    }
+}
+
 struct HomeView: View {
     @State private var model = HomeViewModel()
     
     var body: some View {
-        NavigationStack(path: $model.navigationPath) {
+        NavigationStack(path: $model.path) {
             ScrollView {
                 VStack(spacing: 30) {
                     DBStatsView(dbStats: model.dbStats,
@@ -20,19 +29,11 @@ struct HomeView: View {
                                 retryCB: model.fetchDBStatsData)
                     .equatable()
                     
-                    Button {
-                        if model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done && model.requestErrors[.cardOfTheDay, default: nil] == nil {
-                            model.navigationPath.append(CardLinkDestinationValue(cardID: model.cardOfTheDay.card.cardID,
-                                                                                 cardName: model.cardOfTheDay.card.cardName))
-                        }
-                    } label: {
-                        CardOfTheDayView(cotd: model.cardOfTheDay,
-                                         isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
-                                         networkError: model.requestErrors[.cardOfTheDay, default: nil],
-                                         retryCB: model.fetchCardOfTheDayData)
-                        .equatable()
-                    }
-                    .buttonStyle(.plain)
+                    CardOfTheDayView(path: $model.path, cotd: model.cardOfTheDay,
+                                     isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
+                                     networkError: model.requestErrors[.cardOfTheDay, default: nil],
+                                     retryCB: model.fetchCardOfTheDayData)
+                    .equatable()
                     
                     UpcomingTCGProductsView(events: model.upcomingTCGProducts,
                                             isDataLoaded: model.dataTaskStatus[.upcomingTCGProducts, default: .uninitiated] == .done,
