@@ -9,15 +9,14 @@ import SwiftUI
 
 struct TrendingView: View {
     @Binding var path: NavigationPath
-    @Binding var focusedTrend: TrendingResourceType
-    let trendingModel: TrendingViewModel
+    @Binding var trendingModel: TrendingViewModel
     
     var body: some View {
         ScrollView {
             SectionView(header: "Trending",
                         variant: .plain,
                         content: {
-                Picker("Select Trend Type", selection: $focusedTrend) {
+                Picker("Select Trend Type", selection: $trendingModel.focusedTrend) {
                     ForEach(TrendingResourceType.allCases, id: \.self) { type in
                         Text(type.rawValue.capitalized).tag(type)
                     }
@@ -25,8 +24,8 @@ struct TrendingView: View {
                 .pickerStyle(.segmented)
                 
                 
-                if trendingModel.trendingRequestErrors[focusedTrend, default: nil] == nil  {
-                    switch focusedTrend {
+                if trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] == nil  {
+                    switch trendingModel.focusedTrend {
                     case .card:
                         TrendingCardsView(path: $path, trendingCards: trendingModel.cards)
                     case .product:
@@ -35,23 +34,24 @@ struct TrendingView: View {
                 }
             })
             .modifier(.parentView)
+            .task {
+                await trendingModel.fetchTrendingData(forceRefresh: false)
+            }
+            .dynamicTypeSize(...DynamicTypeSize.medium)
         }
-        .dynamicTypeSize(...DynamicTypeSize.medium)
-        .scrollDisabled(trendingModel.trendingRequestErrors[focusedTrend] != nil)
+        .scrollDisabled(trendingModel.trendingRequestErrors[trendingModel.focusedTrend] != nil)
+        .frame(maxWidth: .infinity)
         .overlay {
-            if let networkError = trendingModel.trendingRequestErrors[focusedTrend, default: nil] {
+            if let networkError = trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] {
                 NetworkErrorView(error: networkError, action: {
                     Task {
                         await trendingModel.fetchTrendingData(forceRefresh: true)
                     }
                 })
-            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingModel.trendingDataTaskStatuses[focusedTrend])  {
+            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingModel.trendingDataTaskStatuses[trendingModel.focusedTrend])  {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }
-        }
-        .task {
-            await trendingModel.fetchTrendingData(forceRefresh: false)
         }
     }
 }

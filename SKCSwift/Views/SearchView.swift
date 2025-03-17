@@ -35,7 +35,7 @@ struct SearchView: View {
                     if searchModel.isSearching {
                         RecentlyViewedView(path: $path, recentlyViewedModel: recentlyViewedModel, history: Array(history.prefix(15)))
                     } else {
-                        TrendingView(path: $path, focusedTrend: $trendingModel.focusedTrend, trendingModel: trendingModel)
+                        TrendingView(path: $path, trendingModel: $trendingModel)
                     }
                 case (.done, _), (.pending, _):
                     SearchResultsView(path: $path, searchModel: searchModel)
