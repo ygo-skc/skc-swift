@@ -15,7 +15,7 @@ struct BrowseView: View {
     @State private var cardBrowseViewModel = CardBrowseViewModel()
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack {
                 Picker("Select resource to browse", selection: $focusedResource) {
                     ForEach(TrendingResourceType.allCases, id: \.self) { type in
