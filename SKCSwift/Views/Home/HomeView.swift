@@ -7,15 +7,6 @@
 
 import SwiftUI
 
-struct RoundedAndShadowButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? 0.8 : 1)
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .animation(.default, value: configuration.isPressed)
-    }
-}
-
 struct HomeView: View {
     @State private var model = HomeViewModel()
     

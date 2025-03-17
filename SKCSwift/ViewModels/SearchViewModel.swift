@@ -13,39 +13,32 @@ final class SearchViewModel {
     var isSearching = false
     var searchText = ""
     
-    private(set) var dataTaskStatus: [SearchModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: SearchModelDataType.allCases.map { ($0, .uninitiated) })
-    private(set) var requestErrors = [SearchModelDataType: NetworkError?]()
+    private(set) var requestError: NetworkError? = nil
+    private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
     
-    @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
     @ObservationIgnored
     private var cardIDsForSearchResults: Set<String> = []
     @ObservationIgnored
     private var searchTask: Task<(), any Error>?
     
-    // recently browsed state
-    @ObservationIgnored
-    private(set) var recentlyViewedCardDetails = [Card]()
-    @ObservationIgnored
-    private var recentlyViewedCardInfo = [String: Card]()
-    
     func searchDB(oldValue: String, newValue: String) async {
-        if requestErrors[.search] == .notFound && newValue.starts(with: oldValue) {
+        if requestError == .notFound && newValue.starts(with: oldValue) {
             return
         }
         
         searchTask?.cancel()
         if newValue == "" {
             resetSearchResults()
-            requestErrors[.search] = nil
-            dataTaskStatus[.search] = .done
+            requestError = nil
+            dataTaskStatus = .done
         } else {
             searchTask = Task {
-                requestErrors[.search] = nil
-                dataTaskStatus[.search] = .pending
+                requestError = nil
+                dataTaskStatus = .pending
                 
                 let (requestResults, searchErr) = await search(subject: newValue)
-                requestErrors[.search] = searchErr
+                requestError = searchErr
                 if requestResults.isEmpty || searchErr != nil {
                     resetSearchResults()
                 } else {
@@ -56,7 +49,7 @@ final class SearchViewModel {
                         cardIDsForSearchResults = newSearchResultsCardIDs
                     }
                 }
-                dataTaskStatus[.search] = .done
+                dataTaskStatus = .done
             }
         }
     }
@@ -96,35 +89,4 @@ final class SearchViewModel {
         }
         return (nil, cardIDs)
     }
-    
-    func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
-        let recentlyViewedCardIDs = Set(newHistory.map { $0.id })
-        
-        requestErrors[.recentlyViewed] = nil
-        dataTaskStatus[.recentlyViewed] = .pending
-        (recentlyViewedCardInfo, requestErrors[.recentlyViewed]) = await fetchRecentlyViewedDetails(newRecentlyViewed: recentlyViewedCardIDs,
-                                                                                                    recentlyViewedCardInfo: recentlyViewedCardInfo)
-        recentlyViewedCardDetails = newHistory.map{ recentlyViewedCardInfo[$0.id] }.compactMap{ $0 }
-        dataTaskStatus[.recentlyViewed] = .done
-    }
-    
-    /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
-    /// If data for a particular card needs to be downloaded - make network call
-    nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
-                                                        recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?) {
-        if newRecentlyViewed != Set(recentlyViewedCardInfo.values.map { $0.cardID })  {
-            switch await data(cardDetailsUrl(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
-                              resType: CardDetailsResponse.self, httpMethod: "POST") {
-            case .success(let cardDetails):
-                return (cardDetails.cardInfo, nil)
-            case .failure(let error):
-                return ([:], error)
-            }
-        }
-        return (recentlyViewedCardInfo, nil)
-    }
-}
-
-enum SearchModelDataType: CaseIterable {
-    case search, recentlyViewed
 }

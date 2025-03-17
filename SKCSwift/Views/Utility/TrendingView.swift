@@ -7,21 +7,10 @@
 
 import SwiftUI
 
-struct TrendingView: View, Equatable {
-    nonisolated static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
-        MainActor.assumeIsolated {
-            return lhs.focusedTrend == rhs.focusedTrend && lhs.cards == rhs.cards && lhs.products == rhs.products
-            && lhs.trendingDataTaskStatuses == rhs.trendingDataTaskStatuses && lhs.trendingRequestErrors == rhs.trendingRequestErrors
-        }
-    }
-    
+struct TrendingView: View {
     @Binding var path: NavigationPath
     @Binding var focusedTrend: TrendingResourceType
-    let cards: [TrendingMetric<Card>]
-    let products: [TrendingMetric<Product>]
-    let trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus]
-    let trendingRequestErrors: [TrendingResourceType: NetworkError?]
-    let fetchTrendingData: (Bool) async -> Void
+    let trendingModel: TrendingViewModel
     
     var body: some View {
         ScrollView {
@@ -36,33 +25,33 @@ struct TrendingView: View, Equatable {
                 .pickerStyle(.segmented)
                 
                 
-                if trendingRequestErrors[focusedTrend, default: nil] == nil  {
+                if trendingModel.trendingRequestErrors[focusedTrend, default: nil] == nil  {
                     switch focusedTrend {
                     case .card:
-                        TrendingCardsView(path: $path, trendingCards: cards)
+                        TrendingCardsView(path: $path, trendingCards: trendingModel.cards)
                     case .product:
-                        TrendingProductsView(path: $path, trendingProducts: products)
+                        TrendingProductsView(path: $path, trendingProducts: trendingModel.products)
                     }
                 }
             })
             .modifier(.parentView)
         }
         .dynamicTypeSize(...DynamicTypeSize.medium)
-        .scrollDisabled(trendingRequestErrors[focusedTrend] != nil)
+        .scrollDisabled(trendingModel.trendingRequestErrors[focusedTrend] != nil)
         .overlay {
-            if let networkError = trendingRequestErrors[focusedTrend, default: nil] {
+            if let networkError = trendingModel.trendingRequestErrors[focusedTrend, default: nil] {
                 NetworkErrorView(error: networkError, action: {
                     Task {
-                        await fetchTrendingData(true)
+                        await trendingModel.fetchTrendingData(forceRefresh: true)
                     }
                 })
-            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingDataTaskStatuses[focusedTrend])  {
+            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingModel.trendingDataTaskStatuses[focusedTrend])  {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }
         }
         .task {
-            await fetchTrendingData(false)
+            await trendingModel.fetchTrendingData(forceRefresh: false)
         }
     }
 }
@@ -73,7 +62,7 @@ private struct TrendingCardsView: View {
     
     var body: some View {
         VStack {
-            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
+            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) { position, m in
                 let card = m.resource
                 Button {
                     path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
