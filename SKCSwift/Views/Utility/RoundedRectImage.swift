@@ -15,7 +15,7 @@ struct RoundedRectImage: View, Equatable {
     var cornerRadius = 50.0
     
     var body: some View {
-        CachedAsyncImage(url: imageUrl) { phase in
+        CachedAsyncImage(url: imageUrl, urlCache: URLCache.imageCache) { phase in
             switch phase {
             case .empty:
                 PlaceholderView(width: width, height: height, radius: cornerRadius)
