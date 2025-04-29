@@ -31,7 +31,8 @@ struct ProductImageView: View, Equatable {
     }
     
     var body: some View {
-        CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!) { phase in
+        CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!,
+                         urlCache: URLCache.imageCache) { phase in
             switch phase {
             case .empty:
                 PlaceholderView(width: width, height: height, radius: 0)

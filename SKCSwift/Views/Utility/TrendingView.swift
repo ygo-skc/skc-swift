@@ -7,28 +7,16 @@
 
 import SwiftUI
 
-struct TrendingView: View, Equatable {
-    nonisolated static func == (lhs: TrendingView, rhs: TrendingView) -> Bool {
-        MainActor.assumeIsolated {
-            return lhs.focusedTrend == rhs.focusedTrend && lhs.cards == rhs.cards && lhs.products == rhs.products
-            && lhs.trendingDataTaskStatuses == rhs.trendingDataTaskStatuses && lhs.trendingRequestErrors == rhs.trendingRequestErrors
-        }
-    }
-    
+struct TrendingView: View {
     @Binding var path: NavigationPath
-    @Binding var focusedTrend: TrendingResourceType
-    let cards: [TrendingMetric<Card>]
-    let products: [TrendingMetric<Product>]
-    let trendingDataTaskStatuses: [TrendingResourceType: DataTaskStatus]
-    let trendingRequestErrors: [TrendingResourceType: NetworkError?]
-    let fetchTrendingData: (Bool) async -> Void
+    @Binding var trendingModel: TrendingViewModel
     
     var body: some View {
         ScrollView {
             SectionView(header: "Trending",
                         variant: .plain,
                         content: {
-                Picker("Select Trend Type", selection: $focusedTrend) {
+                Picker("Select Trend Type", selection: $trendingModel.focusedTrend) {
                     ForEach(TrendingResourceType.allCases, id: \.self) { type in
                         Text(type.rawValue.capitalized).tag(type)
                     }
@@ -36,33 +24,34 @@ struct TrendingView: View, Equatable {
                 .pickerStyle(.segmented)
                 
                 
-                if trendingRequestErrors[focusedTrend, default: nil] == nil  {
-                    switch focusedTrend {
+                if trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] == nil  {
+                    switch trendingModel.focusedTrend {
                     case .card:
-                        TrendingCardsView(path: $path, trendingCards: cards)
+                        TrendingCardsView(path: $path, trendingCards: trendingModel.cards)
                     case .product:
-                        TrendingProductsView(path: $path, trendingProducts: products)
+                        TrendingProductsView(path: $path, trendingProducts: trendingModel.products)
                     }
                 }
             })
             .modifier(.parentView)
+            .task {
+                await trendingModel.fetchTrendingData(forceRefresh: false)
+            }
+            .dynamicTypeSize(...DynamicTypeSize.medium)
         }
-        .dynamicTypeSize(...DynamicTypeSize.medium)
-        .scrollDisabled(trendingRequestErrors[focusedTrend] != nil)
+        .scrollDisabled(trendingModel.trendingRequestErrors[trendingModel.focusedTrend] != nil)
+        .frame(maxWidth: .infinity)
         .overlay {
-            if let networkError = trendingRequestErrors[focusedTrend, default: nil] {
+            if let networkError = trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] {
                 NetworkErrorView(error: networkError, action: {
                     Task {
-                        await fetchTrendingData(true)
+                        await trendingModel.fetchTrendingData(forceRefresh: true)
                     }
                 })
-            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingDataTaskStatuses[focusedTrend])  {
+            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingModel.trendingDataTaskStatuses[trendingModel.focusedTrend])  {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }
-        }
-        .task {
-            await fetchTrendingData(false)
         }
     }
 }
@@ -73,16 +62,18 @@ private struct TrendingCardsView: View {
     
     var body: some View {
         VStack {
-            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) {position, m in
+            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) { position, m in
                 let card = m.resource
-                GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                    CardListItemView(card: card)
-                        .equatable()
-                }
-                .groupBoxStyle(.listItem)
-                .onTapGesture {
+                Button {
                     path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                } label: {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -96,14 +87,16 @@ private struct TrendingProductsView: View {
         VStack {
             ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
                 let product = m.resource
-                GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                    ProductListItemView(product: product)
-                        .equatable()
-                }
-                .groupBoxStyle(.listItem)
-                .onTapGesture {
+                Button {
                     path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
+                } label: {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                        ProductListItemView(product: product)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -112,40 +105,50 @@ private struct TrendingProductsView: View {
 
 private struct TrendChangeView: View, Equatable {
     private let position: Int
+    private let hits: Int
     private let trendLabel: String
     private let trendColor: Color
     private let trendImage: String
     
     init(position: Int, trendChange: Int, hits: Int) {
         if trendChange > 0 {
-            trendLabel = "+\(trendChange) • \(hits) hits"
+            trendLabel = "+\(trendChange)"
             trendColor = .mint
             trendImage = "chart.line.uptrend.xyaxis"
         } else if trendChange < 0 {
-            trendLabel = "\(trendChange) • \(hits) hits"
+            trendLabel = "\(trendChange)"
             trendColor = .dateRed
             trendImage = "chart.line.downtrend.xyaxis"
         } else {
-            trendLabel = "±\(trendChange) • \(hits) hits"
-            trendColor = .normalYGOCard
+            trendLabel = "±\(trendChange)"
+            trendColor = .orange
             trendImage = "chart.line.flattrend.xyaxis"
         }
         self.position = position
+        self.hits = hits
     }
     
     var body: some View {
         HStack {
             Label {
                 Text(trendLabel)
-                    .foregroundColor(.secondary)
             } icon: {
                 Image(systemName: trendImage)
-                    .foregroundColor(trendColor)
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .foregroundColor(trendColor)
+            
+            Label {
+                Text(String(hits))
+            } icon: {
+                Image(systemName: "chart.bar.xaxis")
+            }
+            .foregroundColor(.secondary)
+            
+            Spacer()
+            
             Text("#\(position)")
                 .font(.headline)
-                .foregroundStyle(.secondary )
+                .fontWeight(.thin)
         }
     }
 }

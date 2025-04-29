@@ -37,7 +37,8 @@ struct CardImageView: View, Equatable {
             CardImageView.CARD_BACK_IMAGE
                 .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
         } else {
-            CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!) { phase in
+            CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!,
+                             urlCache: URLCache.imageCache) { phase in
                 switch phase {
                 case .empty:
                     PlaceholderView(width: length, height: length, radius: radius)

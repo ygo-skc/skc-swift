@@ -41,6 +41,7 @@ struct CardSuggestionsView: View {
                 }
             })
         }
+        .scrollDisabled(!model.hasSuggestions())
     }
 }
 
@@ -98,6 +99,7 @@ struct ProductCardSuggestionsView: View {
                 }
             })
         }
+        .scrollDisabled(!model.hasSuggestions())
     }
 }
 

@@ -23,7 +23,7 @@ final class HomeViewModel {
     @ObservationIgnored
     private(set) var ytUploads = [YouTubeVideos]()
     
-    var navigationPath = NavigationPath()
+    var path = NavigationPath()
     
     var isSettingsSheetPresented = false
     
@@ -97,7 +97,7 @@ final class HomeViewModel {
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {
         let (destination, type) = determineTypeOfURLClick(path: url.relativePath)
         if let destination {
-            type == "product" ?  navigationPath.append(ProductLinkDestinationValue(productID: destination, productName: "")) : navigationPath.append(CardLinkDestinationValue(cardID: destination, cardName: ""))
+            type == "product" ?  path.append(ProductLinkDestinationValue(productID: destination, productName: "")) : path.append(CardLinkDestinationValue(cardID: destination, cardName: ""))
             return .handled
         }
         return .systemAction
