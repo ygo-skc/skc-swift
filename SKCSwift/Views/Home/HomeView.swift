@@ -11,7 +11,7 @@ struct HomeView: View {
     @State private var model = HomeViewModel()
     
     var body: some View {
-        NavigationStack(path: $model.navigationPath) {
+        NavigationStack(path: $model.path) {
             ScrollView {
                 VStack(spacing: 30) {
                     DBStatsView(dbStats: model.dbStats,
@@ -20,7 +20,7 @@ struct HomeView: View {
                                 retryCB: model.fetchDBStatsData)
                     .equatable()
                     
-                    CardOfTheDayView(cotd: model.cardOfTheDay,
+                    CardOfTheDayView(path: $model.path, cotd: model.cardOfTheDay,
                                      isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
                                      networkError: model.requestErrors[.cardOfTheDay, default: nil],
                                      retryCB: model.fetchCardOfTheDayData)
@@ -52,7 +52,7 @@ struct HomeView: View {
                     }
                 }
                 .ygoNavigationDestination()
-                .modifier(ParentViewModifier())
+                .modifier(.parentView)
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
             .navigationBarTitle("Home")
@@ -110,7 +110,7 @@ private struct SettingsView: View {
                 })
             }
             .allowsHitTesting(!model.isDeleting)
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
         .task {
             await model.calculateDataUsage()

@@ -95,7 +95,7 @@ private struct CardView: View {
                                     }
                                     .frame(maxWidth: .infinity, alignment: .topLeading)
                                 })
-                                .modifier(ParentViewModifier())
+                                .modifier(.parentView)
                                 
                                 RelatedContentView(
                                     cardID: card.cardID,
@@ -105,7 +105,7 @@ private struct CardView: View {
                                     tcgBanLists: card.getBanList(format: BanListFormat.tcg),
                                     mdBanLists: card.getBanList(format: BanListFormat.md)
                                 )
-                                .modifier(ParentViewModifier())
+                                .modifier(.parentView)
                                 .padding(.bottom, 50)
                             } else {
                                 ProgressView("Loading...")

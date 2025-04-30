@@ -8,7 +8,7 @@
 import Foundation
 
 struct Numbers {
-    static let decimalNumberFormatter: NumberFormatter = {
+    static nonisolated let decimalNumberFormatter: NumberFormatter = {
         let nf = NumberFormatter()
         nf.numberStyle = .decimal
         return nf

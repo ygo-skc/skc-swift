@@ -19,21 +19,21 @@ struct CardListItemView: View, Equatable {
                 .padding(.trailing, 3)
             VStack(alignment: .leading) {
                 Text(card.cardName)
-                    .fontWeight(.bold)
                     .font(.subheadline)
+                    .fontWeight(.bold)
                     .lineLimit(1)
                 
                 HStack {
                     Text(card.monsterType ?? card.cardColor)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .fontWeight(.light)
                         .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                    
+                    Spacer()
                     
                     Text(card.cardID)
                         .font(.caption)
-                        .foregroundColor(.secondary)
-                        .fontWeight(.light)
+                        .fontWeight(.thin)
                 }
                 
                 HStack {

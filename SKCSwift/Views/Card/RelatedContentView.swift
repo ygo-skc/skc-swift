@@ -126,7 +126,7 @@ private struct RelatedContentsView<Content: View>: View {
                 
                 content()
             }
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
     }
 }

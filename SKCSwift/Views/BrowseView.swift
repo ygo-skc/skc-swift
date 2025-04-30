@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct BrowseView: View {
+    @State private var path = NavigationPath()
     @State private var focusedResource = TrendingResourceType.card
     
     @State private var productBrowseViewModel = ProductBrowseViewModel()
     @State private var cardBrowseViewModel = CardBrowseViewModel()
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack {
                 Picker("Select resource to browse", selection: $focusedResource) {
                     ForEach(TrendingResourceType.allCases, id: \.self) { type in
@@ -27,14 +28,14 @@ struct BrowseView: View {
                 switch (focusedResource) {
                 case .card:
                     ScrollView {
-                        CardBrowseView(filteredCards: cardBrowseViewModel.cards)
+                        CardBrowseView(path: $path, filteredCards: cardBrowseViewModel.cards)
                     }
                     .task(priority: .userInitiated) {
                         await cardBrowseViewModel.fetchCardBrowseCriteria()
                     }
                 case .product:
                     ScrollView {
-                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProducts)
+                        ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProducts)
                     }
                     .task(priority: .userInitiated) {
                         await productBrowseViewModel.fetchProductBrowseData()
@@ -146,6 +147,7 @@ private struct ProductBrowseOverlay: View {
 }
 
 private struct ProductBrowseView: View {
+    @Binding var path: NavigationPath
     let filteredProducts: [String: [Product]]
     
     var body: some View {
@@ -155,15 +157,15 @@ private struct ProductBrowseView: View {
                     Section(header: HeaderView(header: "\(year) • \(filteredProducts.count) total")) {
                         LazyVStack {
                             ForEach(filteredProducts, id: \.productId) { product in
-                                NavigationLink(
-                                    value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName),
-                                    label: {
-                                        GroupBox {
-                                            ProductListItemView(product: product)
-                                                .equatable()
-                                        }
-                                        .groupBoxStyle(.listItem)
-                                    })
+                                Button {
+                                    path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
+                                } label: {
+                                    GroupBox {
+                                        ProductListItemView(product: product)
+                                            .equatable()
+                                    }
+                                    .groupBoxStyle(.listItem)
+                                }
                                 .buttonStyle(.plain)
                             }
                         }
@@ -173,29 +175,32 @@ private struct ProductBrowseView: View {
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)
         }
-        .modifier(ParentViewModifier())
+        .modifier(.parentView)
     }
 }
 
 private struct CardBrowseView: View {
+    @Binding var path: NavigationPath
     let filteredCards: [Card]
     
     var body: some View {
         LazyVStack(alignment: .leading) {
             ForEach(filteredCards, id: \.self.cardID) { card in
-                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                Button {
+                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                } label: {
                     GroupBox {
                         CardListItemView(card: card, showAllInfo: true)
                             .equatable()
                     }
                     .groupBoxStyle(.listItem)
-                })
+                }
                 .buttonStyle(.plain)
             }
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)
         }
-        .modifier(ParentViewModifier())
+        .modifier(.parentView)
     }
 }
 
@@ -220,7 +225,7 @@ private struct ProductFiltersView: View {
                               filterImage: "2.circle",
                               columns: Array(repeating: GridItem(.flexible()), count: 2))
         }
-        .modifier(ParentViewModifier())
+        .modifier(.parentView)
         .padding(.top)
     }
 }
@@ -287,7 +292,7 @@ private struct CardFiltersView: View {
                         .fontWeight(.heavy)
                 }
             }
-            .modifier(ParentViewModifier())
+            .modifier(.parentView)
         }
     }
 }

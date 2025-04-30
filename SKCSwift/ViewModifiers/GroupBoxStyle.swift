@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ListItemGroupBoxStyle: GroupBoxStyle {
-    func makeBody(configuration: Configuration) -> some View {
+    nonisolated func makeBody(configuration: Configuration) -> some View {
         VStack(alignment: .leading) {
             configuration.label
                 .fontWeight(.semibold)
@@ -21,7 +21,7 @@ struct ListItemGroupBoxStyle: GroupBoxStyle {
 }
 
 struct SectionContentGroupBoxStyle: GroupBoxStyle {
-    func makeBody(configuration: Configuration) -> some View {
+    nonisolated func makeBody(configuration: Configuration) -> some View {
         VStack(alignment: .leading) {
             configuration.content
         }
@@ -32,7 +32,7 @@ struct SectionContentGroupBoxStyle: GroupBoxStyle {
 }
 
 struct FiltersGroupBoxStyle: GroupBoxStyle {
-    func makeBody(configuration: Configuration) -> some View {
+    nonisolated func makeBody(configuration: Configuration) -> some View {
         VStack(alignment: .leading) {
             configuration.label
             configuration.content
@@ -44,7 +44,7 @@ struct FiltersGroupBoxStyle: GroupBoxStyle {
 }
 
 struct FiltersSubGroupBoxStyle: GroupBoxStyle {
-    func makeBody(configuration: Configuration) -> some View {
+    nonisolated func makeBody(configuration: Configuration) -> some View {
         VStack(alignment: .leading) {
             configuration.label
             configuration.content

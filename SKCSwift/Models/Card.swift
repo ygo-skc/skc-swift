@@ -48,19 +48,23 @@ struct Card: Codable, Equatable {
     var restrictedIn: BanListsForCard?
     var foundIn: [Product]?
     
-    var attribute: Attribute {
+    nonisolated var attribute: Attribute {
         get{ Attribute(rawValue: cardAttribute ?? "") ?? .unknown }
     }
-    var isPendulum: Bool {
+    
+    nonisolated var isPendulum: Bool {
         get{ cardColor.starts(with: "Pendulum") }
     }
-    var cardType: String {
+    
+    nonisolated var cardType: String {
         get{ return (monsterType != nil) ? monsterType! : cardAttribute ?? "" }
     }
-    var atk: String {
+    
+    nonisolated var atk: String {
         get{ return (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!) }
     }
-    var def: String {
+    
+    nonisolated var def: String {
         get {
             if cardColor == "Link" {
                 return Card.linkDefStat
@@ -73,11 +77,11 @@ struct Card: Codable, Equatable {
     private static let nilStat = "?"
     private static let linkDefStat = "-"
     
-    func getProducts() -> [Product] {
+    nonisolated func getProducts() -> [Product] {
         return foundIn ?? [Product]()
     }
     
-    func getRarityDistribution() -> [String: Int] {
+    nonisolated func getRarityDistribution() -> [String: Int] {
         return getProducts()
             .compactMap { $0.productContent }
             .flatMap { $0 }
@@ -88,7 +92,7 @@ struct Card: Codable, Equatable {
             }
     }
     
-    func getBanList(format: BanListFormat) -> [BanList] {
+    nonisolated func getBanList(format: BanListFormat) -> [BanList] {
         switch format {
         case .tcg:
             return restrictedIn?.TCG ?? [BanList]()

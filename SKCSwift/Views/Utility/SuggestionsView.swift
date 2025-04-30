@@ -24,7 +24,7 @@ struct CardSuggestionsView: View {
                 referencedBy: model.referencedBy ?? [],
                 materialFor: model.materialFor ?? []
             )
-            .modifier(ParentViewModifier(alignment: .center))
+            .modifier(.centeredParentView)
             .padding(.bottom, 30)
         }
         .task(priority: .userInitiated) {
@@ -41,6 +41,7 @@ struct CardSuggestionsView: View {
                 }
             })
         }
+        .scrollDisabled(!model.hasSuggestions())
     }
 }
 
@@ -80,7 +81,7 @@ struct ProductCardSuggestionsView: View {
                 referencedBy: model.suggestions?.support.referencedBy ?? [],
                 materialFor: model.suggestions?.support.materialFor ?? []
             )
-            .modifier(ParentViewModifier(alignment: .center))
+            .modifier(.centeredParentView)
             .padding(.bottom, 30)
         }
         .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
@@ -98,6 +99,7 @@ struct ProductCardSuggestionsView: View {
                 }
             })
         }
+        .scrollDisabled(!model.hasSuggestions())
     }
 }
 

@@ -11,6 +11,8 @@ import SwiftData
 struct SearchView: View {
     @Environment(\.modelContext) private var modelContext
     
+    @State private var path = NavigationPath()
+    @State private var recentlyViewedModel = RecentlyViewedViewModel()
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
     
@@ -24,38 +26,24 @@ struct SearchView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack {
-                switch (searchModel.dataTaskStatus[.search, default: .uninitiated], searchModel.requestErrors[.search, default: nil]) {
+                switch (searchModel.dataTaskStatus, searchModel.requestError) {
                 case (.done, _) where searchModel.searchText.isEmpty,
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(recentCards: searchModel.recentlyViewedCardDetails,
-                                           hasHistory: !history.isEmpty,
-                                           taskStatus: searchModel.dataTaskStatus[.recentlyViewed, default: .uninitiated],
-                                           requestError: searchModel.requestErrors[.recentlyViewed, default: nil],
-                                           retryCB: {await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))})
-                        .equatable()
+                        RecentlyViewedView(path: $path, recentlyViewedModel: recentlyViewedModel, history: Array(history.prefix(15)))
                     } else {
-                        TrendingView(focusedTrend: $trendingModel.focusedTrend,
-                                     cards: trendingModel.cards,
-                                     products: trendingModel.products,
-                                     trendingDataTaskStatuses: trendingModel.trendingDataTaskStatuses,
-                                     trendingRequestErrors: trendingModel.trendingRequestErrors,
-                                     fetchTrendingData: trendingModel.fetchTrendingData)
-                        .equatable()
+                        TrendingView(path: $path, trendingModel: $trendingModel)
                     }
                 case (.done, _), (.pending, _):
-                    SearchResultsView(searchResults: searchModel.searchResults,
-                                      requestError: searchModel.requestErrors[.search, default: nil],
-                                      retryCB: {await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText)})
-                    .equatable()
+                    SearchResultsView(path: $path, searchModel: searchModel)
                 }
             }
             .onAppear {
                 Task {
-                    await searchModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
+                    await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
                 }
             }
             .ygoNavigationDestination()
@@ -82,54 +70,50 @@ struct SearchView: View {
     SearchView()
 }
 
-private struct RecentlyViewedView: View, Equatable {
-    nonisolated static func == (lhs: RecentlyViewedView, rhs: RecentlyViewedView) -> Bool {
-        lhs.recentCards == rhs.recentCards && lhs.hasHistory == rhs.hasHistory && lhs.taskStatus == rhs.taskStatus && lhs.requestError == rhs.requestError
-    }
-    
-    let recentCards: [Card]
-    let hasHistory: Bool
-    let taskStatus: DataTaskStatus
-    let requestError: NetworkError?
-    let retryCB: () async -> Void
+private struct RecentlyViewedView: View {
+    @Binding var path: NavigationPath
+    let recentlyViewedModel: RecentlyViewedViewModel
+    let history: [History]
     
     var body: some View {
         ScrollView {
-            if !recentCards.isEmpty {
+            if !recentlyViewedModel.recentlyViewedCardDetails.isEmpty {
                 SectionView(header: "Recently Viewed",
                             variant: .plain,
                             content: {
                     VStack {
-                        ForEach(recentCards, id: \.cardID) { card in
-                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                        ForEach(recentlyViewedModel.recentlyViewedCardDetails, id: \.cardID) { card in
+                            Button {
+                                path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                            } label: {
                                 GroupBox() {
                                     CardListItemView(card: card)
                                         .equatable()
                                 }
                                 .groupBoxStyle(.listItem)
-                            })
+                            }
                             .buttonStyle(.plain)
                         }
                     }
                     .dynamicTypeSize(...DynamicTypeSize.medium)
                 })
-                .modifier(ParentViewModifier())
+                .modifier(.parentView)
             }
         }
         .frame(maxWidth: .infinity)
         .overlay {
-            if let requestError {
+            if let requestError = recentlyViewedModel.requestError {
                 NetworkErrorView(error: requestError, action: {
                     Task {
-                        await retryCB()
+                        await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history)
                     }
                 })
             } else {
-                switch taskStatus {
+                switch recentlyViewedModel.dataTaskStatus {
                 case .uninitiated, .pending:
                     ProgressView("Loading...")
                         .controlSize(.large)
-                case .done where !hasHistory:
+                case .done where history.isEmpty:
                     ContentUnavailableView {
                         Label("Type to search 😉", systemImage: "text.magnifyingglass")
                     }
@@ -141,27 +125,24 @@ private struct RecentlyViewedView: View, Equatable {
     }
 }
 
-private struct SearchResultsView: View, Equatable {
-    nonisolated static func == (lhs: SearchResultsView, rhs: SearchResultsView) -> Bool {
-        lhs.searchResults == rhs.searchResults && lhs.requestError == rhs.requestError
-    }
-    
-    let searchResults: [SearchResults]
-    let requestError: NetworkError?
-    let retryCB: () async -> Void
+private struct SearchResultsView: View {
+    @Binding var path: NavigationPath
+    let searchModel: SearchViewModel
     
     var body: some View {
         VStack {
-            if requestError == nil {
-                List(searchResults) { sr in
+            if searchModel.requestError == nil {
+                List(searchModel.searchResults) { sr in
                     Section(header:  Text(sr.section)
                         .font(.headline)
                         .fontWeight(.black) ) {
                             ForEach(sr.results, id: \.cardID) { card in
-                                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                    CardListItemView(card: card)
-                                        .equatable()
-                                })
+                                CardListItemView(card: card)
+                                    .equatable()
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                                    }
                             }
                         }
                 }
@@ -170,13 +151,13 @@ private struct SearchResultsView: View, Equatable {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay {
-            if let networkError = requestError {
+            if let networkError = searchModel.requestError {
                 if networkError == .notFound {
                     ContentUnavailableView.search
                 } else if networkError != .cancelled {
                     NetworkErrorView(error: networkError, action: {
                         Task {
-                            await retryCB()
+                            await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText)
                         }
                     })
                 }
