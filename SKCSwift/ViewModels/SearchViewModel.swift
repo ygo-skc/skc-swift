@@ -12,21 +12,21 @@ import Foundation
 final class SearchViewModel {
     var isSearching = false
     var searchText = ""
-    
+
     private(set) var requestError: NetworkError? = nil
     private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
-    
+
     private(set) var searchResults = [SearchResults]()
     @ObservationIgnored
     private var cardIDsForSearchResults: Set<String> = []
     @ObservationIgnored
     private var searchTask: Task<(), any Error>?
-    
+
     func searchDB(oldValue: String, newValue: String) async {
         if requestError == .notFound && newValue.starts(with: oldValue) {
             return
         }
-        
+
         searchTask?.cancel()
         if newValue == "" {
             resetSearchResults()
@@ -36,7 +36,7 @@ final class SearchViewModel {
             searchTask = Task {
                 requestError = nil
                 dataTaskStatus = .pending
-                
+
                 let (requestResults, searchErr) = await search(subject: newValue)
                 requestError = searchErr
                 if requestResults.isEmpty || searchErr != nil {
@@ -53,12 +53,12 @@ final class SearchViewModel {
             }
         }
     }
-    
+
     private func resetSearchResults() {
         cardIDsForSearchResults.removeAll()
         searchResults.removeAll()
     }
-    
+
     nonisolated private func search(subject: String) async -> ([Card], NetworkError?) {
         switch await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
         case .success(let cards):
@@ -70,11 +70,12 @@ final class SearchViewModel {
             return ([], err)
         }
     }
-    
-    nonisolated private func partitionResults(newSearchResults newResults: [Card], previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
+
+    nonisolated private func partitionResults(newSearchResults newResults: [Card],
+                                              previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
         var sections: [String] = []
         var cardIDs: Set<String> = []
-        
+
         let newResultsByCardID = newResults.reduce(into: [String: [Card]]()) { results, card in
             let section = card.cardColor
             results[section, default: []].append(card)
@@ -83,7 +84,7 @@ final class SearchViewModel {
             }
             cardIDs.insert(card.cardID)
         }
-        
+
         if previousSearchResultsCardIDs != cardIDs {
             return (sections.map { SearchResults(section: $0, results: newResultsByCardID[$0]!) }, cardIDs)
         }

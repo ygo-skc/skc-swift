@@ -12,29 +12,31 @@ struct RequestHelper {
     static let CLIENT_ID: StaticString = "SKCSwift"
     
     // SKC API request helpers
-    static let SKC_API_BASE_URL: StaticString = "skc-ygo-api.com"
-    static let SKC_API_CARD_BROWSE_CRITERIA_ENDPOINT: StaticString = "/api/v1/card/browse/criteria"
-    static let SKC_API_CARD_BROWSE_ENDPOINT: StaticString = "/api/v1/card/browse"
-    static let SKC_API_SEARCH_ENDPOINT: StaticString = "/api/v1/card/search"
-    static let SKC_API_CARD_INFORMATION_ENDPOINT: StaticString = "/api/v1/card/%@"
-    static let SKC_API_PRODUCT_INFORMATION_ENDPOINT: StaticString = "/api/v1/product/%@/en"
-    static let SKC_API_PRODUCTS_ENDPOINT: StaticString = "/api/v1/products/en"
-    static let SKC_API_DB_STATS_ENDPOINT: StaticString = "/api/v1/stats"
-    static let SKC_API_BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
+    fileprivate static let SKC_API_BASE_URL: StaticString = "skc-ygo-api.com"
+    fileprivate static let SKC_API_CARD_BROWSE_CRITERIA_ENDPOINT: StaticString = "/api/v1/card/browse/criteria"
+    fileprivate static let SKC_API_CARD_BROWSE_ENDPOINT: StaticString = "/api/v1/card/browse"
+    fileprivate static let SKC_API_SEARCH_ENDPOINT: StaticString = "/api/v1/card/search"
+    fileprivate static let SKC_API_CARD_INFORMATION_ENDPOINT: StaticString = "/api/v1/card/%@"
+    fileprivate static let SKC_API_PRODUCT_INFORMATION_ENDPOINT: StaticString = "/api/v1/product/%@/en"
+    fileprivate static let SKC_API_PRODUCTS_ENDPOINT: StaticString = "/api/v1/products/en"
+    fileprivate static let SKC_API_DB_STATS_ENDPOINT: StaticString = "/api/v1/stats"
+    fileprivate static let SKC_API_BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
     
     // SKC Suggestion request helpers
-    static let SKC_SUGGESTION_ENGINE_BASE_URL: StaticString = "suggestions.skc-ygo-api.com"
-    static let SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
-    static let SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support/%@"
-    static let SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
-    static let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
-    static let SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
-    static let SKC_SUGGESTION_ENGINE_CARD_DETAILS_ENDPOINT: StaticString = "/api/v1/suggestions/card-details"
+    fileprivate static let SKC_SUGGESTION_ENGINE_BASE_URL: StaticString = "suggestions.skc-ygo-api.com"
+    fileprivate static let SKC_SUGGESTION_ENGINE_BATCH_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card"
+    fileprivate static let SKC_SUGGESTION_ENGINE_BATCH_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support"
+    fileprivate static let SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
+    fileprivate static let SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support/%@"
+    fileprivate static let SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
+    fileprivate static let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
+    fileprivate static let SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
+    fileprivate static let SKC_SUGGESTION_ENGINE_CARD_DETAILS_ENDPOINT: StaticString = "/api/v1/suggestions/card-details"
     
     // Heart API request helpers
-    static let HEART_API_BASE_URL: StaticString = "heart-api.com"
-    static let HEART_API_EVENT_ENDPOINT: StaticString = "/api/v1/events"
-    static let HEART_API_YT_UPLOADS_ENDPOINT: StaticString = "/api/v1/yt/channel/uploads"
+    fileprivate static let HEART_API_BASE_URL: StaticString = "heart-api.com"
+    fileprivate static let HEART_API_EVENT_ENDPOINT: StaticString = "/api/v1/events"
+    fileprivate static let HEART_API_YT_UPLOADS_ENDPOINT: StaticString = "/api/v1/yt/channel/uploads"
 }
 
 fileprivate nonisolated func createURL(components: URLComponents) -> URL {
@@ -46,7 +48,7 @@ fileprivate nonisolated func createURL(components: URLComponents) -> URL {
 
 // SKC API URL creation methods
 
-private nonisolated func baseURLComponents(host: String, path: String, queryItems: [URLQueryItem] = []) -> URLComponents {
+fileprivate nonisolated func baseURLComponents(host: String, path: String, queryItems: [URLQueryItem] = []) -> URLComponents {
     var components = URLComponents()
     components.scheme = "https"
     components.host = host
@@ -146,6 +148,22 @@ nonisolated func banListDatesURL(format: String) -> URL {
 }
 
 // SKC Suggestion Engine URL creation methods
+
+nonisolated func batchCardSuggestionsURL() -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_BATCH_CARD_SUGGESTIONS_ENDPOINT.description
+    )
+    return createURL(components: components)
+}
+
+nonisolated func batchCardSupportURL() -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_BATCH_CARD_SUPPORT_ENDPOINT.description
+    )
+    return createURL(components: components)
+}
 
 nonisolated func cardSuggestionsURL(cardID: String) -> URL {
     let components = baseURLComponents(

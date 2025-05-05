@@ -5,7 +5,7 @@
 //  Created by Javi Gomez on 1/22/23.
 //
 
-struct CardReference: Codable {
+struct CardReference: Codable, Equatable {
     let occurrences: Int
     let card: Card
 }
@@ -58,4 +58,20 @@ struct BatchCardRequest: Codable {
 struct CardDetailsResponse: Codable {
     let cardInfo: [String: Card]
     let unknownResources: [String]
+}
+
+struct BatchSuggestions: Codable {
+    let namedMaterials: [CardReference]
+    let namedReferences: [CardReference]
+    let materialArchetypes: Set<String>
+    let referencedArchetypes: Set<String>
+    let unknownResources: Set<String>
+    let falsePositives: Set<String>
+}
+
+struct BatchSupport: Codable {
+    let referencedBy: [CardReference]
+    let materialFor: [CardReference]
+    let unknownResources: Set<String>
+    let falsePositives: Set<String>
 }

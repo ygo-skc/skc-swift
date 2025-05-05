@@ -10,21 +10,21 @@ import SwiftData
 
 struct SearchView: View {
     @Environment(\.modelContext) private var modelContext
-    
+
     @State private var path = NavigationPath()
     @State private var recentlyViewedModel = RecentlyViewedViewModel()
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
-    
+
     @Query private var history: [History]
-    
+
     init() {
         let c = ArchiveResource.card.rawValue
         _history = Query(filter: #Predicate<History> { h in
             h.resource == c
         }, sort: \History.lastAccessDate, order: .reverse)
     }
-    
+
     var body: some View {
         NavigationStack(path: $path) {
             VStack {
@@ -41,17 +41,12 @@ struct SearchView: View {
                     SearchResultsView(path: $path, searchModel: searchModel)
                 }
             }
-            .onAppear {
-                Task {
-                    await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
-                }
-            }
             .ygoNavigationDestination()
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching,
                         placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
-            
+
         }
         .transaction {
             $0.animation = nil
@@ -70,18 +65,28 @@ struct SearchView: View {
     SearchView()
 }
 
+
 private struct RecentlyViewedView: View {
     @Binding var path: NavigationPath
     let recentlyViewedModel: RecentlyViewedViewModel
     let history: [History]
-    
+
     var body: some View {
         ScrollView {
             if !recentlyViewedModel.recentlyViewedCardDetails.isEmpty {
-                SectionView(header: "Recently Viewed",
+                SectionView(header: "History",
                             variant: .plain,
                             content: {
-                    VStack {
+                    LazyVStack(alignment: .leading) {
+                        Text("Suggestions")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                        SuggestionCarouselView(references: recentlyViewedModel.recentlyViewedSuggestions, variant: .support)
+
+                        Text("Recently viewed")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                            .padding(.top)
                         ForEach(recentlyViewedModel.recentlyViewedCardDetails, id: \.cardID) { card in
                             Button {
                                 path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
@@ -95,11 +100,14 @@ private struct RecentlyViewedView: View {
                             .buttonStyle(.plain)
                         }
                     }
-                    .dynamicTypeSize(...DynamicTypeSize.medium)
                 })
                 .modifier(.parentView)
             }
         }
+        .task {
+            await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
+        }
+        .dynamicTypeSize(...DynamicTypeSize.medium)
         .frame(maxWidth: .infinity)
         .overlay {
             if let requestError = recentlyViewedModel.requestError {
@@ -128,7 +136,7 @@ private struct RecentlyViewedView: View {
 private struct SearchResultsView: View {
     @Binding var path: NavigationPath
     let searchModel: SearchViewModel
-    
+
     var body: some View {
         VStack {
             if searchModel.requestError == nil {

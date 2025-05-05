@@ -173,23 +173,23 @@ private struct SuggestionsView: View {
             .padding(.bottom)
             
             if areSuggestionsLoaded && hasSuggestions {
-                VStack(alignment: .leading, spacing: 5) {
-                    SuggestionCarouselView(header: "Named Materials",
-                                           subHeader: namedMaterialSubHeader,
-                                           references: namedMaterials,
-                                           variant: .suggestion)
-                    SuggestionCarouselView(header: "Named References",
-                                           subHeader: namedReferenceSubHeader,
-                                           references: namedReferences,
-                                           variant: .suggestion)
-                    SuggestionCarouselView(header: "Material For",
-                                           subHeader: materialForSubHeader,
-                                           references: materialFor,
-                                           variant: .support)
-                    SuggestionCarouselView(header: "Referenced By",
-                                           subHeader: referencedBySubHeader,
-                                           references: referencedBy,
-                                           variant: .support)
+                VStack(alignment: .leading, spacing: 25) {
+                    SuggestionSectionView(header: "Named Materials",
+                                          subHeader: namedMaterialSubHeader,
+                                          references: namedMaterials,
+                                          variant: .suggestion)
+                    SuggestionSectionView(header: "Named References",
+                                          subHeader: namedReferenceSubHeader,
+                                          references: namedReferences,
+                                          variant: .suggestion)
+                    SuggestionSectionView(header: "Material For",
+                                          subHeader: materialForSubHeader,
+                                          references: materialFor,
+                                          variant: .support)
+                    SuggestionSectionView(header: "Referenced By",
+                                          subHeader: referencedBySubHeader,
+                                          references: referencedBy,
+                                          variant: .support)
                 }
             }
         }
@@ -204,51 +204,67 @@ private struct SuggestionHeightPreferenceKey: PreferenceKey {
     }
 }
 
-private enum CarouselItemVariant {
+enum CarouselItemVariant {
     case suggestion
     case support
 }
 
-private struct SuggestionCarouselView: View {
+private struct SuggestionSectionView: View {
     let header: String
     let subHeader: String
     let references: [CardReference]
     let variant: CarouselItemVariant
     
+    var body: some View {
+        if !references.isEmpty {
+            VStack(alignment: .leading) {
+                Text("\(header) (\(references.count))")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                
+                Text(LocalizedStringKey(subHeader))
+                    .font(.callout)
+                    .padding(.bottom)
+                SuggestionCarouselView(references: references, variant: variant)
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+}
+
+struct SuggestionCarouselView: View {
+    let references: [CardReference]
+    let variant: CarouselItemVariant
+    
     @State private var height: CGFloat = 0.0
     
+    init(references: [CardReference], variant: CarouselItemVariant) {
+        self.references = references
+        self.variant = variant
+    }
+    
     var body: some View {
-        if (!references.isEmpty) {
-            Text("\(header) (\(references.count))")
-                .font(.headline)
-                .fontWeight(.heavy)
-            Text(LocalizedStringKey(subHeader))
-                .font(.callout)
-                .padding(.bottom)
-            
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 8) {
-                    ForEach(references, id: \.card.cardID) { suggestion in
-                        switch variant {
-                        case .suggestion:
-                            SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
-                                .modifier(CarouselItemViewModifier())
-                        case .support:
-                            let card = suggestion.card
-                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                YGOCardView(cardID: card.cardID, card: card, variant: .condensed)
-                                    .equatable()
-                                    .contentShape(Rectangle())
-                            })
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 8) {
+                ForEach(references, id: \.card.cardID) { suggestion in
+                    switch variant {
+                    case .suggestion:
+                        SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
                             .modifier(CarouselItemViewModifier())
-                        }
+                    case .support:
+                        let card = suggestion.card
+                        NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                            YGOCardView(cardID: card.cardID, card: card, variant: .condensed)
+                                .equatable()
+                                .contentShape(Rectangle())
+                        })
+                        .modifier(CarouselItemViewModifier())
                     }
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: height)
-            .padding(.horizontal, -16)
-            .padding(.bottom, 15)
         }
+        .frame(maxWidth: .infinity, minHeight: height)
+        .padding(.horizontal, -16)
     }
 }
 
