@@ -57,11 +57,11 @@ fileprivate nonisolated func validateResponse(response: URLResponse?) throws {
     }
 }
 
-nonisolated func data<U>(_ url: URL, resType: U.Type) async -> sending Result<U, NetworkError> where U: Decodable {
+nonisolated func data<U>(_ url: URL, resType: U.Type) async -> Result<U, NetworkError> where U: Decodable {
     await data(url, reqBody: Optional<NilReqBody>.none, resType: resType)
 }
 
-nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async -> sending Result<U, NetworkError> where T: Encodable, U: Decodable {
+nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
         let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
         try Task.checkCancellation()
