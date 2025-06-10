@@ -12,22 +12,18 @@ struct ContentView: View, Equatable {
     
     var body: some View {
         TabView {
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-//            BannedContent()
-//                .tabItem {
-//                    Label("Ban Lists", systemImage: "x.square")
-//                }
-            BrowseView()
-                .tabItem {
-                    Label("Browse", systemImage: "square.grid.2x2")
-                }
-            SearchView()
-                .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
+            Tab("Home", systemImage: "house") {
+                HomeView()
+            }
+//            Tab("Ban Lists", systemImage: "x.square") {
+//                BannedContent()
+//            }
+            Tab("Browse", systemImage: "square.grid.2x2") {
+                BrowseView()
+            }
+            Tab(role: .search) {
+                SearchView()
+            }
         }
     }
 }
