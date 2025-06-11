@@ -47,9 +47,6 @@ struct SearchView: View {
             .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching,
                         placement: .toolbar, prompt: "Search for card...")
         }
-        .transaction {
-            $0.animation = nil
-        }
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
             Task {
                 await searchModel.searchDB(oldValue: oldValue, newValue: newValue)
@@ -170,6 +167,5 @@ private struct SearchResultsView: View {
                 }
             }
         }
-        .listStyle(.plain)
     }
 }
