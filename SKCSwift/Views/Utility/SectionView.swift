@@ -17,7 +17,7 @@ struct SectionView<Content: View>: View {
         VStack(alignment: .leading, spacing: (variant == .styled) ? 5 : 10) {
             Text(header)
                 .font(.title2)
-                .fontWeight(.black)
+                .fontWeight(.bold)
             
             switch variant {
             case .plain:
