@@ -129,9 +129,18 @@ private struct ProductInfoView: View {
             ProductImageView(width: 150, productID: productID, imgSize: .small)
                 .padding(.vertical)
             if let product = product, let productContents = product.productContent {
-                Text([product.productId, product.productType, product.productSubType].joined(separator: " | "))
-                    .font(.headline)
                 InlineDateView(date: product.productReleaseDate)
+                
+                FlowLayout(spacing: 10) {
+                    Group {
+                        Text(product.productId)
+                        Text("\(product.productTotal!) card(s)")
+                        Text(product.productType)
+                        Text(product.productSubType)
+                    }
+                    .modifier(TagModifier(font: .callout))
+                }
+                .padding(.bottom)
                 
                 Button {
                     showStats = true
