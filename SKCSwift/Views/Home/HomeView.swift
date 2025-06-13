@@ -130,6 +130,8 @@ private struct SettingsModule<Label: View>: View {
     let action: () -> Void
     @ViewBuilder let label: () -> Label
     
+    @State private var isAlertOpen = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text(moduleHeader)
@@ -139,9 +141,15 @@ private struct SettingsModule<Label: View>: View {
                     .font(.footnote)
             }
             
-            Button(action: action, label: label)
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
+            Button { isAlertOpen.toggle() } label: { label() }
+            .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
+                Button("Cancel", role: .cancel) {}
+                Button("🫡", role: .destructive) { action() }
+            } message: {
+                Text("Action is irreversible.")
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.regular)
         }
         .frame(maxWidth: .infinity)
     }

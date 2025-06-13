@@ -10,21 +10,21 @@ import SwiftData
 
 struct SearchView: View {
     @Environment(\.modelContext) private var modelContext
-
+    
     @State private var path = NavigationPath()
     @State private var recentlyViewedModel = RecentlyViewedViewModel()
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
-
+    
     @Query private var history: [History]
-
+    
     init() {
         let c = ArchiveResource.card.rawValue
         _history = Query(filter: #Predicate<History> { h in
             h.resource == c
         }, sort: \History.lastAccessDate, order: .reverse)
     }
-
+    
     var body: some View {
         NavigationStack(path: $path) {
             VStack {
@@ -66,7 +66,7 @@ private struct RecentlyViewedView: View {
     @Binding var path: NavigationPath
     let recentlyViewedModel: RecentlyViewedViewModel
     let history: [History]
-
+    
     var body: some View {
         ScrollView {
             if !recentlyViewedModel.recentlyViewedCardDetails.isEmpty {
@@ -74,15 +74,17 @@ private struct RecentlyViewedView: View {
                             variant: .plain,
                             content: {
                     LazyVStack(alignment: .leading) {
-                        Text("Suggestions")
-                            .font(.headline)
-                            .fontWeight(.medium)
-                        SuggestionCarouselView(references: recentlyViewedModel.recentlyViewedSuggestions, variant: .support)
-
+                        if !recentlyViewedModel.recentlyViewedSuggestions.isEmpty {
+                            Text("Suggestions")
+                                .font(.headline)
+                                .fontWeight(.medium)
+                            SuggestionCarouselView(references: recentlyViewedModel.recentlyViewedSuggestions, variant: .support)
+                                .padding(.bottom)
+                        }
+                        
                         Text("Recently viewed")
                             .font(.headline)
                             .fontWeight(.medium)
-                            .padding(.top)
                         ForEach(recentlyViewedModel.recentlyViewedCardDetails, id: \.cardID) { card in
                             Button {
                                 path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
@@ -132,7 +134,7 @@ private struct RecentlyViewedView: View {
 private struct SearchResultsView: View {
     @Binding var path: NavigationPath
     let searchModel: SearchViewModel
-
+    
     var body: some View {
         VStack {
             if searchModel.requestError == nil {
