@@ -9,15 +9,22 @@ import SwiftUI
 
 struct TagModifier: ViewModifier {
     let font: Font
+    let padding: CGFloat
     
     init(font: Font = .caption) {
         self.font = font
+        
+        if font == .caption {
+            self.padding = 4
+        } else {
+            padding = 6
+        }
     }
     
     func body(content: Content) -> some View {
         content
-            .padding(.horizontal, 4)
-            .padding(.vertical, 2)
+            .padding(.horizontal, padding)
+            .padding(.vertical, padding)
             .font(font)
             .fontWeight(.semibold)
             .background(LinearGradient(

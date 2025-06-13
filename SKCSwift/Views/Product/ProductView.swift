@@ -133,12 +133,12 @@ private struct ProductInfoView: View {
                 
                 FlowLayout(spacing: 10) {
                     Group {
-                        Text(product.productId)
-                        Text("\(product.productTotal!) card(s)")
-                        Text(product.productType)
-                        Text(product.productSubType)
+                        Label(product.productId, systemImage: "number")
+                        Label("\(product.productType)/\(product.productSubType)", systemImage: "info")
+                        Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
                     }
                     .modifier(TagModifier(font: .callout))
+                    .scaledToFit()
                 }
                 .padding(.bottom)
                 
@@ -151,7 +151,7 @@ private struct ProductInfoView: View {
                     }
                 } label: {
                     Label("Metrics", systemImage: "chart.bar.fill")
-                        .frame(width: 200)
+                        .frame(width: 150)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
