@@ -10,6 +10,8 @@ import SwiftUI
 fileprivate struct GroupBoxStyleConstants {
     static let CORNER_RADIUS: CGFloat = 12
     static let PADDING: CGFloat = 10
+    
+    static let BORDER_COLOR: Color = Color(UIColor.systemGray5).opacity(0.9)
 }
 
 struct ListItemGroupBoxStyle: GroupBoxStyle {
@@ -26,7 +28,7 @@ struct ListItemGroupBoxStyle: GroupBoxStyle {
         .shadow(color: Color(UIColor.systemGray5), radius: 2, x: 0, y: 2)
         .overlay(
             RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS)
-                .stroke(Color(UIColor.systemGray5), lineWidth: 1)
+                .stroke(GroupBoxStyleConstants.BORDER_COLOR, lineWidth: 1)
         )
     }
 }
@@ -42,7 +44,7 @@ struct SectionContentGroupBoxStyle: GroupBoxStyle {
         .clipped()
         .overlay(
             RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS)
-                .stroke(Color(UIColor.systemGray5), lineWidth: 1)
+                .stroke(GroupBoxStyleConstants.BORDER_COLOR, lineWidth: 1)
         )
     }
 }
