@@ -129,9 +129,18 @@ private struct ProductInfoView: View {
             ProductImageView(width: 150, productID: productID, imgSize: .small)
                 .padding(.vertical)
             if let product = product, let productContents = product.productContent {
-                Text([product.productId, product.productType, product.productSubType].joined(separator: " | "))
-                    .font(.headline)
                 InlineDateView(date: product.productReleaseDate)
+                
+                FlowLayout(spacing: 10) {
+                    Group {
+                        Label(product.productId, systemImage: "number")
+                        Label("\(product.productType)/\(product.productSubType)", systemImage: "info")
+                        Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
+                    }
+                    .modifier(TagModifier(font: .callout))
+                    .scaledToFit()
+                }
+                .padding(.bottom)
                 
                 Button {
                     showStats = true
@@ -142,7 +151,7 @@ private struct ProductInfoView: View {
                     }
                 } label: {
                     Label("Metrics", systemImage: "chart.bar.fill")
-                        .frame(width: 200)
+                        .frame(width: 150)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
