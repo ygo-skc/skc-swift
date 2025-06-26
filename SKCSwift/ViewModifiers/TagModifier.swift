@@ -11,14 +11,9 @@ struct TagModifier: ViewModifier {
     let font: Font
     let padding: CGFloat
     
-    init(font: Font = .caption) {
+    init(font: Font = .custom("", size: 9, relativeTo: .caption2)) {
         self.font = font
-        
-        if font == .caption {
-            self.padding = 4
-        } else {
-            padding = 6
-        }
+        self.padding = 5
     }
     
     func body(content: Content) -> some View {
@@ -26,7 +21,7 @@ struct TagModifier: ViewModifier {
             .padding(.horizontal, padding)
             .padding(.vertical, padding)
             .font(font)
-            .fontWeight(.semibold)
+            .fontWeight(.regular)
             .background(LinearGradient(
                 gradient: Gradient(colors: [Color.accentColor, Color.accentColor.opacity(0.8)]),
                 startPoint: .leading,
@@ -35,6 +30,6 @@ struct TagModifier: ViewModifier {
             .foregroundColor(.white)
             .cornerRadius(6)
             .lineLimit(1)
-            .dynamicTypeSize(...DynamicTypeSize.medium)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
     }
 }
