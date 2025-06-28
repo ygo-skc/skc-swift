@@ -20,39 +20,42 @@ struct DBStatsView: View, Equatable {
     var body: some View {
         SectionView(header: "Content",
                     content: {
-            VStack(spacing: 5) {
+            VStack(alignment: .leading, spacing: 5) {
                 if let networkError {
                     NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
                 } else {
                     Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
                         .font(.callout)
-                        .multilineTextAlignment(.center)
                         .padding(.bottom)
                     
-                    Text("DB Stats")
-                        .font(.headline)
                     HStack {
-                        Group {
+                        Text("DB\nContents 🤓")
+                            .font(.headline)
+                            .fontWeight(.regular)
+                            .padding(.trailing)
+                        
+                        FlowLayout(spacing: 15) {
                             DBStatView(count: (isDataLoaded) ? dbStats.cardTotal : -1, stat: "Cards")
                             DBStatView(count: (isDataLoaded) ? dbStats.banListTotal : -1, stat: "Ban Lists")
                             DBStatView(count: (isDataLoaded) ? dbStats.productTotal : -1, stat: "Products")
                         }
-                        .padding(.horizontal)
                     }
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                     
                     Divider()
-                        .padding(.vertical)
+                        .padding(.vertical, 4)
                     
                     Group {
                         Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
                         Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
                         if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
                            let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-                            Text("v\(appVersion)(\(build))")
+                            Text("App Version \(appVersion)(\(build))")
+                                .italic()
                         }
                     }
+                    .padding(.bottom, 2)
                     .font(.footnote)
-                    .multilineTextAlignment(.center)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -64,22 +67,17 @@ private struct DBStatView: View {
     let count: Int
     let stat: String
     
-    init(count: Int, stat: String) {
-        self.count = count
-        self.stat = stat
-    }
-    
     var body: some View {
         VStack {
             if count >= 0 {
                 Text(count.decimal)
                     .font(.title3)
             } else {
-                PlaceholderView(width: 25, height: 20, radius: 5)
+                PlaceholderView(width: 40, height: 20, radius: 5)
             }
             Text(stat)
                 .font(.subheadline)
-                .fontWeight(.heavy)
+                .fontWeight(.bold)
         }
     }
 }
