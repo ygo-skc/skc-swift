@@ -24,10 +24,6 @@ struct Product: Codable, Equatable, Identifiable {
         }
         return productId
     }
-    
-    nonisolated func productCategory() -> String {
-        return "\(productType) │ \(productSubType)"
-    }
 }
 
 extension Product {

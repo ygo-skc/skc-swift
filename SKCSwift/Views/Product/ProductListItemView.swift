@@ -24,18 +24,26 @@ struct ProductListItemView: View, Equatable {
                         .fontWeight(.thin)
                     Text(product.productName)
                         .fontWeight(.bold)
-                    Text(product.productCategory())
-                        .fontWeight(.light)
                 }
                 .font(.subheadline)
                 .lineLimit(1)
                 
                 if let contents = product.productContent, !contents.isEmpty {
                     FlowLayout(spacing: 6) {
+                        Text("Printed as:")
+                            .font(.callout)
                         ForEach(contents[0].rarities, id: \.self) { rarity in
                             Text(rarity.cardRarityShortHand())
                                 .modifier(TagModifier())
                         }
+                    }
+                } else {
+                    FlowLayout(spacing: 6) {
+                        Group {
+                            Label("\(product.productType)", systemImage: "tag")
+                            Label("\(product.productSubType)", systemImage: "tag")
+                        }
+                        .modifier(TagModifier(font: .caption))
                     }
                 }
             }
