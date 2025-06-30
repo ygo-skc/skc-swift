@@ -71,13 +71,12 @@ private struct DBStatView: View {
         VStack {
             if count >= 0 {
                 Text(count.decimal)
-                    .font(.title3)
             } else {
                 PlaceholderView(width: 40, height: 20, radius: 5)
             }
             Text(stat)
                 .font(.subheadline)
-                .fontWeight(.bold)
+                .fontWeight(.semibold)
         }
     }
 }
