@@ -142,7 +142,6 @@ private struct ProductInfoView: View {
                                 Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
                             }
                             .modifier(TagModifier(font: .caption))
-                            .scaledToFit()
                         }
                         .padding(.bottom)
                         

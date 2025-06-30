@@ -13,13 +13,12 @@ struct TagModifier: ViewModifier {
     
     init(font: Font = .custom("", size: 10, relativeTo: .caption2)) {
         self.font = font
-        self.padding = 4
+        self.padding = 5
     }
     
     func body(content: Content) -> some View {
         content
-            .padding(.horizontal, padding)
-            .padding(.vertical, padding)
+            .padding(.all, padding)
             .font(font)
             .fontWeight(.semibold)
             .background(LinearGradient(
@@ -28,7 +27,7 @@ struct TagModifier: ViewModifier {
                 endPoint: .trailing
             ))
             .foregroundColor(.white)
-            .cornerRadius(6)
+            .cornerRadius(padding)
             .lineLimit(1)
             .dynamicTypeSize(...DynamicTypeSize.xxLarge)
     }
