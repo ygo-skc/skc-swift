@@ -137,7 +137,8 @@ private struct ProductInfoView: View {
                         FlowLayout(spacing: 10) {
                             Group {
                                 Label(product.productId, systemImage: "number")
-                                Label("\(product.productType)/\(product.productSubType)", systemImage: "info")
+                                Label(product.productType, systemImage: "tag")
+                                Label(product.productSubType, systemImage: "tag")
                                 Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
                             }
                             .modifier(TagModifier(font: .caption))
