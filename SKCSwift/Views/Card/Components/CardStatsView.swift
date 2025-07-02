@@ -39,8 +39,10 @@ struct CardStatsView: View, Equatable {
                     .modifier(CardEffectModifier(variant: variant))
                 
                 HStack {
-                    Text(card.cardID)
-                        .modifier(CardIdModifier(variant: variant))
+                    if !card.isGod {
+                        Text(card.cardID)
+                            .modifier(CardIdModifier(variant: variant))
+                    }
                     
                     Spacer()
                     

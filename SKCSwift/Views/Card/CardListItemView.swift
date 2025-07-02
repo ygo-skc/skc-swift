@@ -31,9 +31,11 @@ struct CardListItemView: View, Equatable {
                     
                     Spacer()
                     
-                    Text(card.cardID)
-                        .font(.caption)
-                        .fontWeight(.thin)
+                    if !card.isGod {
+                        Text(card.cardID)
+                            .font(.caption)
+                            .fontWeight(.thin)
+                    }
                 }
                 
                 HStack {

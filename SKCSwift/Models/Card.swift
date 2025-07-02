@@ -74,6 +74,12 @@ struct Card: Codable, Equatable {
         }
     }
     
+    nonisolated var isGod: Bool {
+        get {
+            return cardAttribute != nil && cardAttribute!.lowercased() == "divine"
+        }
+    }
+    
     private static let nilStat = "?"
     private static let linkDefStat = "-"
     

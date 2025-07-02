@@ -126,48 +126,56 @@ private struct ProductInfoView: View {
     
     var body: some View {
         VStack{
-            ProductImageView(width: 150, productID: productID, imgSize: .small)
-                .padding(.vertical)
-            if let product = product, let productContents = product.productContent {
-                InlineDateView(date: product.productReleaseDate)
+            HStack(alignment: .top) {
+                ProductImageView(width: 150, productID: productID, imgSize: .small)
                 
-                FlowLayout(spacing: 10) {
-                    Group {
-                        Label(product.productId, systemImage: "number")
-                        Label("\(product.productType)/\(product.productSubType)", systemImage: "info")
-                        Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
-                    }
-                    .modifier(TagModifier(font: .callout))
-                    .scaledToFit()
-                }
-                .padding(.bottom)
-                
-                Button {
-                    showStats = true
-                    if chartData == nil {
-                        Task {
-                            await chartData = productData(productContents: productContents)
+                VStack(alignment: .leading) {
+                    if let product = product, let productContents = product.productContent {
+                        InlineDateView(date: product.productReleaseDate)
+                            .padding(.bottom, 3)
+                        
+                        FlowLayout(spacing: 10) {
+                            Group {
+                                Label(product.productId, systemImage: "number")
+                                Label(product.productType, systemImage: "tag")
+                                Label(product.productSubType, systemImage: "tag")
+                                Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
+                            }
+                            .modifier(TagModifier(font: .caption))
                         }
+                        .padding(.bottom)
+                        
+                        Button {
+                            showStats = true
+                            if chartData == nil {
+                                Task {
+                                    await chartData = productData(productContents: productContents)
+                                }
+                            }
+                        } label: {
+                            Label("Metrics", systemImage: "chart.bar.fill")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.large)
+                        .sheet(isPresented: $showStats, onDismiss: {showStats = false}) {
+                            if let data = chartData {
+                                ProductStatsView(productID: product.productId, productName: product.productName, data: data)
+                            } else {
+                                ProgressView("Loading...")
+                                    .controlSize(.large)
+                            }
+                        }
+                        .padding(.bottom)
                     }
-                } label: {
-                    Label("Metrics", systemImage: "chart.bar.fill")
-                        .frame(width: 150)
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .sheet(isPresented: $showStats, onDismiss: {showStats = false}) {
-                    if let data = chartData {
-                        ProductStatsView(productID: product.productId, productName: product.productName, data: data)
-                    } else {
-                        ProgressView("Loading...")
-                            .controlSize(.large)
-                    }
-                }
-                .padding(.bottom)
-                
-                if let contents = product.productContent {
-                    ProductContentView(productID: productID, contents: contents)
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.bottom)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            
+            if let product = product, let productContents = product.productContent {
+                ProductContentView(productID: productID, contents: productContents)
             } else {
                 ProgressView("Loading...")
                     .controlSize(.large)
