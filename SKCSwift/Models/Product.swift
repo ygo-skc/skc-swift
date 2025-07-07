@@ -17,17 +17,6 @@ struct Product: Codable, Equatable, Identifiable {
             return productId
         }
     }
-    
-    nonisolated func productIDWithContentTotal() -> String {
-        if let productTotal {
-            return "\(productId) │ \(productTotal) Cards"
-        }
-        return productId
-    }
-    
-    nonisolated func productCategory() -> String {
-        return "\(productType) │ \(productSubType)"
-    }
 }
 
 extension Product {

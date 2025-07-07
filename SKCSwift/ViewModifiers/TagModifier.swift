@@ -9,15 +9,16 @@ import SwiftUI
 
 struct TagModifier: ViewModifier {
     let font: Font
+    let padding: CGFloat
     
-    init(font: Font = .caption) {
+    init(font: Font = .custom("", size: 10, relativeTo: .caption2)) {
         self.font = font
+        self.padding = 5
     }
     
     func body(content: Content) -> some View {
         content
-            .padding(.horizontal, 4)
-            .padding(.vertical, 2)
+            .padding(.all, padding)
             .font(font)
             .fontWeight(.semibold)
             .background(LinearGradient(
@@ -26,8 +27,8 @@ struct TagModifier: ViewModifier {
                 endPoint: .trailing
             ))
             .foregroundColor(.white)
-            .cornerRadius(6)
+            .cornerRadius(padding)
             .lineLimit(1)
-            .dynamicTypeSize(...DynamicTypeSize.medium)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
     }
 }

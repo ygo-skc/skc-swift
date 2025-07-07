@@ -14,10 +14,10 @@ struct PieChartGroupView: View {
     let data: [ChartData]
     
     var body: some View {
-        GroupBox(label: Label(dataTitle, systemImage: "chart.pie.fill").foregroundColor(.accentColor).padding(.bottom)) {
+        GroupBox(label: Label(dataTitle, systemImage: "chart.pie.fill").foregroundColor(.accentColor).padding(.bottom, 4)) {
             Text(LocalizedStringKey(description))
                 .font(.headline)
-            Divider()
+                .fontWeight(.regular)
                 .padding(.bottom)
             PieChartView(data: data, dataTitle: dataTitle)
         }
