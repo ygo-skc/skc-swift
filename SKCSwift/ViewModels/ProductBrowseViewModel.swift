@@ -36,7 +36,7 @@ final class ProductBrowseViewModel {
     private var lastRefreshTimestamp = Date.distantPast
     
     func fetchProductBrowseData() async {
-        if dataError != nil || dataStatus == .uninitiated || lastRefreshTimestamp.isDateInvalidated(1, millisConversion: .seconds) {
+        if dataError != nil || dataStatus == .uninitiated || lastRefreshTimestamp.isDateInvalidated(10) {
             dataStatus = .pending
             switch await data(productsURL(), resType: Products.self) {
             case .success(let p):
@@ -62,7 +62,7 @@ final class ProductBrowseViewModel {
             }
         } else if insertions.count > 0 {
             productSubTypeFilters = await updateProductSubTypeFilters(insertion: insertions.first, productSubTypeFilters: productSubTypeFilters,
-                                                                                             productTypeByProductSubType: productTypeByProductSubType)
+                                                                      productTypeByProductSubType: productTypeByProductSubType)
         }
     }
     
@@ -99,7 +99,7 @@ final class ProductBrowseViewModel {
     }
     
     private func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem<String>>.Change?, productSubTypeFilters: [FilteredItem<String>],
-                                                    productTypeByProductSubType: [String: String]) async -> [FilteredItem<String>] {
+                                             productTypeByProductSubType: [String: String]) async -> [FilteredItem<String>] {
         switch insertion {
         case .insert(_, let changeElement, _):
             return productSubTypeFilters.map {
