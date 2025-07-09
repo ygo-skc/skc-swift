@@ -16,46 +16,29 @@ struct BrowseView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            VStack {
-                Picker("Select resource to browse", selection: $focusedResource) {
-                    ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                        Text(type.rawValue.capitalized).tag(type)
+            ScrollView {
+                VStack {
+                    Picker("Select resource to browse", selection: $focusedResource) {
+                        ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
                     }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                
-                switch (focusedResource) {
-                case .card:
-                    ScrollView {
+                    .pickerStyle(.segmented)
+                    
+                    switch (focusedResource) {
+                    case .card:
                         CardBrowseView(path: $path, filteredCards: cardBrowseViewModel.cards)
-                    }
-                    .task(priority: .userInitiated) {
-                        await cardBrowseViewModel.fetchCardBrowseCriteria()
-                    }
-                case .product:
-                    ScrollView {
+                            .task(priority: .userInitiated) {
+                                await cardBrowseViewModel.fetchCardBrowseCriteria()
+                            }
+                    case .product:
                         ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProducts)
-                    }
-                    .task(priority: .userInitiated) {
-                        await productBrowseViewModel.fetchProductBrowseData()
+                            .task(priority: .userInitiated) {
+                                await productBrowseViewModel.fetchProductBrowseData()
+                            }
                     }
                 }
-            }
-            .overlay {
-                switch focusedResource {
-                case .card:
-                    CardBrowseOverlay(criteriaRequestStatus: cardBrowseViewModel.criteriaStatus,
-                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil
-                                      && cardBrowseViewModel.dataError == nil,
-                                      criteriaRequestError: cardBrowseViewModel.criteriaError, dataRequestError: cardBrowseViewModel.dataError,
-                                      retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
-                case .product:
-                    ProductBrowseOverlay(dataRequestStatus: productBrowseViewModel.dataStatus,
-                                         noProductsFound: productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty,
-                                         dataRequestError: productBrowseViewModel.dataError,
-                                         retryDataRequest: productBrowseViewModel.fetchProductBrowseData)
-                }
+                .modifier(.parentView)
             }
             .toolbar {
                 switch focusedResource {
@@ -94,6 +77,21 @@ struct BrowseView: View {
             .onChange(of: cardBrowseViewModel.filters) {
                 Task {
                     await cardBrowseViewModel.fetchCards()
+                }
+            }
+            .overlay {
+                switch focusedResource {
+                case .card:
+                    CardBrowseOverlay(criteriaRequestStatus: cardBrowseViewModel.criteriaStatus,
+                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil
+                                      && cardBrowseViewModel.dataError == nil,
+                                      criteriaRequestError: cardBrowseViewModel.criteriaError, dataRequestError: cardBrowseViewModel.dataError,
+                                      retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
+                case .product:
+                    ProductBrowseOverlay(dataRequestStatus: productBrowseViewModel.dataStatus,
+                                         noProductsFound: productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty,
+                                         dataRequestError: productBrowseViewModel.dataError,
+                                         retryDataRequest: productBrowseViewModel.fetchProductBrowseData)
                 }
             }
         }
@@ -175,7 +173,6 @@ private struct ProductBrowseView: View {
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)
         }
-        .modifier(.parentView)
     }
 }
 
@@ -200,7 +197,6 @@ private struct CardBrowseView: View {
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)
         }
-        .modifier(.parentView)
     }
 }
 
