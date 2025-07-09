@@ -79,7 +79,7 @@ final class ProductBrowseViewModel {
         areProductsFiltered = true
     }
     
-    private func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem<String>]) {
+    nonisolated private func configureProductBrowseData(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem<String>]) {
         var uniqueProductTypes = Set<String>()
         var uniqueProductSubTypes = Set<String>()
         var productTypeByProductSubType = [String: String]()
@@ -98,7 +98,7 @@ final class ProductBrowseViewModel {
         return (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters)
     }
     
-    private func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem<String>>.Change?, productSubTypeFilters: [FilteredItem<String>],
+    nonisolated private func updateProductSubTypeFilters(insertion: CollectionDifference<FilteredItem<String>>.Change?, productSubTypeFilters: [FilteredItem<String>],
                                              productTypeByProductSubType: [String: String]) async -> [FilteredItem<String>] {
         switch insertion {
         case .insert(_, let changeElement, _):
