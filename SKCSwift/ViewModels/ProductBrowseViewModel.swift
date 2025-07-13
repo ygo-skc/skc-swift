@@ -18,7 +18,6 @@ final class ProductBrowseViewModel {
     private(set) var dataError: NetworkError?
     private(set) var dataStatus = DataTaskStatus.uninitiated
     
-    private(set) var areProductsFiltered = false
     private(set) var filteredProducts: [String: [Product]] = [:]
     
     @ObservationIgnored
@@ -54,7 +53,6 @@ final class ProductBrowseViewModel {
     }
     
     func syncProductSubTypeFilters(insertions: [CollectionDifference<FilteredItem<String>>.Change]) async {
-        areProductsFiltered = false
         // init case
         if insertions.count == uniqueProductTypes.count {
             productSubTypeFilters = uniqueProductSubTypes.sorted().map {
@@ -74,8 +72,6 @@ final class ProductBrowseViewModel {
                 let year: String = String(product.productReleaseDate.split(separator: "-", maxSplits: 1)[0])
                 productsByYear[year, default: []].append(product)
             }
-        
-        areProductsFiltered = true
     }
     
     nonisolated private func configureCriteria(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem<String>]) {

@@ -89,7 +89,7 @@ struct BrowseView: View {
                                       retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
                 case .product:
                     ProductBrowseOverlay(dataRequestStatus: productBrowseViewModel.dataStatus,
-                                         noProductsFound: productBrowseViewModel.areProductsFiltered && productBrowseViewModel.filteredProducts.isEmpty,
+                                         noProductsFound: productBrowseViewModel.filteredProducts.isEmpty,
                                          dataRequestError: productBrowseViewModel.dataError,
                                          retryDataRequest: productBrowseViewModel.fetchProductBrowseData)
                 }
