@@ -39,15 +39,17 @@ final class ProductBrowseViewModel {
             dataStatus = .pending
             switch await data(productsURL(), resType: Products.self) {
             case .success(let p):
-                if products != p.products {
-                    (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureCriteria(products: p.products)
+                if p.products.isEmpty {
+                    dataError = .notFound
+                } else {
                     products = p.products
+                    (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureCriteria(products: products)
+                    dataError = nil
                 }
-                dataError = nil
-                lastRefreshTimestamp = Date()
             case .failure(let error):
                 dataError = error
             }
+            lastRefreshTimestamp = Date()
             dataStatus = .done
         }
     }

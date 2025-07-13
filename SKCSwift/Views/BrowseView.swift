@@ -89,7 +89,6 @@ struct BrowseView: View {
                                       retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
                 case .product:
                     ProductBrowseOverlay(dataRequestStatus: productBrowseViewModel.dataStatus,
-                                         noProductsFound: productBrowseViewModel.filteredProducts.isEmpty,
                                          dataRequestError: productBrowseViewModel.dataError,
                                          retryDataRequest: productBrowseViewModel.fetchProductBrowseData)
                 }
@@ -125,7 +124,6 @@ private struct CardBrowseOverlay: View {
 
 private struct ProductBrowseOverlay: View {
     let dataRequestStatus: DataTaskStatus
-    let noProductsFound: Bool
     let dataRequestError: NetworkError?
     let retryDataRequest: () async -> Void
     
@@ -134,8 +132,6 @@ private struct ProductBrowseOverlay: View {
         case .pending, .uninitiated:
             ProgressView("Loading...")
                 .controlSize(.large)
-        case .done where noProductsFound:
-            ContentUnavailableView("Choose some filters to see products 😉", systemImage: "exclamationmark.square.fill")
         case .done:
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
