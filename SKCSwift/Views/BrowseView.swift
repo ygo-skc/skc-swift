@@ -31,10 +31,25 @@ struct BrowseView: View {
                             .task(priority: .userInitiated) {
                                 await cardBrowseViewModel.fetchCardBrowseCriteria()
                             }
+                            .onChange(of: cardBrowseViewModel.filters) {
+                                Task {
+                                    await cardBrowseViewModel.fetchCards()
+                                }
+                            }
                     case .product:
                         ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProducts)
                             .task(priority: .userInitiated) {
                                 await productBrowseViewModel.fetchProductBrowseData()
+                            }
+                            .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
+                                Task {
+                                    await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
+                                }
+                            }
+                            .onChange(of: productBrowseViewModel.productSubTypeFilters) {
+                                Task {
+                                    await productBrowseViewModel.updateProductList()
+                                }
                             }
                     }
                 }
@@ -64,21 +79,6 @@ struct BrowseView: View {
             }
             .ygoNavigationDestination()
             .navigationTitle("Browse")
-            .onChange(of: productBrowseViewModel.productTypeFilters) { oldValue, newValue in
-                Task {
-                    await productBrowseViewModel.syncProductSubTypeFilters(insertions: newValue.difference(from: oldValue).insertions)
-                }
-            }
-            .onChange(of: productBrowseViewModel.productSubTypeFilters) {
-                Task {
-                    await productBrowseViewModel.updateProductList()
-                }
-            }
-            .onChange(of: cardBrowseViewModel.filters) {
-                Task {
-                    await cardBrowseViewModel.fetchCards()
-                }
-            }
             .overlay {
                 switch focusedResource {
                 case .card:
