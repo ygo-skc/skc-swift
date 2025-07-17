@@ -201,24 +201,25 @@ private struct ProductFiltersView: View {
     @Binding var productSubTypeFilters: [FilteredItem<String>]
     
     var body: some View {
-        VStack {
-            Text("Product filters")
-                .font(.title)
-            Text("Filter products by type or sub-type, by default every filter is enabled - try disabling some to tune to your liking 😉")
-                .font(.callout)
-                .padding(.bottom)
-            
-            ProductFilterView(filters: $productTypeFilters,
-                              filterInfo: "Narrow down products",
-                              filterImage: "1.circle",
-                              columns: Array(repeating: GridItem(.flexible()), count: 4))
-            ProductFilterView(filters: $productSubTypeFilters,
-                              filterInfo: "Choose specific product category",
-                              filterImage: "2.circle",
-                              columns: Array(repeating: GridItem(.flexible()), count: 2))
+        ScrollView {
+            VStack(alignment: .leading)  {
+                Text("Product filters")
+                    .font(.title)
+                Text("Use product metadata to narrow down results")
+                    .font(.callout)
+                    .padding(.bottom)
+                
+                ProductFilterView(filters: $productTypeFilters,
+                                  filterInfo: "Narrow down products",
+                                  filterImage: "1.circle",
+                                  columns: Array(repeating: GridItem(.flexible()), count: 4))
+                ProductFilterView(filters: $productSubTypeFilters,
+                                  filterInfo: "Choose specific product category",
+                                  filterImage: "2.circle",
+                                  columns: Array(repeating: GridItem(.flexible()), count: 2))
+            }
+            .modifier(.parentView)
         }
-        .modifier(.parentView)
-        .padding(.top)
     }
 }
 
@@ -256,10 +257,10 @@ private struct CardFiltersView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 Text("Card filters")
                     .font(.title)
-                Text("Filter cards by using card metadata")
+                Text("Use card metadata to narrow down results")
                     .font(.callout)
                     .padding(.bottom)
                 
