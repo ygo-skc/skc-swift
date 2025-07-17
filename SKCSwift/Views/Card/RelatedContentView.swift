@@ -11,7 +11,9 @@ struct RelatedContentView: View {
     let cardID: String
     let cardName: String
     let cardColor: String
-    let products:[Product]
+    
+    let products: [Product]
+    
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
