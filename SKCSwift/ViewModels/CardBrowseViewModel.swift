@@ -7,34 +7,45 @@
 
 import Foundation
 
-fileprivate actor CardBrowseActor {
-    private var wasCriteriaFetched = false
+@MainActor
+@Observable
+final class CardBrowseViewModel {
+    var showFilters = false
+    var filters = CardFilters()
     
-    fileprivate func fetchCriteria(filters previousFilters: CardFilters) async -> (CardFilters, NetworkError?) {
-        if !wasCriteriaFetched {
-            switch await data(cardBrowseCriteriaURL(), resType: CardBrowseCriteria.self) {
-            case .success(let cardBrowseCriteria):
-                wasCriteriaFetched = true
-                return (await resetFilters(cardBrowseCriteria), nil)
-            case .failure(let error):
-                return (previousFilters, error)
-            }
-        }
-        return (previousFilters, nil)
+    private(set) var cards: [Card] = []
+    
+    private(set) var criteriaError: NetworkError?
+    private(set) var criteriaStatus = DataTaskStatus.uninitiated
+    
+    private(set) var dataError: NetworkError?
+    private(set) var dataStatus = DataTaskStatus.uninitiated
+    
+    
+    func fetchCardBrowseCriteria() async {
+        criteriaError = nil
+        criteriaStatus = .pending
+        (filters, criteriaError) = await fetchCriteria(filters: filters)
+        criteriaStatus = .done
     }
     
-    fileprivate func fetchCards(filters: CardFilters) async -> ([Card], NetworkError?) {
-        let (attributes, colors, monsterTypes, levels, ranks, linkRatings) = await determineToggledFilters(filters)
-        switch await data(cardBrowseURL(attributes: attributes, colors: colors, monsterTypes: monsterTypes,
-                                        levels: levels, ranks: ranks, linkRatings: linkRatings), resType: CardBrowseResults.self) {
-        case .success(let r):
-            return (r.results, nil)
+    func fetchCards() async {
+        dataError = nil
+        dataStatus = .pending
+        (cards, dataError) = await fetchCards(filters: filters)
+        dataStatus = .done
+    }
+    
+    nonisolated private func fetchCriteria(filters previousFilters: CardFilters) async -> (CardFilters, NetworkError?) {
+        switch await data(cardBrowseCriteriaURL(), resType: CardBrowseCriteria.self) {
+        case .success(let cardBrowseCriteria):
+            return (await resetFilters(cardBrowseCriteria), nil)
         case .failure(let error):
-            return ([], error)
+            return (previousFilters, error)
         }
     }
     
-    private func resetFilters(_ cardBrowseCriteria: CardBrowseCriteria) async -> CardFilters {
+    nonisolated private func resetFilters(_ cardBrowseCriteria: CardBrowseCriteria) async -> CardFilters {
         let attributeFilters = cardBrowseCriteria.attributes.map { attribute in
             FilteredItem(category: attribute, isToggled: false, disableToggle: false)
         }
@@ -58,7 +69,18 @@ fileprivate actor CardBrowseActor {
                            levels: monsterLevelFilters, ranks: monsterRankFilters, linkRatings: monsterLinkRatingFilter)
     }
     
-    private func determineToggledFilters(_ filters: CardFilters) async -> ([String], [String], [String], [String], [String], [String]) {
+    nonisolated private func fetchCards(filters: CardFilters) async -> ([Card], NetworkError?) {
+        let (attributes, colors, monsterTypes, levels, ranks, linkRatings) = await determineToggledFilters(filters)
+        switch await data(cardBrowseURL(attributes: attributes, colors: colors, monsterTypes: monsterTypes,
+                                        levels: levels, ranks: ranks, linkRatings: linkRatings), resType: CardBrowseResults.self) {
+        case .success(let r):
+            return (r.results, nil)
+        case .failure(let error):
+            return ([], error)
+        }
+    }
+    
+    nonisolated private func determineToggledFilters(_ filters: CardFilters) async -> ([String], [String], [String], [String], [String], [String]) {
         let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }
         let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }
         let monsterTypes = filters.monsterTypes.filter { $0.isToggled }.map{ $0.category.rawValue }
@@ -67,37 +89,5 @@ fileprivate actor CardBrowseActor {
         let linkRatings = filters.linkRatings.filter { $0.isToggled }.map{ String($0.category) }
         
         return (attributes, colors, monsterTypes, levels, ranks, linkRatings)
-    }
-}
-
-@MainActor
-@Observable
-final class CardBrowseViewModel {
-    var showFilters = false
-    var filters = CardFilters()
-    
-    private(set) var cards: [Card] = []
-    
-    private(set) var criteriaError: NetworkError?
-    private(set) var criteriaStatus = DataTaskStatus.uninitiated
-    
-    private(set) var dataError: NetworkError?
-    private(set) var dataStatus = DataTaskStatus.uninitiated
-    
-    @ObservationIgnored
-    private let cardBrowseActor = CardBrowseActor()
-    
-    func fetchCardBrowseCriteria() async {
-        criteriaError = nil
-        criteriaStatus = .pending
-        (filters, criteriaError) = await cardBrowseActor.fetchCriteria(filters: filters)
-        criteriaStatus = .done
-    }
-    
-    func fetchCards() async {
-        dataError = nil
-        dataStatus = .pending
-        (cards, dataError) = await cardBrowseActor.fetchCards(filters: filters)
-        dataStatus = .done
     }
 }
