@@ -75,7 +75,7 @@ private struct CardView: View {
                                         if !card.getProducts().isEmpty {
                                             Text("Rarities")
                                                 .font(.headline)
-                                            Text("All the different rariites \(card.cardName) was printed in")
+                                            Text("All the different rarities \(card.cardName) was printed in")
                                                 .font(.callout)
                                             OneDBarChartView(data: card.getRarityDistribution()
                                                 .map { ChartData(category: $0.key, count: $0.value) }

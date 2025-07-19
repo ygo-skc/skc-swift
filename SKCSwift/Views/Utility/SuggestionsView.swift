@@ -24,7 +24,7 @@ struct CardSuggestionsView: View {
                 referencedBy: model.referencedBy ?? [],
                 materialFor: model.materialFor ?? []
             )
-            .modifier(.centeredParentView)
+            .modifier(.parentView)
             .padding(.bottom, 30)
         }
         .task(priority: .userInitiated) {
@@ -81,7 +81,7 @@ struct ProductCardSuggestionsView: View {
                 referencedBy: model.suggestions?.support.referencedBy ?? [],
                 materialFor: model.suggestions?.support.materialFor ?? []
             )
-            .modifier(.centeredParentView)
+            .modifier(.parentView)
             .padding(.bottom, 30)
         }
         .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
@@ -158,7 +158,7 @@ private struct SuggestionsView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Label {
                 Text("Suggestions")
                     .font(.title)

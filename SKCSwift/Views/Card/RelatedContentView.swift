@@ -11,7 +11,9 @@ struct RelatedContentView: View {
     let cardID: String
     let cardName: String
     let cardColor: String
-    let products:[Product]
+    
+    let products: [Product]
+    
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
@@ -29,7 +31,7 @@ struct RelatedContentView: View {
                     variant: .plain,
                     content: {
             HStack(alignment: .top, spacing: 15) {
-                VStack {
+                VStack(alignment: .leading) {
                     Text("Products")
                         .font(.headline)
                     
@@ -46,12 +48,12 @@ struct RelatedContentView: View {
                                 }
                             }
                         }
-                    }                }
-                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
+                    }
+                }
                 
                 Divider()
                 
-                VStack {
+                VStack(alignment: .leading) {
                     Text("Ban Lists")
                         .font(.headline)
                     
@@ -71,9 +73,9 @@ struct RelatedContentView: View {
                         }
                     }
                 }
-                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
             }
         })
+        .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
     }
 }
 
@@ -113,7 +115,7 @@ private struct RelatedContentsView<Content: View>: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 Label {
                     Text(header)
                         .font(.title)
@@ -138,7 +140,7 @@ private struct BanListItemViewModel: View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2)) {
             ForEach(banList, id: \.banListDate) { banListInstance in
                 GroupBox {
-                    VStack {
+                    VStack(alignment: .leading) {
                         DateBadgeView(date: banListInstance.banListDate, variant: .condensed)
                             .equatable()
                         HStack {
@@ -149,6 +151,7 @@ private struct BanListItemViewModel: View {
                                 .lineLimit(1)
                                 .font(.subheadline)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: .infinity)
                 }

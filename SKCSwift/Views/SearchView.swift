@@ -79,16 +79,18 @@ private struct RecentlyViewedView: View {
                             content: {
                     LazyVStack(alignment: .leading) {
                         if !recentlyViewedModel.recentlyViewedSuggestions.isEmpty {
-                            Text("Suggestions")
+                            Label("Personalized suggestions", systemImage: "sparkles")
                                 .font(.headline)
                                 .fontWeight(.medium)
                             SuggestionCarouselView(references: recentlyViewedModel.recentlyViewedSuggestions, variant: .support)
                                 .padding(.bottom)
                         }
                         
-                        Text("Recently viewed")
+                        
+                        Label("Recently viewed", systemImage: "clock.arrow.circlepath")
                             .font(.headline)
                             .fontWeight(.medium)
+                        
                         ForEach(recentlyViewedModel.recentlyViewedCardDetails, id: \.cardID) { card in
                             Button {
                                 path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
