@@ -1,45 +1,13 @@
 //
-//  DBStatsView.swift
+//  BanListDatesView.swift
 //  SKCSwift
 //
-//  Created by Javi Gomez on 4/26/23.
+//  Created by Javi Gomez on 9/10/25.
 //
 
 import SwiftUI
 
-struct BanListOptionsView: View {
-    @Bindable var model: BannedContentViewModel
-    
-    var body: some View {
-        VStack(spacing: 10) {
-            BanListFormatsView(chosenFormat: $model.chosenFormat)
-            BanListDatesView(model: model)
-        }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-}
-
-private struct BanListFormatsView: View {
-    @Binding var chosenFormat: BanListFormat
-    
-    @Namespace private var animation
-    
-    private static let formats: [BanListFormat] = [.tcg, .md]
-    
-    var body: some View {
-        HStack(spacing: 20) {
-            Text("Format")
-                .font(.headline)
-                .fontWeight(.bold)
-            ForEach(BanListFormatsView.formats, id: \.rawValue) { format in
-                TabButton(selected: $chosenFormat, value: format, animmation: animation)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-}
-
-private struct BanListDatesView: View {
+struct BanListDatesView: View {
     @Bindable var model: BannedContentViewModel
     
     var body: some View {
@@ -197,18 +165,3 @@ private struct ChosenBanListDateView: View {
         }
     }
 }
-
-struct BanListFormatsView_Previews: PreviewProvider {
-    static var previews: some View {
-        _BanListFormatsView()
-    }
-    
-    private struct _BanListFormatsView : View {
-        @State private var chosenFormat: BanListFormat = .tcg
-        
-        var body: some View {
-            BanListFormatsView(chosenFormat: $chosenFormat)
-        }
-    }
-}
-
