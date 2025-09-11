@@ -11,10 +11,31 @@ struct BanListOptionsView: View {
     @Bindable var model: BannedContentViewModel
     
     var body: some View {
-        VStack {
+        VStack(spacing: 10) {
             BanListFormatsView(chosenFormat: $model.chosenFormat)
             BanListDatesView(model: model)
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+}
+
+private struct BanListFormatsView: View {
+    @Binding var chosenFormat: BanListFormat
+    
+    @Namespace private var animation
+    
+    private static let formats: [BanListFormat] = [.tcg, .md]
+    
+    var body: some View {
+        HStack(spacing: 20) {
+            Text("Format")
+                .font(.headline)
+                .fontWeight(.bold)
+            ForEach(BanListFormatsView.formats, id: \.rawValue) { format in
+                TabButton(selected: $chosenFormat, value: format, animmation: animation)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
@@ -22,11 +43,10 @@ private struct BanListDatesView: View {
     @Bindable var model: BannedContentViewModel
     
     var body: some View {
-        HStack {
+        HStack(spacing: 20)  {
             Text("Range")
                 .font(.headline)
                 .fontWeight(.bold)
-                .padding(.trailing)
             
             Button() {
                 model.showDateSelectorSheet.toggle()
@@ -37,9 +57,8 @@ private struct BanListDatesView: View {
                 }
             }
             .buttonStyle(.bordered)
-            .tint(Color.accentColor)
+            .tint(Color.accentColor.opacity(0.5))
             .foregroundColor(.black)
-            .frame(maxWidth: .infinity)
         }
         .onChange(of: $model.chosenFormat.wrappedValue, initial: true) {
             Task {
@@ -50,6 +69,7 @@ private struct BanListDatesView: View {
         .popover(isPresented: $model.showDateSelectorSheet) {
             BanListDateRangePicker(chosenDateRange: $model.chosenDateRange, showDateSelectorSheet: $model.showDateSelectorSheet, banListDates: model.banListDates ?? [])
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
@@ -174,29 +194,6 @@ private struct ChosenBanListDateView: View {
                 .font(.caption)
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
-        }
-    }
-}
-
-struct BanListFormatsView: View {
-    @Binding var chosenFormat: BanListFormat
-    
-    @Namespace private var animation
-    
-    private static let formats: [BanListFormat] = [.tcg, .md]
-    
-    var body: some View {
-        HStack {
-            Text("Format")
-                .font(.headline)
-                .fontWeight(.bold)
-                .padding(.trailing)
-            ForEach(BanListFormatsView.formats, id: \.rawValue) { format in
-                TabButton(selected: $chosenFormat, value: format, animmation: animation)
-                if BanListFormatsView.formats.last != format {
-                    Spacer()
-                }
-            }
         }
     }
 }
