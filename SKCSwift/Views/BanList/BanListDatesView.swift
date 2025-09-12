@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct BanListDatesView: View {
-    @Bindable var model: BannedContentViewModel
+    @Binding var dateRangeIndex: Int
+    var dates: [BanListDate]
+    
+    @State private var isSelectorSheetPresented = false
     
     var body: some View {
         HStack(spacing: 20)  {
@@ -17,25 +20,23 @@ struct BanListDatesView: View {
                 .fontWeight(.bold)
             
             Button() {
-                model.showDateSelectorSheet.toggle()
+                isSelectorSheetPresented.toggle()
             } label: {
-                if let banListDates = model.banListDates, !banListDates.isEmpty {
-                    BanListDateRangeView(fromDate: banListDates[model.chosenDateRange].effectiveDate,
-                                         toDate: (model.chosenDateRange == 0) ? nil : banListDates[model.chosenDateRange - 1].effectiveDate)
+                if !dates.isEmpty {
+                    BanListDateRangeView(fromDate: dates[dateRangeIndex].effectiveDate,
+                                         toDate: (dateRangeIndex == 0) ? nil : dates[dateRangeIndex - 1].effectiveDate)
                 }
             }
             .buttonStyle(.bordered)
             .tint(Color.accentColor.opacity(0.5))
             .foregroundColor(.black)
         }
-        .onChange(of: $model.chosenFormat.wrappedValue, initial: true) {
-            Task {
-                // TODO: can this be improved?
-                await model.fetchBanListDates()
-            }
-        }
-        .popover(isPresented: $model.showDateSelectorSheet) {
-            BanListDateRangePicker(chosenDateRange: $model.chosenDateRange, showDateSelectorSheet: $model.showDateSelectorSheet, banListDates: model.banListDates ?? [])
+        .popover(isPresented: $isSelectorSheetPresented) {
+            BanListDateRangePicker(
+                chosenDateRange: $dateRangeIndex,
+                showDateSelectorSheet: $isSelectorSheetPresented,
+                banListDates: dates
+            )
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
@@ -47,10 +48,10 @@ private func getYear(banListDate: String) -> String {
 
 private struct BanListDateRangePicker: View {
     @State private var chosenYear: String
-    @Binding private var chosenDateRange: Int
+    @Binding private var dateRangeIndex: Int
     @Binding private var showDateSelectorSheet: Bool
     
-    private let banListDates: [BanListDate]
+    private let dates: [BanListDate]
     
     private var banListEffectiveDatesByYear = [String:[String]]()
     private var banListEffectiveDatesByInd = [String:Int]()
@@ -59,9 +60,9 @@ private struct BanListDateRangePicker: View {
     
     init(chosenDateRange: Binding<Int>, showDateSelectorSheet: Binding<Bool>, banListDates: [BanListDate]) {
         _chosenYear = State(initialValue: getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate))
-        self._chosenDateRange = chosenDateRange
+        self._dateRangeIndex = chosenDateRange
         self._showDateSelectorSheet = showDateSelectorSheet
-        self.banListDates = banListDates
+        self.dates = banListDates
         
         for (ind, banList) in banListDates.enumerated() {
             let banListDate = banList.effectiveDate
@@ -106,15 +107,15 @@ private struct BanListDateRangePicker: View {
                 LazyVStack {
                     ForEach(banListEffectiveDatesByYear[chosenYear]!, id: \.self) { year in
                         Button() {
-                            chosenDateRange = banListEffectiveDatesByInd[year]!
+                            dateRangeIndex = banListEffectiveDatesByInd[year]!
                             showDateSelectorSheet = false
                         } label: {
                             HStack {
-                                BanListDateRangeView(fromDate: year, toDate: (banListEffectiveDatesByInd[year] == 0) ? nil : banListDates[banListEffectiveDatesByInd[year]! - 1].effectiveDate)
+                                BanListDateRangeView(fromDate: year, toDate: (banListEffectiveDatesByInd[year] == 0) ? nil : dates[banListEffectiveDatesByInd[year]! - 1].effectiveDate)
                                 Spacer()
                                 Circle()
                                     .frame(width: 20, height: 20)
-                                    .if(chosenDateRange == banListEffectiveDatesByInd[year]) {
+                                    .if(dateRangeIndex == banListEffectiveDatesByInd[year]) {
                                         $0.foregroundColor(Color.accentColor)
                                     } else: {
                                         $0.foregroundColor(.secondary.opacity(0.7))

@@ -12,9 +12,14 @@ struct BanListContentView: View {
     
     var body: some View {
         SegmentedView {
-            Text("YOO")
+            Text(model.dateRangeIndex.description)
         } sheetContent: {
-            BanListNavigatorView(model: model)
+            BanListNavigatorView(format: $model.format, dateRangeIndex: $model.dateRangeIndex, dates: model.banListDates)
+        }
+        .onChange(of: model.format, initial: true) {
+            Task {
+                await model.fetchBanListDates()
+            }
         }
     }
 }

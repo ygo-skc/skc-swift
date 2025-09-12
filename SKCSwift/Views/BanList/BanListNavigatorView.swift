@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct BanListNavigatorView: View {
-    @Bindable var model: BannedContentViewModel
+    @Binding var format: BanListFormat
+    @Binding var dateRangeIndex: Int
+    var dates: [BanListDate]
     
     var body: some View {
         VStack(spacing: 10) {
-            BanListFormatsView(chosenFormat: $model.chosenFormat)
-            BanListDatesView(model: model)
+            BanListFormatsView(format: $format)
+            BanListDatesView(dateRangeIndex: $dateRangeIndex, dates: dates)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
 private struct BanListFormatsView: View {
-    @Binding var chosenFormat: BanListFormat
+    @Binding var format: BanListFormat
     
     @Namespace private var animation
     
@@ -32,7 +34,7 @@ private struct BanListFormatsView: View {
                 .font(.headline)
                 .fontWeight(.bold)
             ForEach(BanListFormatsView.formats, id: \.rawValue) { format in
-                TabButton(selected: $chosenFormat, value: format, animmation: animation)
+                TabButton(selected: $format, value: format, animmation: animation)
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -41,6 +43,6 @@ private struct BanListFormatsView: View {
 
 #Preview() {
     @Previewable @State var chosenFormat: BanListFormat = .tcg
-    BanListFormatsView(chosenFormat: $chosenFormat)
+    BanListFormatsView(format: $chosenFormat)
         .padding(.horizontal)
 }

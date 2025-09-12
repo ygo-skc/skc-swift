@@ -10,18 +10,17 @@ import Foundation
 @MainActor
 @Observable
 final class BannedContentViewModel {
-    var chosenFormat = BanListFormat.tcg
-    var chosenDateRange = 0
-    var showDateSelectorSheet = false
+    var format = BanListFormat.tcg
+    var dateRangeIndex: Int = 0
     
-    private(set) var banListDates: [BanListDate]?
+    private(set) var banListDates: [BanListDate] = []
     private(set) var requestErrors: [BannedContentModelDataType: NetworkError?] = [:]
     
     func fetchBanListDates() async {
-        switch await data(banListDatesURL(format: "\(chosenFormat)"), resType: BanListDates.self) {
+        switch await data(banListDatesURL(format: "\(format)"), resType: BanListDates.self) {
         case .success(let dates):
             banListDates = dates.banListDates
-            chosenDateRange = 0
+            dateRangeIndex = 0
         case .failure(_): break
         }
     }
