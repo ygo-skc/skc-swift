@@ -10,7 +10,7 @@ import SwiftUI
 struct BanListNavigatorView: View {
     @Binding var format: BanListFormat
     @Binding var dateRangeIndex: Int
-    var dates: [BanListDate]
+    let dates: [BanListDate]
     
     var body: some View {
         VStack(spacing: 10) {
@@ -31,8 +31,9 @@ private struct BanListFormatsView: View {
     var body: some View {
         HStack(spacing: 20) {
             Text("Format")
-                .font(.headline)
-                .fontWeight(.bold)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+            
             ForEach(BanListFormatsView.formats, id: \.rawValue) { format in
                 TabButton(selected: $format, value: format, animmation: animation)
             }

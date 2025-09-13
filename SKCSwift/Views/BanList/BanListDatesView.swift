@@ -9,15 +9,15 @@ import SwiftUI
 
 struct BanListDatesView: View {
     @Binding var dateRangeIndex: Int
-    var dates: [BanListDate]
+    let dates: [BanListDate]
     
     @State private var isSelectorSheetPresented = false
     
     var body: some View {
         HStack(spacing: 20)  {
             Text("Range")
-                .font(.headline)
-                .fontWeight(.bold)
+                .font(.subheadline)
+                .fontWeight(.semibold)
             
             Button() {
                 isSelectorSheetPresented.toggle()
