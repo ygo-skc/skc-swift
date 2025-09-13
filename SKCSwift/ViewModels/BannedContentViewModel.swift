@@ -17,7 +17,9 @@ final class BannedContentViewModel {
     private(set) var bannedContent: BannedContent?
     private(set) var requestErrors: [BannedContentModelDataType: NetworkError?] = [:]
     
-    func fetchBanListDates() async {
+    private var fetchTask: Task<(), Never>?
+    
+    private func fetchBanListDates() async {
         switch await data(banListDatesURL(format: format), resType: BanListDates.self) {
         case .success(let dates):
             banListDates = dates.banListDates
@@ -26,14 +28,29 @@ final class BannedContentViewModel {
         }
     }
     
-    func fetchBannedContent() async {
-        if !banListDates.isEmpty {
-            switch await data(bannedContentURL(format: format, listStartDate: banListDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
-            case .success(let bannedContent):
-                self.bannedContent = bannedContent
-            case .failure(_): break
-            }
+    private func fetchBannedContent() async {
+        switch await data(bannedContentURL(format: format, listStartDate: banListDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
+        case .success(let bannedContent):
+            self.bannedContent = bannedContent
+        case .failure(_): break
         }
+    }
+    
+    func fetchData(formatChanged: Bool = false) async {
+        if let fetchTask {
+            await fetchTask.value
+            return
+        }
+        
+        fetchTask = Task {
+            if banListDates.isEmpty || formatChanged {
+                await fetchBanListDates()
+            }
+            await fetchBannedContent()
+        }
+        
+        await fetchTask?.value
+        fetchTask = nil
     }
     
     enum BannedContentModelDataType {
