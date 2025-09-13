@@ -39,6 +39,12 @@ struct BanListContentView: View {
             .onChange(of: model.format, initial: true) {
                 Task {
                     await model.fetchBanListDates()
+                    await model.fetchBannedContent()
+                }
+            }
+            .onChange(of: model.dateRangeIndex, initial: true) {
+                Task {
+                    await model.fetchBannedContent()
                 }
             }
             .ygoNavigationDestination()

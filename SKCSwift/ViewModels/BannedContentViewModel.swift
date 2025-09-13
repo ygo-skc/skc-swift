@@ -22,16 +22,17 @@ final class BannedContentViewModel {
         case .success(let dates):
             banListDates = dates.banListDates
             dateRangeIndex = 0
-            await fetchBannedContent()
         case .failure(_): break
         }
     }
     
     func fetchBannedContent() async {
-        switch await data(bannedContentURL(format: format, listStartDate: banListDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
-        case .success(let bannedContent):
-            self.bannedContent = bannedContent
-        case .failure(_): break
+        if !banListDates.isEmpty {
+            switch await data(bannedContentURL(format: format, listStartDate: banListDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
+            case .success(let bannedContent):
+                self.bannedContent = bannedContent
+            case .failure(_): break
+            }
         }
     }
     
