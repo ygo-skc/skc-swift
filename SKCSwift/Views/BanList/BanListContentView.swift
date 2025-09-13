@@ -34,7 +34,7 @@ struct BanListContentView: View {
                     }
                 }
             } sheetContent: {
-                BanListNavigatorView(format: $model.format, dateRangeIndex: $model.dateRangeIndex, dates: model.banListDates)
+                BanListNavigatorView(format: $model.format, dateRangeIndex: $model.dateRangeIndex, contentCategory: $model.chosenBannedContentCategory, dates: model.banListDates)
             }
             .onChange(of: model.format, initial: true) {
                 Task {

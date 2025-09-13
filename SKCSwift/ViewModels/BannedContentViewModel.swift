@@ -12,11 +12,13 @@ import Foundation
 final class BannedContentViewModel {
     var format = BanListFormat.tcg
     var dateRangeIndex: Int = 0
+    var chosenBannedContentCategory = BannedContentCategory.forbidden
     
     private(set) var banListDates: [BanListDate] = []
     private(set) var bannedContent: BannedContent?
     private(set) var requestErrors: [BannedContentModelDataType: NetworkError?] = [:]
     
+    @ObservationIgnored
     private var fetchTask: Task<(), Never>?
     
     private func fetchBanListDates() async {
@@ -47,6 +49,7 @@ final class BannedContentViewModel {
                 await fetchBanListDates()
             }
             await fetchBannedContent()
+            chosenBannedContentCategory = .forbidden
         }
         
         await fetchTask?.value
@@ -54,6 +57,6 @@ final class BannedContentViewModel {
     }
     
     enum BannedContentModelDataType {
-        case dates
+        case dates, content
     }
 }
