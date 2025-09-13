@@ -14,13 +14,23 @@ final class BannedContentViewModel {
     var dateRangeIndex: Int = 0
     
     private(set) var banListDates: [BanListDate] = []
+    private(set) var bannedContent: BannedContent?
     private(set) var requestErrors: [BannedContentModelDataType: NetworkError?] = [:]
     
     func fetchBanListDates() async {
-        switch await data(banListDatesURL(format: "\(format)"), resType: BanListDates.self) {
+        switch await data(banListDatesURL(format: format), resType: BanListDates.self) {
         case .success(let dates):
             banListDates = dates.banListDates
             dateRangeIndex = 0
+            await fetchBannedContent()
+        case .failure(_): break
+        }
+    }
+    
+    func fetchBannedContent() async {
+        switch await data(bannedContentURL(format: format, listStartDate: banListDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
+        case .success(let bannedContent):
+            self.bannedContent = bannedContent
         case .failure(_): break
         }
     }

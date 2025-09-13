@@ -21,6 +21,7 @@ struct RequestHelper {
     fileprivate static let SKC_API_PRODUCTS_ENDPOINT: StaticString = "/api/v1/products/en"
     fileprivate static let SKC_API_DB_STATS_ENDPOINT: StaticString = "/api/v1/stats"
     fileprivate static let SKC_API_BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
+    fileprivate static let SKC_API_BAN_LIST_CONTENTS_ENDPOINT: StaticString = "/api/v1/ban_list/%@/cards"
     
     // SKC Suggestion request helpers
     fileprivate static let SKC_SUGGESTION_ENGINE_BASE_URL: StaticString = "suggestions.skc-ygo-api.com"
@@ -137,11 +138,25 @@ nonisolated func dbStatsURL() -> URL {
     return createURL(components: components)
 }
 
-nonisolated func banListDatesURL(format: String) -> URL {
+nonisolated func banListDatesURL(format: BanListFormat) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_BAN_LIST_DATES_ENDPOINT.description,
-        queryItems: [URLQueryItem(name: "format", value: format)]
+        queryItems: [URLQueryItem(name: "format", value: "\(format)")]
+    )
+    
+    return createURL(components: components)
+}
+
+nonisolated func bannedContentURL(format: BanListFormat, listStartDate: String, saveBandwidth: Bool, allInfo: Bool) -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_API_BASE_URL.description,
+        path: String(format: RequestHelper.SKC_API_BAN_LIST_CONTENTS_ENDPOINT.description, listStartDate),
+        queryItems: [
+            URLQueryItem(name: "saveBandwidth", value: "\(saveBandwidth)"),
+            URLQueryItem(name: "allInfo", value: "\(allInfo)"),
+            URLQueryItem(name: "format", value: "\(format)")
+        ]
     )
     
     return createURL(components: components)

@@ -18,8 +18,6 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
                 let frameMidX = reader.frame(in: .global).midX
                 
                 mainContent()
-                    .modifier(.parentView)
-                
                 
                 BottomSheet(frameHeight: frameHeight, frameMidX: frameMidX) {
                     VStack(alignment: .center, spacing: 20) {
