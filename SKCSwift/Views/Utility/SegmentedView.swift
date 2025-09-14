@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SegmentedView<MainContent: View, SheetContent: View>: View {
+    @Binding var sheetHeight: CGFloat
     @ViewBuilder var mainContent: () -> MainContent
     @ViewBuilder var sheetContent: () -> SheetContent
     
@@ -23,7 +24,7 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
                     VStack(alignment: .center, spacing: 20) {
                         Capsule()
                             .fill(.gray.opacity(0.7))
-                            .frame(width: 50, height: 5)
+                            .frame(width: 40, height: 5)
                             .padding(.top, 5)
                         sheetContent()
                     }
@@ -70,7 +71,7 @@ private struct BottomSheet<SheetContent: View>: View {
                 }
             }
                 .onEnded{ value in
-                    withAnimation(.linear(duration: 0.18)) {
+                    withAnimation(.linear(duration: 0.1)) {
                         if value.startLocation.y > frameMidX {
                             if -value.translation.height > frameMidX {
                                 offset = (-frameHeight) + bottomSheetHeight
@@ -90,8 +91,6 @@ private struct BottomSheet<SheetContent: View>: View {
             .onPreferenceChange(BottomSheetMinHeightPreferenceKey.self) { [$bottomSheetHeight] newValue in
                 $bottomSheetHeight.wrappedValue = newValue + 20
             }
-        
-        
     }
 }
 
@@ -115,10 +114,10 @@ private struct BlurView : UIViewRepresentable {
     }
 }
 
-struct SegmentedView_Previews: PreviewProvider {
-    static var previews: some View {
-        SegmentedView(mainContent: {Text("Main Content")}) {
-            Text("Bottom View")
-        }
-    }
-}
+//struct SegmentedView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SegmentedView(mainContent: {Text("Main Content")}) {
+//            Text("Bottom View")
+//        }
+//    }
+//}

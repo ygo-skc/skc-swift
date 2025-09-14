@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct BanListContentView: View {
+    @State private var sheetHeight: CGFloat = 0
     @State private var path = NavigationPath()
     @State private var model = BannedContentViewModel()
     
     var body: some View {
         NavigationStack(path: $path) {
-            SegmentedView {
+            SegmentedView(sheetHeight: $sheetHeight) {
                 ScrollView {
                     if let bannedContent = model.bannedContent {
                         switch model.chosenBannedContentCategory {
@@ -25,6 +26,9 @@ struct BanListContentView: View {
                             BannedContentView(path: $path, content: bannedContent.semiLimited)
                         }
                     }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: 300)
                 }
             } sheetContent: {
                 BanListNavigatorView(format: $model.format, dateRangeIndex: $model.dateRangeIndex, contentCategory: $model.chosenBannedContentCategory, dates: model.banListDates)
