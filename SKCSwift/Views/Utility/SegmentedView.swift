@@ -21,19 +21,7 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
                 mainContent()
                 
                 BottomSheet(frameHeight: frameHeight, frameMidX: frameMidX) {
-                    VStack(alignment: .center, spacing: 20) {
-                        Capsule()
-                            .fill(.gray.opacity(0.7))
-                            .frame(width: 40, height: 5)
-                            .padding(.top, 5)
-                        sheetContent()
-                    }
-                    .background(GeometryReader { geometry in
-                        Color.clear.preference(
-                            key: BottomSheetMinHeightPreferenceKey.self,
-                            value: geometry.size.height
-                        )
-                    })
+                    sheetContent()
                 }
             }
         }
@@ -41,56 +29,68 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
 }
 
 private struct BottomSheet<SheetContent: View>: View {
-    @State private var offset: CGFloat = 0
-    @State private var bottomSheetHeight: CGFloat = 0
-    
     var frameHeight: CGFloat
     var frameMidX: CGFloat
     
     @ViewBuilder var content: () -> SheetContent
     
+    @State private var offset: CGFloat = 0
+    @State private var bottomSheetHeight: CGFloat = 0
+    
     var body: some View {
-        content()
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .background(BlurView(style: .systemMaterial))
-            .cornerRadius(15)
-            .shadow(radius: 3)
-            .ignoresSafeArea(.all, edges: .bottom)
-            .offset(y: frameHeight - bottomSheetHeight)
-            .offset(y: offset)
-            .gesture(DragGesture().onChanged { value in
-                if value.startLocation.y > frameMidX {
-                    if value.translation.height < 0 && offset > (-frameHeight + bottomSheetHeight) {
-                        offset = value.translation.height
-                    }
-                } else if value.startLocation.y < frameMidX {
-                    if value.translation.height > 0 && offset < 0 {
-                        offset = (-frameHeight + bottomSheetHeight) + value.translation.height
-                    }
+        VStack(alignment: .center, spacing: 20) {
+            Capsule()
+                .fill(.gray.opacity(0.7))
+                .frame(width: 40, height: 5)
+                .padding(.top, 5)
+            content()
+        }
+        .background(GeometryReader { geometry in
+            Color.clear.preference(
+                key: BottomSheetMinHeightPreferenceKey.self,
+                value: geometry.size.height
+            )
+        })
+        .padding(.horizontal)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(BlurView(style: .systemMaterial))
+        .cornerRadius(15)
+        .shadow(radius: 3)
+        .ignoresSafeArea(.all, edges: .bottom)
+        .offset(y: frameHeight - bottomSheetHeight)
+        .offset(y: offset)
+        .gesture(DragGesture().onChanged { value in
+            if value.startLocation.y > frameMidX {
+                if value.translation.height < 0 && offset > (-frameHeight + bottomSheetHeight) {
+                    offset = value.translation.height
+                }
+            } else if value.startLocation.y < frameMidX {
+                if value.translation.height > 0 && offset < 0 {
+                    offset = (-frameHeight + bottomSheetHeight) + value.translation.height
                 }
             }
-                .onEnded{ value in
-                    withAnimation(.linear(duration: 0.1)) {
-                        if value.startLocation.y > frameMidX {
-                            if -value.translation.height > frameMidX {
-                                offset = (-frameHeight) + bottomSheetHeight
-                            } else {
-                                offset = 0
-                            }
-                        } else if value.startLocation.y < frameMidX {
-                            if value.translation.height < frameMidX {
-                                offset = (-frameHeight) + bottomSheetHeight
-                            } else {
-                                offset = 0
-                            }
+        }
+            .onEnded{ value in
+                withAnimation(.linear(duration: 0.1)) {
+                    if value.startLocation.y > frameMidX {
+                        if -value.translation.height > frameMidX {
+                            offset = (-frameHeight) + bottomSheetHeight
+                        } else {
+                            offset = 0
+                        }
+                    } else if value.startLocation.y < frameMidX {
+                        if value.translation.height < frameMidX {
+                            offset = (-frameHeight) + bottomSheetHeight
+                        } else {
+                            offset = 0
                         }
                     }
                 }
-            )
-            .onPreferenceChange(BottomSheetMinHeightPreferenceKey.self) { [$bottomSheetHeight] newValue in
-                $bottomSheetHeight.wrappedValue = newValue + 20
             }
+        )
+        .onPreferenceChange(BottomSheetMinHeightPreferenceKey.self) { [$bottomSheetHeight] newValue in
+            $bottomSheetHeight.wrappedValue = newValue + 20
+        }
     }
 }
 
