@@ -16,21 +16,14 @@ struct BanListContentView: View {
             SegmentedView {
                 ScrollView {
                     if let bannedContent = model.bannedContent {
-                        LazyVStack {
-                            ForEach(bannedContent.forbidden, id: \.self.cardID) { card in
-                                Button {
-                                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                                } label: {
-                                    GroupBox {
-                                        CardListItemView(card: card)
-                                            .equatable()
-                                    }
-                                    .groupBoxStyle(.listItem)
-                                }
-                                .buttonStyle(.plain)
-                            }
+                        switch model.chosenBannedContentCategory {
+                        case .forbidden:
+                            BannedContentView(path: $path, content: bannedContent.forbidden)
+                        case .limited:
+                            BannedContentView(path: $path, content: bannedContent.limited)
+                        case .semiLimited:
+                            BannedContentView(path: $path, content: bannedContent.semiLimited)
                         }
-                        .modifier(.parentView)
                     }
                 }
             } sheetContent: {
@@ -48,6 +41,29 @@ struct BanListContentView: View {
             }
             .ygoNavigationDestination()
         }
+    }
+}
+
+private struct BannedContentView: View {
+    @Binding var path: NavigationPath
+    let content: [Card]
+    
+    var body: some View {
+        LazyVStack {
+            ForEach(content, id: \.self.cardID) { card in
+                Button {
+                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                } label: {
+                    GroupBox {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .modifier(.parentView)
     }
 }
 
