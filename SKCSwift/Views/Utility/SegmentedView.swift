@@ -15,12 +15,11 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
             GeometryReader { reader in
-                let frameHeight = reader.frame(in: .global).height
-                let frameMidX = reader.frame(in: .global).midX
+                let frame = reader.frame(in: .global)
                 
                 mainContent()
                 
-                BottomSheet(frameHeight: frameHeight, frameMidX: frameMidX) {
+                BottomSheet(frame: frame) {
                     sheetContent()
                 }
             }
@@ -29,13 +28,18 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
 }
 
 private struct BottomSheet<SheetContent: View>: View {
-    var frameHeight: CGFloat
-    var frameMidX: CGFloat
-    
-    @ViewBuilder var content: () -> SheetContent
+    let frameHeight: CGFloat
+    let frameMidX: CGFloat
+    let content: () -> SheetContent
     
     @State private var offset: CGFloat = 0
     @State private var bottomSheetHeight: CGFloat = 0
+    
+    init(frame: CGRect, ViewBuilder content: @escaping () -> SheetContent) {
+        self.frameHeight = frame.height
+        self.frameMidX = frame.midX
+        self.content = content
+    }
     
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -44,6 +48,7 @@ private struct BottomSheet<SheetContent: View>: View {
                 .frame(width: 40, height: 5)
                 .padding(.top, 5)
             content()
+                .padding(.bottom)
         }
         .background(GeometryReader { geometry in
             Color.clear.preference(
@@ -57,8 +62,7 @@ private struct BottomSheet<SheetContent: View>: View {
         .cornerRadius(15)
         .shadow(radius: 3)
         .ignoresSafeArea(.all, edges: .bottom)
-        .offset(y: frameHeight - bottomSheetHeight)
-        .offset(y: offset)
+        .offset(y: frameHeight - bottomSheetHeight + offset)
         .gesture(DragGesture().onChanged { value in
             if value.startLocation.y > frameMidX {
                 if value.translation.height < 0 && offset > (-frameHeight + bottomSheetHeight) {
@@ -71,7 +75,7 @@ private struct BottomSheet<SheetContent: View>: View {
             }
         }
             .onEnded{ value in
-                withAnimation(.linear(duration: 0.1)) {
+                withAnimation(.bouncy(duration: 0.1, extraBounce: 0.1)) {
                     if value.startLocation.y > frameMidX {
                         if -value.translation.height > frameMidX {
                             offset = (-frameHeight) + bottomSheetHeight
@@ -89,7 +93,7 @@ private struct BottomSheet<SheetContent: View>: View {
             }
         )
         .onPreferenceChange(BottomSheetMinHeightPreferenceKey.self) { [$bottomSheetHeight] newValue in
-            $bottomSheetHeight.wrappedValue = newValue + 20
+            $bottomSheetHeight.wrappedValue = newValue
         }
     }
 }
