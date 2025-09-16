@@ -6,15 +6,11 @@
 //
 
 struct BanList: Codable, Equatable {
-    let banListDate: String
-    let cardID: String
-    let banStatus: String
-    let format: String
+    let banListDate, cardID, banStatus, format: String
 }
 
 struct BanListsForCard: Codable, Equatable {
-    let TCG: [BanList]?
-    let MD: [BanList]?
+    let TCG, MD: [BanList]?
 }
 
 struct BanListDates: Codable, Hashable {
@@ -23,4 +19,9 @@ struct BanListDates: Codable, Hashable {
 
 struct BanListDate: Codable, Hashable {
     let effectiveDate: String
+}
+
+struct BannedContent: Codable, Equatable {
+    let numForbidden, numLimited, numSemiLimited, numLimitedOne, numLimitedTwo, numLimitedThree: UInt8
+    let forbidden, limited, semiLimited: [Card]
 }

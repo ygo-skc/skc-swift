@@ -22,6 +22,10 @@ enum BanListFormat: String {
     case tcg = "TCG", md = "Master Duel"
 }
 
+enum BannedContentCategory: String {
+    case forbidden = "Forbidden", limited = "Limited", semiLimited = "Semi-Limited"
+}
+
 enum RelatedContentType: String {
     case products = "Products", banLists = "Ban Lists"
 }

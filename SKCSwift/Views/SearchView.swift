@@ -42,14 +42,10 @@ struct SearchView: View {
                 }
             }
             .ygoNavigationDestination()
-            .navigationTitle("Search")
+            .navigationTitle("Search & Trending")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching,
-                        placement: .navigationBarDrawer(displayMode: .always), prompt: "Search for card...")
-            
-        }
-        .transaction {
-            $0.animation = nil
+                        placement: .toolbar, prompt: "Search for card...")
         }
         .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
             Task {
@@ -175,6 +171,5 @@ private struct SearchResultsView: View {
                 }
             }
         }
-        .listStyle(.plain)
     }
 }

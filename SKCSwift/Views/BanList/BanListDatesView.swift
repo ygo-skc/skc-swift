@@ -1,55 +1,44 @@
 //
-//  DBStatsView.swift
+//  BanListDatesView.swift
 //  SKCSwift
 //
-//  Created by Javi Gomez on 4/26/23.
+//  Created by Javi Gomez on 9/10/25.
 //
 
 import SwiftUI
 
-struct BanListOptionsView: View {
-    @Bindable var model: BannedContentViewModel
+struct BanListDatesView: View {
+    @Binding var dateRangeIndex: Int
+    let dates: [BanListDate]
+    
+    @State private var isSelectorSheetPresented = false
     
     var body: some View {
-        VStack {
-            BanListFormatsView(chosenFormat: $model.chosenFormat)
-            BanListDatesView(model: model)
-        }
-    }
-}
-
-private struct BanListDatesView: View {
-    @Bindable var model: BannedContentViewModel
-    
-    var body: some View {
-        HStack {
+        HStack(spacing: 20)  {
             Text("Range")
-                .font(.headline)
-                .fontWeight(.bold)
-                .padding(.trailing)
+                .font(.subheadline)
+                .fontWeight(.semibold)
             
             Button() {
-                model.showDateSelectorSheet.toggle()
+                isSelectorSheetPresented.toggle()
             } label: {
-                if let banListDates = model.banListDates, !banListDates.isEmpty {
-                    BanListDateRangeView(fromDate: banListDates[model.chosenDateRange].effectiveDate,
-                                         toDate: (model.chosenDateRange == 0) ? nil : banListDates[model.chosenDateRange - 1].effectiveDate)
+                if !dates.isEmpty {
+                    BanListDateRangeView(fromDate: dates[dateRangeIndex].effectiveDate,
+                                         toDate: (dateRangeIndex == 0) ? nil : dates[dateRangeIndex - 1].effectiveDate)
                 }
             }
             .buttonStyle(.bordered)
-            .tint(Color.accentColor)
+            .tint(Color.accentColor.opacity(0.5))
             .foregroundColor(.black)
-            .frame(maxWidth: .infinity)
         }
-        .onChange(of: $model.chosenFormat.wrappedValue, initial: true) {
-            Task {
-                // TODO: can this be improved?
-                await model.fetchBanListDates()
-            }
+        .popover(isPresented: $isSelectorSheetPresented) {
+            BanListDateRangePicker(
+                chosenDateRange: $dateRangeIndex,
+                showDateSelectorSheet: $isSelectorSheetPresented,
+                banListDates: dates
+            )
         }
-        .popover(isPresented: $model.showDateSelectorSheet) {
-            BanListDateRangePicker(chosenDateRange: $model.chosenDateRange, showDateSelectorSheet: $model.showDateSelectorSheet, banListDates: model.banListDates ?? [])
-        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
@@ -59,10 +48,10 @@ private func getYear(banListDate: String) -> String {
 
 private struct BanListDateRangePicker: View {
     @State private var chosenYear: String
-    @Binding private var chosenDateRange: Int
+    @Binding private var dateRangeIndex: Int
     @Binding private var showDateSelectorSheet: Bool
     
-    private let banListDates: [BanListDate]
+    private let dates: [BanListDate]
     
     private var banListEffectiveDatesByYear = [String:[String]]()
     private var banListEffectiveDatesByInd = [String:Int]()
@@ -71,9 +60,9 @@ private struct BanListDateRangePicker: View {
     
     init(chosenDateRange: Binding<Int>, showDateSelectorSheet: Binding<Bool>, banListDates: [BanListDate]) {
         _chosenYear = State(initialValue: getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate))
-        self._chosenDateRange = chosenDateRange
+        self._dateRangeIndex = chosenDateRange
         self._showDateSelectorSheet = showDateSelectorSheet
-        self.banListDates = banListDates
+        self.dates = banListDates
         
         for (ind, banList) in banListDates.enumerated() {
             let banListDate = banList.effectiveDate
@@ -118,15 +107,15 @@ private struct BanListDateRangePicker: View {
                 LazyVStack {
                     ForEach(banListEffectiveDatesByYear[chosenYear]!, id: \.self) { year in
                         Button() {
-                            chosenDateRange = banListEffectiveDatesByInd[year]!
+                            dateRangeIndex = banListEffectiveDatesByInd[year]!
                             showDateSelectorSheet = false
                         } label: {
                             HStack {
-                                BanListDateRangeView(fromDate: year, toDate: (banListEffectiveDatesByInd[year] == 0) ? nil : banListDates[banListEffectiveDatesByInd[year]! - 1].effectiveDate)
+                                BanListDateRangeView(fromDate: year, toDate: (banListEffectiveDatesByInd[year] == 0) ? nil : dates[banListEffectiveDatesByInd[year]! - 1].effectiveDate)
                                 Spacer()
                                 Circle()
                                     .frame(width: 20, height: 20)
-                                    .if(chosenDateRange == banListEffectiveDatesByInd[year]) {
+                                    .if(dateRangeIndex == banListEffectiveDatesByInd[year]) {
                                         $0.foregroundColor(Color.accentColor)
                                     } else: {
                                         $0.foregroundColor(.secondary.opacity(0.7))
@@ -177,41 +166,3 @@ private struct ChosenBanListDateView: View {
         }
     }
 }
-
-struct BanListFormatsView: View {
-    @Binding var chosenFormat: BanListFormat
-    
-    @Namespace private var animation
-    
-    private static let formats: [BanListFormat] = [.tcg, .md]
-    
-    var body: some View {
-        HStack {
-            Text("Format")
-                .font(.headline)
-                .fontWeight(.bold)
-                .padding(.trailing)
-            ForEach(BanListFormatsView.formats, id: \.rawValue) { format in
-                TabButton(selected: $chosenFormat, value: format, animmation: animation)
-                if BanListFormatsView.formats.last != format {
-                    Spacer()
-                }
-            }
-        }
-    }
-}
-
-struct BanListFormatsView_Previews: PreviewProvider {
-    static var previews: some View {
-        _BanListFormatsView()
-    }
-    
-    private struct _BanListFormatsView : View {
-        @State private var chosenFormat: BanListFormat = .tcg
-        
-        var body: some View {
-            BanListFormatsView(chosenFormat: $chosenFormat)
-        }
-    }
-}
-

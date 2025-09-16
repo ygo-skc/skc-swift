@@ -82,11 +82,16 @@ struct BrowseView: View {
             .overlay {
                 switch focusedResource {
                 case .card:
-                    CardBrowseOverlay(criteriaRequestStatus: cardBrowseViewModel.criteriaStatus,
-                                      noCardsFound: cardBrowseViewModel.cards.isEmpty && cardBrowseViewModel.criteriaError == nil
-                                      && cardBrowseViewModel.dataError == nil,
-                                      criteriaRequestError: cardBrowseViewModel.criteriaError, dataRequestError: cardBrowseViewModel.dataError,
-                                      retryCriteriaRequest: cardBrowseViewModel.fetchCardBrowseCriteria, retryDataRequest: cardBrowseViewModel.fetchCards)
+                    if cardBrowseViewModel.dataStatus == .uninitiated {
+                        CardBrowseCriteriaOverlay(dataRequestStatus: cardBrowseViewModel.criteriaStatus,
+                                                  dataRequestError: cardBrowseViewModel.criteriaError,
+                                                  retryDataRequest: cardBrowseViewModel.fetchCardBrowseCriteria)
+                    } else {
+                        CardBrowseDataOverlay(noResults: cardBrowseViewModel.cards.isEmpty,
+                                              dataRequestStatus: cardBrowseViewModel.dataStatus,
+                                              dataRequestError: cardBrowseViewModel.dataError,
+                                              retryDataRequest: cardBrowseViewModel.fetchCards)
+                    }
                 case .product:
                     ProductBrowseOverlay(dataRequestStatus: productBrowseViewModel.dataStatus,
                                          dataRequestError: productBrowseViewModel.dataError,
@@ -97,26 +102,40 @@ struct BrowseView: View {
     }
 }
 
-private struct CardBrowseOverlay: View {
-    let criteriaRequestStatus: DataTaskStatus
-    let noCardsFound: Bool
-    let criteriaRequestError: NetworkError?
+private struct CardBrowseCriteriaOverlay: View {
+    let dataRequestStatus: DataTaskStatus
     let dataRequestError: NetworkError?
-    let retryCriteriaRequest: () async -> Void
     let retryDataRequest: () async -> Void
     
     var body: some View {
-        switch criteriaRequestStatus {
+        switch dataRequestStatus {
         case .pending, .uninitiated:
             ProgressView("Loading...")
                 .controlSize(.large)
-        case .done where noCardsFound:
-            ContentUnavailableView("No cards found using the selected filters 😕", systemImage: "exclamationmark.square.fill")
         case .done:
-            if let networkError = criteriaRequestError {
-                NetworkErrorView(error: networkError, action: { Task{ await retryCriteriaRequest() } })
-            } else if let networkError = dataRequestError {
+            if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
+            }
+        }
+    }
+}
+
+private struct CardBrowseDataOverlay: View {
+    let noResults: Bool
+    let dataRequestStatus: DataTaskStatus
+    let dataRequestError: NetworkError?
+    let retryDataRequest: () async -> Void
+    
+    var body: some View {
+        switch dataRequestStatus {
+        case .pending, .uninitiated:
+            ProgressView("Loading...")
+                .controlSize(.large)
+        case .done:
+            if let networkError = dataRequestError {
+                NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
+            } else if noResults {
+                ContentUnavailableView("No cards found using the selected filters 😕", systemImage: "exclamationmark.square.fill")
             }
         }
     }
