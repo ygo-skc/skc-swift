@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UpcomingTCGProductsView: View, Equatable {
-    nonisolated static func == (lhs: UpcomingTCGProductsView, rhs: UpcomingTCGProductsView) -> Bool {
+    static func == (lhs: UpcomingTCGProductsView, rhs: UpcomingTCGProductsView) -> Bool {
         lhs.events == rhs.events && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
     }
     

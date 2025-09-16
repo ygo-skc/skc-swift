@@ -8,7 +8,7 @@
 import Foundation
 
 extension URL {
-    nonisolated func calculateDirectorySize(exclude protectedDirs: Set<String> = Set(), manager fileManager: FileManager) throws -> UInt64  {
+    func calculateDirectorySize(exclude protectedDirs: Set<String> = Set(), manager fileManager: FileManager) throws -> UInt64  {
         var dirSize: UInt64 = 0
         let urlKeys: [URLResourceKey] = [.isDirectoryKey, .totalFileAllocatedSizeKey]
         let files = try fileManager.contentsOfDirectory(at: self, includingPropertiesForKeys: urlKeys)
@@ -27,7 +27,7 @@ extension URL {
         return dirSize  // in bytes
     }
     
-    nonisolated func deleteContents(exclude protectedDirs: Set<String> = Set(), manager fileManager: FileManager) throws {
+    func deleteContents(exclude protectedDirs: Set<String> = Set(), manager fileManager: FileManager) throws {
         let files = try fileManager.contentsOfDirectory(at: self, includingPropertiesForKeys: nil)
         
         for file in files {

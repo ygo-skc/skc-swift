@@ -76,7 +76,8 @@ final class ProductBrowseViewModel {
         filteredProducts = Dictionary(grouping: p) { String($0.productReleaseDate.split(separator: "-", maxSplits: 1)[0]) }
     }
     
-    nonisolated private func configureCriteria(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem<String>]) {
+    @concurrent
+    private func configureCriteria(products: [Product]) async -> (Set<String>, Set<String>, [String: String], [FilteredItem<String>]) {
         var uniqueProductTypes = Set<String>()
         var uniqueProductSubTypes = Set<String>()
         var productTypeByProductSubType = [String: String]()
@@ -98,10 +99,11 @@ final class ProductBrowseViewModel {
         return (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters)
     }
     
-    nonisolated private func updateProductSubTypeFilters(change: CollectionDifference<FilteredItem<String>>.Change,
-                                                         toggledProductTypes: Set<String>,
-                                                         productSubTypeFilters: [FilteredItem<String>],
-                                                         productTypeByProductSubType: [String: String]) async -> [FilteredItem<String>] {
+    @concurrent
+    private func updateProductSubTypeFilters(change: CollectionDifference<FilteredItem<String>>.Change,
+                                             toggledProductTypes: Set<String>,
+                                             productSubTypeFilters: [FilteredItem<String>],
+                                             productTypeByProductSubType: [String: String]) async -> [FilteredItem<String>] {
         switch change {
         case .insert(_, let changeElement, _):
             return productSubTypeFilters.map {

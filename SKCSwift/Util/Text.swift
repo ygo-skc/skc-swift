@@ -5,13 +5,15 @@
 //  Created by Javi Gomez on 1/18/23.
 //
 
-nonisolated func replaceHTMLEntities(subject: String) -> String {
+import Foundation
+
+func replaceHTMLEntities(subject: String) -> String {
     return subject
         .replacingOccurrences(of: "&bull;", with: "•")
 }
 
 extension String {
-    nonisolated func cardRarityShortHand() -> String {
+    func cardRarityShortHand() -> String {
         switch self.lowercased() {
         case "ultimate rare":
             return "Ulti"

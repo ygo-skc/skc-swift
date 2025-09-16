@@ -17,7 +17,7 @@ struct OneDBarChartView: View {
     private let total: Int
     private let cornerRadius = 10.0
     
-    nonisolated private func clipShape(_ d: ChartData) -> some Shape {
+    private func clipShape(_ d: ChartData) -> some Shape {
         if data.count == 1 {
             return UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
         } else if d == data.first {

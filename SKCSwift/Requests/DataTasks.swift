@@ -29,7 +29,7 @@ fileprivate let customSession: URLSession = {
     return URLSession(configuration: configuration)
 }()
 
-fileprivate nonisolated func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
+fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = httpMethod
     request.httpBody = reqBody
@@ -37,7 +37,7 @@ fileprivate nonisolated func baseRequest(url: URL, httpMethod: String, reqBody: 
     return request
 }
 
-fileprivate nonisolated func validateResponse(response: URLResponse?) throws {
+fileprivate func validateResponse(response: URLResponse?) throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         switch code {
@@ -57,11 +57,13 @@ fileprivate nonisolated func validateResponse(response: URLResponse?) throws {
     }
 }
 
-nonisolated func data<U>(_ url: URL, resType: U.Type) async -> Result<U, NetworkError> where U: Decodable {
+@concurrent
+func data<U>(_ url: URL, resType: U.Type) async -> Result<U, NetworkError> where U: Decodable {
     await data(url, reqBody: Optional<NilReqBody>.none, resType: resType)
 }
 
-nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
+@concurrent
+func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
         let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
         try Task.checkCancellation()

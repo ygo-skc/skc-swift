@@ -42,7 +42,7 @@ struct Trending<R:Codable & Equatable>: Codable, Equatable {
 }
 
 struct CardOfTheDay: Codable, Equatable {
-    nonisolated static func == (lhs: CardOfTheDay, rhs: CardOfTheDay) -> Bool {
+    static func == (lhs: CardOfTheDay, rhs: CardOfTheDay) -> Bool {
         lhs.date == rhs.date && lhs.card.cardID == rhs.card.cardID
     }
     

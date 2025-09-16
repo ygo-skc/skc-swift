@@ -36,7 +36,8 @@ final class CardBrowseViewModel {
         dataStatus = .done
     }
     
-    nonisolated private func fetchCriteria(filters previousFilters: CardFilters) async -> (CardFilters, NetworkError?) {
+    @concurrent
+    private func fetchCriteria(filters previousFilters: CardFilters) async -> (CardFilters, NetworkError?) {
         switch await data(cardBrowseCriteriaURL(), resType: CardBrowseCriteria.self) {
         case .success(let cardBrowseCriteria):
             return (await resetFilters(cardBrowseCriteria), nil)
@@ -45,7 +46,8 @@ final class CardBrowseViewModel {
         }
     }
     
-    nonisolated private func resetFilters(_ cardBrowseCriteria: CardBrowseCriteria) async -> CardFilters {
+    @concurrent
+    private func resetFilters(_ cardBrowseCriteria: CardBrowseCriteria) async -> CardFilters {
         let attributeFilters = cardBrowseCriteria.attributes.map { attribute in
             FilteredItem(category: attribute, isToggled: false, disableToggle: false)
         }
@@ -69,7 +71,8 @@ final class CardBrowseViewModel {
                            levels: monsterLevelFilters, ranks: monsterRankFilters, linkRatings: monsterLinkRatingFilter)
     }
     
-    nonisolated private func fetchCards(filters: CardFilters) async -> ([Card], NetworkError?) {
+    @concurrent
+    private func fetchCards(filters: CardFilters) async -> ([Card], NetworkError?) {
         let (attributes, colors, monsterTypes, levels, ranks, linkRatings) = await determineToggledFilters(filters)
         switch await data(cardBrowseURL(attributes: attributes, colors: colors, monsterTypes: monsterTypes,
                                         levels: levels, ranks: ranks, linkRatings: linkRatings), resType: CardBrowseResults.self) {
@@ -80,7 +83,8 @@ final class CardBrowseViewModel {
         }
     }
     
-    nonisolated private func determineToggledFilters(_ filters: CardFilters) async -> ([String], [String], [String], [String], [String], [String]) {
+    @concurrent
+    private func determineToggledFilters(_ filters: CardFilters) async -> ([String], [String], [String], [String], [String], [String]) {
         let attributes = filters.attributes.filter { $0.isToggled }.map{ $0.category }
         let colors = filters.colors.filter { $0.isToggled }.map{ $0.category }
         let monsterTypes = filters.monsterTypes.filter { $0.isToggled }.map{ $0.category.rawValue }

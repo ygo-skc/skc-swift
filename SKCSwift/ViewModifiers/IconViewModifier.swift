@@ -10,7 +10,7 @@ import SwiftUI
 struct IconViewModifier: ViewModifier {
     var variant: IconVariant
     
-    nonisolated func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         switch(variant) {
         case .small:
             content
