@@ -16,16 +16,22 @@ struct BanListContentView: View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
                 ScrollView {
-                    if let bannedContent = model.bannedContent {
-                        switch model.chosenBannedContentCategory {
-                        case .forbidden:
-                            BannedContentView(path: $path, content: bannedContent.forbidden)
-                        case .limited:
-                            BannedContentView(path: $path, content: bannedContent.limited)
-                        case .semiLimited:
-                            BannedContentView(path: $path, content: bannedContent.semiLimited)
+                    SectionView(header: "Forbidden/Limited Content",
+                                variant: .plain,
+                                content: {
+                        if let bannedContent = model.bannedContent {
+                            switch model.chosenBannedContentCategory {
+                            case .forbidden:
+                                BannedContentView(path: $path, content: bannedContent.forbidden)
+                            case .limited:
+                                BannedContentView(path: $path, content: bannedContent.limited)
+                            case .semiLimited:
+                                BannedContentView(path: $path, content: bannedContent.semiLimited)
+                            }
                         }
-                    }
+                    })
+                    .modifier(.parentView)
+                    .padding(.bottom, 0)
                 }
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: mainSheetContentHeight)
@@ -67,7 +73,6 @@ private struct BannedContentView: View {
                 .buttonStyle(.plain)
             }
         }
-        .modifier(.parentView)
     }
 }
 
