@@ -46,12 +46,12 @@ private struct BottomSheet<SheetContent: View>: View {
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             VStack {
-                Capsule()
-                    .fill(.gray.opacity(0.7))
-                    .frame(width: 40, height: 5)
-                    .padding([.top, .bottom], 5)
+//                Capsule()
+//                    .fill(.gray.opacity(0.7))
+//                    .frame(width: 40, height: 5)
+//                    .padding([.top, .bottom], 5)
                 content()
-                    .padding(.bottom)
+                    .padding([.top, .bottom])
             }
             .background(GeometryReader { geometry in
                 Color.clear.preference(
@@ -79,35 +79,35 @@ private struct BottomSheet<SheetContent: View>: View {
         .shadow(radius: 3)
         .ignoresSafeArea(.all, edges: .bottom)
         .offset(y: frameHeight - bottomSheetHeight + offset)
-        .gesture(DragGesture().onChanged { value in
-            if value.startLocation.y > frameMidX {
-                if value.translation.height < 0 && offset > (-frameHeight + bottomSheetHeight) {
-                    offset = value.translation.height
-                }
-            } else if value.startLocation.y < frameMidX {
-                if value.translation.height > 0 && offset < 0 {
-                    offset = (-frameHeight + bottomSheetHeight) + value.translation.height
-                }
-            }
-        }
-            .onEnded{ value in
-                withAnimation(.bouncy(duration: 0.1, extraBounce: 0.1)) {
-                    if value.startLocation.y > frameMidX {
-                        if -value.translation.height > frameMidX {
-                            offset = (-frameHeight) + bottomSheetHeight
-                        } else {
-                            offset = 0
-                        }
-                    } else if value.startLocation.y < frameMidX {
-                        if value.translation.height < frameMidX {
-                            offset = (-frameHeight) + bottomSheetHeight
-                        } else {
-                            offset = 0
-                        }
-                    }
-                }
-            }
-        )
+//        .gesture(DragGesture().onChanged { value in
+//            if value.startLocation.y > frameMidX {
+//                if value.translation.height < 0 && offset > (-frameHeight + bottomSheetHeight) {
+//                    offset = value.translation.height
+//                }
+//            } else if value.startLocation.y < frameMidX {
+//                if value.translation.height > 0 && offset < 0 {
+//                    offset = (-frameHeight + bottomSheetHeight) + value.translation.height
+//                }
+//            }
+//        }
+//            .onEnded{ value in
+//                withAnimation(.bouncy(duration: 0.1, extraBounce: 0.1)) {
+//                    if value.startLocation.y > frameMidX {
+//                        if -value.translation.height > frameMidX {
+//                            offset = (-frameHeight) + bottomSheetHeight
+//                        } else {
+//                            offset = 0
+//                        }
+//                    } else if value.startLocation.y < frameMidX {
+//                        if value.translation.height < frameMidX {
+//                            offset = (-frameHeight) + bottomSheetHeight
+//                        } else {
+//                            offset = 0
+//                        }
+//                    }
+//                }
+//            }
+//        )
     }
 }
 
