@@ -15,17 +15,34 @@ struct OneDBarChartView: View {
     private let data: [ChartData]
     private let ranges: [(ChartData, ClosedRange<Int>)]
     private let total: Int
-    private let cornerRadius = 10.0
+    
+    private static let cornerRadius = 10.0
     
     private func clipShape(_ d: ChartData) -> some Shape {
         if data.count == 1 {
-            return UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
+            return UnevenRoundedRectangle(topLeadingRadius: OneDBarChartView.cornerRadius,
+                                          bottomLeadingRadius: OneDBarChartView.cornerRadius,
+                                          bottomTrailingRadius: OneDBarChartView.cornerRadius,
+                                          topTrailingRadius: OneDBarChartView.cornerRadius,
+                                          style: .continuous)
         } else if d == data.first {
-            return UnevenRoundedRectangle(topLeadingRadius: cornerRadius, bottomLeadingRadius: cornerRadius, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .continuous)
+            return UnevenRoundedRectangle(topLeadingRadius: OneDBarChartView.cornerRadius,
+                                          bottomLeadingRadius: OneDBarChartView.cornerRadius,
+                                          bottomTrailingRadius: 0,
+                                          topTrailingRadius: 0,
+                                          style: .continuous)
         } else if d == data.last {
-            return UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: cornerRadius, topTrailingRadius: cornerRadius, style: .continuous)
+            return UnevenRoundedRectangle(topLeadingRadius: 0,
+                                          bottomLeadingRadius: 0,
+                                          bottomTrailingRadius: OneDBarChartView.cornerRadius,
+                                          topTrailingRadius: OneDBarChartView.cornerRadius,
+                                          style: .continuous)
         } else {
-            return UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: 0, topTrailingRadius: 0, style: .continuous)
+            return UnevenRoundedRectangle(topLeadingRadius: 0,
+                                          bottomLeadingRadius: 0,
+                                          bottomTrailingRadius: 0,
+                                          topTrailingRadius: 0,
+                                          style: .continuous)
         }
     }
     
