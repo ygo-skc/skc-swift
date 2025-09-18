@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 @Observable
 final class BannedContentViewModel {
     var format = BanListFormat.tcg

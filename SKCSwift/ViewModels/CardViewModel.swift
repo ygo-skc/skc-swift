@@ -6,7 +6,6 @@
 //
 import Foundation
 
-@MainActor
 @Observable
 final class CardViewModel {
     private(set) var card: Card?
@@ -45,8 +44,8 @@ final class CardViewModel {
     
     func fetchAllSuggestions(forceRefresh: Bool = false) async {
         await withTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask { @Sendable @MainActor in await self.fetchSuggestions(forceRefresh: forceRefresh) }
-            taskGroup.addTask { @Sendable @MainActor in await self.fetchSupport(forceRefresh: forceRefresh) }
+            taskGroup.addTask { await self.fetchSuggestions(forceRefresh: forceRefresh) }
+            taskGroup.addTask { await self.fetchSupport(forceRefresh: forceRefresh) }
         }
     }
     

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RequestHelper {
+nonisolated struct RequestHelper {
     // Headers
     static let CLIENT_ID: StaticString = "SKCSwift"
     

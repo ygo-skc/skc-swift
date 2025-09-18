@@ -7,7 +7,7 @@
 
 import Foundation
 
-fileprivate struct NilReqBody: Encodable {}
+nonisolated fileprivate struct NilReqBody: Encodable {}
 
 fileprivate let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
@@ -29,7 +29,7 @@ fileprivate let customSession: URLSession = {
     return URLSession(configuration: configuration)
 }()
 
-fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
+nonisolated fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> URLRequest {
     var request = URLRequest(url: url)
     request.httpMethod = httpMethod
     request.httpBody = reqBody
@@ -37,7 +37,7 @@ fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: Data?) -> UR
     return request
 }
 
-fileprivate func validateResponse(response: URLResponse?) throws {
+fileprivate func validateResponse(response: URLResponse?) async throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         switch code {
@@ -69,7 +69,7 @@ func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: Stri
         try Task.checkCancellation()
         let (body, response) = try await customSession.data(for: baseRequest(url: url, httpMethod: httpMethod, reqBody: bodyData))
         try Task.checkCancellation()
-        try validateResponse(response: response)
+        try await validateResponse(response: response)
         return .success(try JSONDecoder().decode(resType, from: body))
     } catch let networkError as NetworkError {
         print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")

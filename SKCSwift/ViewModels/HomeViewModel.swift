@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 @Observable
 final class HomeViewModel {
     private(set) var dataTaskStatus: [HomeModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: HomeModelDataType.allCases.map { ($0, .uninitiated) })

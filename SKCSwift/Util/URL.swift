@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension URL {
+nonisolated extension URL {
     func calculateDirectorySize(exclude protectedDirs: Set<String> = Set(), manager fileManager: FileManager) throws -> UInt64  {
         var dirSize: UInt64 = 0
         let urlKeys: [URLResourceKey] = [.isDirectoryKey, .totalFileAllocatedSizeKey]

@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 @Observable
 final class ProductBrowseViewModel {
     var showFilters = false

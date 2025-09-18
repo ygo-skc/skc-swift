@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 @Observable
 final class RecentlyViewedViewModel {
     private(set) var requestError: NetworkError? = nil

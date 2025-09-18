@@ -11,7 +11,7 @@ enum ConversionFromSeconds: Double {
     case days = 86400, hours = 3600, minutes = 60, seconds = 1
 }
 
-extension Date {
+nonisolated extension Date {
     func timeIntervalSinceNow(millisConversion: ConversionFromSeconds = .days) -> Int {
         let elapsedInterval = Date().timeIntervalSince(self)
         return Int(floor(elapsedInterval) / millisConversion.rawValue)

@@ -12,7 +12,7 @@ func replaceHTMLEntities(subject: String) -> String {
         .replacingOccurrences(of: "&bull;", with: "•")
 }
 
-extension String {
+nonisolated extension String {
     func cardRarityShortHand() -> String {
         switch self.lowercased() {
         case "ultimate rare":

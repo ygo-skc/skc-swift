@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ChartData: Hashable {
+nonisolated struct ChartData: Hashable {
     let category: String
     let count: Int
     
@@ -31,7 +31,7 @@ struct Charts {
     static let colors: [Color] = [.red, .orange, .yellow, .green, .blue, .purple, .pink, .brown,
                                   .cyan, .mint, .indigo, .teal, .synchroYGOCard, .dateRed, .effectYGOCard, .normalYGOCard, .fusionYGOCard]
     
-    nonisolated(unsafe) private static var colorCache: [String: Color] = ["Monster": .normalYGOCard, "Spell": .spellYGOCard, "Trap": .trapYGOCard,
+    private static var colorCache: [String: Color] = ["Monster": .normalYGOCard, "Spell": .spellYGOCard, "Trap": .trapYGOCard,
                                        "Dark": .purple, "Light": .yellow, "Wind": .green, "Water": .blue, "Fire": .red, "Earth": .brown,
                                        "Normal": .normalYGOCard, "Effect": .effectYGOCard, "Ritual": .ritualYGOCard, "Fusion": .fusionYGOCard,
                                        "Synchro": .synchroYGOCard, "Xyz": .xyzYGOCard, "Link": .linkYGOCard, "Pendulum Normal": .normalYGOCard,

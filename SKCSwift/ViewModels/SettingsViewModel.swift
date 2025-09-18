@@ -35,7 +35,6 @@ fileprivate actor DataManagementActor {
     }
 }
 
-@MainActor
 @Observable
 final class SettingsViewModel {
     private(set) var networkCacheSize: Double = 0

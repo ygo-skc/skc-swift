@@ -59,7 +59,6 @@ struct CardImageView: View, Equatable {
 }
 
 private extension Image {
-    @MainActor
     func cardImageViewModifier(length: CGFloat, radius: CGFloat, cardColor: String?, colorOverLayWidth: CGFloat) -> some View {
         self
             .resizable()
