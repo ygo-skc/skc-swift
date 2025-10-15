@@ -5,6 +5,7 @@
 //  Created by Javi Gomez on 8/26/24.
 //
 import Foundation
+import YGOService
 
 @Observable
 final class CardViewModel {
@@ -13,6 +14,8 @@ final class CardViewModel {
     
     private(set) var areSuggestionsLoaded = false
     private(set) var isSupportLoaded = false
+    
+    private(set) var score: CardScore?
     
     @ObservationIgnored
     private(set) var namedMaterials: [CardReference]?
@@ -38,6 +41,16 @@ final class CardViewModel {
                 requestErrors[.card] = nil
             case .failure(let error):
                 requestErrors[.card] = error
+            }
+        }
+    }
+    
+    func fetchCardScore() async {
+        if score == nil {
+            switch await YGOService.getCardScore(cardID: cardID) {
+            case .success(let score):
+                self.score = score
+            case .failure: break
             }
         }
     }
