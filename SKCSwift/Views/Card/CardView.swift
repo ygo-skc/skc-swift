@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import YGOService
 
 struct CardLinkDestinationView: View {
     let cardLinkDestinationValue: CardLinkDestinationValue
@@ -24,29 +25,6 @@ private struct CardView: View {
     
     @Query
     private var history: [History]
-    
-    private var latestReleaseInfo: String? {
-        if let products = model.card?.getProducts(), !products.isEmpty && products.count > 1 {
-            let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
-            if elapsedDays < 0 {
-                return "\(elapsedDays.decimal) day(s) until next printing"
-            } else {
-                return "\(elapsedDays.decimal) day(s) since last printing"
-            }
-        }
-        return nil
-    }
-    
-    private var initialReleaseInfo: String {
-        if let products = model.card?.getProducts(), !products.isEmpty {
-            let elapsedDays = products.last!.productReleaseDate.timeIntervalSinceNow()
-            if elapsedDays < 0 {
-                return "\(elapsedDays.decimal) day(s) till card debuts"
-            } else {
-                return "\(elapsedDays.decimal) day(s) since initial printing"            }
-        }
-        return "No products currently in DB have printed this card"
-    }
     
     init(cardID: String) {
         self.model = .init(cardID: cardID)
@@ -68,40 +46,21 @@ private struct CardView: View {
                                 .padding(.bottom)
                             
                             if let card = model.card {
-                                SectionView(header: "Releases",
-                                            variant: .plain,
-                                            content: {
-                                    VStack(alignment: .leading) {
-                                        if !card.getProducts().isEmpty {
-                                            Text("Rarities")
-                                                .font(.headline)
-                                            Text("All the different rarities \(card.cardName) was printed in")
-                                                .font(.callout)
-                                            OneDBarChartView(data: card.getRarityDistribution()
-                                                .map { ChartData(category: $0.key, count: $0.value) }
-                                            )
-                                            Divider()
-                                                .padding(.vertical)
-                                        }
-                                        
-                                        Label(initialReleaseInfo, systemImage: "1.circle")
-                                            .font(.callout)
-                                            .padding(.bottom, 2)
-                                        if let latestReleaseInfo {
-                                            Label(latestReleaseInfo, systemImage: "calendar")
-                                                .font(.callout)
-                                        }
-                                        
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                                })
+                                CardReleasesView(
+                                    cardID: card.cardID,
+                                    cardName: card.cardName,
+                                    cardColor: card.cardColor,
+                                    products: card.getProducts(),
+                                    rarityDistribution: card.getRarityDistribution())
                                 .modifier(.parentView)
+                                
+                                Divider()
+                                    .padding(.horizontal)
                                 
                                 RelatedContentView(
                                     cardID: card.cardID,
                                     cardName: card.cardName,
                                     cardColor: card.cardColor,
-                                    products: card.getProducts(),
                                     tcgBanLists: card.getBanList(format: BanListFormat.tcg),
                                     mdBanLists: card.getBanList(format: BanListFormat.md)
                                 )
@@ -144,12 +103,96 @@ private struct CardView: View {
         .task {
             await model.fetchCardData()
         }
+        .task {
+            await model.fetchCardScore()
+        }
         .onChange(of: model.card) {
             Task {
                 let newItem = History(resource: .card, id: model.cardID, timesAccessed: 1)
                 newItem.updateHistoryContext(history: history, modelContext: modelContext)
             }
         }
+    }
+}
+
+private struct CardReleasesView: View {
+    let cardID: String
+    let cardName: String
+    let cardColor: String
+    let products: [Product]
+    let rarityDistribution: [String: Int]
+    
+    private var initialReleaseInfo: String {
+        if !products.isEmpty {
+            let elapsedDays = products.last!.productReleaseDate.timeIntervalSinceNow()
+            if elapsedDays < 0 {
+                return "\(elapsedDays.decimal) day(s) till card debuts"
+            } else {
+                return "\(elapsedDays.decimal) day(s) since initial printing"
+            }
+        }
+        return "No products currently in DB have printed this card"
+    }
+    
+    private var latestReleaseInfo: String? {
+        if !products.isEmpty && products.count > 1 {
+            let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
+            if elapsedDays < 0 {
+                return "\(elapsedDays.decimal) day(s) until next printing"
+            } else {
+                return "\(elapsedDays.decimal) day(s) since last printing"
+            }
+        }
+        return nil
+    }
+    
+    var body: some View {
+        SectionView(header: "Releases",
+                    variant: .plain,
+                    content: {
+            VStack(alignment: .leading) {
+                if !products.isEmpty {
+                    Text("Rarities")
+                        .font(.headline)
+                    Text("All the different rarities \(cardName) was printed in")
+                        .font(.callout)
+                    OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
+                        .padding(.bottom)
+                }
+                
+                Text("Products")
+                    .font(.headline)
+                Text("Yugioh products printing \(cardName)")
+                    .font(.callout)
+                    .padding(.bottom, 4)
+                
+                
+                RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
+                    RelatedContentsView(header: "Products",
+                                        subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
+                        LazyVStack {
+                            ForEach(products, id: \.id) { product in
+                                GroupBox {
+                                    ProductListItemView(product: product)
+                                        .equatable()
+                                }
+                                .groupBoxStyle(.listItem)
+                            }
+                        }
+                    }
+                }
+                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
+                
+                Label(initialReleaseInfo, systemImage: "1.circle")
+                    .font(.callout)
+                    .padding(.bottom, 2)
+                if let latestReleaseInfo {
+                    Label(latestReleaseInfo, systemImage: "calendar")
+                        .font(.callout)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        })
     }
 }
 

@@ -12,65 +12,37 @@ struct RelatedContentView: View {
     let cardName: String
     let cardColor: String
     
-    let products: [Product]
-    
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
-    init(cardID: String, cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList]) {
+    init(cardID: String, cardName: String, cardColor: String, tcgBanLists: [BanList], mdBanLists: [BanList]) {
         self.cardID = cardID
         self.cardName = cardName
         self.cardColor = cardColor
-        self.products = products
         self.tcgBanLists = tcgBanLists
         self.mdBanLists = mdBanLists
     }
     
     var body: some View {
-        SectionView(header: "Explore",
+        SectionView(header: "Restrictions",
                     variant: .plain,
                     content: {
-            HStack(alignment: .top, spacing: 15) {
-                VStack(alignment: .leading) {
-                    Text("Products")
-                        .font(.headline)
-                    
-                    RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
-                        RelatedContentsView(header: "Products",
-                                            subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
-                            LazyVStack {
-                                ForEach(products, id: \.id) { product in
-                                    GroupBox {
-                                        ProductListItemView(product: product)
-                                            .equatable()
-                                    }
-                                    .groupBoxStyle(.listItem)
-                                }
-                            }
-                        }
+            VStack(alignment: .leading) {
+                Text("Ban Lists")
+                    .font(.headline)
+                // TCG ban list deets
+                RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
+                    RelatedContentsView(header: "TCG F/L Hits",
+                                        subHeader: "\(cardName) was restricted at least \(tcgBanLists.count) times in the TCG format.", cardID: cardID) {
+                        BanListItemViewModel(banList: tcgBanLists)
                     }
                 }
                 
-                Divider()
-                
-                VStack(alignment: .leading) {
-                    Text("Ban Lists")
-                        .font(.headline)
-                    
-                    // TCG ban list deets
-                    RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
-                        RelatedContentsView(header: "TCG F/L Hits",
-                                            subHeader: "\(cardName) was restricted at least \(tcgBanLists.count) times in the TCG format.", cardID: cardID) {
-                            BanListItemViewModel(banList: tcgBanLists)
-                        }
-                    }
-                    
-                    // MD ban list deets
-                    RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
-                        RelatedContentsView(header: "Master Duel F/L Hits",
-                                            subHeader: "\(cardName) was restricted at least \(mdBanLists.count) times in the Master Duel format.", cardID: cardID) {
-                            BanListItemViewModel(banList: mdBanLists)
-                        }
+                // MD ban list deets
+                RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
+                    RelatedContentsView(header: "Master Duel F/L Hits",
+                                        subHeader: "\(cardName) was restricted at least \(mdBanLists.count) times in the Master Duel format.", cardID: cardID) {
+                        BanListItemViewModel(banList: mdBanLists)
                     }
                 }
             }
@@ -79,7 +51,7 @@ struct RelatedContentView: View {
     }
 }
 
-private struct RelatedContentSheetButton<Content: View>: View {
+struct RelatedContentSheetButton<Content: View>: View {
     let format: String
     let contentCount: Int
     let contentType: RelatedContentType
@@ -107,7 +79,7 @@ private struct RelatedContentSheetButton<Content: View>: View {
     }
 }
 
-private struct RelatedContentsView<Content: View>: View {
+struct RelatedContentsView<Content: View>: View {
     let header: String
     let subHeader: String
     let cardID: String
