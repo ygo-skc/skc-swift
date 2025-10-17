@@ -45,7 +45,7 @@ private struct CardView: View {
                                 .equatable()
                                 .padding(.bottom)
                             
-                            if let card = model.card {
+                            if let card = model.card, let score = model.score {
                                 CardReleasesView(
                                     cardID: card.cardID,
                                     cardName: card.cardName,
@@ -54,13 +54,11 @@ private struct CardView: View {
                                     rarityDistribution: card.getRarityDistribution())
                                 .modifier(.parentView)
                                 
-                                Divider()
-                                    .padding(.horizontal)
-                                
                                 RelatedContentView(
                                     cardID: card.cardID,
                                     cardName: card.cardName,
                                     cardColor: card.cardColor,
+                                    score: score,
                                     tcgBanLists: card.getBanList(format: BanListFormat.tcg),
                                     mdBanLists: card.getBanList(format: BanListFormat.md)
                                 )
@@ -152,21 +150,19 @@ private struct CardReleasesView: View {
                     content: {
             VStack(alignment: .leading) {
                 if !products.isEmpty {
-                    Text("Rarities")
+                    Label("Rarities", systemImage: "star.square.on.square")
                         .font(.headline)
-                    Text("All the different rarities \(cardName) was printed in")
+                    Text("All unique rarities \(cardName) was printed in")
                         .font(.callout)
                     OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
                         .padding(.bottom)
                 }
                 
-                Text("Products")
+                Divider()
+                    .padding(.vertical, 2)
+                Label("Products", systemImage: "cart")
                     .font(.headline)
-                Text("Yugioh products printing \(cardName)")
-                    .font(.callout)
                     .padding(.bottom, 4)
-                
-                
                 RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
                     RelatedContentsView(header: "Products",
                                         subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {

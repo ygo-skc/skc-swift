@@ -6,19 +6,22 @@
 //
 
 import SwiftUI
+import YGOService
 
 struct RelatedContentView: View {
     let cardID: String
     let cardName: String
     let cardColor: String
     
+    let score: CardScore
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
-    init(cardID: String, cardName: String, cardColor: String, tcgBanLists: [BanList], mdBanLists: [BanList]) {
+    init(cardID: String, cardName: String, cardColor: String, score: CardScore, tcgBanLists: [BanList], mdBanLists: [BanList]) {
         self.cardID = cardID
         self.cardName = cardName
         self.cardColor = cardColor
+        self.score = score
         self.tcgBanLists = tcgBanLists
         self.mdBanLists = mdBanLists
     }
@@ -28,8 +31,23 @@ struct RelatedContentView: View {
                     variant: .plain,
                     content: {
             VStack(alignment: .leading) {
-                Text("Ban Lists")
+                Label("Summary", systemImage: "list.bullet.rectangle")
                     .font(.headline)
+                    .padding(.bottom, 4)
+                ForEach(score.uniqueFormats, id: \.self) { format in
+                    if let cardScore = score.currentScoreByFormat[format] {
+                        Label("\(cardScore) points in \(format) format", systemImage: "medal.star.fill")
+                            .font(.callout)
+                            .padding(.bottom, 2)
+                    }
+                }
+                
+                Divider()
+                    .padding(.vertical, 2)
+                
+                Label("Historical", systemImage: "hourglass.circle")
+                    .font(.headline)
+                    .padding(.bottom, 4)
                 // TCG ban list deets
                 RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
                     RelatedContentsView(header: "TCG F/L Hits",
