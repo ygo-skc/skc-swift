@@ -5,6 +5,8 @@
 //  Created by Javi Gomez on 10/17/25.
 //
 
+import SwiftUI
+
 struct CardView<Content: View>: View {
     let content: Content
     
