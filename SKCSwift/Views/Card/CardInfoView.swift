@@ -13,12 +13,12 @@ struct CardLinkDestinationView: View {
     let cardLinkDestinationValue: CardLinkDestinationValue
     
     var body: some View {
-        CardView(cardID: cardLinkDestinationValue.cardID)
+        CardInfoView(cardID: cardLinkDestinationValue.cardID)
             .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-private struct CardView: View {
+private struct CardInfoView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var model: CardViewModel
@@ -54,7 +54,7 @@ private struct CardView: View {
                                     rarityDistribution: card.getRarityDistribution())
                                 .modifier(.parentView)
                                 
-                                RelatedContentView(
+                                CardRestrictionsView(
                                     cardID: card.cardID,
                                     cardName: card.cardName,
                                     cardColor: card.cardColor,
@@ -113,93 +113,14 @@ private struct CardView: View {
     }
 }
 
-private struct CardReleasesView: View {
-    let cardID: String
-    let cardName: String
-    let cardColor: String
-    let products: [Product]
-    let rarityDistribution: [String: Int]
-    
-    private var initialReleaseInfo: String {
-        if !products.isEmpty {
-            let elapsedDays = products.last!.productReleaseDate.timeIntervalSinceNow()
-            if elapsedDays < 0 {
-                return "\(elapsedDays.decimal) day(s) till card debuts"
-            } else {
-                return "\(elapsedDays.decimal) day(s) since initial printing"
-            }
-        }
-        return "No products currently in DB have printed this card"
-    }
-    
-    private var latestReleaseInfo: String? {
-        if !products.isEmpty && products.count > 1 {
-            let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
-            if elapsedDays < 0 {
-                return "\(elapsedDays.decimal) day(s) until next printing"
-            } else {
-                return "\(elapsedDays.decimal) day(s) since last printing"
-            }
-        }
-        return nil
-    }
-    
-    var body: some View {
-        SectionView(header: "Releases",
-                    variant: .plain,
-                    content: {
-            VStack(alignment: .leading) {
-                if !products.isEmpty {
-                    Label("Rarities", systemImage: "star.square.on.square")
-                        .font(.headline)
-                    Text("All unique rarities \(cardName) was printed in")
-                        .font(.callout)
-                    OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
-                        .padding(.bottom)
-                }
-                
-                Divider()
-                    .padding(.vertical, 2)
-                Label("Products", systemImage: "cart")
-                    .font(.headline)
-                    .padding(.bottom, 4)
-                RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
-                    RelatedContentsView(header: "Products",
-                                        subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
-                        LazyVStack {
-                            ForEach(products, id: \.id) { product in
-                                GroupBox {
-                                    ProductListItemView(product: product)
-                                        .equatable()
-                                }
-                                .groupBoxStyle(.listItem)
-                            }
-                        }
-                    }
-                }
-                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
-                
-                Label(initialReleaseInfo, systemImage: "1.circle")
-                    .font(.callout)
-                    .padding(.bottom, 2)
-                if let latestReleaseInfo {
-                    Label(latestReleaseInfo, systemImage: "calendar")
-                        .font(.callout)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
-        })
-    }
-}
-
 #Preview("Kluger")  {
-    CardView(cardID: "90307498")
+    CardInfoView(cardID: "90307498")
 }
 
 #Preview("Token")  {
-    CardView(cardID: "0034")
+    CardInfoView(cardID: "0034")
 }
 
 #Preview("Card DNE")  {
-    CardView(cardID: "12345678")
+    CardInfoView(cardID: "12345678")
 }
