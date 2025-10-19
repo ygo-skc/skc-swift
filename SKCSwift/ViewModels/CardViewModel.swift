@@ -50,7 +50,8 @@ final class CardViewModel {
             switch await YGOService.getCardScore(cardID: cardID) {
             case .success(let score):
                 self.score = score
-            case .failure: break
+            case .failure(let error):
+                requestErrors[.cardScore] = NetworkError.fromError(error)
             }
         }
     }

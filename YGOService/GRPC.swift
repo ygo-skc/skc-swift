@@ -52,7 +52,7 @@ public func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
         return .failure(error)
     } catch {
         print("Unexpected error:", error)
-        return .failure(error)
+        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
     }
 }
 

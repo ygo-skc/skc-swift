@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GRPCCore
 
 enum NetworkError: Error {
     case client
@@ -18,6 +19,16 @@ enum NetworkError: Error {
     case cancelled
     case timeout
     case unknown
+    
+    static func fromError(_ error: any Error) -> NetworkError {
+        if let rpcError = error as? RPCError {
+            switch rpcError.code {
+            case .notFound: return .notFound
+            default: return .server
+            }
+        }
+        return .unknown
+    }
 }
 
 extension NetworkError: CustomStringConvertible {
