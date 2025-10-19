@@ -295,7 +295,7 @@ struct CarouselItemViewModifier: ViewModifier {
             .padding(.horizontal)
     }
     .task {
-        await model.fetchCardData()
+        await model.fetchCardInfo()
     }
 }
 
@@ -307,7 +307,7 @@ struct CarouselItemViewModifier: ViewModifier {
             .padding(.horizontal)
     }
     .task {
-        await model.fetchCardData()
+        await model.fetchCardInfo()
     }
 }
 

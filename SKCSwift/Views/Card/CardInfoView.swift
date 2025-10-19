@@ -92,17 +92,14 @@ private struct CardInfoView: View {
                     NetworkErrorView(error: networkError, action: {
                         Task {
                             model.resetCardError()
-                            await model.fetchCardData(forceRefresh: true)
+                            await model.fetchCardInfo(forceRefresh: true)
                         }
                     })
                 }
             }
         }
         .task {
-            await model.fetchCardData()
-        }
-        .task {
-            await model.fetchCardScore()
+            await model.fetchCardInfo()
         }
         .onChange(of: model.card) {
             Task {

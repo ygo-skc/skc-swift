@@ -6,6 +6,7 @@
 //
 import Foundation
 import YGOService
+import GRPCCore
 
 @Observable
 final class CardViewModel {
@@ -33,7 +34,14 @@ final class CardViewModel {
         self.cardID = cardID
     }
     
-    func fetchCardData(forceRefresh: Bool = false) async {
+    func fetchCardInfo(forceRefresh: Bool = false) async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { await self.fetchCardData(forceRefresh: forceRefresh) }
+            taskGroup.addTask { await self.fetchCardScore() }
+        }
+    }
+    
+    private func fetchCardData(forceRefresh: Bool = false) async {
         if forceRefresh || card == nil {
             switch await data(cardInfoURL(cardID: cardID), resType: Card.self) {
             case .success(let card):
@@ -45,7 +53,7 @@ final class CardViewModel {
         }
     }
     
-    func fetchCardScore() async {
+    private func fetchCardScore() async {
         if score == nil {
             switch await YGOService.getCardScore(cardID: cardID) {
             case .success(let score):
@@ -93,7 +101,7 @@ final class CardViewModel {
     
     func hasSuggestions() -> Bool {
         if let namedMaterials, let namedReferences, let referencedBy, let materialFor,
-            namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
+           namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
             return false
         }
         return true
@@ -113,6 +121,6 @@ final class CardViewModel {
     }
     
     enum CardModelDataType {
-        case card, suggestions, support
+        case card, cardScore, suggestions, support
     }
 }
