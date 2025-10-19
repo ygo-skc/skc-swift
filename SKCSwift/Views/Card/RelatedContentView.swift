@@ -21,12 +21,12 @@ struct CardReleasesView: View {
     private let latestReleaseHeader: String?
     private let latestReleaseSubHeader: String?
     
-    init(cardID: String, cardName: String, cardColor: String, products: [Product], rarityDistribution: [String : Int]) {
-        self.cardID = cardID
-        self.cardName = cardName
-        self.cardColor = cardColor
-        self.products = products
-        self.rarityDistribution = rarityDistribution
+    init(card: Card) {
+        self.cardID = card.cardID
+        self.cardName = card.cardName
+        self.cardColor = card.cardColor
+        self.products = card.getProducts()
+        self.rarityDistribution = card.getRarityDistribution()
         
         if !products.isEmpty {
             if products.count > 1 {

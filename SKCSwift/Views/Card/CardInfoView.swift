@@ -46,13 +46,8 @@ private struct CardInfoView: View {
                                 .padding(.bottom)
                             
                             if let card = model.card {
-                                CardReleasesView(
-                                    cardID: card.cardID,
-                                    cardName: card.cardName,
-                                    cardColor: card.cardColor,
-                                    products: card.getProducts(),
-                                    rarityDistribution: card.getRarityDistribution())
-                                .modifier(.parentView)
+                                CardReleasesView(card: card)
+                                    .modifier(.parentView)
                                 
                                 CardRestrictionsView(card: card, score: model.score)
                                     .modifier(.parentView)
