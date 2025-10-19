@@ -129,17 +129,17 @@ struct CardRestrictionsView: View {
     let cardName: String
     let cardColor: String
     
-    let score: CardScore
+    let score: CardScore?
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
-    init(cardID: String, cardName: String, cardColor: String, score: CardScore, tcgBanLists: [BanList], mdBanLists: [BanList]) {
-        self.cardID = cardID
-        self.cardName = cardName
-        self.cardColor = cardColor
+    init(card: Card, score: CardScore?) {
+        self.cardID = card.cardID
+        self.cardName = card.cardName
+        self.cardColor = card.cardColor
         self.score = score
-        self.tcgBanLists = tcgBanLists
-        self.mdBanLists = mdBanLists
+        self.tcgBanLists = card.getBanList(format: .tcg)
+        self.mdBanLists =  card.getBanList(format: .md)
     }
     
     var body: some View {
@@ -147,19 +147,21 @@ struct CardRestrictionsView: View {
                     variant: .plain,
                     content: {
             VStack(alignment: .leading) {
-                Label("Summary", systemImage: "list.bullet.rectangle")
-                    .font(.headline)
-                    .padding(.bottom, 4)
-                ForEach(score.uniqueFormats, id: \.self) { format in
-                    if let cardScore = score.currentScoreByFormat[format] {
-                        CardView {
-                            Group {
-                                Label("\(cardScore) points", systemImage: "medal.star.fill")
-                                    .font(.title3)
-                                    .padding(.bottom, 2)
-                                Text("\(format) format")
-                                    .font(.subheadline)
-                                    .padding(.bottom, 2)
+                if let score {
+                    Label("Summary", systemImage: "list.bullet.rectangle")
+                        .font(.headline)
+                        .padding(.bottom, 4)
+                    ForEach(score.uniqueFormats, id: \.self) { format in
+                        if let cardScore = score.currentScoreByFormat[format] {
+                            CardView {
+                                Group {
+                                    Label("\(cardScore) points", systemImage: "medal.star.fill")
+                                        .font(.title3)
+                                        .padding(.bottom, 2)
+                                    Text("\(format) format")
+                                        .font(.subheadline)
+                                        .padding(.bottom, 2)
+                                }
                             }
                         }
                     }

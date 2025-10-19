@@ -45,7 +45,7 @@ private struct CardInfoView: View {
                                 .equatable()
                                 .padding(.bottom)
                             
-                            if let card = model.card, let score = model.score {
+                            if let card = model.card {
                                 CardReleasesView(
                                     cardID: card.cardID,
                                     cardName: card.cardName,
@@ -54,16 +54,9 @@ private struct CardInfoView: View {
                                     rarityDistribution: card.getRarityDistribution())
                                 .modifier(.parentView)
                                 
-                                CardRestrictionsView(
-                                    cardID: card.cardID,
-                                    cardName: card.cardName,
-                                    cardColor: card.cardColor,
-                                    score: score,
-                                    tcgBanLists: card.getBanList(format: BanListFormat.tcg),
-                                    mdBanLists: card.getBanList(format: BanListFormat.md)
-                                )
-                                .modifier(.parentView)
-                                .padding(.bottom, 50)
+                                CardRestrictionsView(card: card, score: model.score)
+                                    .modifier(.parentView)
+                                    .padding(.bottom, 50)
                             } else {
                                 ProgressView("Loading...")
                                     .controlSize(.large)
