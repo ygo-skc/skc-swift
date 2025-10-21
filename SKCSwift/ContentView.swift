@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct ContentView: View, Equatable {
-    private let screenWidth = UIScreen.main.bounds.width - 15
-    
     var body: some View {
         TabView {
             Tab("Home", systemImage: "house") {

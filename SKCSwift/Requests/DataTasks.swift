@@ -11,13 +11,19 @@ nonisolated fileprivate struct NilReqBody: Encodable {}
 
 fileprivate let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
-    configuration.timeoutIntervalForRequest = 2
+    
+    configuration.timeoutIntervalForRequest = 3
     configuration.timeoutIntervalForResource = 5
     configuration.multipathServiceType = .handover
     configuration.requestCachePolicy = .useProtocolCachePolicy
     configuration.allowsCellularAccess = true
-    configuration.tlsMinimumSupportedProtocolVersion = .TLSv12
-    configuration.httpShouldUsePipelining = true
+    configuration.tlsMinimumSupportedProtocolVersion = .TLSv13
+    configuration.httpMaximumConnectionsPerHost = 4
+    
+    if #available(iOS 26.0, *) {
+        configuration.enablesEarlyData = true
+    }
+    
     configuration.httpAdditionalHeaders = [
         "Accept": "application/json",
         "Content-Type": "application/json",
