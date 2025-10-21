@@ -27,15 +27,18 @@ struct InlineDateView: View, Equatable {
                 .monospaced()
                 .fontWeight(.semibold)
                 .foregroundColor(Color(.white))
-            Group {
-                Text("\(day),".padding(toLength: 3, withPad: " ", startingAt: 0))
-                    .fontWeight(.semibold)
-                + Text(year)
+            HStack {
+                Group {
+                    Text("\(day),".padding(toLength: 3, withPad: " ", startingAt: 0))
+                        .fontWeight(.semibold)
+                    Text(year)
+                }
+                .font(.caption2)
+                .monospaced()
+                .foregroundColor(.primary)
+                .padding(.horizontal, -2)
             }
-            .font(.caption2)
-            .monospaced()
-            .foregroundColor(.primary)
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 10)
         }
         .background(.gray.opacity(0.2))
         .cornerRadius(8)

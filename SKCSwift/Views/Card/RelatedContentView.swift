@@ -207,7 +207,10 @@ private struct RelatedContentSheetButton<Content: View>: View {
                 Text(format)
                     .font(.subheadline)
                     .bold()
-                Text("\(contentCount) ").font(.subheadline).fontWeight(.bold) + Text((contentType == .products) ? "Printings" : "Occurrences").font(.subheadline)
+                HStack(spacing: 2) {
+                    Text("\(contentCount) ").font(.subheadline).fontWeight(.bold)
+                    Text((contentType == .products) ? "Printings" : "Occurrences").font(.subheadline)
+                }
             }
             .frame(maxWidth: .infinity)
         }
