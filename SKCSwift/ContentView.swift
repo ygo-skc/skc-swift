@@ -26,6 +26,8 @@ struct ContentView: View, Equatable {
         .modify {
             if #available(iOS 26.0, *) {
                 $0.tabBarMinimizeBehavior(.onScrollDown)
+            } else {
+                $0
             }
         }
     }
