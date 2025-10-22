@@ -6,35 +6,76 @@
 //
 
 import SwiftUI
+import YGOService
 
-struct RelatedContentView: View {
+struct CardReleasesView: View {
     let cardID: String
     let cardName: String
     let cardColor: String
-    
     let products: [Product]
+    let rarityDistribution: [String: Int]
     
-    let tcgBanLists: [BanList]
-    let mdBanLists: [BanList]
+    private let initialReleaseHeader: String
+    private let initialReleaseSubHeader: String
     
-    init(cardID: String, cardName: String, cardColor: String, products: [Product], tcgBanLists: [BanList], mdBanLists: [BanList]) {
-        self.cardID = cardID
-        self.cardName = cardName
-        self.cardColor = cardColor
-        self.products = products
-        self.tcgBanLists = tcgBanLists
-        self.mdBanLists = mdBanLists
+    private let latestReleaseHeader: String?
+    private let latestReleaseSubHeader: String?
+    
+    init(card: Card) {
+        self.cardID = card.cardID
+        self.cardName = card.cardName
+        self.cardColor = card.cardColor
+        self.products = card.getProducts()
+        self.rarityDistribution = card.getRarityDistribution()
+        
+        if !products.isEmpty {
+            if products.count > 1 {
+                let elapsedDays = products[0].productReleaseDate.timeIntervalSinceNow()
+                if elapsedDays < 0 {
+                    latestReleaseHeader = "\(elapsedDays.decimal) day(s)"
+                    latestReleaseSubHeader = "Until next printing"
+                } else {
+                    latestReleaseHeader = "\(elapsedDays.decimal) day(s)"
+                    latestReleaseSubHeader = "Since last printing"
+                }
+            } else {
+                (latestReleaseHeader, latestReleaseSubHeader) = (nil, nil)
+            }
+            
+            let elapsedDays = products.last!.productReleaseDate.timeIntervalSinceNow()
+            if elapsedDays < 0 {
+                initialReleaseHeader = "\(elapsedDays.decimal) day(s)"
+                initialReleaseSubHeader = "From card debuts"
+            } else {
+                initialReleaseHeader = "\(elapsedDays.decimal) day(s)"
+                initialReleaseSubHeader = "Since initial printing"
+            }
+        } else {
+            initialReleaseHeader = "No printings"
+            initialReleaseSubHeader = "No product data"
+            
+            (latestReleaseHeader, latestReleaseSubHeader) = (nil, nil)
+        }
     }
     
     var body: some View {
-        SectionView(header: "Explore",
+        SectionView(header: "Releases",
                     variant: .plain,
                     content: {
-            HStack(alignment: .top, spacing: 15) {
-                VStack(alignment: .leading) {
-                    Text("Products")
+            VStack(alignment: .leading) {
+                if !products.isEmpty {
+                    Label("Rarities", systemImage: "star.square.on.square")
                         .font(.headline)
-                    
+                    Text("All unique rarities \(cardName) was printed in")
+                        .font(.callout)
+                    OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
+                        .padding(.bottom)
+                }
+                
+                Label("Products", systemImage: "cart")
+                    .font(.headline)
+                    .padding(.bottom, 4)
+                if !products.isEmpty {
                     RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
                         RelatedContentsView(header: "Products",
                                             subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
@@ -49,28 +90,99 @@ struct RelatedContentView: View {
                             }
                         }
                     }
+                    .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
                 }
                 
-                Divider()
-                
-                VStack(alignment: .leading) {
-                    Text("Ban Lists")
-                        .font(.headline)
-                    
-                    // TCG ban list deets
-                    RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
-                        RelatedContentsView(header: "TCG F/L Hits",
-                                            subHeader: "\(cardName) was restricted at least \(tcgBanLists.count) times in the TCG format.", cardID: cardID) {
-                            BanListItemViewModel(banList: tcgBanLists)
+                HStack(spacing: 10) {
+                    CardView {
+                        Group {
+                            Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
+                                .font(.title3)
+                                .padding(.bottom, 2)
+                            Text(initialReleaseSubHeader)
+                                .font(.subheadline)
+                                .padding(.bottom, 2)
                         }
                     }
-                    
-                    // MD ban list deets
-                    RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
-                        RelatedContentsView(header: "Master Duel F/L Hits",
-                                            subHeader: "\(cardName) was restricted at least \(mdBanLists.count) times in the Master Duel format.", cardID: cardID) {
-                            BanListItemViewModel(banList: mdBanLists)
+                    if let latestReleaseHeader, let latestReleaseSubHeader {
+                        CardView {
+                            Group {
+                                Label(latestReleaseHeader, systemImage: "calendar")
+                                    .font(.title3)
+                                    .padding(.bottom, 2)
+                                Text(latestReleaseSubHeader)
+                                    .font(.subheadline)
+                                    .padding(.bottom, 2)
+                            }
                         }
+                    }
+                }
+                .padding(.top)
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        })
+    }
+}
+
+struct CardRestrictionsView: View {
+    let cardID: String
+    let cardName: String
+    let cardColor: String
+    
+    let score: CardScore?
+    let tcgBanLists: [BanList]
+    let mdBanLists: [BanList]
+    
+    init(card: Card, score: CardScore?) {
+        self.cardID = card.cardID
+        self.cardName = card.cardName
+        self.cardColor = card.cardColor
+        self.score = score
+        self.tcgBanLists = card.getBanList(format: .tcg)
+        self.mdBanLists =  card.getBanList(format: .md)
+    }
+    
+    var body: some View {
+        SectionView(header: "Restrictions",
+                    variant: .plain,
+                    content: {
+            VStack(alignment: .leading) {
+                if let score {
+                    Label("Summary", systemImage: "list.bullet.rectangle")
+                        .font(.headline)
+                        .padding(.bottom, 4)
+                    ForEach(score.uniqueFormats, id: \.self) { format in
+                        if let cardScore = score.currentScoreByFormat[format] {
+                            CardView {
+                                Group {
+                                    Label("\(cardScore) points", systemImage: "medal.star.fill")
+                                        .font(.title3)
+                                        .padding(.bottom, 2)
+                                    Text("\(format) format")
+                                        .font(.subheadline)
+                                        .padding(.bottom, 2)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                Label("Historical", systemImage: "hourglass.circle")
+                    .font(.headline)
+                    .padding(.vertical, 4)
+                // TCG ban list deets
+                RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
+                    RelatedContentsView(header: "TCG F/L Hits",
+                                        subHeader: "\(cardName) was restricted at least \(tcgBanLists.count) times in the TCG format.", cardID: cardID) {
+                        BanListItemViewModel(banList: tcgBanLists)
+                    }
+                }
+                
+                // MD ban list deets
+                RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
+                    RelatedContentsView(header: "Master Duel F/L Hits",
+                                        subHeader: "\(cardName) was restricted at least \(mdBanLists.count) times in the Master Duel format.", cardID: cardID) {
+                        BanListItemViewModel(banList: mdBanLists)
                     }
                 }
             }

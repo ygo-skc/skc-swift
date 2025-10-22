@@ -5,7 +5,7 @@
 //  Created by Javi Gomez on 1/2/23.
 //
 
-struct MonsterAssociation: Codable, Equatable {
+nonisolated struct MonsterAssociation: Codable, Equatable {
     let level: UInt8?
     let rank: UInt8?
     let scaleRating: UInt8?
@@ -13,7 +13,7 @@ struct MonsterAssociation: Codable, Equatable {
     let linkArrows: [String]?
 }
 
-extension MonsterAssociation {
+nonisolated extension MonsterAssociation {
     init(level: UInt8) {
         self.init(level: level, rank: nil, scaleRating: nil, linkRating: nil, linkArrows: nil)
     }
@@ -35,7 +35,7 @@ extension MonsterAssociation {
     }
 }
 
-struct Card: Codable, Equatable {
+nonisolated struct Card: Codable, Equatable {
     let cardID: String
     let cardName: String
     let cardColor: String
@@ -48,23 +48,23 @@ struct Card: Codable, Equatable {
     var restrictedIn: BanListsForCard?
     var foundIn: [Product]?
     
-    nonisolated var attribute: Attribute {
+    var attribute: Attribute {
         get{ Attribute(rawValue: cardAttribute ?? "") ?? .unknown }
     }
     
-    nonisolated var isPendulum: Bool {
+    var isPendulum: Bool {
         get{ cardColor.starts(with: "Pendulum") }
     }
     
-    nonisolated var cardType: String {
+    var cardType: String {
         get{ return (monsterType != nil) ? monsterType! : cardAttribute ?? "" }
     }
     
-    nonisolated var atk: String {
+    var atk: String {
         get{ return (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!) }
     }
     
-    nonisolated var def: String {
+    var def: String {
         get {
             if cardColor == "Link" {
                 return Card.linkDefStat
@@ -74,7 +74,7 @@ struct Card: Codable, Equatable {
         }
     }
     
-    nonisolated var isGod: Bool {
+    var isGod: Bool {
         get {
             return cardAttribute != nil && cardAttribute!.lowercased() == "divine"
         }
@@ -83,11 +83,11 @@ struct Card: Codable, Equatable {
     private static let nilStat = "?"
     private static let linkDefStat = "-"
     
-    nonisolated func getProducts() -> [Product] {
+    func getProducts() -> [Product] {
         return foundIn ?? [Product]()
     }
     
-    nonisolated func getRarityDistribution() -> [String: Int] {
+    func getRarityDistribution() -> [String: Int] {
         return getProducts()
             .compactMap { $0.productContent }
             .flatMap { $0 }
@@ -98,7 +98,7 @@ struct Card: Codable, Equatable {
             }
     }
     
-    nonisolated func getBanList(format: BanListFormat) -> [BanList] {
+    func getBanList(format: BanListFormat) -> [BanList] {
         switch format {
         case .tcg:
             return restrictedIn?.TCG ?? [BanList]()
@@ -114,7 +114,7 @@ struct CardLinkDestinationValue: Hashable {
     let cardName: String
 }
 
-struct CardBrowseCriteria: Codable {
+nonisolated struct CardBrowseCriteria: Codable {
     let cardColors: [String]
     let attributes: [String]
     let monsterTypes: [String]
@@ -124,7 +124,7 @@ struct CardBrowseCriteria: Codable {
     let linkRatings: [UInt8]
 }
 
-struct CardBrowseResults: Codable {
+nonisolated struct CardBrowseResults: Codable {
     let results: [Card]
     let numResults: UInt
 }

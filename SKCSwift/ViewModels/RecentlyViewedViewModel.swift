@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 @Observable
 final class RecentlyViewedViewModel {
     private(set) var requestError: NetworkError? = nil
@@ -35,7 +34,8 @@ final class RecentlyViewedViewModel {
     
     /// Check if data is already retrieved. If so, why make another network request? Sets ensure order of recentlyViewed and previous data results don't matter
     /// If data for a particular card needs to be downloaded - make network call
-    nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
+    @concurrent
+    private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
                                                         recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?) {
         if newRecentlyViewed != Set(recentlyViewedCardInfo.values.map { $0.cardID })  {
             switch await data(cardDetailsUrl(), reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
@@ -49,14 +49,16 @@ final class RecentlyViewedViewModel {
         return (recentlyViewedCardInfo, nil)
     }
     
-    nonisolated private func fetchRecentlyViewedSuggestions(newlyViewed: Set<String>) async  -> [CardReference] {
+    @concurrent
+    private func fetchRecentlyViewedSuggestions(newlyViewed: Set<String>) async  -> [CardReference] {
         async let suggestionAsync = fetchRecentlyViewedSuggestionData(newlyViewed: newlyViewed)
         async let supportAsync = fetchRecentlyViewedSupportData(newlyViewed: newlyViewed)
 
         return await consolidateSuggestions(suggestions: await suggestionAsync, support: await supportAsync)
     }
-
-    nonisolated private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
+    
+    @concurrent
+    private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
         switch await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                           resType: BatchSuggestions.self, httpMethod: "POST") {
         case .success(let suggestions):
@@ -66,8 +68,9 @@ final class RecentlyViewedViewModel {
         return BatchSuggestions(namedMaterials: [], namedReferences: [], materialArchetypes: Set(), referencedArchetypes: Set(),
                                 unknownResources: Set(), falsePositives: Set())
     }
-
-    nonisolated private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
+    
+    @concurrent
+    private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
         switch await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                           resType: BatchSupport.self, httpMethod: "POST") {
         case .success(let suggestions):
@@ -76,8 +79,9 @@ final class RecentlyViewedViewModel {
         }
         return BatchSupport(referencedBy: [], materialFor: [], unknownResources: Set(), falsePositives: Set())
     }
-
-    nonisolated private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
+    
+    @concurrent
+    private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
         let s = suggestions.namedMaterials + suggestions.namedReferences + support.materialFor + support.referencedBy
         return Array(s
             .reduce(into: [String: CardReference]()) { accumulator, ref in

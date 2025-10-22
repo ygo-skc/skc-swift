@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct YouTubeUploadsView: View, Equatable {
-    nonisolated static func == (lhs: YouTubeUploadsView, rhs: YouTubeUploadsView) -> Bool {
+    static func == (lhs: YouTubeUploadsView, rhs: YouTubeUploadsView) -> Bool {
         lhs.ytUplaods == rhs.ytUplaods && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
     }
     

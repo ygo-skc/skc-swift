@@ -5,8 +5,9 @@
 //  Created by Javi Gomez on 8/26/24.
 //
 import Foundation
+import YGOService
+import GRPCCore
 
-@MainActor
 @Observable
 final class CardViewModel {
     private(set) var card: Card?
@@ -14,6 +15,8 @@ final class CardViewModel {
     
     private(set) var areSuggestionsLoaded = false
     private(set) var isSupportLoaded = false
+    
+    private(set) var score: CardScore?
     
     @ObservationIgnored
     private(set) var namedMaterials: [CardReference]?
@@ -31,7 +34,14 @@ final class CardViewModel {
         self.cardID = cardID
     }
     
-    func fetchCardData(forceRefresh: Bool = false) async {
+    func fetchCardInfo(forceRefresh: Bool = false) async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { await self.fetchCardData(forceRefresh: forceRefresh) }
+            taskGroup.addTask { await self.fetchCardScore() }
+        }
+    }
+    
+    private func fetchCardData(forceRefresh: Bool = false) async {
         if forceRefresh || card == nil {
             switch await data(cardInfoURL(cardID: cardID), resType: Card.self) {
             case .success(let card):
@@ -43,10 +53,21 @@ final class CardViewModel {
         }
     }
     
+    private func fetchCardScore() async {
+        if score == nil {
+            switch await YGOService.getCardScore(cardID: cardID) {
+            case .success(let score):
+                self.score = score
+            case .failure(let error):
+                requestErrors[.cardScore] = NetworkError.fromError(error)
+            }
+        }
+    }
+    
     func fetchAllSuggestions(forceRefresh: Bool = false) async {
         await withTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask { @Sendable @MainActor in await self.fetchSuggestions(forceRefresh: forceRefresh) }
-            taskGroup.addTask { @Sendable @MainActor in await self.fetchSupport(forceRefresh: forceRefresh) }
+            taskGroup.addTask { await self.fetchSuggestions(forceRefresh: forceRefresh) }
+            taskGroup.addTask { await self.fetchSupport(forceRefresh: forceRefresh) }
         }
     }
     
@@ -80,7 +101,7 @@ final class CardViewModel {
     
     func hasSuggestions() -> Bool {
         if let namedMaterials, let namedReferences, let referencedBy, let materialFor,
-            namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
+           namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
             return false
         }
         return true
@@ -100,6 +121,6 @@ final class CardViewModel {
     }
     
     enum CardModelDataType {
-        case card, suggestions, support
+        case card, cardScore, suggestions, support
     }
 }

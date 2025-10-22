@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 @Observable
 final class HomeViewModel {
     private(set) var dataTaskStatus: [HomeModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: HomeModelDataType.allCases.map { ($0, .uninitiated) })
@@ -103,7 +102,7 @@ final class HomeViewModel {
         return .systemAction
     }
     
-    private nonisolated func determineTypeOfURLClick(path: String) -> (String?, String) {
+    private func determineTypeOfURLClick(path: String) -> (String?, String) {
         if path.contains("/card/") {
             return (path.replacingOccurrences(of: "/card/", with: ""), "card")
         } else if path.contains("/product/") {

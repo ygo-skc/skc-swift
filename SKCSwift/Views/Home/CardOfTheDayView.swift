@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardOfTheDayView: View, Equatable {
-    nonisolated static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
+    static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
         lhs.cotd == rhs.cotd && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
     }
     

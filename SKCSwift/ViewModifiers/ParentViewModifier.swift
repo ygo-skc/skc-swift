@@ -10,7 +10,7 @@ import SwiftUI
 struct ParentViewModifier: ViewModifier {
     var alignment: Alignment = .topLeading
     
-    nonisolated func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         content
             .frame(
                 maxWidth: .infinity,

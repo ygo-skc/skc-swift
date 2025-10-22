@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension View {
-    nonisolated func ygoNavigationDestination() -> some View {
+    func ygoNavigationDestination() -> some View {
         self.navigationDestination(for: CardLinkDestinationValue.self) { card in
             CardLinkDestinationView(cardLinkDestinationValue: card)
         }
@@ -18,7 +18,7 @@ extension View {
     }
     
     @ViewBuilder
-    nonisolated func `if`<Transform: View>(
+    func `if`<Transform: View>(
         _ condition: Bool,
         transform: (Self) -> Transform
     ) -> some View {
@@ -30,7 +30,7 @@ extension View {
     }
     
     @ViewBuilder
-    nonisolated func `if`<TrueContent: View, FalseContent: View>(
+    func `if`<TrueContent: View, FalseContent: View>(
         _ condition: Bool,
         if ifTransform: (Self) -> TrueContent,
         else elseTransform: (Self) -> FalseContent

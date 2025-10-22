@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DBStatsView: View, Equatable {
-    nonisolated static func == (lhs: DBStatsView, rhs: DBStatsView) -> Bool {
+    static func == (lhs: DBStatsView, rhs: DBStatsView) -> Bool {
         lhs.dbStats == rhs.dbStats && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
     }
     
