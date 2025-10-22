@@ -23,6 +23,11 @@ struct ContentView: View, Equatable {
                 SearchView()
             }
         }
+        .modify {
+            if #available(iOS 26.0, *) {
+                $0.tabBarMinimizeBehavior(.onScrollDown)
+            }
+        }
     }
 }
 
