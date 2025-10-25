@@ -16,8 +16,8 @@ enum MonsterType: String {
          spellcaster = "Spellcaster", thunder = "Thunder", warrior = "Warrior", wingedBeast = "Winged Beast", wyrm = "Wyrm", zombie = "Zombie", unknown
 }
 
-enum BanListFormat: String {
-    case tcg = "TCG", md = "Master Duel"
+enum CardRestrictionFormat: String {
+    case tcg = "TCG", md = "Master Duel", genesys = "Genesys"
 }
 
 enum BannedContentCategory: String {

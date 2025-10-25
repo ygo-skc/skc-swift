@@ -1,26 +1,28 @@
 //
-//  BannedContentViewModel.swift
+//  RestrictedCardsViewModel.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 11/11/24.
 //
 
 import Foundation
+import YGOService
+import GRPCCore
 
 @Observable
-final class BannedContentViewModel {
-    var format = BanListFormat.tcg
+final class RestrictedCardsViewModel {
+    var format = CardRestrictionFormat.tcg
     var dateRangeIndex: Int = 0
     var chosenBannedContentCategory = BannedContentCategory.forbidden
     
     private(set) var banListDates: [BanListDate] = []
     private(set) var bannedContent: BannedContent?
-    private(set) var requestErrors: [BannedContentModelDataType: NetworkError?] = [:]
+    private(set) var requestErrors: [RestrictedCardDataType: NetworkError?] = [:]
     
     @ObservationIgnored
     private var fetchTask: Task<(), Never>?
     
-    private func fetchBanListDates() async {
+    private func fetchBannedContentTimeline() async {
         switch await data(banListDatesURL(format: format), resType: BanListDates.self) {
         case .success(let dates):
             banListDates = dates.banListDates
@@ -45,7 +47,7 @@ final class BannedContentViewModel {
         
         fetchTask = Task {
             if banListDates.isEmpty || formatChanged {
-                await fetchBanListDates()
+                await fetchBannedContentTimeline()
             }
             await fetchBannedContent()
             chosenBannedContentCategory = .forbidden
@@ -55,7 +57,7 @@ final class BannedContentViewModel {
         fetchTask = nil
     }
     
-    enum BannedContentModelDataType {
+    enum RestrictedCardDataType {
         case bannedContentTimeline, bannedContent, cardScoresTimeline, cardScoresContent
     }
 }

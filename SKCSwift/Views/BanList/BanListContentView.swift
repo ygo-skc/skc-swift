@@ -10,7 +10,7 @@ import SwiftUI
 struct BanListContentView: View {
     @State private var mainSheetContentHeight: CGFloat = 0
     @State private var path = NavigationPath()
-    @State private var model = BannedContentViewModel()
+    @State private var model = RestrictedCardsViewModel()
     
     var body: some View {
         NavigationStack(path: $path) {

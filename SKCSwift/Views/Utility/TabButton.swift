@@ -41,7 +41,7 @@ struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
 
 struct TabButton_Previews: PreviewProvider {
     static var previews: some View {
-        @State var format: BanListFormat = .tcg
+        @State var format: CardRestrictionFormat = .tcg
         @Namespace var animation
         
         HStack {

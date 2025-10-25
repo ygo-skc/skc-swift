@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BanListNavigatorView: View {
-    @Binding var format: BanListFormat
+    @Binding var format: CardRestrictionFormat
     @Binding var dateRangeIndex: Int
     @Binding var contentCategory: BannedContentCategory
     
@@ -25,11 +25,11 @@ struct BanListNavigatorView: View {
 }
 
 private struct BanListFormatsView: View {
-    @Binding var format: BanListFormat
+    @Binding var format: CardRestrictionFormat
     
     @Namespace private var animation
     
-    private static let formats: [BanListFormat] = [.tcg, .md]
+    private static let formats: [CardRestrictionFormat] = [.tcg, .md]
     
     var body: some View {
         HStack(spacing: 20) {
@@ -67,7 +67,7 @@ private struct BannedContentCategoryView: View {
 }
 
 #Preview() {
-    @Previewable @State var chosenFormat: BanListFormat = .tcg
+    @Previewable @State var chosenFormat: CardRestrictionFormat = .tcg
     BanListFormatsView(format: $chosenFormat)
         .padding(.horizontal)
 }
