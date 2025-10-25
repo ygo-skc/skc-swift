@@ -19,15 +19,8 @@ struct BanListContentView: View {
                     SectionView(header: "Forbidden/Limited Content",
                                 variant: .plain,
                                 content: {
-                        if let bannedContent = model.bannedContent {
-                            switch model.chosenBannedContentCategory {
-                            case .forbidden:
-                                BannedContentView(path: $path, content: bannedContent.forbidden)
-                            case .limited:
-                                BannedContentView(path: $path, content: bannedContent.limited)
-                            case .semiLimited:
-                                BannedContentView(path: $path, content: bannedContent.semiLimited)
-                            }
+                        if let restrictedCards = model.restrictedCards {
+                            BannedContentView(path: $path, content: restrictedCards)
                         }
                     })
                     .modifier(.parentView)

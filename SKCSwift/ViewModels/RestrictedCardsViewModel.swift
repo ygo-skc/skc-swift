@@ -16,8 +16,19 @@ final class RestrictedCardsViewModel {
     var chosenBannedContentCategory = BannedContentCategory.forbidden
     
     private(set) var banListDates: [BanListDate] = []
-    private(set) var bannedContent: BannedContent?
     private(set) var requestErrors: [RestrictedCardDataType: NetworkError?] = [:]
+    
+    private var bannedContent: BannedContent?
+    var restrictedCards: [Card]? {
+        return switch chosenBannedContentCategory {
+        case .forbidden:
+            bannedContent?.forbidden
+        case .limited:
+            bannedContent?.limited
+        case .semiLimited:
+            bannedContent?.semiLimited
+        }
+    }
     
     @ObservationIgnored
     private var fetchTask: Task<(), Never>?
@@ -58,6 +69,7 @@ final class RestrictedCardsViewModel {
                 switch format {
                 case .tcg, .md:
                     await fetchBannedContentTimeline()
+                    chosenBannedContentCategory = .forbidden
                 case .genesys:
                     await fetchCardScoreTimeline()
                 }
@@ -65,7 +77,6 @@ final class RestrictedCardsViewModel {
             switch format {
             case .tcg, .md:
                 await fetchBannedContent()
-                chosenBannedContentCategory = .forbidden
             case .genesys:
                 break
             }
