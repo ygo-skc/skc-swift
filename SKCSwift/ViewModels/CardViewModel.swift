@@ -55,7 +55,7 @@ final class CardViewModel {
     
     private func fetchCardScore() async {
         if score == nil {
-            switch await YGOService.getCardScore(cardID: cardID) {
+            switch await YGOService.getCardScore(cardID: cardID, parser: CardScore.rpcParser) {
             case .success(let score):
                 self.score = score
             case .failure(let error):

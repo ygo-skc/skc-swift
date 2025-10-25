@@ -42,7 +42,7 @@ public func getRestrictionDates(format: String) async -> Result<[String], any Er
         let timeline = try await GRPCManager.restrictionService.getEffectiveTimelineForFormat(.with { $0.value = format })
         return .success(.init(timeline.allDates))
     } catch let error as RPCError {
-        parseRPCError(method: "Restriction Timeline", error: error)
+        handleRPCError(method: "Restriction Timeline", error: error)
         return .failure(error)
     } catch {
         print("Unexpected error:", error)
@@ -51,12 +51,12 @@ public func getRestrictionDates(format: String) async -> Result<[String], any Er
 }
 
 @concurrent
-public func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
+public func getCardScore<U>(cardID: String, parser: ([String: UInt32], [String], [String]) -> U) async -> Result<U, any Error> where U: Decodable {
     do {
         let cardScore = try await GRPCManager.scoreService.getCardScoreByID(.with { $0.id = cardID })
-        return .success(.init(cardScore))
+        return .success(parser(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
     } catch let error as RPCError {
-        parseRPCError(method: "Card Score", error: error)
+        handleRPCError(method: "Card Score", error: error)
         return .failure(error)
     } catch {
         print("Unexpected error:", error)
@@ -64,23 +64,11 @@ public func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
     }
 }
 
-fileprivate func parseRPCError(method: String, error: RPCError) {
+fileprivate func handleRPCError(method: String, error: RPCError) {
     switch error.code {
     case .notFound:
         print("RPC \(method) call resulted in not found error. Message: \(error.message)")
     default:
         print("RPC error \(error.message)")
-    }
-}
-
-public nonisolated struct CardScore: Codable, Equatable {
-    public let currentScoreByFormat: [String: UInt32]
-    public let uniqueFormats: [String]
-    public let scheduledChanges: [String]
-    
-    init(_ from: Ygo_CardScore) {
-        self.currentScoreByFormat = from.currentScoreByFormat
-        self.uniqueFormats = from.uniqueFormats
-        self.scheduledChanges = from.scheduledChanges
     }
 }
