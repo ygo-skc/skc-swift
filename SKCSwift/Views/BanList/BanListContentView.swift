@@ -32,7 +32,7 @@ struct BanListContentView: View {
             } mainSheetContent: {
                 BanListNavigatorView(format: $model.format, dateRangeIndex: $model.dateRangeIndex, contentCategory: $model.chosenBannedContentCategory, dates: model.banListDates)
             }
-            .onChange(of: model.format, initial: true) {
+            .onChange(of: model.format) {
                 Task {
                     await model.fetchData(formatChanged: true)
                 }
