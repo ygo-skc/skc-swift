@@ -56,6 +56,6 @@ final class BannedContentViewModel {
     }
     
     enum BannedContentModelDataType {
-        case dates, content
+        case bannedContentTimeline, bannedContent, cardScoresTimeline, cardScoresContent
     }
 }
