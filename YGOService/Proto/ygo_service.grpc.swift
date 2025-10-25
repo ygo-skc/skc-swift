@@ -1518,6 +1518,179 @@ extension Ygo_ProductService.ClientProtocol {
     }
 }
 
+// MARK: - ygo.CardRestrictionService
+
+/// Namespace containing generated types for the "ygo.CardRestrictionService" service.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+internal enum Ygo_CardRestrictionService {
+    /// Service descriptor for the "ygo.CardRestrictionService" service.
+    internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardRestrictionService")
+    /// Namespace for method metadata.
+    internal enum Method {
+        /// Namespace for "GetEffectiveTimelineForFormat" metadata.
+        internal enum GetEffectiveTimelineForFormat {
+            /// Request type for "GetEffectiveTimelineForFormat".
+            internal typealias Input = Ygo_Format
+            /// Response type for "GetEffectiveTimelineForFormat".
+            internal typealias Output = Ygo_Common_EffectiveTimeline
+            /// Descriptor for "GetEffectiveTimelineForFormat".
+            internal static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardRestrictionService"),
+                method: "GetEffectiveTimelineForFormat"
+            )
+        }
+        /// Descriptors for all methods in the "ygo.CardRestrictionService" service.
+        internal static let descriptors: [GRPCCore.MethodDescriptor] = [
+            GetEffectiveTimelineForFormat.descriptor
+        ]
+    }
+}
+
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+extension GRPCCore.ServiceDescriptor {
+    /// Service descriptor for the "ygo.CardRestrictionService" service.
+    internal static let ygo_CardRestrictionService = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardRestrictionService")
+}
+
+// MARK: ygo.CardRestrictionService (client)
+
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+extension Ygo_CardRestrictionService {
+    /// Generated client protocol for the "ygo.CardRestrictionService" service.
+    ///
+    /// You don't need to implement this protocol directly, use the generated
+    /// implementation, ``Client``.
+    internal protocol ClientProtocol: Sendable {
+        /// Call the "GetEffectiveTimelineForFormat" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Ygo_Format` message.
+        ///   - serializer: A serializer for `Ygo_Format` messages.
+        ///   - deserializer: A deserializer for `Ygo_Common_EffectiveTimeline` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func getEffectiveTimelineForFormat<Result>(
+            request: GRPCCore.ClientRequest<Ygo_Format>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_EffectiveTimeline>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+    }
+
+    /// Generated client for the "ygo.CardRestrictionService" service.
+    ///
+    /// The ``Client`` provides an implementation of ``ClientProtocol`` which wraps
+    /// a `GRPCCore.GRPCCClient`. The underlying `GRPCClient` provides the long-lived
+    /// means of communication with the remote peer.
+    internal struct Client<Transport>: ClientProtocol where Transport: GRPCCore.ClientTransport {
+        private let client: GRPCCore.GRPCClient<Transport>
+
+        /// Creates a new client wrapping the provided `GRPCCore.GRPCClient`.
+        ///
+        /// - Parameters:
+        ///   - client: A `GRPCCore.GRPCClient` providing a communication channel to the service.
+        internal init(wrapping client: GRPCCore.GRPCClient<Transport>) {
+            self.client = client
+        }
+
+        /// Call the "GetEffectiveTimelineForFormat" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Ygo_Format` message.
+        ///   - serializer: A serializer for `Ygo_Format` messages.
+        ///   - deserializer: A deserializer for `Ygo_Common_EffectiveTimeline` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        internal func getEffectiveTimelineForFormat<Result>(
+            request: GRPCCore.ClientRequest<Ygo_Format>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_EffectiveTimeline>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Ygo_CardRestrictionService.Method.GetEffectiveTimelineForFormat.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+    }
+}
+
+// Helpers providing default arguments to 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+extension Ygo_CardRestrictionService.ClientProtocol {
+    /// Call the "GetEffectiveTimelineForFormat" method.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Ygo_Format` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func getEffectiveTimelineForFormat<Result>(
+        request: GRPCCore.ClientRequest<Ygo_Format>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.getEffectiveTimelineForFormat(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Format>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Common_EffectiveTimeline>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+}
+
+// Helpers providing sugared APIs for 'ClientProtocol' methods.
+@available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
+extension Ygo_CardRestrictionService.ClientProtocol {
+    /// Call the "GetEffectiveTimelineForFormat" method.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func getEffectiveTimelineForFormat<Result>(
+        _ message: Ygo_Format,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Ygo_Format>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.getEffectiveTimelineForFormat(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+}
+
 // MARK: - ygo.ScoreService
 
 /// Namespace containing generated types for the "ygo.ScoreService" service.
@@ -1527,28 +1700,16 @@ internal enum Ygo_ScoreService {
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService")
     /// Namespace for method metadata.
     internal enum Method {
-        /// Namespace for "GetDatesForFormat" metadata.
-        internal enum GetDatesForFormat {
-            /// Request type for "GetDatesForFormat".
-            internal typealias Input = Ygo_Format
-            /// Response type for "GetDatesForFormat".
-            internal typealias Output = Ygo_Common_Dates
-            /// Descriptor for "GetDatesForFormat".
+        /// Namespace for "GetScoresByFormatAndDate" metadata.
+        internal enum GetScoresByFormatAndDate {
+            /// Request type for "GetScoresByFormatAndDate".
+            internal typealias Input = Ygo_RestrictedContentRequest
+            /// Response type for "GetScoresByFormatAndDate".
+            internal typealias Output = Ygo_ScoresForFormatAndDate
+            /// Descriptor for "GetScoresByFormatAndDate".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService"),
-                method: "GetDatesForFormat"
-            )
-        }
-        /// Namespace for "GetScoresForFormat" metadata.
-        internal enum GetScoresForFormat {
-            /// Request type for "GetScoresForFormat".
-            internal typealias Input = Ygo_Format
-            /// Response type for "GetScoresForFormat".
-            internal typealias Output = Ygo_Common_Dates
-            /// Descriptor for "GetScoresForFormat".
-            internal static let descriptor = GRPCCore.MethodDescriptor(
-                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService"),
-                method: "GetScoresForFormat"
+                method: "GetScoresByFormatAndDate"
             )
         }
         /// Namespace for "GetCardScoreByID" metadata.
@@ -1577,8 +1738,7 @@ internal enum Ygo_ScoreService {
         }
         /// Descriptors for all methods in the "ygo.ScoreService" service.
         internal static let descriptors: [GRPCCore.MethodDescriptor] = [
-            GetDatesForFormat.descriptor,
-            GetScoresForFormat.descriptor,
+            GetScoresByFormatAndDate.descriptor,
             GetCardScoreByID.descriptor,
             GetCardScoresByIDs.descriptor
         ]
@@ -1600,42 +1760,23 @@ extension Ygo_ScoreService {
     /// You don't need to implement this protocol directly, use the generated
     /// implementation, ``Client``.
     internal protocol ClientProtocol: Sendable {
-        /// Call the "GetDatesForFormat" method.
+        /// Call the "GetScoresByFormatAndDate" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Format` message.
-        ///   - serializer: A serializer for `Ygo_Format` messages.
-        ///   - deserializer: A deserializer for `Ygo_Common_Dates` messages.
+        ///   - request: A request containing a single `Ygo_RestrictedContentRequest` message.
+        ///   - serializer: A serializer for `Ygo_RestrictedContentRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_ScoresForFormatAndDate` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
-        func getDatesForFormat<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Format>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_Dates>,
+        func getScoresByFormatAndDate<Result>(
+            request: GRPCCore.ClientRequest<Ygo_RestrictedContentRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_RestrictedContentRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_ScoresForFormatAndDate>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result
-        ) async throws -> Result where Result: Sendable
-
-        /// Call the "GetScoresForFormat" method.
-        ///
-        /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Format` message.
-        ///   - serializer: A serializer for `Ygo_Format` messages.
-        ///   - deserializer: A deserializer for `Ygo_Common_Dates` messages.
-        ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
-        /// - Returns: The result of `handleResponse`.
-        func getScoresForFormat<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Format>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_Dates>,
-            options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ScoresForFormatAndDate>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetCardScoreByID" method.
@@ -1693,59 +1834,29 @@ extension Ygo_ScoreService {
             self.client = client
         }
 
-        /// Call the "GetDatesForFormat" method.
+        /// Call the "GetScoresByFormatAndDate" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Format` message.
-        ///   - serializer: A serializer for `Ygo_Format` messages.
-        ///   - deserializer: A deserializer for `Ygo_Common_Dates` messages.
+        ///   - request: A request containing a single `Ygo_RestrictedContentRequest` message.
+        ///   - serializer: A serializer for `Ygo_RestrictedContentRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_ScoresForFormatAndDate` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
-        internal func getDatesForFormat<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Format>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_Dates>,
+        internal func getScoresByFormatAndDate<Result>(
+            request: GRPCCore.ClientRequest<Ygo_RestrictedContentRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_RestrictedContentRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_ScoresForFormatAndDate>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ScoresForFormatAndDate>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
             try await self.client.unary(
                 request: request,
-                descriptor: Ygo_ScoreService.Method.GetDatesForFormat.descriptor,
-                serializer: serializer,
-                deserializer: deserializer,
-                options: options,
-                onResponse: handleResponse
-            )
-        }
-
-        /// Call the "GetScoresForFormat" method.
-        ///
-        /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Format` message.
-        ///   - serializer: A serializer for `Ygo_Format` messages.
-        ///   - deserializer: A deserializer for `Ygo_Common_Dates` messages.
-        ///   - options: Options to apply to this RPC.
-        ///   - handleResponse: A closure which handles the response, the result of which is
-        ///       returned to the caller. Returning from the closure will cancel the RPC if it
-        ///       hasn't already finished.
-        /// - Returns: The result of `handleResponse`.
-        internal func getScoresForFormat<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Format>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_Dates>,
-            options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result = { response in
-                try response.message
-            }
-        ) async throws -> Result where Result: Sendable {
-            try await self.client.unary(
-                request: request,
-                descriptor: Ygo_ScoreService.Method.GetScoresForFormat.descriptor,
+                descriptor: Ygo_ScoreService.Method.GetScoresByFormatAndDate.descriptor,
                 serializer: serializer,
                 deserializer: deserializer,
                 options: options,
@@ -1818,51 +1929,26 @@ extension Ygo_ScoreService {
 // Helpers providing default arguments to 'ClientProtocol' methods.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Ygo_ScoreService.ClientProtocol {
-    /// Call the "GetDatesForFormat" method.
+    /// Call the "GetScoresByFormatAndDate" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Format` message.
+    ///   - request: A request containing a single `Ygo_RestrictedContentRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
-    internal func getDatesForFormat<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Format>,
+    internal func getScoresByFormatAndDate<Result>(
+        request: GRPCCore.ClientRequest<Ygo_RestrictedContentRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ScoresForFormatAndDate>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        try await self.getDatesForFormat(
+        try await self.getScoresByFormatAndDate(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Format>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Common_Dates>(),
-            options: options,
-            onResponse: handleResponse
-        )
-    }
-
-    /// Call the "GetScoresForFormat" method.
-    ///
-    /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Format` message.
-    ///   - options: Options to apply to this RPC.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
-    /// - Returns: The result of `handleResponse`.
-    internal func getScoresForFormat<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Format>,
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result = { response in
-            try response.message
-        }
-    ) async throws -> Result where Result: Sendable {
-        try await self.getScoresForFormat(
-            request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Format>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Common_Dates>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_RestrictedContentRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_ScoresForFormatAndDate>(),
             options: options,
             onResponse: handleResponse
         )
@@ -1922,7 +2008,7 @@ extension Ygo_ScoreService.ClientProtocol {
 // Helpers providing sugared APIs for 'ClientProtocol' methods.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
 extension Ygo_ScoreService.ClientProtocol {
-    /// Call the "GetDatesForFormat" method.
+    /// Call the "GetScoresByFormatAndDate" method.
     ///
     /// - Parameters:
     ///   - message: request message to send.
@@ -1932,48 +2018,19 @@ extension Ygo_ScoreService.ClientProtocol {
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
-    internal func getDatesForFormat<Result>(
-        _ message: Ygo_Format,
+    internal func getScoresByFormatAndDate<Result>(
+        _ message: Ygo_RestrictedContentRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ScoresForFormatAndDate>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Format>(
+        let request = GRPCCore.ClientRequest<Ygo_RestrictedContentRequest>(
             message: message,
             metadata: metadata
         )
-        return try await self.getDatesForFormat(
-            request: request,
-            options: options,
-            onResponse: handleResponse
-        )
-    }
-
-    /// Call the "GetScoresForFormat" method.
-    ///
-    /// - Parameters:
-    ///   - message: request message to send.
-    ///   - metadata: Additional metadata to send, defaults to empty.
-    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
-    ///   - handleResponse: A closure which handles the response, the result of which is
-    ///       returned to the caller. Returning from the closure will cancel the RPC if it
-    ///       hasn't already finished.
-    /// - Returns: The result of `handleResponse`.
-    internal func getScoresForFormat<Result>(
-        _ message: Ygo_Format,
-        metadata: GRPCCore.Metadata = [:],
-        options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_Dates>) async throws -> Result = { response in
-            try response.message
-        }
-    ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Format>(
-            message: message,
-            metadata: metadata
-        )
-        return try await self.getScoresForFormat(
+        return try await self.getScoresByFormatAndDate(
             request: request,
             options: options,
             onResponse: handleResponse

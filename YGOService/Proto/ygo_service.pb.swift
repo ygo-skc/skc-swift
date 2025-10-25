@@ -207,26 +207,33 @@ struct Ygo_Format: Sendable {
 
   var value: String = String()
 
-  var effectiveDate: SwiftProtobuf.Google_Protobuf_StringValue {
-    get {return _effectiveDate ?? SwiftProtobuf.Google_Protobuf_StringValue()}
-    set {_effectiveDate = newValue}
-  }
-  /// Returns true if `effectiveDate` has been explicitly set.
-  var hasEffectiveDate: Bool {return self._effectiveDate != nil}
-  /// Clears the value of `effectiveDate`. Subsequent reads from it will return its default value.
-  mutating func clearEffectiveDate() {self._effectiveDate = nil}
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+struct Ygo_RestrictedContentRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var format: String = String()
+
+  var effectiveDate: String = String()
+
+  var sortOrder: Ygo_Common_CardRestrictionSortOrder = .cardName
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
-
-  fileprivate var _effectiveDate: SwiftProtobuf.Google_Protobuf_StringValue? = nil
 }
 
-struct Ygo_ScoreFormatEntry: Sendable {
+struct Ygo_ScoresForFormatAndDate: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
+
+  var format: String = String()
 
   var effectiveDate: String = String()
 
@@ -249,6 +256,8 @@ struct Ygo_ScoreFormatEntry: Sendable {
   mutating func clearPreviousFormatDate() {self._previousFormatDate = nil}
 
   var entries: [Ygo_CardScoreEntry] = []
+
+  var totalEntries: UInt32 = 0
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -708,7 +717,7 @@ extension Ygo_Products: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
 
 extension Ygo_Format: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Format"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}value\0\u{3}effective_date\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}value\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -717,37 +726,28 @@ extension Ygo_Format: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.value) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._effectiveDate) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.value.isEmpty {
       try visitor.visitSingularStringField(value: self.value, fieldNumber: 1)
     }
-    try { if let v = self._effectiveDate {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Ygo_Format, rhs: Ygo_Format) -> Bool {
     if lhs.value != rhs.value {return false}
-    if lhs._effectiveDate != rhs._effectiveDate {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-extension Ygo_ScoreFormatEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".ScoreFormatEntry"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}effective_date\0\u{3}next_format_date\0\u{3}previous_format_date\0\u{1}entries\0")
+extension Ygo_RestrictedContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".RestrictedContentRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{3}sort_order\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -755,10 +755,52 @@ extension Ygo_ScoreFormatEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.effectiveDate) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._nextFormatDate) }()
-      case 3: try { try decoder.decodeSingularMessageField(value: &self._previousFormatDate) }()
-      case 4: try { try decoder.decodeRepeatedMessageField(value: &self.entries) }()
+      case 1: try { try decoder.decodeSingularStringField(value: &self.format) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.effectiveDate) }()
+      case 3: try { try decoder.decodeSingularEnumField(value: &self.sortOrder) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.format.isEmpty {
+      try visitor.visitSingularStringField(value: self.format, fieldNumber: 1)
+    }
+    if !self.effectiveDate.isEmpty {
+      try visitor.visitSingularStringField(value: self.effectiveDate, fieldNumber: 2)
+    }
+    if self.sortOrder != .cardName {
+      try visitor.visitSingularEnumField(value: self.sortOrder, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_RestrictedContentRequest, rhs: Ygo_RestrictedContentRequest) -> Bool {
+    if lhs.format != rhs.format {return false}
+    if lhs.effectiveDate != rhs.effectiveDate {return false}
+    if lhs.sortOrder != rhs.sortOrder {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Ygo_ScoresForFormatAndDate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".ScoresForFormatAndDate"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{3}next_format_date\0\u{3}previous_format_date\0\u{1}entries\0\u{3}total_entries\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.format) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.effectiveDate) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._nextFormatDate) }()
+      case 4: try { try decoder.decodeSingularMessageField(value: &self._previousFormatDate) }()
+      case 5: try { try decoder.decodeRepeatedMessageField(value: &self.entries) }()
+      case 6: try { try decoder.decodeSingularUInt32Field(value: &self.totalEntries) }()
       default: break
       }
     }
@@ -769,26 +811,34 @@ extension Ygo_ScoreFormatEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
+    if !self.format.isEmpty {
+      try visitor.visitSingularStringField(value: self.format, fieldNumber: 1)
+    }
     if !self.effectiveDate.isEmpty {
-      try visitor.visitSingularStringField(value: self.effectiveDate, fieldNumber: 1)
+      try visitor.visitSingularStringField(value: self.effectiveDate, fieldNumber: 2)
     }
     try { if let v = self._nextFormatDate {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try { if let v = self._previousFormatDate {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
     } }()
+    try { if let v = self._previousFormatDate {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
+    } }()
     if !self.entries.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.entries, fieldNumber: 4)
+      try visitor.visitRepeatedMessageField(value: self.entries, fieldNumber: 5)
+    }
+    if self.totalEntries != 0 {
+      try visitor.visitSingularUInt32Field(value: self.totalEntries, fieldNumber: 6)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_ScoreFormatEntry, rhs: Ygo_ScoreFormatEntry) -> Bool {
+  static func ==(lhs: Ygo_ScoresForFormatAndDate, rhs: Ygo_ScoresForFormatAndDate) -> Bool {
+    if lhs.format != rhs.format {return false}
     if lhs.effectiveDate != rhs.effectiveDate {return false}
     if lhs._nextFormatDate != rhs._nextFormatDate {return false}
     if lhs._previousFormatDate != rhs._previousFormatDate {return false}
     if lhs.entries != rhs.entries {return false}
+    if lhs.totalEntries != rhs.totalEntries {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

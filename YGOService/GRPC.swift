@@ -27,19 +27,27 @@ fileprivate class GRPCManager {
         }
     }()
     
+    static let restrictionService: Ygo_CardRestrictionService.Client = {
+        return Ygo_CardRestrictionService.Client(wrapping: GRPCManager.client)
+    }()
+    
     static let scoreService: Ygo_ScoreService.Client = {
         return Ygo_ScoreService.Client(wrapping: GRPCManager.client)
     }()
 }
 
 @concurrent
-public func getRestrictionDates(format: String) async  {
-    let clock = ContinuousClock()
-    let time = await clock.measure {
-        let scoreDates = try? await GRPCManager.scoreService.getDatesForFormat(.with { $0.value = format })
-        print(scoreDates!.dates)
+public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
+    do {
+        let timeline = try await GRPCManager.restrictionService.getEffectiveTimelineForFormat(.with { $0.value = format })
+        return .success(.init(timeline.allDates))
+    } catch let error as RPCError {
+        parseRPCError(method: "Restriction Timeline", error: error)
+        return .failure(error)
+    } catch {
+        print("Unexpected error:", error)
+        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
     }
-    print(time)
 }
 
 @concurrent
