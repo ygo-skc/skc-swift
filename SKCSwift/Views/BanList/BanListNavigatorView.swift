@@ -18,7 +18,11 @@ struct BanListNavigatorView: View {
         VStack(spacing: 10) {
             BanListFormatsView(format: $format)
             BanListDatesView(dateRangeIndex: $dateRangeIndex, dates: dates)
-            BannedContentCategoryView(contentCategory: $contentCategory)
+            switch format {
+            case .tcg, .md:
+                BannedContentCategoryView(contentCategory: $contentCategory)
+            case .genesys: EmptyView()
+            }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
@@ -29,7 +33,7 @@ private struct BanListFormatsView: View {
     
     @Namespace private var animation
     
-    private static let formats: [CardRestrictionFormat] = [.tcg, .md]
+    private static let formats: [CardRestrictionFormat] = [.tcg, .md, .genesys]
     
     var body: some View {
         HStack(spacing: 20) {

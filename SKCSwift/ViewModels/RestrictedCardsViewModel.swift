@@ -31,6 +31,14 @@ final class RestrictedCardsViewModel {
         }
     }
     
+    private func fetchCardScoreTimeline() async {
+        switch await YGOService.getRestrictionDates(format: format.rawValue) {
+        case .success(let scoreEffectiveDates):
+            banListDates = scoreEffectiveDates.map( {BanListDate(effectiveDate: $0) } )
+        case .failure(_): break
+        }
+    }
+    
     private func fetchBannedContent() async {
         switch await data(bannedContentURL(format: format, listStartDate: banListDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
         case .success(let bannedContent):
@@ -47,10 +55,20 @@ final class RestrictedCardsViewModel {
         
         fetchTask = Task {
             if banListDates.isEmpty || formatChanged {
-                await fetchBannedContentTimeline()
+                switch format {
+                case .tcg, .md:
+                    await fetchBannedContentTimeline()
+                case .genesys:
+                    await fetchCardScoreTimeline()
+                }
             }
-            await fetchBannedContent()
-            chosenBannedContentCategory = .forbidden
+            switch format {
+            case .tcg, .md:
+                await fetchBannedContent()
+                chosenBannedContentCategory = .forbidden
+            case .genesys:
+                break
+            }
         }
         
         await fetchTask?.value
