@@ -51,6 +51,38 @@ public func getRestrictionDates(format: String) async -> Result<[String], any Er
 }
 
 @concurrent
+public func getScoresByFormatAndDate<U>(format: String,
+                                        date: String,
+                                        parser: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
+async -> Result<[U], any Error> where U: Decodable {
+    do {
+        let scores = try await GRPCManager.scoreService.getScoresByFormatAndDate(.with {
+            $0.format = format
+            $0.effectiveDate = date
+        })
+        let values = scores.entries.map({
+            parser($0.card.id,
+                   $0.card.name,
+                   $0.card.color,
+                   $0.card.attribute,
+                   $0.card.effect,
+                   $0.card.monsterType.value,
+                   Int($0.card.attack.value),
+                   Int($0.card.defense.value),
+                   $0.score
+            )
+        })
+        return .success(values)
+    } catch let error as RPCError {
+        handleRPCError(method: "Restriction Timeline", error: error)
+        return .failure(error)
+    } catch {
+        print("Unexpected error:", error)
+        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
+    }
+}
+
+@concurrent
 public func getCardScore<U>(cardID: String, parser: ([String: UInt32], [String], [String]) -> U) async -> Result<U, any Error> where U: Decodable {
     do {
         let cardScore = try await GRPCManager.scoreService.getCardScoreByID(.with { $0.id = cardID })

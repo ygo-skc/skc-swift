@@ -5,22 +5,46 @@
 //  Created by Javi Gomez on 10/25/25.
 //
 
-public nonisolated struct CardScore: Codable, Equatable {
-    public let currentScoreByFormat: [String: UInt32]
-    public let uniqueFormats: [String]
-    public let scheduledChanges: [String]
-    
-    init(currentScoreByFormat: [String: UInt32], uniqueFormats: [String], scheduledChanges: [String]) {
-        self.currentScoreByFormat = currentScoreByFormat
-        self.uniqueFormats = uniqueFormats
-        self.scheduledChanges = scheduledChanges
-    }
+nonisolated struct CardScore: Codable, Equatable {
+    let currentScoreByFormat: [String: UInt32]
+    let uniqueFormats: [String]
+    let scheduledChanges: [String]
 }
 
 extension CardScore {
-    nonisolated static func rpcParser(currentScoreByFormat: [String: UInt32], uniqueFormats: [String], scheduledChanges: [String]) -> Self {
+    nonisolated static func rpcParser(currentScoreByFormat: [String: UInt32],
+                                      uniqueFormats: [String],
+                                      scheduledChanges: [String]) -> Self {
         return .init(currentScoreByFormat: currentScoreByFormat,
                      uniqueFormats: uniqueFormats,
                      scheduledChanges: scheduledChanges)
+    }
+}
+
+nonisolated struct ScoresForFormatAndDate: Codable, Equatable {
+    let entries: [CardScoreEntry]
+}
+
+nonisolated struct CardScoreEntry: Codable, Equatable {
+    let card: Card
+    let score: UInt32
+}
+
+extension CardScoreEntry {
+    nonisolated static func rpcParser(cardID: String,
+                                      cardName: String,
+                                      cardColor: String,
+                                      cardAttribute: String?,
+                                      cardEffect: String,
+                                      monsterType: String? = nil,
+                                      monsterAttack: Int? = nil,
+                                      monsterDefense: Int? = nil,
+                                      score: UInt32) -> Self {
+        return .init(card: Card(cardID: cardID,
+                                cardName: cardName,
+                                cardColor: cardColor,
+                                cardAttribute: cardAttribute,
+                                cardEffect: cardEffect),
+                     score: score)
     }
 }
