@@ -19,7 +19,7 @@ struct RestrictedContentView: View {
                     SectionView(header: "\(model.format.rawValue) Content",
                                 variant: .plain,
                                 content: {
-                        if !model.isLoadingRestrictedCards {
+                        if ![DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(model.dataTaskStatuses[.content]) {
                             switch model.format {
                             case .md, .tcg:
                                 if let restrictedCards = model.restrictedCards {
@@ -39,7 +39,7 @@ struct RestrictedContentView: View {
                     Color.clear.frame(height: mainSheetContentHeight)
                 }
                 .overlay {
-                    if model.isLoadingRestrictedCards {
+                    if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(model.dataTaskStatuses[.content]) {
                         ProgressView("Loading...")
                             .controlSize(.large)
                     }
@@ -49,17 +49,21 @@ struct RestrictedContentView: View {
                                      dateRangeIndex: $model.dateRangeIndex,
                                      contentCategory: $model.chosenBannedContentCategory,
                                      dates: model.restrictionDates)
-                .disabled(model.isLoadingRestrictedCards)
+                .disabled([DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(model.dataTaskStatuses[.content]))
             }
-            .onChange(of: model.format, initial: true) {
+            .onChange(of: model.format) {
                 Task {
-                    await model.fetchTimelineData(formatChanged: true)
-                    await model.fetchRestrictedCards()
+                    await model.fetchTimelineData()
                 }
             }
             .onChange(of: model.dateRangeIndex) {
                 Task {
                     await model.fetchRestrictedCards()
+                }
+            }
+            .task {
+                if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(model.dataTaskStatuses[.timeline]) {
+                    await model.fetchTimelineData()
                 }
             }
             .ygoNavigationDestination()
