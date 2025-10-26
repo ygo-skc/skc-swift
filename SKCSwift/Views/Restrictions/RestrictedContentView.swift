@@ -19,14 +19,16 @@ struct RestrictedContentView: View {
                     SectionView(header: "\(model.format.rawValue) Content",
                                 variant: .plain,
                                 content: {
-                        switch model.format {
-                        case .md, .tcg:
-                            if let restrictedCards = model.restrictedCards {
-                                BannedContentView(path: $path, content: restrictedCards)
-                            }
-                        case .genesys:
-                            if let scoreEntries = model.scoreEntries {
-                                CardScoresView(path: $path, content: scoreEntries)
+                        if !model.isLoadingRestrictedCards {
+                            switch model.format {
+                            case .md, .tcg:
+                                if let restrictedCards = model.restrictedCards {
+                                    BannedContentView(path: $path, content: restrictedCards)
+                                }
+                            case .genesys:
+                                if let scoreEntries = model.scoreEntries {
+                                    CardScoresView(path: $path, content: scoreEntries)
+                                }
                             }
                         }
                     })
@@ -36,20 +38,28 @@ struct RestrictedContentView: View {
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: mainSheetContentHeight)
                 }
+                .overlay {
+                    if model.isLoadingRestrictedCards {
+                        ProgressView("Loading...")
+                            .controlSize(.large)
+                    }
+                }
             } mainSheetContent: {
                 BanListNavigatorView(format: $model.format,
                                      dateRangeIndex: $model.dateRangeIndex,
                                      contentCategory: $model.chosenBannedContentCategory,
                                      dates: model.restrictionDates)
+                .disabled(model.isLoadingRestrictedCards)
             }
-            .onChange(of: model.format) {
+            .onChange(of: model.format, initial: true) {
                 Task {
-                    await model.fetchData(formatChanged: true)
+                    await model.fetchTimelineData(formatChanged: true)
+                    await model.fetchRestrictedCards()
                 }
             }
-            .onChange(of: model.dateRangeIndex, initial: true) {
+            .onChange(of: model.dateRangeIndex) {
                 Task {
-                    await model.fetchData()
+                    await model.fetchRestrictedCards()
                 }
             }
             .ygoNavigationDestination()

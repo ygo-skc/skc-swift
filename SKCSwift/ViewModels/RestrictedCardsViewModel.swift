@@ -17,6 +17,7 @@ final class RestrictedCardsViewModel {
     
     private(set) var restrictionDates: [BanListDate] = []
     private(set) var requestErrors: [RestrictedCardDataType: NetworkError?] = [:]
+    private(set) var isLoadingRestrictedCards = true
     
     private var bannedContent: BannedContent?
     var restrictedCards: [Card]? {
@@ -35,14 +36,34 @@ final class RestrictedCardsViewModel {
         return cardScores?.entries
     }
     
-    @ObservationIgnored
-    private var fetchTask: Task<(), Never>?
+    func fetchTimelineData(formatChanged: Bool = false) async {
+        if restrictionDates.isEmpty || formatChanged {
+            switch format {
+            case .tcg, .md:
+                await fetchBannedContentTimeline()
+                chosenBannedContentCategory = .forbidden
+            case .genesys:
+                await fetchCardScoreTimeline()
+            }
+            dateRangeIndex = 0
+        }
+    }
+    
+    func fetchRestrictedCards() async {
+        isLoadingRestrictedCards = true
+        switch format {
+        case .tcg, .md:
+            await fetchBannedContent()
+        case .genesys:
+            await fetchScoresByFormatAndDate()
+        }
+        isLoadingRestrictedCards = false
+    }
     
     private func fetchBannedContentTimeline() async {
         switch await data(banListDatesURL(format: format), resType: BanListDates.self) {
         case .success(let dates):
             restrictionDates = dates.banListDates
-            dateRangeIndex = 0
         case .failure(_): break
         }
     }
@@ -56,7 +77,11 @@ final class RestrictedCardsViewModel {
     }
     
     private func fetchBannedContent() async {
-        switch await data(bannedContentURL(format: format, listStartDate: restrictionDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
+        switch await data(bannedContentURL(format: format,
+                                           listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
+                                           saveBandwidth: false,
+                                           allInfo: false),
+                          resType: BannedContent.self) {
         case .success(let bannedContent):
             self.bannedContent = bannedContent
         case .failure(_): break
@@ -71,34 +96,6 @@ final class RestrictedCardsViewModel {
             self.cardScores = CardScores(entries: entries)
         case .failure(_): break
         }
-    }
-    
-    func fetchData(formatChanged: Bool = false) async {
-        if let fetchTask {
-            await fetchTask.value
-            return
-        }
-        
-        fetchTask = Task {
-            if restrictionDates.isEmpty || formatChanged {
-                switch format {
-                case .tcg, .md:
-                    await fetchBannedContentTimeline()
-                    chosenBannedContentCategory = .forbidden
-                case .genesys:
-                    await fetchCardScoreTimeline()
-                }
-            }
-            switch format {
-            case .tcg, .md:
-                await fetchBannedContent()
-            case .genesys:
-                await fetchScoresByFormatAndDate()
-            }
-        }
-        
-        await fetchTask?.value
-        fetchTask = nil
     }
     
     enum RestrictedCardDataType {
