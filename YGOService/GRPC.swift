@@ -16,6 +16,32 @@ fileprivate class GRPCManager {
                 transport: .http2NIOPosix(
                     target: .dns(host: "ygo-service.skc.cards", port: 443),
                     transportSecurity: .tls,
+                    config: .defaults { config in
+                        config.compression = .init(algorithm: .gzip, enabledAlgorithms: [.gzip, .none])
+                        config.backoff = .init(
+                            initial: .milliseconds(80),
+                            max: .seconds(1),
+                            multiplier: 1.6,
+                            jitter: 0.2
+                        )
+                        config.connection = .init(
+                            maxIdleTime: .seconds(30 * 60),
+                            keepalive: .init(
+                                time: .seconds(60),
+                                timeout: .seconds(3),
+                                allowWithoutCalls: true
+                            )
+                        )
+                    },
+                    serviceConfig: .init(
+                        methodConfig: [
+                            .init(
+                                names: [.init(service: "")],  // Empty service means all methods
+                                waitForReady: true,
+                                timeout: .seconds(3)
+                            )
+                        ]
+                    )
                 )
             )
             Task {
