@@ -19,8 +19,15 @@ struct BanListContentView: View {
                     SectionView(header: "Forbidden/Limited Content",
                                 variant: .plain,
                                 content: {
-                        if let restrictedCards = model.restrictedCards {
-                            BannedContentView(path: $path, content: restrictedCards)
+                        switch model.format {
+                        case .md, .tcg:
+                            if let restrictedCards = model.restrictedCards {
+                                BannedContentView(path: $path, content: restrictedCards)
+                            }
+                        case .genesys:
+                            if let scoreEntries = model.scoreEntries {
+                                CardScoresView(path: $path, content: scoreEntries)
+                            }
                         }
                     })
                     .modifier(.parentView)
@@ -58,6 +65,29 @@ private struct BannedContentView: View {
                     path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
                 } label: {
                     GroupBox {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+private struct CardScoresView: View {
+    @Binding var path: NavigationPath
+    let content: [CardScoreEntry]
+    
+    var body: some View {
+        LazyVStack {
+            ForEach(content, id: \.self.card.cardID) { entry in
+                let card = entry.card
+                Button {
+                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                } label: {
+                    GroupBox(label: Label("\(entry.score) points", systemImage: "medal.star.fill")) {
                         CardListItemView(card: card)
                             .equatable()
                     }

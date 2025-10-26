@@ -30,6 +30,11 @@ final class RestrictedCardsViewModel {
         }
     }
     
+    private var cardScores: CardScores?
+    var scoreEntries: [CardScoreEntry]? {
+        return cardScores?.entries
+    }
+    
     @ObservationIgnored
     private var fetchTask: Task<(), Never>?
     
@@ -58,6 +63,16 @@ final class RestrictedCardsViewModel {
         }
     }
     
+    private func fetchScoresByFormatAndDate() async {
+        switch await YGOService.getScoresByFormatAndDate(format: format.rawValue,
+                                                         date: banListDates[dateRangeIndex].effectiveDate,
+                                                         parser: CardScoreEntry.rpcParser) {
+        case .success(let entries):
+            self.cardScores = CardScores(entries: entries)
+        case .failure(_): break
+        }
+    }
+    
     func fetchData(formatChanged: Bool = false) async {
         if let fetchTask {
             await fetchTask.value
@@ -78,7 +93,7 @@ final class RestrictedCardsViewModel {
             case .tcg, .md:
                 await fetchBannedContent()
             case .genesys:
-                break
+                await fetchScoresByFormatAndDate()
             }
         }
         

@@ -21,7 +21,7 @@ extension CardScore {
     }
 }
 
-nonisolated struct ScoresForFormatAndDate: Codable, Equatable {
+nonisolated struct CardScores: Codable, Equatable {
     let entries: [CardScoreEntry]
 }
 
