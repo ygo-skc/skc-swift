@@ -7,6 +7,14 @@
 
 import Foundation
 
+struct DataTaskStatusParser {
+    private static let dataPendingStatuses = [DataTaskStatus.uninitiated, DataTaskStatus.pending]
+    
+    static func isDataPending(_ status: DataTaskStatus) -> Bool {
+        return dataPendingStatuses.contains(status)
+    }
+}
+
 nonisolated fileprivate struct NilReqBody: Encodable {}
 
 fileprivate let customSession: URLSession = {

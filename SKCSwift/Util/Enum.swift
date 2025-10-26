@@ -65,4 +65,3 @@ enum TrendingResourceType: String, Codable, CaseIterable {
 enum DataTaskStatus: String, Codable, CaseIterable {
     case pending, done, uninitiated
 }
-
