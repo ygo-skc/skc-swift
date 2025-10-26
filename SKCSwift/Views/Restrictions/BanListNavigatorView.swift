@@ -17,7 +17,7 @@ struct BanListNavigatorView: View {
     var body: some View {
         VStack(spacing: 10) {
             BanListFormatsView(format: $format)
-            BanListDatesView(dateRangeIndex: $dateRangeIndex, dates: dates)
+            RestrictionDatesView(dateRangeIndex: $dateRangeIndex, dates: dates)
             switch format {
             case .tcg, .md:
                 BannedContentCategoryView(contentCategory: $contentCategory)

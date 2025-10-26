@@ -15,7 +15,7 @@ final class RestrictedCardsViewModel {
     var dateRangeIndex: Int = 0
     var chosenBannedContentCategory = BannedContentCategory.forbidden
     
-    private(set) var banListDates: [BanListDate] = []
+    private(set) var restrictionDates: [BanListDate] = []
     private(set) var requestErrors: [RestrictedCardDataType: NetworkError?] = [:]
     
     private var bannedContent: BannedContent?
@@ -41,7 +41,7 @@ final class RestrictedCardsViewModel {
     private func fetchBannedContentTimeline() async {
         switch await data(banListDatesURL(format: format), resType: BanListDates.self) {
         case .success(let dates):
-            banListDates = dates.banListDates
+            restrictionDates = dates.banListDates
             dateRangeIndex = 0
         case .failure(_): break
         }
@@ -50,13 +50,13 @@ final class RestrictedCardsViewModel {
     private func fetchCardScoreTimeline() async {
         switch await YGOService.getRestrictionDates(format: format.rawValue) {
         case .success(let scoreEffectiveDates):
-            banListDates = scoreEffectiveDates.map( {BanListDate(effectiveDate: $0) } )
+            restrictionDates = scoreEffectiveDates.map( {BanListDate(effectiveDate: $0) } )
         case .failure(_): break
         }
     }
     
     private func fetchBannedContent() async {
-        switch await data(bannedContentURL(format: format, listStartDate: banListDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
+        switch await data(bannedContentURL(format: format, listStartDate: restrictionDates[dateRangeIndex].effectiveDate, saveBandwidth: false , allInfo: false), resType: BannedContent.self) {
         case .success(let bannedContent):
             self.bannedContent = bannedContent
         case .failure(_): break
@@ -65,7 +65,7 @@ final class RestrictedCardsViewModel {
     
     private func fetchScoresByFormatAndDate() async {
         switch await YGOService.getScoresByFormatAndDate(format: format.rawValue,
-                                                         date: banListDates[dateRangeIndex].effectiveDate,
+                                                         date: restrictionDates[dateRangeIndex].effectiveDate,
                                                          parser: CardScoreEntry.rpcParser) {
         case .success(let entries):
             self.cardScores = CardScores(entries: entries)
@@ -80,7 +80,7 @@ final class RestrictedCardsViewModel {
         }
         
         fetchTask = Task {
-            if banListDates.isEmpty || formatChanged {
+            if restrictionDates.isEmpty || formatChanged {
                 switch format {
                 case .tcg, .md:
                     await fetchBannedContentTimeline()

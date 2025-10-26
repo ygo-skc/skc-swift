@@ -14,7 +14,7 @@ struct ContentView: View, Equatable {
                 HomeView()
             }
             Tab("Ban Lists", systemImage: "x.square") {
-                BanListContentView()
+                RestrictedContentView()
             }
             Tab("Browse", systemImage: "square.grid.2x2") {
                 BrowseView()

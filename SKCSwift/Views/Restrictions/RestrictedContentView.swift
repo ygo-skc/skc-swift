@@ -1,5 +1,5 @@
 //
-//  BannedContent.swift
+//  RestrictedContentView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 6/10/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BanListContentView: View {
+struct RestrictedContentView: View {
     @State private var mainSheetContentHeight: CGFloat = 0
     @State private var path = NavigationPath()
     @State private var model = RestrictedCardsViewModel()
@@ -16,7 +16,7 @@ struct BanListContentView: View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
                 ScrollView {
-                    SectionView(header: "Forbidden/Limited Content",
+                    SectionView(header: "\(model.format.rawValue) Content",
                                 variant: .plain,
                                 content: {
                         switch model.format {
@@ -37,7 +37,10 @@ struct BanListContentView: View {
                     Color.clear.frame(height: mainSheetContentHeight)
                 }
             } mainSheetContent: {
-                BanListNavigatorView(format: $model.format, dateRangeIndex: $model.dateRangeIndex, contentCategory: $model.chosenBannedContentCategory, dates: model.banListDates)
+                BanListNavigatorView(format: $model.format,
+                                     dateRangeIndex: $model.dateRangeIndex,
+                                     contentCategory: $model.chosenBannedContentCategory,
+                                     dates: model.restrictionDates)
             }
             .onChange(of: model.format) {
                 Task {
@@ -100,5 +103,5 @@ private struct CardScoresView: View {
 }
 
 #Preview() {
-    BanListContentView()
+    RestrictedContentView()
 }
