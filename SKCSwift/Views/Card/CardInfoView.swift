@@ -70,7 +70,7 @@ private struct CardInfoView: View {
                 }
             }
         }
-        .navigationTitle(model.card?.cardName ?? "")
+        .navigationTitle(model.card?.cardName ?? "Loading…")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
         .overlay {
             if let networkError = model.requestErrors[.card, default: nil] {
