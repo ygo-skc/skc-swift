@@ -19,7 +19,8 @@ struct RestrictedContentView: View {
                     SectionView(header: "\(model.format.rawValue) Content",
                                 variant: .plain,
                                 content: {
-                        if !DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.content]!) {
+                        if !(DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.timeline]!)
+                             || DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.content]!)) {
                             switch model.format {
                             case .md, .tcg:
                                 if let restrictedCards = model.restrictedCards {
@@ -39,7 +40,8 @@ struct RestrictedContentView: View {
                     Color.clear.frame(height: mainSheetContentHeight)
                 }
                 .overlay {
-                    if DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.content]!){
+                    if DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.timeline]!)
+                        || DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.content]!) {
                         ProgressView("Loading...")
                             .controlSize(.large)
                     }
@@ -49,7 +51,8 @@ struct RestrictedContentView: View {
                                      dateRangeIndex: $model.dateRangeIndex,
                                      contentCategory: $model.chosenBannedContentCategory,
                                      dates: model.restrictionDates)
-                .disabled(DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.content]!))
+                .disabled(DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.timeline]!)
+                          || DataTaskStatusParser.isDataPending(model.dataTaskStatuses[.content]!))
             }
             .onChange(of: model.format) {
                 Task {
