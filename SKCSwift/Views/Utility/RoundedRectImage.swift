@@ -33,13 +33,20 @@ struct RoundedRectImage: View, Equatable {
     }
 }
 
-struct RoundedRectImage_Previews: PreviewProvider {
-    static var previews: some View {
-        let screenWidth = UIScreen.main.bounds.width - 20
-        
-        RoundedRectImage(width: screenWidth, height: screenWidth, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/original/90307498.jpg")!)
-            .previewDisplayName("Kluger")
-        RoundedRectImage(width: screenWidth, height: screenWidth, imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/original/87468732.jpg")!)
-            .previewDisplayName("Pendulum")
+#Preview("Kluger") {
+    GeometryReader { reader in
+        let screenWidth = reader.size.width
+        RoundedRectImage(width: screenWidth,
+                         height: screenWidth,
+                         imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/original/90307498.jpg")!)
+    }
+}
+
+#Preview("Pend") {
+    GeometryReader { reader in
+        let screenWidth = reader.size.width
+        RoundedRectImage(width: screenWidth,
+                         height: screenWidth,
+                         imageUrl: URL(string: "https://images.thesupremekingscastle.com/cards/original/87468732.jpg")!)
     }
 }

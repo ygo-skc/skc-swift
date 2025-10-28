@@ -8,21 +8,26 @@
 import SwiftUI
 
 struct ContentView: View, Equatable {
-    private let screenWidth = UIScreen.main.bounds.width - 15
-    
     var body: some View {
         TabView {
             Tab("Home", systemImage: "house") {
                 HomeView()
             }
             Tab("Ban Lists", systemImage: "x.square") {
-                BanListContentView()
+                RestrictedContentView()
             }
             Tab("Browse", systemImage: "square.grid.2x2") {
                 BrowseView()
             }
             Tab(role: .search) {
                 SearchView()
+            }
+        }
+        .modify {
+            if #available(iOS 26.0, *) {
+                $0.tabBarMinimizeBehavior(.onScrollDown)
+            } else {
+                $0
             }
         }
     }

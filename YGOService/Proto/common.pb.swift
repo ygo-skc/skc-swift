@@ -20,6 +20,40 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
+enum Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf.Enum, Swift.CaseIterable {
+  typealias RawValue = Int
+  case cardName // = 0
+  case scoreThenColor // = 1
+  case UNRECOGNIZED(Int)
+
+  init() {
+    self = .cardName
+  }
+
+  init?(rawValue: Int) {
+    switch rawValue {
+    case 0: self = .cardName
+    case 1: self = .scoreThenColor
+    default: self = .UNRECOGNIZED(rawValue)
+    }
+  }
+
+  var rawValue: Int {
+    switch self {
+    case .cardName: return 0
+    case .scoreThenColor: return 1
+    case .UNRECOGNIZED(let i): return i
+    }
+  }
+
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  static let allCases: [Ygo_Common_CardRestrictionSortOrder] = [
+    .cardName,
+    .scoreThenColor,
+  ]
+
+}
+
 struct Ygo_Common_ResourceID: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -106,12 +140,16 @@ struct Ygo_Common_BlackListed: Sendable {
   init() {}
 }
 
-struct Ygo_Common_Dates: Sendable {
+struct Ygo_Common_EffectiveTimeline: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var dates: [String] = []
+  var allDates: [String] = []
+
+  var futureDates: [String] = []
+
+  var activeDate: String = String()
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -121,6 +159,10 @@ struct Ygo_Common_Dates: Sendable {
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "ygo.common"
+
+extension Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0CARD_NAME\0\u{1}SCORE_THEN_COLOR\0")
+}
 
 extension Ygo_Common_ResourceID: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ResourceID"
@@ -337,9 +379,9 @@ extension Ygo_Common_BlackListed: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Ygo_Common_Dates: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".Dates"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}dates\0")
+extension Ygo_Common_EffectiveTimeline: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".EffectiveTimeline"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}allDates\0\u{1}futureDates\0\u{1}activeDate\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -347,21 +389,31 @@ extension Ygo_Common_Dates: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeRepeatedStringField(value: &self.dates) }()
+      case 1: try { try decoder.decodeRepeatedStringField(value: &self.allDates) }()
+      case 2: try { try decoder.decodeRepeatedStringField(value: &self.futureDates) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.activeDate) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.dates.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.dates, fieldNumber: 1)
+    if !self.allDates.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.allDates, fieldNumber: 1)
+    }
+    if !self.futureDates.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.futureDates, fieldNumber: 2)
+    }
+    if !self.activeDate.isEmpty {
+      try visitor.visitSingularStringField(value: self.activeDate, fieldNumber: 3)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_Common_Dates, rhs: Ygo_Common_Dates) -> Bool {
-    if lhs.dates != rhs.dates {return false}
+  static func ==(lhs: Ygo_Common_EffectiveTimeline, rhs: Ygo_Common_EffectiveTimeline) -> Bool {
+    if lhs.allDates != rhs.allDates {return false}
+    if lhs.futureDates != rhs.futureDates {return false}
+    if lhs.activeDate != rhs.activeDate {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

@@ -16,6 +16,32 @@ fileprivate class GRPCManager {
                 transport: .http2NIOPosix(
                     target: .dns(host: "ygo-service.skc.cards", port: 443),
                     transportSecurity: .tls,
+                    config: .defaults { config in
+                        config.compression = .init(algorithm: .gzip, enabledAlgorithms: [.gzip, .none])
+                        config.backoff = .init(
+                            initial: .milliseconds(80),
+                            max: .seconds(1),
+                            multiplier: 1.6,
+                            jitter: 0.2
+                        )
+                        config.connection = .init(
+                            maxIdleTime: .seconds(30 * 60),
+                            keepalive: .init(
+                                time: .seconds(60),
+                                timeout: .seconds(3),
+                                allowWithoutCalls: true
+                            )
+                        )
+                    },
+                    serviceConfig: .init(
+                        methodConfig: [
+                            .init(
+                                names: [.init(service: "")],  // Empty service means all methods
+                                waitForReady: true,
+                                timeout: .seconds(3)
+                            )
+                        ]
+                    )
                 )
             )
             Task {
@@ -27,28 +53,22 @@ fileprivate class GRPCManager {
         }
     }()
     
+    static let restrictionService: Ygo_CardRestrictionService.Client = {
+        return Ygo_CardRestrictionService.Client(wrapping: GRPCManager.client)
+    }()
+    
     static let scoreService: Ygo_ScoreService.Client = {
         return Ygo_ScoreService.Client(wrapping: GRPCManager.client)
     }()
 }
 
 @concurrent
-public func getRestrictionDates(format: String) async  {
-    let clock = ContinuousClock()
-    let time = await clock.measure {
-        let scoreDates = try? await GRPCManager.scoreService.getDatesForFormat(.with { $0.value = format })
-        print(scoreDates!.dates)
-    }
-    print(time)
-}
-
-@concurrent
-public func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
+public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
     do {
-        let cardScore = try await GRPCManager.scoreService.getCardScoreByID(.with { $0.id = cardID })
-        return .success(.init(cardScore))
+        let timeline = try await GRPCManager.restrictionService.getEffectiveTimelineForFormat(.with { $0.value = format })
+        return .success(.init(timeline.allDates))
     } catch let error as RPCError {
-        parseRPCError(method: "Card Score", error: error)
+        handleRPCError(method: "Restriction Timeline", error: error)
         return .failure(error)
     } catch {
         print("Unexpected error:", error)
@@ -56,23 +76,57 @@ public func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
     }
 }
 
-fileprivate func parseRPCError(method: String, error: RPCError) {
+@concurrent
+public func getScoresByFormatAndDate<U>(format: String,
+                                        date: String,
+                                        parser: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
+async -> Result<[U], any Error> where U: Decodable {
+    do {
+        let scores = try await GRPCManager.scoreService.getScoresByFormatAndDate(.with {
+            $0.format = format
+            $0.effectiveDate = date
+        })
+        let values = scores.entries.map({
+            parser($0.card.id,
+                   $0.card.name,
+                   $0.card.color,
+                   $0.card.attribute,
+                   $0.card.effect,
+                   $0.card.monsterType.value,
+                   Int($0.card.attack.value),
+                   Int($0.card.defense.value),
+                   $0.score
+            )
+        })
+        return .success(values)
+    } catch let error as RPCError {
+        handleRPCError(method: "Restriction Timeline", error: error)
+        return .failure(error)
+    } catch {
+        print("Unexpected error:", error)
+        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
+    }
+}
+
+@concurrent
+public func getCardScore<U>(cardID: String, parser: ([String: UInt32], [String], [String]) -> U) async -> Result<U, any Error> where U: Decodable {
+    do {
+        let cardScore = try await GRPCManager.scoreService.getCardScoreByID(.with { $0.id = cardID })
+        return .success(parser(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
+    } catch let error as RPCError {
+        handleRPCError(method: "Card Score", error: error)
+        return .failure(error)
+    } catch {
+        print("Unexpected error:", error)
+        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
+    }
+}
+
+fileprivate func handleRPCError(method: String, error: RPCError) {
     switch error.code {
     case .notFound:
         print("RPC \(method) call resulted in not found error. Message: \(error.message)")
     default:
         print("RPC error \(error.message)")
-    }
-}
-
-public nonisolated struct CardScore: Codable, Equatable {
-    public let currentScoreByFormat: [String: UInt32]
-    public let uniqueFormats: [String]
-    public let scheduledChanges: [String]
-    
-    init(_ from: Ygo_CardScore) {
-        self.currentScoreByFormat = from.currentScoreByFormat
-        self.uniqueFormats = from.uniqueFormats
-        self.scheduledChanges = from.scheduledChanges
     }
 }

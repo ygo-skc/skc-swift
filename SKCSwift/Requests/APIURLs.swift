@@ -138,7 +138,7 @@ func dbStatsURL() -> URL {
     return createURL(components: components)
 }
 
-func banListDatesURL(format: BanListFormat) -> URL {
+func banListDatesURL(format: CardRestrictionFormat) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_BAN_LIST_DATES_ENDPOINT.description,
@@ -148,7 +148,7 @@ func banListDatesURL(format: BanListFormat) -> URL {
     return createURL(components: components)
 }
 
-func bannedContentURL(format: BanListFormat, listStartDate: String, saveBandwidth: Bool, allInfo: Bool) -> URL {
+func bannedContentURL(format: CardRestrictionFormat, listStartDate: String, saveBandwidth: Bool, allInfo: Bool) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: String(format: RequestHelper.SKC_API_BAN_LIST_CONTENTS_ENDPOINT.description, listStartDate),

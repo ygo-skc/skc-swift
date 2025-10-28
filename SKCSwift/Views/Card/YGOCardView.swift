@@ -16,12 +16,12 @@ struct YGOCardView: View, Equatable {
     private let imageSize: CGFloat
     private let imageSizeVariant: ImageSize
     
-    init(cardID: String, card: Card?, variant: YGOCardViewVariant = .normal) {
+    init(cardID: String, card: Card?, width: CGFloat = 220, variant: YGOCardViewVariant = .normal) {
         self.cardID = cardID
         self.card = card
         self.variant = variant
         
-        self.width = (variant == .normal) ?  UIScreen.main.bounds.width : 220
+        self.width = width
         self.imageSize = (variant == .normal) ? width - 80 : width - 30
         self.imageSizeVariant = (variant == .normal) ? .medium : .extraSmall
     }

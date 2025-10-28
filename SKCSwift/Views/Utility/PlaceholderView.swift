@@ -27,5 +27,5 @@ struct PlaceholderView: View, Equatable {
 }
 
 #Preview() {
-    PlaceholderView(width: UIScreen.main.bounds.width - 20)
+    PlaceholderView(width: 300)
 }

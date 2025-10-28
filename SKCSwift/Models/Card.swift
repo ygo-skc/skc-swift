@@ -98,12 +98,14 @@ nonisolated struct Card: Codable, Equatable {
             }
     }
     
-    func getBanList(format: BanListFormat) -> [BanList] {
+    func getBanList(format: CardRestrictionFormat) -> [BanList] {
         switch format {
         case .tcg:
-            return restrictedIn?.TCG ?? [BanList]()
+            return restrictedIn?.TCG ?? []
         case .md:
-            return restrictedIn?.MD ?? [BanList]()
+            return restrictedIn?.MD ?? []
+        default:
+            return []
         }
     }
 }

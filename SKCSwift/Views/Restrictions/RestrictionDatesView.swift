@@ -1,5 +1,5 @@
 //
-//  BanListDatesView.swift
+//  RestrictionDatesView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 9/10/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BanListDatesView: View {
+struct RestrictionDatesView: View {
     @Binding var dateRangeIndex: Int
     let dates: [BanListDate]
     

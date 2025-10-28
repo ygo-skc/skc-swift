@@ -48,7 +48,7 @@ struct TrendingView: View {
                         await trendingModel.fetchTrendingData(forceRefresh: true)
                     }
                 })
-            } else if [DataTaskStatus.uninitiated, DataTaskStatus.pending].contains(trendingModel.trendingDataTaskStatuses[trendingModel.focusedTrend])  {
+            } else if DataTaskStatusParser.isDataPending(trendingModel.trendingDataTaskStatuses[trendingModel.focusedTrend]!) {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }

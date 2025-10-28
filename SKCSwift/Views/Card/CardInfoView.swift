@@ -37,37 +37,40 @@ private struct CardInfoView: View {
     
     var body: some View {
         VStack {
-            if model.requestErrors[.card, default: nil] == nil {
-                TabView {
-                    Tab("Info", systemImage: "info.circle.fill") {
-                        ScrollView {
-                            YGOCardView(cardID: model.cardID, card: model.card)
-                                .equatable()
-                                .padding(.bottom)
-                            
-                            if let card = model.card {
-                                CardReleasesView(card: card)
-                                    .modifier(.parentView)
+            GeometryReader { reader in
+                let width = reader.size.width
+                if model.requestErrors[.card, default: nil] == nil {
+                    TabView {
+                        Tab("Info", systemImage: "info.circle.fill") {
+                            ScrollView {
+                                YGOCardView(cardID: model.cardID, card: model.card, width: width)
+                                    .equatable()
+                                    .padding(.bottom)
                                 
-                                CardRestrictionsView(card: card, score: model.score)
-                                    .modifier(.parentView)
-                                    .padding(.bottom, 50)
-                            } else {
-                                ProgressView("Loading...")
-                                    .controlSize(.large)
+                                if let card = model.card {
+                                    CardReleasesView(card: card)
+                                        .modifier(.parentView)
+                                    
+                                    CardRestrictionsView(card: card, score: model.score)
+                                        .modifier(.parentView)
+                                        .padding(.bottom, 50)
+                                } else {
+                                    ProgressView("Loading...")
+                                        .controlSize(.large)
+                                }
                             }
                         }
+                        
+                        Tab("Suggestions", systemImage: "sparkles") {
+                            CardSuggestionsView(model: model)
+                        }
                     }
-                    
-                    Tab("Suggestions", systemImage: "sparkles") {
-                        CardSuggestionsView(model: model)
-                    }
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
                 }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
         }
-        .navigationTitle(model.card?.cardName ?? "")
+        .navigationTitle(model.card?.cardName ?? "Loading…")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
         .overlay {
             if let networkError = model.requestErrors[.card, default: nil] {
