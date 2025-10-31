@@ -46,3 +46,9 @@ extension View {
         return modifier(self)
     }
 }
+
+extension ToolbarContent {
+    func modify<T: ToolbarContent>(@ToolbarContentBuilder _ modifier: (Self) -> T) -> some ToolbarContent {
+        return modifier(self)
+    }
+}
