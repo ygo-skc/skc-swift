@@ -24,8 +24,6 @@ final class HomeViewModel {
     
     var path = NavigationPath()
     
-    var isSettingsSheetPresented = false
-    
     @ObservationIgnored
     private var lastRefreshTimestamp: Date?
     
