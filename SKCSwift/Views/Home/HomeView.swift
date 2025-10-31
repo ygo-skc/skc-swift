@@ -49,6 +49,7 @@ struct HomeView: View {
                     }
                     .sheet(isPresented: $model.isSettingsSheetPresented) {
                         SettingsView()
+                            .presentationDetents([.medium, .large])
                     }
                 }
                 .ygoNavigationDestination()
