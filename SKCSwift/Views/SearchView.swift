@@ -41,6 +41,7 @@ struct SearchView: View {
                     SearchResultsView(path: $path, searchModel: searchModel)
                 }
             }
+            .ignoresSafeArea(.keyboard)
             .ygoNavigationDestination()
             .navigationTitle("Search & Trending")
             .navigationBarTitleDisplayMode(.inline)
@@ -154,7 +155,6 @@ private struct SearchResultsView: View {
                             }
                         }
                 }
-                .ignoresSafeArea(.keyboard)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
