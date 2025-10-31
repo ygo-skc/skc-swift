@@ -24,59 +24,73 @@ struct DBStatsView: View, Equatable {
                 if let networkError {
                     NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
                 } else {
-                    Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
-                        .font(.callout)
-                        .padding(.bottom)
-                    
-                    HStack {
-                        Text("DB\nContents 🤓")
-                            .font(.headline)
-                            .fontWeight(.regular)
-                            .padding(.trailing)
-                        
-                        FlowLayout(spacing: 15) {
-                            DBStatView(count: (isDataLoaded) ? dbStats.cardTotal : -1, stat: "Cards")
-                            DBStatView(count: (isDataLoaded) ? dbStats.banListTotal : -1, stat: "Ban Lists")
-                            DBStatView(count: (isDataLoaded) ? dbStats.productTotal : -1, stat: "Products")
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                    
+                    DBDataView(dbStats: dbStats, isDataLoaded: isDataLoaded)
                     Divider()
                         .padding(.vertical, 4)
-                    
-                    Group {
-                        Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
-                        Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
-                        if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-                           let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-                            Text("App Version \(appVersion)(\(build))")
-                                .italic()
-                        }
-                    }
-                    .padding(.bottom, 2)
-                    .font(.footnote)
+                    DataDisclosure()
                 }
             }
             .frame(maxWidth: .infinity)
         })
     }
-}
-
-private struct DBStatView: View {
-    let count: Int
-    let stat: String
     
-    var body: some View {
-        VStack {
-            if count >= 0 {
-                Text(count.decimal)
-            } else {
-                PlaceholderView(width: 40, height: 20, radius: 5)
+    private struct DataDisclosure: View {
+        var body: some View {
+            Group {
+                Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
+                Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
+                if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+                   let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+                    Text("App Version \(appVersion)(\(build))")
+                        .italic()
+                }
             }
-            Text(stat)
-                .font(.subheadline)
-                .fontWeight(.semibold)
+            .padding(.bottom, 2)
+            .font(.footnote)
+        }
+    }
+    
+    private struct DBDataView: View {
+        let dbStats: SKCDatabaseStats
+        let isDataLoaded: Bool
+        
+        var body: some View {
+            Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
+                .font(.callout)
+                .padding(.bottom)
+            
+            HStack {
+                Text("DB\nData")
+                    .font(.headline)
+                    .fontWeight(.regular)
+                    .padding(.trailing)
+                Spacer()
+                FlowLayout(spacing: 15) {
+                    DBStatView(count: (isDataLoaded) ? dbStats.cardTotal : -1, stat: "Cards")
+                    DBStatView(count: (isDataLoaded) ? dbStats.banListTotal : -1, stat: "Ban Lists")
+                    DBStatView(count: (isDataLoaded) ? dbStats.productTotal : -1, stat: "Products")
+                }
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        }
+        
+        private struct DBStatView: View {
+            let count: Int
+            let stat: String
+            
+            var body: some View {
+                VStack {
+                    if count >= 0 {
+                        Text(count.decimal)
+                    } else {
+                        PlaceholderView(width: 40, height: 20, radius: 5)
+                    }
+                    Text(stat)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                }
+            }
         }
     }
 }
