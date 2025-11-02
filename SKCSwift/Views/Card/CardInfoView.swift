@@ -24,15 +24,11 @@ private struct CardInfoView: View {
     @State private var model: CardViewModel
     
     @Query
-    private var history: [History]
+    private var cardFromTable: [History]
     
     init(cardID: String) {
-        self.model = .init(cardID: cardID)
-        
-        _history = Query(
-            filter: #Predicate<History> { h in
-                h.id == cardID
-            }, sort: [SortDescriptor(\.timesAccessed, order: .reverse)])
+        self.model = .init(cardID: cardID)    
+        _cardFromTable = Query(ArchiveContainer.fetchHistoryResourceByID(id: cardID))
     }
     
     var body: some View {
@@ -95,7 +91,7 @@ private struct CardInfoView: View {
         .onChange(of: model.card) {
             Task {
                 let newItem = History(resource: .card, id: model.cardID, timesAccessed: 1)
-                newItem.updateHistoryContext(history: history, modelContext: modelContext)
+                newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
             }
         }
     }

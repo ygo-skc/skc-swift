@@ -14,6 +14,6 @@ struct SKCSwiftApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(archiveContainer)
+        .modelContainer(ArchiveContainer.archiveModelContainer)
     }
 }
