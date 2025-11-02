@@ -20,7 +20,6 @@ struct TagModifier: ViewModifier {
         content
             .padding(.all, padding)
             .font(font)
-            .fontWeight(.semibold)
             .background(LinearGradient(
                 gradient: Gradient(colors: [Color.accentColor, Color.accentColor.opacity(0.8)]),
                 startPoint: .leading,
