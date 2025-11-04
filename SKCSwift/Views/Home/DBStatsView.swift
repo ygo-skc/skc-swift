@@ -66,9 +66,9 @@ struct DBStatsView: View, Equatable {
                     .padding(.trailing)
                 Spacer()
                 FlowLayout(spacing: 15) {
-                    DBStatView(count: (isDataLoaded) ? dbStats.cardTotal : -1, stat: "Cards")
-                    DBStatView(count: (isDataLoaded) ? dbStats.banListTotal : -1, stat: "Ban Lists")
-                    DBStatView(count: (isDataLoaded) ? dbStats.productTotal : -1, stat: "Products")
+                    DBStatView(count: dbStats.cardTotal, stat: "Cards", isDataLoaded: isDataLoaded)
+                    DBStatView(count: dbStats.banListTotal, stat: "Ban Lists", isDataLoaded: isDataLoaded)
+                    DBStatView(count: dbStats.productTotal, stat: "Products", isDataLoaded: isDataLoaded)
                 }
                 Spacer()
             }
@@ -78,17 +78,23 @@ struct DBStatsView: View, Equatable {
         private struct DBStatView: View {
             let count: Int
             let stat: String
+            let isDataLoaded: Bool
+            
+            init(count: Int, stat: String, isDataLoaded: Bool) {
+                self.count = (!isDataLoaded) ? -999 : count
+                self.stat = stat
+                self.isDataLoaded = isDataLoaded
+            }
             
             var body: some View {
                 VStack {
-                    if count >= 0 {
-                        Text(count.decimal)
-                    } else {
-                        PlaceholderView(width: 40, height: 20, radius: 5)
-                    }
+                    Text(count.decimal)
                     Text(stat)
                         .font(.subheadline)
                         .fontWeight(.semibold)
+                }
+                .if(!isDataLoaded) {
+                    $0.redacted(reason: .placeholder)
                 }
             }
         }

@@ -43,14 +43,14 @@ struct CardOfTheDayView: View, Equatable {
         
         var body: some View {
             HStack(alignment: .top, spacing: 20) {
-                if isDataLoaded || cotd.card.cardID != "" {
+                if isDataLoaded {
                     CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
                         .equatable()
                 } else {
                     PlaceholderView(width: CardOfTheDayView.IMAGE_SIZE, height: CardOfTheDayView.IMAGE_SIZE, radius: CardOfTheDayView.IMAGE_SIZE)
                 }
                 VStack(alignment: .leading, spacing: 5) {
-                    if isDataLoaded ||  cotd.card.cardID != "" {
+                    if isDataLoaded {
                         InlineDateView(date: cotd.date)
                             .equatable()
                         Text(cotd.card.cardName)
