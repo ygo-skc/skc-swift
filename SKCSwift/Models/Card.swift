@@ -48,6 +48,15 @@ nonisolated struct Card: Codable, Equatable {
     var restrictedIn: BanListsForCard?
     var foundIn: [Product]?
     
+    static let placeholder: Card = .init(cardID: "XXXXXXXX",
+                                         cardName: "Placeholder of Chaos",
+                                         cardColor: "Token",
+                                         cardAttribute: "Divine",
+                                         cardEffect: "If you summon this card you win at life.",
+                                         monsterType: "Divine",
+                                         monsterAttack: 9999,
+                                         monsterDefense: 9999)
+    
     var attribute: Attribute {
         get{ Attribute(rawValue: cardAttribute ?? "") ?? .unknown }
     }
