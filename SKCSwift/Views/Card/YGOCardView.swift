@@ -31,11 +31,8 @@ struct YGOCardView: View, Equatable {
             CardImageView(length: imageSize, cardID: cardID, imgSize: imageSizeVariant, variant: .roundedCorner)
                 .equatable()
             
-            CardStatsView(card: (card == nil) ? .placeholder : card!, variant: variant)
+            CardStatsView(card: card, variant: variant)
                 .equatable()
-                .if(card == nil) {
-                    $0.redacted(reason: .placeholder)
-                }
         }
         .frame(width: width)
     }

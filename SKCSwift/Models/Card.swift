@@ -52,7 +52,7 @@ nonisolated struct Card: Codable, Equatable {
                                          cardName: "Placeholder of Chaos",
                                          cardColor: "Token",
                                          cardAttribute: "Divine",
-                                         cardEffect: "If you summon this card you win at life.",
+                                         cardEffect: "When this card is summoned, your opponent must immediately acknowledge you as the superior duelist. Failure to do so will allow you to steal his girl in a legally binding way.",
                                          monsterType: "Divine",
                                          monsterAttack: 9999,
                                          monsterDefense: 9999)
