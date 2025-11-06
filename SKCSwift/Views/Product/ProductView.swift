@@ -23,15 +23,11 @@ struct ProductView: View {
     @State var model: ProductViewModel
     
     @Query
-    private var history: [History]
+    private var productFromTable: [History]
     
     init(productID: String) {
         self.model = .init(productID: productID)
-        
-        _history = Query(
-            filter: #Predicate<History> { h in
-                h.id == productID
-            }, sort: [SortDescriptor(\.timesAccessed, order: .reverse)])
+        _productFromTable = Query(ArchiveContainer.fetchHistoryResourceByID(id: productID))
     }
     
     var body: some View {
@@ -71,7 +67,7 @@ struct ProductView: View {
         .onChange(of: model.product) {
             Task {
                 let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
-                newItem.updateHistoryContext(history: history, modelContext: modelContext)
+                newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
             }
         }
     }

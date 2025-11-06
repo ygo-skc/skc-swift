@@ -26,14 +26,7 @@ struct UpcomingTCGProductsView: View, Equatable {
                     NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
                 } else {
                     if isDataLoaded || !events.isEmpty {
-                        Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
-                            .font(.callout)
-                            .padding(.bottom)
-                        
-                        ForEach(events, id: \.name) { event in
-                            UpcomingTCGProductView(event: event)
-                                .equatable()
-                        }
+                        UpcomingTCGProductsContentView(events: events)
                     }
                     else {
                         ProgressView("Loading...")
@@ -44,33 +37,45 @@ struct UpcomingTCGProductsView: View, Equatable {
             .frame(maxWidth: .infinity)
         })
     }
-}
-
-
-private struct UpcomingTCGProductView: View, Equatable {
-    var event: Event
     
-    var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            DateBadgeView(date: event.eventDate, dateFormat: Date.isoChicago, variant: .condensed)
-                .equatable()
+    private struct UpcomingTCGProductsContentView: View, Equatable {
+        let events: [Event]
+        var body: some View {
+            Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
+                .font(.callout)
+                .padding(.bottom)
             
-            VStack(alignment: .leading, spacing: 8) {
-                Text(event.name)
-                    .lineLimit(2)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(LocalizedStringKey(event.notes))
-                    .lineLimit(7)
-                    .font(.body)
-                
-                Divider()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 5)
+            ForEach(events, id: \.name) { event in
+                UpcomingTCGProductView(event: event)
             }
         }
-        .frame(maxWidth: .infinity)
+        
+        private struct UpcomingTCGProductView: View {
+            var event: Event
+            
+            var body: some View {
+                HStack(alignment: .top, spacing: 10) {
+                    DateBadgeView(date: event.eventDate, dateFormat: Date.isoChicago, variant: .condensed)
+                        .equatable()
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(event.name)
+                            .lineLimit(2)
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(LocalizedStringKey(event.notes))
+                            .lineLimit(7)
+                            .font(.body)
+                        
+                        Divider()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 5)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
     }
 }
 

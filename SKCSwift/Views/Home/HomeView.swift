@@ -42,14 +42,7 @@ struct HomeView: View {
                     }
                 }
                 .toolbar {
-                    Button {
-                        model.isSettingsSheetPresented = true
-                    } label: {
-                        Image(systemName: "gear")
-                    }
-                    .sheet(isPresented: $model.isSettingsSheetPresented) {
-                        SettingsView()
-                    }
+                    HomeViewToolbar()
                 }
                 .ygoNavigationDestination()
                 .modifier(.parentView)
@@ -65,6 +58,33 @@ struct HomeView: View {
             }
             .task(priority: .userInitiated) {
                 await model.fetchData(forceRefresh: false)
+            }
+        }
+    }
+}
+
+private struct HomeViewToolbar: ToolbarContent {
+    @State private var isSettingsSheetPresented = false
+    @Namespace private var animation
+    
+    var body: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                isSettingsSheetPresented = true
+            } label: {
+                Image(systemName: "gear")
+            }
+            .sheet(isPresented: $isSettingsSheetPresented) {
+                SettingsView()
+                    .presentationDetents([.medium, .large])
+                    .navigationTransition(.zoom(sourceID: "settings", in: animation))
+            }
+        }
+        .modify {
+            if #available(iOS 26.0, *) {
+                $0.matchedTransitionSource(id: "settings", in: animation)
+            } else {
+                $0
             }
         }
     }
@@ -102,7 +122,7 @@ private struct SettingsView: View {
                     SettingsModule(
                         moduleHeader: "Recently Viewed History",
                         moduleFootnote: "Recently viewed data facilitates going back to previously viewed items. Deleting this means you will lose access to this data accross all devices.") {
-                            model.deleteHistoryData(modelContext: modelContext)
+                            await model.deleteHistoryData(modelContext: modelContext)
                         } label: {
                             Label("Delete History", systemImage: "trash.fill")
                                 .frame(maxWidth: .infinity)
@@ -127,7 +147,7 @@ private struct SettingsView: View {
 private struct SettingsModule<Label: View>: View {
     let moduleHeader: String
     let moduleFootnote: String?
-    let action: () -> Void
+    let action: () async -> Void
     @ViewBuilder let label: () -> Label
     
     @State private var isAlertOpen = false
@@ -142,14 +162,18 @@ private struct SettingsModule<Label: View>: View {
             }
             
             Button { isAlertOpen.toggle() } label: { label() }
-            .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
-                Button("Cancel", role: .cancel) {}
-                Button("🫡", role: .destructive) { action() }
-            } message: {
-                Text("Action is irreversible.")
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.regular)
+                .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("🫡", role: .destructive) {
+                        Task {
+                            await action()
+                        }
+                    }
+                } message: {
+                    Text("Action is irreversible.")
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.regular)
         }
         .frame(maxWidth: .infinity)
     }

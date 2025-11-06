@@ -9,21 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct SearchView: View {
-    @Environment(\.modelContext) private var modelContext
-    
     @State private var path = NavigationPath()
     @State private var recentlyViewedModel = RecentlyViewedViewModel()
     @State private var searchModel = SearchViewModel()
     @State private var trendingModel = TrendingViewModel()
     
-    @Query private var history: [History]
-    
-    init() {
-        let c = ArchiveResource.card.rawValue
-        _history = Query(filter: #Predicate<History> { h in
-            h.resource == c
-        }, sort: \History.lastAccessDate, order: .reverse)
-    }
+    @Query(ArchiveContainer.fetchHistoryByAccessDate(sortOrder: .reverse, limit: 20)) private var history: [History]
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -33,7 +24,7 @@ struct SearchView: View {
                     (.pending, _) where searchModel.searchText.isEmpty,
                     (.uninitiated, _):
                     if searchModel.isSearching {
-                        RecentlyViewedView(path: $path, recentlyViewedModel: recentlyViewedModel, history: Array(history.prefix(15)))
+                        RecentlyViewedView(path: $path, recentlyViewedModel: recentlyViewedModel, history: history)
                     } else {
                         TrendingView(path: $path, trendingModel: $trendingModel)
                     }
@@ -41,6 +32,7 @@ struct SearchView: View {
                     SearchResultsView(path: $path, searchModel: searchModel)
                 }
             }
+            .ignoresSafeArea(.keyboard)
             .ygoNavigationDestination()
             .navigationTitle("Search & Trending")
             .navigationBarTitleDisplayMode(.inline)
@@ -154,7 +146,6 @@ private struct SearchResultsView: View {
                             }
                         }
                 }
-                .ignoresSafeArea(.keyboard)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
