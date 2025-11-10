@@ -25,6 +25,10 @@ nonisolated struct CardFilters: Equatable, Sendable {
     var ranks: [FilteredItem<UInt8>]
     var linkRatings: [FilteredItem<UInt8>]
     
+    init() {
+        self.init(attributes: [], colors: [], monsterTypes: [], levels: [], ranks: [], linkRatings: [])
+    }
+    
     init(attributes: [FilteredItem<String>], colors: [FilteredItem<String>], monsterTypes: [FilteredItem<MonsterType>], levels: [FilteredItem<UInt8>],
          ranks: [FilteredItem<UInt8>], linkRatings: [FilteredItem<UInt8>]) {
         self.attributes = attributes
@@ -33,11 +37,5 @@ nonisolated struct CardFilters: Equatable, Sendable {
         self.levels = levels
         self.ranks = ranks
         self.linkRatings = linkRatings
-    }
-}
-
-extension CardFilters {
-    init() {
-        self.init(attributes: [], colors: [], monsterTypes: [], levels: [], ranks: [], linkRatings: [])
     }
 }

@@ -9,9 +9,7 @@ nonisolated struct CardScore: Codable, Equatable {
     let currentScoreByFormat: [String: UInt32]
     let uniqueFormats: [String]
     let scheduledChanges: [String]
-}
-
-extension CardScore {
+    
     nonisolated static func rpcParser(currentScoreByFormat: [String: UInt32],
                                       uniqueFormats: [String],
                                       scheduledChanges: [String]) -> Self {
@@ -28,9 +26,7 @@ nonisolated struct CardScores: Codable, Equatable {
 nonisolated struct CardScoreEntry: Codable, Equatable {
     let card: Card
     let score: UInt32
-}
-
-extension CardScoreEntry {
+    
     nonisolated static func rpcParser(cardID: String,
                                       cardName: String,
                                       cardColor: String,
@@ -44,7 +40,10 @@ extension CardScoreEntry {
                                 cardName: cardName,
                                 cardColor: cardColor,
                                 cardAttribute: cardAttribute,
-                                cardEffect: cardEffect),
+                                cardEffect: cardEffect,
+                                monsterType: monsterType,
+                                monsterAttack: monsterAttack,
+                                monsterDefense: monsterDefense,),
                      score: score)
     }
 }
