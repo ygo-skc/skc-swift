@@ -19,7 +19,6 @@ struct CardImageView: View, Equatable {
     private let radius: CGFloat
     
     private static let CARD_BACK_IMAGE = Image(.cardBackground)
-    private static var CARDS_WITH_NO_IMAGE = Set<String>()
     
     init(length: CGFloat, cardID: String, imgSize: ImageSize, cardColor: String? = nil, variant: YGOCardImageVariant = .round) {
         self.length = length
@@ -33,7 +32,7 @@ struct CardImageView: View, Equatable {
     }
     
     var body: some View {
-        if CardImageView.CARDS_WITH_NO_IMAGE.contains(cardID) {
+        if cardID == Card.placeholder.cardID {
             CardImageView.CARD_BACK_IMAGE
                 .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
         } else {
@@ -48,9 +47,6 @@ struct CardImageView: View, Equatable {
                 default:
                     CardImageView.CARD_BACK_IMAGE
                         .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
-                        .task {
-                            CardImageView.CARDS_WITH_NO_IMAGE.insert(cardID)
-                        }
                 }
             }
             .frame(width: length, height: length)
