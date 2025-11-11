@@ -95,7 +95,7 @@ final class RestrictedCardsViewModel {
     private func fetchScoresByFormatAndDate() async {
         switch await YGOService.getScoresByFormatAndDate(format: format.rawValue,
                                                          date: restrictionDates[dateRangeIndex].effectiveDate,
-                                                         parser: CardScoreEntry.rpcParser) {
+                                                         mapper: CardScoreEntry.fromRPC) {
         case .success(let entries):
             dataTaskStatuses[.content] = .done
             self.cardScores = CardScores(entries: entries)

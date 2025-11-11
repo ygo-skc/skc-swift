@@ -67,19 +67,15 @@ public func getRestrictionDates(format: String) async -> Result<[String], any Er
     do {
         let timeline = try await GRPCManager.restrictionService.getEffectiveTimelineForFormat(.with { $0.value = format })
         return .success(.init(timeline.allDates))
-    } catch let error as RPCError {
-        handleRPCError(method: "Restriction Timeline", error: error)
-        return .failure(error)
     } catch {
-        print("Unexpected error:", error)
-        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
+        return .failure(error)
     }
 }
 
 @concurrent
 public func getScoresByFormatAndDate<U>(format: String,
                                         date: String,
-                                        parser: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
+                                        mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
 async -> Result<[U], any Error> where U: Decodable {
     do {
         let scores = try await GRPCManager.scoreService.getScoresByFormatAndDate(.with {
@@ -87,7 +83,7 @@ async -> Result<[U], any Error> where U: Decodable {
             $0.effectiveDate = date
         })
         let values = scores.entries.map({
-            parser($0.card.id,
+            mapper($0.card.id,
                    $0.card.name,
                    $0.card.color,
                    $0.card.attribute,
@@ -99,34 +95,19 @@ async -> Result<[U], any Error> where U: Decodable {
             )
         })
         return .success(values)
-    } catch let error as RPCError {
-        handleRPCError(method: "Restriction Timeline", error: error)
-        return .failure(error)
     } catch {
-        print("Unexpected error:", error)
-        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
+        return .failure(error)
     }
 }
 
 @concurrent
-public func getCardScore<U>(cardID: String, parser: ([String: UInt32], [String], [String]) -> U) async -> Result<U, any Error> where U: Decodable {
+public func getCardScore<U>(cardID: String,
+                            mapper: ([String: UInt32], [String], [String]) -> U
+) async -> Result<U, any Error> where U: Decodable {
     do {
         let cardScore = try await GRPCManager.scoreService.getCardScoreByID(.with { $0.id = cardID })
-        return .success(parser(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
-    } catch let error as RPCError {
-        handleRPCError(method: "Card Score", error: error)
-        return .failure(error)
+        return .success(mapper(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
     } catch {
-        print("Unexpected error:", error)
-        return .failure(RPCError(code: .unknown, message: "Unexpected error"))
-    }
-}
-
-fileprivate func handleRPCError(method: String, error: RPCError) {
-    switch error.code {
-    case .notFound:
-        print("RPC \(method) call resulted in not found error. Message: \(error.message)")
-    default:
-        print("RPC error \(error.message)")
+        return .failure(error)
     }
 }

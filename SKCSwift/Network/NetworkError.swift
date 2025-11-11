@@ -20,18 +20,49 @@ enum NetworkError: Error {
     case timeout
     case unknown
     
-    static func fromError(_ error: any Error) -> NetworkError {
-        if let rpcError = error as? RPCError {
-            switch rpcError.code {
-            case .notFound: return .notFound
-            default: return .server
-            }
+    /*
+     */
+    
+    static func fromRPCError(_ rpcError: RPCError, method: String) -> NetworkError {
+        print("YOOO")
+        switch rpcError.code {
+        case .cancelled, .aborted, .dataLoss, .deadlineExceeded:
+            print("RPC \(method) call cancelled. Message: \(rpcError.message)")
+            return .cancelled
+        case .unknown:
+            print("RPC \(method) call resulted in unknown error. Message: \(rpcError.message)")
+            return .unknown
+        case .deadlineExceeded:
+            print("RPC \(method) call timed out. Message: \(rpcError.message)")
+            return .timeout
+        case .invalidArgument, .alreadyExists:
+            print("RPC \(method) call failed due to invalid request. Message: \(rpcError.message)")
+            return .badRequest
+        case .notFound, .unimplemented:
+            print("RPC \(method) call resulted in not found error. Message: \(rpcError.message)")
+            return .notFound
+        case .permissionDenied, .unauthenticated:
+            print("RPC \(method) call resulted in authentication error. Message: \(rpcError.message)")
+            return .client
+        case .failedPrecondition, .outOfRange:
+            print("RPC \(method) call failed due to unprocessable entity. Message: \(rpcError.message)")
+            return .unprocessableEntity
+        case .unimplemented, .unavailable, .internalError, .resourceExhausted:
+            print("RPC \(method) call resulted in server error. Message: \(rpcError.message)")
+            return .server
+        default:
+            print("RPC \(method) call resulted in unknown error.")
+            return .unknown
         }
-        return .unknown
     }
-}
-
-extension NetworkError: CustomStringConvertible {
+    
+    public var errorDescription: String? {
+        switch self {
+        case .client, .server, .badRequest, .notFound, .unprocessableEntity, .reqEncode, .resDecode, .cancelled, .timeout, .unknown:
+            return self.description
+        }
+    }
+    
     public var description: String {
         switch self {
         case .client, .reqEncode:
@@ -56,11 +87,11 @@ extension NetworkError: CustomStringConvertible {
     }
 }
 
-extension NetworkError: LocalizedError {
-    public var errorDescription: String? {
-        switch self {
-        case .client, .server, .badRequest, .notFound, .unprocessableEntity, .reqEncode, .resDecode, .cancelled, .timeout, .unknown:
-            return self.description
-        }
+func handleRPCError(method: String, error: RPCError) {
+    switch error.code {
+    case .notFound:
+        print("RPC \(method) call resulted in not found error. Message: \(error.message)")
+    default:
+        print("RPC error \(error.message)")
     }
 }

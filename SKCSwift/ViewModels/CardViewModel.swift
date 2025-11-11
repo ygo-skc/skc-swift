@@ -55,11 +55,14 @@ final class CardViewModel {
     
     private func fetchCardScore() async {
         if score == nil {
-            switch await YGOService.getCardScore(cardID: cardID, parser: CardScore.rpcParser) {
+            switch await YGOService.getCardScore(cardID: cardID, mapper: CardScore.fromRPC) {
             case .success(let score):
                 self.score = score
             case .failure(let error):
-                requestErrors[.cardScore] = NetworkError.fromError(error)
+                requestErrors[.cardScore] = NetworkError.fromRPCError(
+                    error as? RPCError ?? RPCError(code: .unknown, message: error.localizedDescription),
+                    method: "Card Score"
+                )
             }
         }
     }
