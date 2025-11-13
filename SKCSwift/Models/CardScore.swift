@@ -9,12 +9,10 @@ nonisolated struct CardScore: Codable, Equatable {
     let currentScoreByFormat: [String: UInt32]
     let uniqueFormats: [String]
     let scheduledChanges: [String]
-}
-
-extension CardScore {
-    nonisolated static func rpcParser(currentScoreByFormat: [String: UInt32],
-                                      uniqueFormats: [String],
-                                      scheduledChanges: [String]) -> Self {
+    
+    nonisolated static func fromRPC(currentScoreByFormat: [String: UInt32],
+                                    uniqueFormats: [String],
+                                    scheduledChanges: [String]) -> Self {
         return .init(currentScoreByFormat: currentScoreByFormat,
                      uniqueFormats: uniqueFormats,
                      scheduledChanges: scheduledChanges)
@@ -28,23 +26,24 @@ nonisolated struct CardScores: Codable, Equatable {
 nonisolated struct CardScoreEntry: Codable, Equatable {
     let card: Card
     let score: UInt32
-}
-
-extension CardScoreEntry {
-    nonisolated static func rpcParser(cardID: String,
-                                      cardName: String,
-                                      cardColor: String,
-                                      cardAttribute: String?,
-                                      cardEffect: String,
-                                      monsterType: String? = nil,
-                                      monsterAttack: Int? = nil,
-                                      monsterDefense: Int? = nil,
-                                      score: UInt32) -> Self {
+    
+    nonisolated static func fromRPC(cardID: String,
+                                    cardName: String,
+                                    cardColor: String,
+                                    cardAttribute: String?,
+                                    cardEffect: String,
+                                    monsterType: String? = nil,
+                                    monsterAttack: Int? = nil,
+                                    monsterDefense: Int? = nil,
+                                    score: UInt32) -> Self {
         return .init(card: Card(cardID: cardID,
                                 cardName: cardName,
                                 cardColor: cardColor,
                                 cardAttribute: cardAttribute,
-                                cardEffect: cardEffect),
+                                cardEffect: cardEffect,
+                                monsterType: monsterType,
+                                monsterAttack: monsterAttack,
+                                monsterDefense: monsterDefense,),
                      score: score)
     }
 }

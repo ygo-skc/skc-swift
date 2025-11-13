@@ -13,11 +13,11 @@ struct CardStatsView: View, Equatable {
     
     private let attribute: Attribute
     
-    init(card: Card, variant: YGOCardViewVariant = .normal) {
-        self.card = card
+    init(card: Card?, variant: YGOCardViewVariant = .normal) {
+        self.card = (card == nil) ? .placeholder : card!
         self.variant = variant
         
-        self.attribute = card.attribute
+        self.attribute = self.card.attribute
     }
     
     var body: some View {
@@ -71,6 +71,9 @@ struct CardStatsView: View, Equatable {
         } else: {
             $0.background(cardColorUI(cardColor: card.cardColor))
         }
+        .if(card == .placeholder) {
+            $0.redacted(reason: .placeholder)
+        }
         .cornerRadius((variant == .normal) ? 10 : 7)
         .frame(
             maxWidth: .infinity,
@@ -78,127 +81,127 @@ struct CardStatsView: View, Equatable {
         )
         .dynamicTypeSize(...DynamicTypeSize.xLarge)
     }
-}
-
-private struct CardNameModifier: ViewModifier {
-    var variant: YGOCardViewVariant
     
-    func body(content: Content) -> some View {
-        switch(variant) {
-        case .normal:
-            content
-                .font(.title3)
-                .fontWeight(.semibold)
-                .lineLimit(1)
-        case .condensed, .listView:
-            content
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .lineLimit(1)
-                .padding(.vertical, -1)
+    private struct CardNameModifier: ViewModifier {
+        var variant: YGOCardViewVariant
+        
+        func body(content: Content) -> some View {
+            switch(variant) {
+            case .normal:
+                content
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .lineLimit(1)
+            case .condensed, .listView:
+                content
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .lineLimit(1)
+                    .padding(.vertical, -1)
+            }
         }
     }
-}
 
-private struct MonsterTypeModifier: ViewModifier {
-    var variant: YGOCardViewVariant
-    
-    func body(content: Content) -> some View {
-        switch(variant) {
-        case .normal:
-            content
-                .font(.body)
-                .fontWeight(.medium)
-                .multilineTextAlignment(.leading)
-                .padding(.bottom, 1.0)
-        case .condensed, .listView:
-            content
-                .font(.footnote)
-                .fontWeight(.medium)
-                .multilineTextAlignment(.leading)
-                .padding(.bottom, 1.0)
+    private struct MonsterTypeModifier: ViewModifier {
+        var variant: YGOCardViewVariant
+        
+        func body(content: Content) -> some View {
+            switch(variant) {
+            case .normal:
+                content
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.leading)
+                    .padding(.bottom, 1.0)
+            case .condensed, .listView:
+                content
+                    .font(.footnote)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.leading)
+                    .padding(.bottom, 1.0)
+            }
         }
     }
-}
 
-private struct CardEffectModifier: ViewModifier {
-    var variant: YGOCardViewVariant
-    
-    func body(content: Content) -> some View {
-        switch(variant) {
-        case .normal:
-            content
-                .font(.body)
-                .fontWeight(.light)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-        case .condensed:
-            content
-                .font(.footnote)
-                .fontWeight(.light)
-                .lineLimit(3, reservesSpace: true)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-        case .listView:
-            content
-                .font(.footnote)
-                .fontWeight(.light)
-                .lineLimit(3, reservesSpace: true)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+    private struct CardEffectModifier: ViewModifier {
+        var variant: YGOCardViewVariant
+        
+        func body(content: Content) -> some View {
+            switch(variant) {
+            case .normal:
+                content
+                    .font(.body)
+                    .fontWeight(.light)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            case .condensed:
+                content
+                    .font(.footnote)
+                    .fontWeight(.light)
+                    .lineLimit(3, reservesSpace: true)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            case .listView:
+                content
+                    .font(.footnote)
+                    .fontWeight(.light)
+                    .lineLimit(3, reservesSpace: true)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            }
         }
     }
-}
 
-private struct CardIdModifier: ViewModifier {
-    var variant: YGOCardViewVariant
-    
-    func body(content: Content) -> some View {
-        switch(variant) {
-        case .normal:
-            content
-                .font(.callout)
-                .fontWeight(.light)
-        case .condensed, .listView:
-            content
-                .font(.caption)
-                .fontWeight(.light)
+    private struct CardIdModifier: ViewModifier {
+        var variant: YGOCardViewVariant
+        
+        func body(content: Content) -> some View {
+            switch(variant) {
+            case .normal:
+                content
+                    .font(.callout)
+                    .fontWeight(.light)
+            case .condensed, .listView:
+                content
+                    .font(.caption)
+                    .fontWeight(.light)
+            }
         }
     }
-}
 
-private struct MonsterAttackDefenseModifier: ViewModifier {
-    var variant: YGOCardViewVariant
-    
-    func body(content: Content) -> some View {
-        switch(variant) {
-        case .normal:
-            content
-                .font(.callout)
-                .fontWeight(.bold)
-        case .condensed, .listView:
-            content
-                .font(.caption)
-                .fontWeight(.bold)
+    private struct MonsterAttackDefenseModifier: ViewModifier {
+        var variant: YGOCardViewVariant
+        
+        func body(content: Content) -> some View {
+            switch(variant) {
+            case .normal:
+                content
+                    .font(.callout)
+                    .fontWeight(.bold)
+            case .condensed, .listView:
+                content
+                    .font(.caption)
+                    .fontWeight(.bold)
+            }
         }
     }
-}
 
-private struct MonsterAttackDefenseContainerModifier: ViewModifier {
-    var variant: YGOCardViewVariant
-    
-    func body(content: Content) -> some View {
-        switch(variant) {
-        case .normal:
-            content
-                .padding(.all, 5)
-                .background(.thickMaterial)
-                .cornerRadius(10)
-        case .condensed, .listView:
-            content
-                .padding(.all, 4)
-                .background(.thickMaterial)
-                .cornerRadius(8)
+    private struct MonsterAttackDefenseContainerModifier: ViewModifier {
+        var variant: YGOCardViewVariant
+        
+        func body(content: Content) -> some View {
+            switch(variant) {
+            case .normal:
+                content
+                    .padding(.all, 5)
+                    .background(.thickMaterial)
+                    .cornerRadius(10)
+            case .condensed, .listView:
+                content
+                    .padding(.all, 4)
+                    .background(.thickMaterial)
+                    .cornerRadius(8)
+            }
         }
     }
 }

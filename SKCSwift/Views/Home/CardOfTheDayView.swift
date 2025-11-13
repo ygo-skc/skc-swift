@@ -30,8 +30,8 @@ struct CardOfTheDayView: View, Equatable {
                     Button {
                         path.append(CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName))
                     } label: { CardOfTheDayContentsView(cotd: cotd, isDataLoaded: isDataLoaded) }
-                    .disabled(!isDataLoaded && networkError == nil)
-                    .buttonStyle(.plain)
+                        .disabled(!isDataLoaded && networkError == nil)
+                        .buttonStyle(.plain)
                 }
             }
         )
@@ -41,33 +41,32 @@ struct CardOfTheDayView: View, Equatable {
         let cotd: CardOfTheDay
         let isDataLoaded: Bool
         
+        init(cotd: CardOfTheDay, isDataLoaded: Bool) {
+            self.cotd = (cotd.date.isEmpty) ? CardOfTheDay(date: "1991-07-27", version: 0, card: .placeholder) : cotd
+            self.isDataLoaded = isDataLoaded
+        }
+        
         var body: some View {
             HStack(alignment: .top, spacing: 20) {
-                if isDataLoaded || cotd.card.cardID != "" {
-                    CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
-                        .equatable()
-                } else {
-                    PlaceholderView(width: CardOfTheDayView.IMAGE_SIZE, height: CardOfTheDayView.IMAGE_SIZE, radius: CardOfTheDayView.IMAGE_SIZE)
-                }
+                CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
+                    .equatable()
                 VStack(alignment: .leading, spacing: 5) {
-                    if isDataLoaded ||  cotd.card.cardID != "" {
-                        InlineDateView(date: cotd.date)
-                            .equatable()
-                        Text(cotd.card.cardName)
-                            .lineLimit(2)
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                        
-                        Text(cotd.card.cardType)
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                    } else {
-                        PlaceholderView(width: 200, height: 18, radius: 5)
-                        PlaceholderView(width: 120, height: 18, radius: 5)
-                        PlaceholderView(width: 60, height: 18, radius: 5)
-                    }
+                    InlineDateView(date: cotd.date)
+                        .equatable()
+                    Text(cotd.card.cardName)
+                        .lineLimit(2)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    Text(cotd.card.cardType)
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                    
                 }
+            }
+            .if(!isDataLoaded) {
+                $0.redacted(reason: .placeholder)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
