@@ -40,7 +40,7 @@ fileprivate actor GRPCManager {
                             )
                         )
                         
-                        config.http2 = .init(maxFrameSize: 2 * 1024, targetWindowSize: 15 * 1024, authority: nil)
+                        config.http2 = .init(maxFrameSize: 5 * 1024, targetWindowSize: 15 * 1024, authority: nil)
                     },
                     serviceConfig: .init(
                         methodConfig: [
