@@ -63,7 +63,8 @@ struct YouTubeUploadsView: View, Equatable {
                 self.videoTitle = title
                 self.videoURI = uploadUrl
                 
-                self.videoThumbnailUrl = URL(string: String(format: YouTubeUploadView.THUMBNAIL_URI_TEMPLATE, videoID))!
+                self.videoThumbnailUrl = URL(
+                    string: YouTubeUploadView.THUMBNAIL_URI_TEMPLATE.replacingOccurrences(of: "%@", with: videoID))!
             }
             
             private static let UPLOAD_IMG_WIDTH: CGFloat = 175

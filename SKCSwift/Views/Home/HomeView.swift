@@ -102,7 +102,7 @@ private struct SettingsView: View {
                 SectionView(header: "Data",
                             content: {
                     SettingsModule(
-                        moduleHeader: "Network Cache (~\(String(format: "%.2f", model.networkCacheSize)) MB)",
+                        moduleHeader: "Network Cache (~\(model.networkCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
                         moduleFootnote: "Cache data is used to speed up loading times and improve performance.",
                         action: model.deleteNetworkCache) {
                             Label("Delete Network Cache", systemImage: "trash.fill")
@@ -111,7 +111,7 @@ private struct SettingsView: View {
                         .padding(.bottom)
                     
                     SettingsModule(
-                        moduleHeader: "Cache Files (~\(String(format: "%.2f", model.fileCacheSize)) MB)",
+                        moduleHeader: "Cache Files (~\(model.fileCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
                         moduleFootnote: "This will also delete network cache.",
                         action: model.deleteFileCache) {
                             Label("Delete File Cache", systemImage: "trash.fill")

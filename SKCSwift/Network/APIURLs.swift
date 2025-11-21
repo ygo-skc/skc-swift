@@ -62,7 +62,7 @@ fileprivate func baseURLComponents(host: String, path: String, queryItems: [URLQ
 func cardInfoURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_API_CARD_INFORMATION_ENDPOINT.description, cardID),
+        path: RequestHelper.SKC_API_CARD_INFORMATION_ENDPOINT.description.replacingOccurrences(of: "%@", with: cardID),
         queryItems: [URLQueryItem(name: "allInfo", value: "true")]
     )
     
@@ -72,7 +72,7 @@ func cardInfoURL(cardID: String) -> URL {
 func productInfoURL(productID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_API_PRODUCT_INFORMATION_ENDPOINT.description, productID)
+        path: RequestHelper.SKC_API_PRODUCT_INFORMATION_ENDPOINT.description.replacingOccurrences(of: "%@", with: productID),
     )
     
     return createURL(components: components)
@@ -96,7 +96,7 @@ func cardBrowseCriteriaURL() -> URL {
 }
 
 func cardBrowseURL(attributes: [String], colors: [String], monsterTypes: [String],
-                               levels: [String], ranks: [String], linkRatings: [String]) -> URL {
+                   levels: [String], ranks: [String], linkRatings: [String]) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
         path: RequestHelper.SKC_API_CARD_BROWSE_ENDPOINT.description,
@@ -151,7 +151,7 @@ func banListDatesURL(format: CardRestrictionFormat) -> URL {
 func bannedContentURL(format: CardRestrictionFormat, listStartDate: String, saveBandwidth: Bool, allInfo: Bool) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_API_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_API_BAN_LIST_CONTENTS_ENDPOINT.description, listStartDate),
+        path: RequestHelper.SKC_API_BAN_LIST_CONTENTS_ENDPOINT.description.replacingOccurrences(of: "%@", with: listStartDate),
         queryItems: [
             URLQueryItem(name: "saveBandwidth", value: "\(saveBandwidth)"),
             URLQueryItem(name: "allInfo", value: "\(allInfo)"),
@@ -183,7 +183,7 @@ func batchCardSupportURL() -> URL {
 func cardSuggestionsURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description, cardID)
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT.description.replacingOccurrences(of: "%@", with: cardID),
     )
     return createURL(components: components)
 }
@@ -191,7 +191,7 @@ func cardSuggestionsURL(cardID: String) -> URL {
 func cardSupportURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description, cardID)
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description.replacingOccurrences(of: "%@", with: cardID),
     )
     return createURL(components: components)
 }
@@ -199,7 +199,7 @@ func cardSupportURL(cardID: String) -> URL {
 func productSuggestionsURL(productID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT.description, productID)
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT.description.replacingOccurrences(of: "%@", with: productID),
     )
     return createURL(components: components)
 }
@@ -215,7 +215,7 @@ func cardOfTheDayURL() -> URL {
 func trendingUrl(resource: TrendingResourceType) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
-        path: String(format: RequestHelper.SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT.description, resource.rawValue)
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT.description.replacingOccurrences(of: "%@", with: resource.rawValue),
     )
     return createURL(components: components)
 }
