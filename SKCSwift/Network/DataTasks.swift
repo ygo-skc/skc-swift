@@ -26,7 +26,10 @@ fileprivate let customSession: URLSession = {
     configuration.requestCachePolicy = .useProtocolCachePolicy
     configuration.allowsCellularAccess = true
     configuration.tlsMinimumSupportedProtocolVersion = .TLSv13
-    configuration.httpMaximumConnectionsPerHost = 8
+    configuration.httpMaximumConnectionsPerHost = 4
+    
+    configuration.httpShouldSetCookies = false
+    configuration.httpCookieAcceptPolicy = .never
     
     if #available(iOS 26.0, *) {
         configuration.enablesEarlyData = true
