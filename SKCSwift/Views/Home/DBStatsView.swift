@@ -9,11 +9,11 @@ import SwiftUI
 
 struct DBStatsView: View, Equatable {
     static func == (lhs: DBStatsView, rhs: DBStatsView) -> Bool {
-        lhs.dbStats == rhs.dbStats && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+        lhs.dbStats == rhs.dbStats && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
     }
     
     let dbStats: SKCDatabaseStats
-    let isDataLoaded: Bool
+    let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
     let retryCB: () async -> Void
     
@@ -24,7 +24,7 @@ struct DBStatsView: View, Equatable {
                 if let networkError {
                     NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
                 } else {
-                    DBDataView(dbStats: dbStats, isDataLoaded: isDataLoaded)
+                    DBDataView(dbStats: dbStats, isDataLoaded: dataTaskStatus == .done)
                     Divider()
                         .padding(.vertical, 4)
                     DataDisclosure()
@@ -103,24 +103,24 @@ struct DBStatsView: View, Equatable {
 
 #Preview("Default") {
     DBStatsView(dbStats: SKCDatabaseStats(productTotal: 313, cardTotal: 13000, banListTotal: 67),
-                isDataLoaded: true, networkError: nil, retryCB: {})
+                dataTaskStatus: .done, networkError: nil, retryCB: {})
     .padding(.horizontal)
 }
 
 #Preview("Loading") {
     DBStatsView(dbStats: SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0),
-                isDataLoaded: false, networkError: nil, retryCB: {})
+                dataTaskStatus: .pending, networkError: nil, retryCB: {})
     .padding(.horizontal)
 }
 
 #Preview("Loaded - No Content") {
     DBStatsView(dbStats: SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0),
-                isDataLoaded: true, networkError: nil, retryCB: {})
+                dataTaskStatus: .done, networkError: nil, retryCB: {})
     .padding(.horizontal)
 }
 
 #Preview("Network Error") {
     DBStatsView(dbStats: SKCDatabaseStats(productTotal: 313, cardTotal: 13000, banListTotal: 67),
-                isDataLoaded: true, networkError: .timeout, retryCB: {})
+                dataTaskStatus: .error, networkError: .timeout, retryCB: {})
     .padding(.horizontal)
 }

@@ -9,12 +9,12 @@ import SwiftUI
 
 struct CardOfTheDayView: View, Equatable {
     static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
-        lhs.cotd == rhs.cotd && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+        lhs.cotd == rhs.cotd && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
     }
     
     @Binding var path: NavigationPath
     let cotd: CardOfTheDay
-    let isDataLoaded: Bool
+    let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
     let retryCB: () async -> Void
     
@@ -29,8 +29,8 @@ struct CardOfTheDayView: View, Equatable {
                 } else {
                     Button {
                         path.append(CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName))
-                    } label: { CardOfTheDayContentsView(cotd: cotd, isDataLoaded: isDataLoaded) }
-                        .disabled(!isDataLoaded && networkError == nil)
+                    } label: { CardOfTheDayContentsView(cotd: cotd, isDataLoaded: dataTaskStatus == .done) }
+                        .disabled(dataTaskStatus != .done && networkError == nil)
                         .buttonStyle(.plain)
                 }
             }
@@ -86,7 +86,7 @@ struct CardOfTheDayView: View, Equatable {
                                                        cardColor: "Effect",
                                                        cardAttribute: "Wind" ,
                                                        cardEffect: "")),
-                         isDataLoaded: true, networkError: nil, retryCB: {})
+                         dataTaskStatus: .done, networkError: nil, retryCB: {})
         .padding(.horizontal)
     }
 }
@@ -103,7 +103,7 @@ struct CardOfTheDayView: View, Equatable {
                                                        cardColor: "Effect",
                                                        cardAttribute: "Wind" ,
                                                        cardEffect: "")),
-                         isDataLoaded: false, networkError: nil, retryCB: {})
+                         dataTaskStatus: .pending, networkError: nil, retryCB: {})
         .padding(.horizontal)
     }
 }
@@ -120,7 +120,7 @@ struct CardOfTheDayView: View, Equatable {
                                                        cardColor: "Effect",
                                                        cardAttribute: "Wind" ,
                                                        cardEffect: "")),
-                         isDataLoaded: false, networkError: .timeout, retryCB: {})
+                         dataTaskStatus: .error, networkError: .timeout, retryCB: {})
         .padding(.horizontal)
     }
 }

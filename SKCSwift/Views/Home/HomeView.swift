@@ -15,29 +15,29 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 30) {
                     DBStatsView(dbStats: model.dbStats,
-                                isDataLoaded: model.dataTaskStatus[.dbStats, default: .uninitiated] == .done,
-                                networkError: model.requestErrors[.dbStats, default: nil],
+                                dataTaskStatus: model.dbStatsDTS,
+                                networkError: model.dbStatsNE,
                                 retryCB: model.fetchDBStatsData)
                     .equatable()
                     
                     CardOfTheDayView(path: $model.path, cotd: model.cardOfTheDay,
-                                     isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
-                                     networkError: model.requestErrors[.cardOfTheDay, default: nil],
+                                     dataTaskStatus:  model.cotdDTS,
+                                     networkError: model.cotdNE,
                                      retryCB: model.fetchCardOfTheDayData)
                     .equatable()
                     
                     UpcomingTCGProductsView(events: model.upcomingTCGProducts,
-                                            isDataLoaded: model.dataTaskStatus[.upcomingTCGProducts, default: .uninitiated] == .done,
-                                            networkError: model.requestErrors[.upcomingTCGProducts, default: nil],
+                                            dataTaskStatus: model.upcomingTCGProductsDTS,
+                                            networkError: model.upcomingTCGProductsNE,
                                             retryCB: model.fetchUpcomingTCGProducts)
                     .equatable()
                     
                     YouTubeUploadsView(ytUplaods: model.ytUploads,
-                                       isDataLoaded: model.dataTaskStatus[.youtubeUploads, default: .uninitiated] == .done,
-                                       networkError: model.requestErrors[.youtubeUploads, default: nil],
+                                       dataTaskStatus: model.ytUploadsDTS,
+                                       networkError: model.ytUploadsNE,
                                        retryCB: model.fetchYouTubeUploadsData)
                     .equatable()
-                    .if(model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] != .done) { view in
+                    .if(model.ytUploadsDTS != .done) { view in
                         view.hidden()
                     }
                 }

@@ -10,8 +10,19 @@ import SwiftUI
 
 @Observable
 final class HomeViewModel {
-    private(set) var dataTaskStatus: [HomeModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: HomeModelDataType.allCases.map { ($0, .uninitiated) })
-    private(set) var requestErrors = [HomeModelDataType: NetworkError?]()
+    private(set) var dbStatsDTS: DataTaskStatus = .uninitiated
+    private(set) var cotdDTS: DataTaskStatus = .uninitiated
+    private(set) var upcomingTCGProductsDTS: DataTaskStatus = .uninitiated
+    private(set) var ytUploadsDTS: DataTaskStatus = .uninitiated
+    
+    @ObservationIgnored
+    private(set) var dbStatsNE: NetworkError? = nil
+    @ObservationIgnored
+    private(set) var cotdNE: NetworkError? = nil
+    @ObservationIgnored
+    private(set) var upcomingTCGProductsNE: NetworkError? = nil
+    @ObservationIgnored
+    private(set) var ytUploadsNE: NetworkError? = nil
     
     @ObservationIgnored
     private(set) var dbStats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
@@ -40,55 +51,55 @@ final class HomeViewModel {
     }
     
     func fetchDBStatsData() async {
-        requestErrors[.dbStats] = nil
-        dataTaskStatus[.dbStats] = .pending
+        dbStatsDTS = .pending
         switch await data(dbStatsURL(), resType: SKCDatabaseStats.self) {
         case .success(let dbStats):
             self.dbStats = dbStats
-            requestErrors[.dbStats] = nil
+            dbStatsNE = nil
+            dbStatsDTS = .done
         case .failure(let error):
-            requestErrors[.dbStats] = error
+            dbStatsNE = error
+            dbStatsDTS = .error
         }
-        dataTaskStatus[.dbStats] = .done
     }
     
     func fetchCardOfTheDayData() async {
-        requestErrors[.cardOfTheDay] = nil
-        dataTaskStatus[.cardOfTheDay] = .pending
+        cotdDTS = .pending
         switch await data(cardOfTheDayURL(), resType: CardOfTheDay.self) {
         case .success(let cardOfTheDay):
             self.cardOfTheDay = cardOfTheDay
-            requestErrors[.cardOfTheDay] = nil
+            cotdNE = nil
+            cotdDTS = .done
         case .failure(let error):
-            requestErrors[.cardOfTheDay] = error
+            cotdNE = error
+            cotdDTS = .error
         }
-        dataTaskStatus[.cardOfTheDay] = .done
     }
     
     func fetchUpcomingTCGProducts() async {
-        requestErrors[.upcomingTCGProducts] = nil
-        dataTaskStatus[.upcomingTCGProducts] = .pending
+        upcomingTCGProductsDTS = .pending
         switch await data(upcomingEventsURL(), resType: Events.self) {
         case .success(let upcomingTCGProducts):
             self.upcomingTCGProducts = upcomingTCGProducts.events
-            requestErrors[.upcomingTCGProducts] = nil
+            upcomingTCGProductsNE = nil
+            upcomingTCGProductsDTS = .done
         case .failure(let error):
-            requestErrors[.upcomingTCGProducts] = error
+            upcomingTCGProductsNE = error
+            upcomingTCGProductsDTS = .error
         }
-        dataTaskStatus[.upcomingTCGProducts] = .done
     }
     
     func fetchYouTubeUploadsData() async {
-        requestErrors[.youtubeUploads] = nil
-        dataTaskStatus[.youtubeUploads] = .pending
+        ytUploadsDTS = .pending
         switch await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self) {
         case .success(let uploadData):
             self.ytUploads = uploadData.videos
-            requestErrors[.youtubeUploads] = nil
+            ytUploadsNE = nil
+            ytUploadsDTS = .done
         case .failure(let error):
-            requestErrors[.youtubeUploads] = error
+            ytUploadsNE = error
+            ytUploadsDTS = .error
         }
-        dataTaskStatus[.youtubeUploads] = .done
     }
     
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {
@@ -108,8 +119,4 @@ final class HomeViewModel {
         }
         return( nil, "")
     }
-}
-
-enum HomeModelDataType: CaseIterable {
-    case dbStats, cardOfTheDay, upcomingTCGProducts, youtubeUploads
 }

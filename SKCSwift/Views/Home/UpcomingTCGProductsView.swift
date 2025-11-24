@@ -9,11 +9,11 @@ import SwiftUI
 
 struct UpcomingTCGProductsView: View, Equatable {
     static func == (lhs: UpcomingTCGProductsView, rhs: UpcomingTCGProductsView) -> Bool {
-        lhs.events == rhs.events && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+        lhs.events == rhs.events && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
     }
     
     let events: [Event]
-    let isDataLoaded: Bool
+    let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
     let retryCB: () async -> Void
     
@@ -25,7 +25,7 @@ struct UpcomingTCGProductsView: View, Equatable {
                 if let networkError {
                     NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
                 } else {
-                    if isDataLoaded || !events.isEmpty {
+                    if dataTaskStatus == .done || !events.isEmpty {
                         UpcomingTCGProductsContentView(events: events)
                     }
                     else {
@@ -80,17 +80,26 @@ struct UpcomingTCGProductsView: View, Equatable {
 }
 
 #Preview("Default") {
-    UpcomingTCGProductsView(events: [], isDataLoaded: true, networkError: nil, retryCB: {})
-        .padding(.horizontal)
+    UpcomingTCGProductsView(events: [],
+                            dataTaskStatus: .done,
+                            networkError: nil,
+                            retryCB: {})
+    .padding(.horizontal)
 }
 
 #Preview("Loading") {
-    UpcomingTCGProductsView(events: [], isDataLoaded: false, networkError: nil, retryCB: {})
-        .padding(.horizontal)
+    UpcomingTCGProductsView(events: [],
+                            dataTaskStatus: .pending,
+                            networkError: nil,
+                            retryCB: {})
+    .padding(.horizontal)
 }
 
 #Preview("Network Error") {
-    UpcomingTCGProductsView(events: [], isDataLoaded: true, networkError: .timeout, retryCB: {})
-        .padding(.horizontal)
+    UpcomingTCGProductsView(events: [],
+                            dataTaskStatus: .error,
+                            networkError: .timeout,
+                            retryCB: {})
+    .padding(.horizontal)
 }
 

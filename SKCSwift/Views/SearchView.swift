@@ -28,7 +28,7 @@ struct SearchView: View {
                     } else {
                         TrendingView(path: $path, trendingModel: $trendingModel)
                     }
-                case (.done, _), (.pending, _):
+                case (.done, _), (.pending, _), (.error, _):
                     SearchResultsView(path: $path, searchModel: searchModel)
                 }
             }

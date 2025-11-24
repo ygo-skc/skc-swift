@@ -9,11 +9,11 @@ import SwiftUI
 
 struct YouTubeUploadsView: View, Equatable {
     static func == (lhs: YouTubeUploadsView, rhs: YouTubeUploadsView) -> Bool {
-        lhs.ytUplaods == rhs.ytUplaods && lhs.isDataLoaded == rhs.isDataLoaded && lhs.networkError == rhs.networkError
+        lhs.ytUplaods == rhs.ytUplaods && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
     }
     
     let ytUplaods: [YouTubeVideos]
-    let isDataLoaded: Bool
+    let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
     let retryCB: () async -> Void
     
@@ -25,7 +25,7 @@ struct YouTubeUploadsView: View, Equatable {
                 if let networkError {
                     NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
                 } else {
-                    if isDataLoaded || !ytUplaods.isEmpty {
+                    if dataTaskStatus == .done || !ytUplaods.isEmpty {
                         YouTubeUploadsContentView(ytUplaods: ytUplaods)
                     } else {
                         ProgressView("Loading...")
@@ -98,17 +98,26 @@ struct YouTubeUploadsView: View, Equatable {
 }
 
 #Preview("Default") {
-    YouTubeUploadsView(ytUplaods: [], isDataLoaded: true, networkError: nil, retryCB: {})
-        .padding(.horizontal)
+    YouTubeUploadsView(ytUplaods: [],
+                       dataTaskStatus: .done,
+                       networkError: nil,
+                       retryCB: {})
+    .padding(.horizontal)
 }
 
 #Preview("Loading") {
-    YouTubeUploadsView(ytUplaods: [], isDataLoaded: false, networkError: nil, retryCB: {})
-        .padding(.horizontal)
+    YouTubeUploadsView(ytUplaods: [],
+                       dataTaskStatus: .pending,
+                       networkError: nil,
+                       retryCB: {})
+    .padding(.horizontal)
 }
 
 #Preview("Network Error") {
-    YouTubeUploadsView(ytUplaods: [], isDataLoaded: true, networkError: .timeout, retryCB: {})
-        .padding(.horizontal)
+    YouTubeUploadsView(ytUplaods: [],
+                       dataTaskStatus: .error,
+                       networkError: .timeout,
+                       retryCB: {})
+    .padding(.horizontal)
 }
 
