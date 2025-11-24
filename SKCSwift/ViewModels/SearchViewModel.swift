@@ -74,9 +74,9 @@ final class SearchViewModel {
     @concurrent
     private func search(subject: String) async -> ([Card], NetworkError?, DataTaskStatus) {
         let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self)
-        let cards = (try? res.get()) ?? []
+        let cards = (try? res.get()) ?? []  // on error hard code results to empty list
         let (networkError, taskStatus) = res.validate()
-        return (cards, (cards.isEmpty) ? .notFound : networkError, taskStatus)
+        return (cards, (cards.isEmpty && networkError == nil) ? .notFound : networkError, taskStatus)   // if empty results list returned w/ no errors, treat it as not found
     }
     
     @concurrent
