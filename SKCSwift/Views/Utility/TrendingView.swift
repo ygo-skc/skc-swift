@@ -127,13 +127,15 @@ private struct TrendChangeView: View, Equatable {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 10) {
             Label {
                 Text(trendLabel)
             } icon: {
                 Image(systemName: trendImage)
             }
             .foregroundColor(trendColor)
+            
+            Divider()
             
             Label {
                 Text(String(hits))
