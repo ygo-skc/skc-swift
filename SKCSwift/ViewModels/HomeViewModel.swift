@@ -52,54 +52,30 @@ final class HomeViewModel {
     
     func fetchDBStatsData() async {
         dbStatsDTS = .pending
-        switch await data(dbStatsURL(), resType: SKCDatabaseStats.self) {
-        case .success(let dbStats):
-            self.dbStats = dbStats
-            dbStatsNE = nil
-            dbStatsDTS = .done
-        case .failure(let error):
-            dbStatsNE = error
-            dbStatsDTS = .error
-        }
+        let res = await data(dbStatsURL(), resType: SKCDatabaseStats.self)
+        dbStats = (try? res.get()) ?? dbStats
+        (dbStatsNE, dbStatsDTS) = res.validate()
     }
     
     func fetchCardOfTheDayData() async {
         cotdDTS = .pending
-        switch await data(cardOfTheDayURL(), resType: CardOfTheDay.self) {
-        case .success(let cardOfTheDay):
-            self.cardOfTheDay = cardOfTheDay
-            cotdNE = nil
-            cotdDTS = .done
-        case .failure(let error):
-            cotdNE = error
-            cotdDTS = .error
-        }
+        let res = await data(cardOfTheDayURL(), resType: CardOfTheDay.self)
+        cardOfTheDay = (try? res.get()) ?? cardOfTheDay
+        (cotdNE, cotdDTS) = res.validate()
     }
     
     func fetchUpcomingTCGProducts() async {
         upcomingTCGProductsDTS = .pending
-        switch await data(upcomingEventsURL(), resType: Events.self) {
-        case .success(let upcomingTCGProducts):
-            self.upcomingTCGProducts = upcomingTCGProducts.events
-            upcomingTCGProductsNE = nil
-            upcomingTCGProductsDTS = .done
-        case .failure(let error):
-            upcomingTCGProductsNE = error
-            upcomingTCGProductsDTS = .error
-        }
+        let res = await data(upcomingEventsURL(), resType: Events.self)
+        upcomingTCGProducts = (try? res.get().events) ?? upcomingTCGProducts
+        (upcomingTCGProductsNE, upcomingTCGProductsDTS) = res.validate()
     }
     
     func fetchYouTubeUploadsData() async {
         ytUploadsDTS = .pending
-        switch await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self) {
-        case .success(let uploadData):
-            self.ytUploads = uploadData.videos
-            ytUploadsNE = nil
-            ytUploadsDTS = .done
-        case .failure(let error):
-            ytUploadsNE = error
-            ytUploadsDTS = .error
-        }
+        let res = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
+        ytUploads = (try? res.get().videos) ?? ytUploads
+        (ytUploadsNE, ytUploadsDTS) = res.validate()
     }
     
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {
