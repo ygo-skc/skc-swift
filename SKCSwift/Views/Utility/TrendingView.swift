@@ -23,8 +23,7 @@ struct TrendingView: View {
                 }
                 .pickerStyle(.segmented)
                 
-                
-                if trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] == nil  {
+                if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
                     switch trendingModel.focusedTrend {
                     case .card:
                         TrendingCardsView(path: $path, trendingCards: trendingModel.cards)
@@ -39,16 +38,16 @@ struct TrendingView: View {
             }
             .dynamicTypeSize(...DynamicTypeSize.medium)
         }
-        .scrollDisabled(trendingModel.trendingRequestErrors[trendingModel.focusedTrend] != nil)
+        .scrollDisabled(trendingModel.focusedTrendNE != nil)
         .frame(maxWidth: .infinity)
         .overlay {
-            if let networkError = trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] {
+            if trendingModel.focusedTrendDTS == .error, let networkError = trendingModel.focusedTrendNE {
                 NetworkErrorView(error: networkError, action: {
                     Task {
                         await trendingModel.fetchTrendingData(forceRefresh: true)
                     }
                 })
-            } else if DataTaskStatusParser.isDataPending(trendingModel.trendingDataTaskStatuses[trendingModel.focusedTrend]!) {
+            } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }
