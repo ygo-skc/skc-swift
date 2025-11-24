@@ -32,13 +32,12 @@ struct HomeView: View {
                                             retryCB: model.fetchUpcomingTCGProducts)
                     .equatable()
                     
-                    YouTubeUploadsView(ytUplaods: model.ytUploads,
-                                       dataTaskStatus: model.ytUploadsDTS,
-                                       networkError: model.ytUploadsNE,
-                                       retryCB: model.fetchYouTubeUploadsData)
-                    .equatable()
-                    .if(model.ytUploadsDTS != .done) { view in
-                        view.hidden()
+                    if model.upcomingTCGProductsDTS == .done {
+                        YouTubeUploadsView(ytUplaods: model.ytUploads,
+                                           dataTaskStatus: model.ytUploadsDTS,
+                                           networkError: model.ytUploadsNE,
+                                           retryCB: model.fetchYouTubeUploadsData)
+                        .equatable()
                     }
                 }
                 .toolbar {
