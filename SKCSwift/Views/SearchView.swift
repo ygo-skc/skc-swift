@@ -28,9 +28,13 @@ struct SearchView: View {
                     } else {
                         TrendingView(path: $path, trendingModel: $trendingModel)
                     }
+                case .pending where searchModel.isSearchSlow:
+                        ProgressView("Loading...")
+                            .controlSize(.large)
                 case .done, .pending, .error:
                     SearchResultsView(
                         path: $path,
+                        dataTaskStatus: searchModel.dataTaskStatus,
                         requestError: searchModel.requestError,
                         results: searchModel.searchResults,
                         retryCB: { await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText) })
@@ -40,16 +44,18 @@ struct SearchView: View {
             .ygoNavigationDestination()
             .navigationTitle("Search & Trending")
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $searchModel.searchText, isPresented: $searchModel.isSearching,
-                        placement: .toolbar, prompt: "Search for card...")
-        }
-        .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
-            Task {
-                await searchModel.searchDB(oldValue: oldValue, newValue: newValue)
+            .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
+                Task {
+                    await searchModel.searchDB(oldValue: oldValue, newValue: newValue)
+                }
             }
+            .scrollDismissesKeyboard(.immediately)
+            .disableAutocorrection(true)
+            .searchable(text: $searchModel.searchText,
+                        isPresented: $searchModel.isSearching,
+                        placement: .toolbar,
+                        prompt: "Search for card...")
         }
-        .scrollDismissesKeyboard(.immediately)
-        .disableAutocorrection(true)
     }
     
     private struct RecentlyViewedView: View {
@@ -125,6 +131,7 @@ struct SearchView: View {
     
     private struct SearchResultsView: View {
         @Binding var path: NavigationPath
+        let dataTaskStatus: DataTaskStatus
         let requestError: NetworkError?
         let results: [SearchResults]
         let retryCB: () async -> Void
@@ -150,7 +157,7 @@ struct SearchView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay {
-                if let networkError = requestError {
+                if !DataTaskStatusParser.isDataPending(dataTaskStatus), let networkError = requestError {
                     if networkError == .notFound {
                         ContentUnavailableView.search
                     } else if networkError != .cancelled {

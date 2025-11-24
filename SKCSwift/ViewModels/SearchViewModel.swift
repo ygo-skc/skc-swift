@@ -14,6 +14,7 @@ final class SearchViewModel {
     
     private(set) var requestError: NetworkError? = nil
     private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
+    private(set) var isSearchSlow = false
     
     @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
@@ -21,6 +22,8 @@ final class SearchViewModel {
     private var cardIDsForSearchResults: Set<String> = []
     @ObservationIgnored
     private var searchTask: Task<(), any Error>?
+    @ObservationIgnored
+    private var slowSearchDispatch: DispatchWorkItem?
     
     func searchDB(oldValue: String, newValue: String) async {
         if requestError == .notFound && newValue.starts(with: oldValue) {
@@ -28,6 +31,7 @@ final class SearchViewModel {
         }
         
         searchTask?.cancel()
+        slowSearchDispatch?.cancel()
         if newValue == "" {
             resetSearchResults()
             requestError = nil
@@ -35,8 +39,15 @@ final class SearchViewModel {
         } else {
             searchTask = Task {
                 dataTaskStatus = .pending
+                slowSearchDispatch = DispatchWorkItem { [weak self] in
+                    self?.isSearchSlow = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: slowSearchDispatch!)
                 
                 let (requestResults, searchErr, searchTaskStatus) = await search(subject: newValue)
+                if Task.isCancelled {
+                    return
+                }
                 if requestResults.isEmpty || searchErr != nil || searchErr == .notFound {
                     resetSearchResults()
                 } else {
@@ -47,6 +58,8 @@ final class SearchViewModel {
                         cardIDsForSearchResults = newSearchResultsCardIDs
                     }
                 }
+                slowSearchDispatch?.cancel()
+                isSearchSlow = false
                 requestError = searchErr
                 dataTaskStatus = searchTaskStatus
             }
