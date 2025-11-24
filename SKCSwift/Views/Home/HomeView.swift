@@ -60,30 +60,30 @@ struct HomeView: View {
             }
         }
     }
-}
-
-private struct HomeViewToolbar: ToolbarContent {
-    @State private var isSettingsSheetPresented = false
-    @Namespace private var animation
     
-    var body: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button {
-                isSettingsSheetPresented = true
-            } label: {
-                Image(systemName: "gear")
+    private struct HomeViewToolbar: ToolbarContent {
+        @State private var isSettingsSheetPresented = false
+        @Namespace private var animation
+        
+        var body: some ToolbarContent {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isSettingsSheetPresented = true
+                } label: {
+                    Image(systemName: "gear")
+                }
+                .sheet(isPresented: $isSettingsSheetPresented) {
+                    SettingsView()
+                        .presentationDetents([.medium, .large])
+                        .navigationTransition(.zoom(sourceID: "settings", in: animation))
+                }
             }
-            .sheet(isPresented: $isSettingsSheetPresented) {
-                SettingsView()
-                    .presentationDetents([.medium, .large])
-                    .navigationTransition(.zoom(sourceID: "settings", in: animation))
-            }
-        }
-        .modify {
-            if #available(iOS 26.0, *) {
-                $0.matchedTransitionSource(id: "settings", in: animation)
-            } else {
-                $0
+            .modify {
+                if #available(iOS 26.0, *) {
+                    $0.matchedTransitionSource(id: "settings", in: animation)
+                } else {
+                    $0
+                }
             }
         }
     }
@@ -141,40 +141,40 @@ private struct SettingsView: View {
             }
         }
     }
-}
-
-private struct SettingsModule<Label: View>: View {
-    let moduleHeader: String
-    let moduleFootnote: String?
-    let action: () async -> Void
-    @ViewBuilder let label: () -> Label
     
-    @State private var isAlertOpen = false
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(moduleHeader)
-                .font(.headline)
-            if let moduleFootnote = moduleFootnote {
-                Text(moduleFootnote)
-                    .font(.footnote)
-            }
-            
-            Button { isAlertOpen.toggle() } label: { label() }
-                .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("🫡", role: .destructive) {
-                        Task {
-                            await action()
-                        }
-                    }
-                } message: {
-                    Text("Action is irreversible.")
+    private struct SettingsModule<Label: View>: View {
+        let moduleHeader: String
+        let moduleFootnote: String?
+        let action: () async -> Void
+        @ViewBuilder let label: () -> Label
+        
+        @State private var isAlertOpen = false
+        
+        var body: some View {
+            VStack(alignment: .leading) {
+                Text(moduleHeader)
+                    .font(.headline)
+                if let moduleFootnote = moduleFootnote {
+                    Text(moduleFootnote)
+                        .font(.footnote)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
+                
+                Button { isAlertOpen.toggle() } label: { label() }
+                    .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("🫡", role: .destructive) {
+                            Task {
+                                await action()
+                            }
+                        }
+                    } message: {
+                        Text("Action is irreversible.")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.regular)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
     }
 }
 
