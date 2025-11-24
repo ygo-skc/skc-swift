@@ -20,8 +20,8 @@ nonisolated fileprivate struct NilReqBody: Encodable {}
 fileprivate let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
     
-    configuration.timeoutIntervalForRequest = 3
-    configuration.timeoutIntervalForResource = 5
+    configuration.timeoutIntervalForRequest = 5
+    configuration.timeoutIntervalForResource = 10
     configuration.multipathServiceType = .handover
     configuration.requestCachePolicy = .useProtocolCachePolicy
     configuration.allowsCellularAccess = true
@@ -30,6 +30,13 @@ fileprivate let customSession: URLSession = {
     
     configuration.httpShouldSetCookies = false
     configuration.httpCookieAcceptPolicy = .never
+    
+    configuration.waitsForConnectivity = true
+    
+    if #available(iOS 13.0, *) {
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.allowsConstrainedNetworkAccess = true
+    }
     
     if #available(iOS 26.0, *) {
         configuration.enablesEarlyData = true
