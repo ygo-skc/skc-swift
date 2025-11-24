@@ -6,7 +6,7 @@
 //
 
 extension Result where Success: Decodable, Failure == NetworkError {
-    func validate() -> (NetworkError?, DataTaskStatus) {
+    nonisolated func validate() -> (NetworkError?, DataTaskStatus) {
         switch self {
         case .success(_):
             return (nil, .done)

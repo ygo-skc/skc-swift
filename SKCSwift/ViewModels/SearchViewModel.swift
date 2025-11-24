@@ -9,12 +9,13 @@ import Foundation
 
 @Observable
 final class SearchViewModel {
-    var isSearching = false
+    var isSearching = false // user has search open
     var searchText = ""
     
     private(set) var requestError: NetworkError? = nil
     private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
     
+    @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
     @ObservationIgnored
     private var cardIDsForSearchResults: Set<String> = []
@@ -33,12 +34,10 @@ final class SearchViewModel {
             dataTaskStatus = .done
         } else {
             searchTask = Task {
-                requestError = nil
                 dataTaskStatus = .pending
                 
-                let (requestResults, searchErr) = await search(subject: newValue)
-                requestError = searchErr
-                if requestResults.isEmpty || searchErr != nil {
+                let (requestResults, searchErr, searchTaskStatus) = await search(subject: newValue)
+                if requestResults.isEmpty || searchErr != nil || searchErr == .notFound {
                     resetSearchResults()
                 } else {
                     let (newSearchResults, newSearchResultsCardIDs) = await partitionResults(newSearchResults: requestResults,
@@ -48,7 +47,8 @@ final class SearchViewModel {
                         cardIDsForSearchResults = newSearchResultsCardIDs
                     }
                 }
-                dataTaskStatus = .done
+                requestError = searchErr
+                dataTaskStatus = searchTaskStatus
             }
         }
     }
@@ -59,21 +59,16 @@ final class SearchViewModel {
     }
     
     @concurrent
-    private func search(subject: String) async -> ([Card], NetworkError?) {
-        switch await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
-        case .success(let cards):
-            if cards.isEmpty {
-                return ([], NetworkError.notFound)
-            }
-            return (cards, nil)
-        case .failure(let err):
-            return ([], err)
-        }
+    private func search(subject: String) async -> ([Card], NetworkError?, DataTaskStatus) {
+        let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self)
+        let cards = (try? res.get()) ?? []
+        let (networkError, taskStatus) = res.validate()
+        return (cards, (cards.isEmpty) ? .notFound : networkError, taskStatus)
     }
     
     @concurrent
     private func partitionResults(newSearchResults newResults: [Card],
-                                              previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
+                                  previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
         var sections: [String] = []
         var cardIDs: Set<String> = []
         
