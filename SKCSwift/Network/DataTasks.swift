@@ -21,7 +21,7 @@ fileprivate let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
     
     configuration.timeoutIntervalForRequest = 5
-    configuration.timeoutIntervalForResource = 10
+    configuration.timeoutIntervalForResource = 15
     configuration.multipathServiceType = .handover
     configuration.requestCachePolicy = .useProtocolCachePolicy
     configuration.allowsCellularAccess = true
