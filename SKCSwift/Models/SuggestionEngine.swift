@@ -55,7 +55,7 @@ nonisolated struct BatchCardRequest: Codable {
     let cardIDs: Set<String>
 }
 
-struct CardDetailsResponse: Codable {
+nonisolated struct CardDetailsResponse: Codable {
     let cardInfo: [String: Card]
     let unknownResources: [String]
 }

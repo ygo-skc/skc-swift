@@ -24,19 +24,25 @@ struct SearchView: View {
                         .pending where searchModel.searchText.isEmpty,
                         .uninitiated:
                     if searchModel.isSearching {
-                        RecentlyViewedView(path: $path, recentlyViewedModel: recentlyViewedModel, history: history)
+                        RecentlyViewedView(path: $path,
+                                           history: history,
+                                           recentlyViewedCardDetails: recentlyViewedModel.recentlyViewedCardDetails,
+                                           recentlyViewedSuggestions: recentlyViewedModel.recentlyViewedSuggestions,
+                                           dataTaskStatus: recentlyViewedModel.dataTaskStatus,
+                                           requestError: recentlyViewedModel.requestError,
+                                           loadDataCB: { await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history) })
                     } else {
                         TrendingView(path: $path, trendingModel: $trendingModel)
                     }
                 case .pending where searchModel.isSearchSlow:
-                        ProgressView("Loading...")
-                            .controlSize(.large)
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 case .done, .pending, .error:
                     SearchResultsView(
                         path: $path,
+                        results: searchModel.searchResults,
                         dataTaskStatus: searchModel.dataTaskStatus,
                         requestError: searchModel.requestError,
-                        results: searchModel.searchResults,
                         retryCB: { await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText) })
                 }
             }
@@ -60,21 +66,25 @@ struct SearchView: View {
     
     private struct RecentlyViewedView: View {
         @Binding var path: NavigationPath
-        let recentlyViewedModel: RecentlyViewedViewModel
         let history: [History]
+        let recentlyViewedCardDetails: [Card]
+        let recentlyViewedSuggestions: [CardReference]
+        let dataTaskStatus: DataTaskStatus
+        let requestError: NetworkError?
+        let loadDataCB: () async -> Void
         
         var body: some View {
             ScrollView {
-                if !recentlyViewedModel.recentlyViewedCardDetails.isEmpty {
+                if !recentlyViewedCardDetails.isEmpty {
                     SectionView(header: "History",
                                 variant: .plain,
                                 content: {
                         LazyVStack(alignment: .leading) {
-                            if !recentlyViewedModel.recentlyViewedSuggestions.isEmpty {
+                            if !recentlyViewedSuggestions.isEmpty {
                                 Label("Personalized suggestions", systemImage: "sparkles")
                                     .font(.headline)
                                     .fontWeight(.medium)
-                                SuggestionCarouselView(references: recentlyViewedModel.recentlyViewedSuggestions, variant: .support)
+                                SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
                                     .padding(.bottom)
                             }
                             
@@ -83,7 +93,7 @@ struct SearchView: View {
                                 .font(.headline)
                                 .fontWeight(.medium)
                             
-                            ForEach(recentlyViewedModel.recentlyViewedCardDetails, id: \.cardID) { card in
+                            ForEach(recentlyViewedCardDetails, id: \.cardID) { card in
                                 Button {
                                     path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
                                 } label: {
@@ -101,28 +111,23 @@ struct SearchView: View {
                 }
             }
             .task {
-                await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: Array(history.prefix(15)))
+                await loadDataCB()
             }
             .dynamicTypeSize(...DynamicTypeSize.medium)
             .frame(maxWidth: .infinity)
             .overlay {
-                if let requestError = recentlyViewedModel.requestError {
+                if let requestError = requestError {
                     NetworkErrorView(error: requestError, action: {
                         Task {
-                            await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history)
+                            await loadDataCB()
                         }
                     })
-                } else {
-                    switch recentlyViewedModel.dataTaskStatus {
-                    case .uninitiated, .pending:
-                        ProgressView("Loading...")
-                            .controlSize(.large)
-                    case .done where history.isEmpty:
-                        ContentUnavailableView {
-                            Label("Type to search 😉", systemImage: "text.magnifyingglass")
-                        }
-                    default:
-                        EmptyView()
+                } else if DataTaskStatusParser.isDataPending(dataTaskStatus) {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                } else if dataTaskStatus == .done && history.isEmpty {
+                    ContentUnavailableView {
+                        Label("Type to search 😉", systemImage: "text.magnifyingglass")
                     }
                 }
             }
@@ -131,9 +136,9 @@ struct SearchView: View {
     
     private struct SearchResultsView: View {
         @Binding var path: NavigationPath
+        let results: [SearchResults]
         let dataTaskStatus: DataTaskStatus
         let requestError: NetworkError?
-        let results: [SearchResults]
         let retryCB: () async -> Void
         
         var body: some View {
