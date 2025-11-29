@@ -40,7 +40,7 @@ final class RecentlyViewedViewModel {
     }
     
     @concurrent
-    private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
+    nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
                                             recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?, DataTaskStatus) {
         let res = await data(cardDetailsUrl(),
                              reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
@@ -51,15 +51,14 @@ final class RecentlyViewedViewModel {
     }
     
     @concurrent
-    private func fetchRecentlyViewedSuggestions(newlyViewed: Set<String>) async  -> [CardReference] {
+    nonisolated private func fetchRecentlyViewedSuggestions(newlyViewed: Set<String>) async  -> [CardReference] {
         async let suggestionAsync = fetchRecentlyViewedSuggestionData(newlyViewed: newlyViewed)
         async let supportAsync = fetchRecentlyViewedSupportData(newlyViewed: newlyViewed)
         
         return await consolidateSuggestions(suggestions: await suggestionAsync, support: await supportAsync)
     }
     
-    @concurrent
-    private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
+    nonisolated private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
         switch await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                           resType: BatchSuggestions.self, httpMethod: "POST") {
         case .success(let suggestions):
@@ -70,8 +69,7 @@ final class RecentlyViewedViewModel {
                                 unknownResources: Set(), falsePositives: Set())
     }
     
-    @concurrent
-    private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
+    nonisolated private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
         switch await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                           resType: BatchSupport.self, httpMethod: "POST") {
         case .success(let suggestions):
@@ -81,8 +79,7 @@ final class RecentlyViewedViewModel {
         return BatchSupport(referencedBy: [], materialFor: [], unknownResources: Set(), falsePositives: Set())
     }
     
-    @concurrent
-    private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
+    nonisolated private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
         let s = suggestions.namedMaterials + suggestions.namedReferences + support.materialFor + support.referencedBy
         return Array(s
             .reduce(into: [String: CardReference]()) { accumulator, ref in

@@ -72,7 +72,7 @@ final class SearchViewModel {
     }
     
     @concurrent
-    private func search(subject: String) async -> ([Card], NetworkError?, DataTaskStatus) {
+    nonisolated private func search(subject: String) async -> ([Card], NetworkError?, DataTaskStatus) {
         let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self)
         let cards = (try? res.get()) ?? []  // on error hard code results to empty list
         let (networkError, taskStatus) = res.validate()
@@ -80,7 +80,7 @@ final class SearchViewModel {
     }
     
     @concurrent
-    private func partitionResults(newSearchResults newResults: [Card],
+    nonisolated private func partitionResults(newSearchResults newResults: [Card],
                                   previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
         var sections: [String] = []
         var cardIDs: Set<String> = []

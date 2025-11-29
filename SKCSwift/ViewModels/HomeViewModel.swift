@@ -87,7 +87,7 @@ final class HomeViewModel {
         return .systemAction
     }
     
-    private func determineTypeOfURLClick(path: String) -> (String?, String) {
+    nonisolated private func determineTypeOfURLClick(path: String) -> (String?, String) {
         if path.contains("/card/") {
             return (path.replacingOccurrences(of: "/card/", with: ""), "card")
         } else if path.contains("/product/") {

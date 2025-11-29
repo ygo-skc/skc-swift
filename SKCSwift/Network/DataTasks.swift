@@ -17,7 +17,7 @@ struct DataTaskStatusParser {
 
 nonisolated fileprivate struct NilReqBody: Encodable {}
 
-fileprivate let customSession: URLSession = {
+fileprivate nonisolated let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
     
     configuration.timeoutIntervalForRequest = 5
@@ -61,7 +61,7 @@ nonisolated fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: 
     return request
 }
 
-fileprivate func validateResponse(response: URLResponse?) async throws {
+nonisolated fileprivate func validateResponse(response: URLResponse?) async throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         switch code {
@@ -82,12 +82,12 @@ fileprivate func validateResponse(response: URLResponse?) async throws {
 }
 
 @concurrent
-func data<U>(_ url: URL, resType: U.Type) async -> Result<U, NetworkError> where U: Decodable {
+nonisolated func data<U>(_ url: URL, resType: U.Type) async -> Result<U, NetworkError> where U: Decodable {
     await dataTask(url, reqBody: Optional<NilReqBody>.none, resType: resType)
 }
 
 @concurrent
-func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
+nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
     await dataTask(url, reqBody: reqBody, resType: resType, httpMethod: httpMethod)
 }
 
