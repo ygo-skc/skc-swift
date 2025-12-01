@@ -21,7 +21,7 @@ fileprivate actor GRPCManager {
                     config: .defaults { config in
                         config.compression = .init(
                             algorithm: .gzip,
-                            enabledAlgorithms: [.gzip, .none]
+                            enabledAlgorithms: [.gzip]
                         )
                         
                         config.backoff = .init(
@@ -32,10 +32,10 @@ fileprivate actor GRPCManager {
                         )
                         
                         config.connection = .init(
-                            maxIdleTime: .seconds(3 * 10 * 60),
+                            maxIdleTime: .seconds(3 * 60),
                             keepalive: .init(
-                                time: .seconds(45),
-                                timeout: .seconds(12),
+                                time: .seconds(20),
+                                timeout: .seconds(8),
                                 allowWithoutCalls: true
                             )
                         )
@@ -46,7 +46,7 @@ fileprivate actor GRPCManager {
                         methodConfig: [
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
-                                waitForReady: true,
+                                waitForReady: false,
                                 timeout: .seconds(12)
                             )
                         ]
