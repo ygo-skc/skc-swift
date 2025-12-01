@@ -23,31 +23,31 @@ fileprivate actor GRPCManager {
                             algorithm: .gzip,
                             enabledAlgorithms: [.gzip, .none]
                         )
-                         
+                        
                         config.backoff = .init(
-                            initial: .milliseconds(120),
-                            max: .seconds(1),
+                            initial: .milliseconds(150),
+                            max: .seconds(12),
                             multiplier: 1.3,
                             jitter: 0.2
                         )
                         
                         config.connection = .init(
-                            maxIdleTime: .seconds(10 * 60),
+                            maxIdleTime: .seconds(3 * 10 * 60),
                             keepalive: .init(
-                                time: .seconds(30),
-                                timeout: .seconds(3),
+                                time: .seconds(45),
+                                timeout: .seconds(12),
                                 allowWithoutCalls: true
                             )
                         )
                         
-                        config.http2 = .init(maxFrameSize: 5 * 1024, targetWindowSize: 15 * 1024, authority: nil)
+                        config.http2 = .init(maxFrameSize: 2 * 1024, targetWindowSize: 24 * 1024, authority: nil)
                     },
                     serviceConfig: .init(
                         methodConfig: [
                             .init(
-                                names: [.init(service: "")],  // Empty service means all methods
+                                names: [.init(service: "", method: "")],  // Empty service means all methods
                                 waitForReady: true,
-                                timeout: .seconds(3)
+                                timeout: .seconds(12)
                             )
                         ]
                     )
@@ -67,7 +67,7 @@ fileprivate actor GRPCManager {
 }
 
 @concurrent
-public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
+nonisolated public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
     do {
         let timeline = try await GRPCManager.services.restrictions.getEffectiveTimelineForFormat(.with { $0.value = format })
         return .success(.init(timeline.allDates))
@@ -77,9 +77,9 @@ public func getRestrictionDates(format: String) async -> Result<[String], any Er
 }
 
 @concurrent
-public func getScoresByFormatAndDate<U>(format: String,
-                                        date: String,
-                                        mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
+nonisolated public func getScoresByFormatAndDate<U>(format: String,
+                                                    date: String,
+                                                    mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
 async -> Result<[U], any Error> where U: Decodable {
     do {
         let scores = try await GRPCManager.services.score.getScoresByFormatAndDate(.with {
@@ -105,7 +105,7 @@ async -> Result<[U], any Error> where U: Decodable {
 }
 
 @concurrent
-public func getCardScore<U>(cardID: String,
+nonisolated public func getCardScore<U>(cardID: String,
                             mapper: ([String: UInt32], [String], [String]) -> U
 ) async -> Result<U, any Error> where U: Decodable {
     do {
