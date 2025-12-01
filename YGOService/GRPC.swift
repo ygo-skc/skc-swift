@@ -32,10 +32,10 @@ fileprivate actor GRPCManager {
                         )
                         
                         config.connection = .init(
-                            maxIdleTime: .seconds(3 * 60),
+                            maxIdleTime: .seconds(2 * 60),
                             keepalive: .init(
-                                time: .seconds(20),
-                                timeout: .seconds(8),
+                                time: .seconds(25),
+                                timeout: .seconds(5),
                                 allowWithoutCalls: true
                             )
                         )
@@ -46,7 +46,7 @@ fileprivate actor GRPCManager {
                         methodConfig: [
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
-                                waitForReady: false,
+                                waitForReady: true,
                                 timeout: .seconds(12)
                             )
                         ]
