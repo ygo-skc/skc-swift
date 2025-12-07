@@ -12,6 +12,7 @@ struct RestrictionDatesView: View {
     let dates: [BanListDate]
     
     @State private var isSelectorSheetPresented = false
+    @Namespace private var animation
     
     var body: some View {
         HStack(spacing: 15)  {
@@ -30,6 +31,7 @@ struct RestrictionDatesView: View {
             .modify {
                 if #available(iOS 26.0, *) {
                     $0.buttonStyle(.glass)
+                        .matchedTransitionSource(id: "ban-list-date-range", in: animation)
                 } else {
                     $0.buttonStyle(.bordered)
                 }
@@ -43,6 +45,7 @@ struct RestrictionDatesView: View {
                 showDateSelectorSheet: $isSelectorSheetPresented,
                 banListDates: dates
             )
+            .navigationTransition(.zoom(sourceID: "ban-list-date-range", in: animation))
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
