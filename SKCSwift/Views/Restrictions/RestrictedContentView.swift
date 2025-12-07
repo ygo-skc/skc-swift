@@ -24,17 +24,11 @@ struct RestrictedContentView: View {
                                     contentDTS: model.contentDTS)
                 
             } sheetContent: {
-                BanListNavigatorView(format: $model.format,
-                                     dateRangeIndex: $model.dateRangeIndex,
-                                     contentCategory: $model.chosenBannedContentCategory,
-                                     dates: model.restrictionDates)
+                RestrictedContentNavigatorView(format: $model.format,
+                                               dateRangeIndex: $model.dateRangeIndex,
+                                               contentCategory: $model.chosenBannedContentCategory,
+                                               dates: model.restrictionDates)
                 .disabled(DataTaskStatusParser.isDataPending(model.timelineDTS) || DataTaskStatusParser.isDataPending(model.contentDTS))
-            }
-            .overlay {
-                if DataTaskStatusParser.isDataPending(model.timelineDTS) || DataTaskStatusParser.isDataPending(model.contentDTS) {
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                }
             }
             .onChange(of: model.format) {
                 Task {
@@ -79,9 +73,16 @@ struct RestrictedContentView: View {
                 })
                 .modifier(.parentView)
                 .padding(.bottom, 0)
-                .ygoNavigationDestination()}
+                .ygoNavigationDestination()
+            }
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: mainSheetContentHeight)
+            }
+            .overlay {
+                if DataTaskStatusParser.isDataPending(timelineDTS) || DataTaskStatusParser.isDataPending(contentDTS) {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                }
             }
         }
         

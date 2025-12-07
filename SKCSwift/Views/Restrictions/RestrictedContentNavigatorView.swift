@@ -1,13 +1,71 @@
 //
-//  RestrictionDatesView.swift
+//  RestrictedContentNavigatorView.swift
 //  SKCSwift
 //
-//  Created by Javi Gomez on 9/10/25.
+//  Created by Javi Gomez on 4/26/23.
 //
 
 import SwiftUI
 
-struct RestrictionDatesView: View {
+struct RestrictedContentNavigatorView: View {
+    @Binding var format: CardRestrictionFormat
+    @Binding var dateRangeIndex: Int
+    @Binding var contentCategory: BannedContentCategory
+    
+    let dates: [BanListDate]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            RestrictedContentFormatsView(format: $format)
+            RestrictedContentDatesView(dateRangeIndex: $dateRangeIndex, dates: dates)
+            if format == .tcg || format == .md {
+                BannedContentCategoryView(contentCategory: $contentCategory)
+            }
+        }
+    }
+    
+    private struct RestrictedContentFormatsView: View {
+        @Binding var format: CardRestrictionFormat
+        @Namespace private var animation
+        
+        private static let formats: [CardRestrictionFormat] = [.tcg, .md, .genesys]
+        
+        var body: some View {
+            HStack(spacing: 15) {
+                Text("Format")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                
+                ForEach(RestrictedContentFormatsView.formats, id: \.rawValue) { format in
+                    TabButton(selected: $format, value: format, animmation: animation)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        }
+    }
+    
+    private struct BannedContentCategoryView: View {
+        @Binding var contentCategory: BannedContentCategory
+        @Namespace private var animation
+        
+        private static let categories: [BannedContentCategory] = [.forbidden, .limited, .semiLimited]
+        
+        var body: some View {
+            HStack(spacing: 15) {
+                Text("Category")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                
+                ForEach(BannedContentCategoryView.categories, id: \.rawValue) { category in
+                    TabButton(selected: $contentCategory, value: category, animmation: animation)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        }
+    }
+}
+
+struct RestrictedContentDatesView: View {
     @Binding var dateRangeIndex: Int
     let dates: [BanListDate]
     
@@ -28,14 +86,8 @@ struct RestrictionDatesView: View {
                                          toDate: (dateRangeIndex == 0) ? nil : dates[dateRangeIndex - 1].effectiveDate)
                 }
             }
-            .modify {
-                if #available(iOS 26.0, *) {
-                    $0.buttonStyle(.glass)
-                        .matchedTransitionSource(id: "ban-list-date-range", in: animation)
-                } else {
-                    $0.buttonStyle(.bordered)
-                }
-            }
+            .buttonStyle(.bordered)
+            .matchedTransitionSource(id: "ban-list-date-range", in: animation)
             .tint(Color.accentColor.opacity(0.5))
             .foregroundColor(.black)
         }
