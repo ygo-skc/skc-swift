@@ -36,7 +36,7 @@ private struct BanListFormatsView: View {
     private static let formats: [CardRestrictionFormat] = [.tcg, .md, .genesys]
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 15) {
             Text("Format")
                 .font(.subheadline)
                 .fontWeight(.semibold)
@@ -57,7 +57,7 @@ private struct BannedContentCategoryView: View {
     private static let categories: [BannedContentCategory] = [.forbidden, .limited, .semiLimited]
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 15) {
             Text("Category")
                 .font(.subheadline)
                 .fontWeight(.semibold)
