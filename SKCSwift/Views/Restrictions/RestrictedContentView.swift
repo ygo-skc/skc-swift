@@ -82,32 +82,44 @@ struct RestrictedContentView: View {
         
         var body: some View {
             ScrollView {
-                SectionView(header: "\(format.rawValue) Content",
-                            variant: .plain,
-                            content: {
-                    if timelineDTS == .done && contentDTS == .done {
+                if timelineDTS == .done && contentDTS == .done {
+                    SectionView(header: "\(format.rawValue) Content",
+                                variant: .plain,
+                                content: {
                         switch format {
                         case .md, .tcg:
                             BannedContentView(path: $path, content: restrictedCards)
                         case .genesys:
                             CardScoresView(path: $path, content: scoreEntries)
                         }
-                    }
-                })
-                .modifier(.parentView)
-                .padding(.bottom, 0)
-                .ygoNavigationDestination()
+                        
+                    })
+                    .modifier(.parentView)
+                    .padding(.bottom, 0)
+                    .ygoNavigationDestination()
+                }
             }
+            .frame(maxWidth: .infinity)
+            .scrollDisabled(DataTaskStatusParser.isDataPending(timelineDTS)
+                            || DataTaskStatusParser.isDataPending(contentDTS)
+                            || timelineNE != nil
+                            || contentNE != nil)
             .overlay {
-                if DataTaskStatusParser.isDataPending(timelineDTS) || DataTaskStatusParser.isDataPending(contentDTS) {
-                    ProgressView("Loading...")
-                        .controlSize(.large)
-                } else if let timelineNE {
+                 if let timelineNE {
                     NetworkErrorView(error: timelineNE) {
                         Task {
                             await timelineCB()
                         }
                     }
+                } else if let contentNE {
+                    NetworkErrorView(error: contentNE) {
+                        Task {
+                            await contentCB()
+                        }
+                    }
+                } else if DataTaskStatusParser.isDataPending(timelineDTS) || DataTaskStatusParser.isDataPending(contentDTS) {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 }
             }
         }

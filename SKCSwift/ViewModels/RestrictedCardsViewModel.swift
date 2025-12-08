@@ -79,10 +79,11 @@ final class RestrictedCardsViewModel {
     private func fetchCardScoreTimeline() async {
         let res = await YGOService.getRestrictionDates(format: format.rawValue)
         restrictionDates = (try? res.get().map( {BanListDate(effectiveDate: $0) } )) ?? []
-        timelineDTS = .done // handle error etc like other non rpc calls
+        (timelineNE, timelineDTS) = res.validate(method: "Card Score Timeline")
     }
     
     private func fetchBannedContent() async {
+        if timelineNE != nil { return }
         let res = await data(bannedContentURL(format: format,
                                               listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
                                               saveBandwidth: false,
