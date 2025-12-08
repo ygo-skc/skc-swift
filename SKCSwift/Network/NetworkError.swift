@@ -24,7 +24,6 @@ enum NetworkError: Error {
      */
     
     static func fromRPCError(_ rpcError: RPCError, method: String) -> NetworkError {
-        print("YOOO")
         switch rpcError.code {
         case .cancelled, .aborted, .dataLoss, .deadlineExceeded:
             print("RPC \(method) call cancelled. Message: \(rpcError.message)")
