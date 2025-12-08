@@ -16,13 +16,20 @@ struct RestrictedContentView: View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
                 RestrictedCardsView(path: $path,
-                                    mainSheetContentHeight: mainSheetContentHeight,
                                     format: model.format,
                                     restrictedCards: model.restrictedCards,
                                     scoreEntries: model.scoreEntries,
                                     timelineDTS: model.timelineDTS,
-                                    contentDTS: model.contentDTS)
-                
+                                    contentDTS: model.contentDTS,
+                                    timelineNE: model.timelineNE,
+                                    contentNE: model.contentNE,
+                                    timelineCB: { await model.fetchTimelineData() },
+                                    contentCB: { await model.fetchRestrictedCards() }
+                )
+                .equatable()
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: mainSheetContentHeight)
+                }
             } sheetContent: {
                 RestrictedContentNavigatorView(format: $model.format,
                                                dateRangeIndex: $model.dateRangeIndex,
@@ -48,14 +55,30 @@ struct RestrictedContentView: View {
         }
     }
     
-    private struct RestrictedCardsView: View {
+    private struct RestrictedCardsView: View, Equatable {
+        static func == (lhs: RestrictedContentView.RestrictedCardsView, rhs: RestrictedContentView.RestrictedCardsView) -> Bool {
+            lhs.format == rhs.format
+            && lhs.timelineDTS == rhs.timelineDTS
+            && lhs.contentDTS == rhs.contentDTS
+            && lhs.timelineNE == rhs.timelineNE
+            && lhs.contentNE == rhs.contentNE
+            && lhs.restrictedCards == rhs.restrictedCards
+        }
+        
         @Binding var path: NavigationPath
-        let mainSheetContentHeight: CGFloat
+        
         let format: CardRestrictionFormat
         let restrictedCards: [Card]
         let scoreEntries: [CardScoreEntry]
+        
         let timelineDTS: DataTaskStatus
         let contentDTS: DataTaskStatus
+        
+        let timelineNE: NetworkError?
+        let contentNE: NetworkError?
+        
+        let timelineCB: () async -> Void
+        let contentCB: () async -> Void
         
         var body: some View {
             ScrollView {
@@ -75,13 +98,16 @@ struct RestrictedContentView: View {
                 .padding(.bottom, 0)
                 .ygoNavigationDestination()
             }
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: mainSheetContentHeight)
-            }
             .overlay {
                 if DataTaskStatusParser.isDataPending(timelineDTS) || DataTaskStatusParser.isDataPending(contentDTS) {
                     ProgressView("Loading...")
                         .controlSize(.large)
+                } else if let timelineNE {
+                    NetworkErrorView(error: timelineNE) {
+                        Task {
+                            await timelineCB()
+                        }
+                    }
                 }
             }
         }
