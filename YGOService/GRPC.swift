@@ -25,8 +25,8 @@ fileprivate actor GRPCManager {
                         )
                         
                         config.backoff = .init(
-                            initial: .milliseconds(100),
-                            max: .seconds(1),
+                            initial: .milliseconds(200),
+                            max: .seconds(5),
                             multiplier: 1.3,
                             jitter: 0.2
                         )
@@ -54,7 +54,7 @@ fileprivate actor GRPCManager {
                                         initialBackoff: .milliseconds(150),
                                         maxBackoff: .seconds(3),
                                         backoffMultiplier: 1.3,
-                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss]))
+                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
                             )
                         ]
                     )
