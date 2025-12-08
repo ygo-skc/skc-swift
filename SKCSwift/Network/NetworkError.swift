@@ -20,12 +20,9 @@ enum NetworkError: Error {
     case timeout
     case unknown
     
-    /*
-     */
-    
     static func fromRPCError(_ rpcError: RPCError, method: String) -> NetworkError {
         switch rpcError.code {
-        case .cancelled, .aborted, .dataLoss, .deadlineExceeded:
+        case .cancelled, .aborted, .dataLoss:
             print("RPC \(method) call cancelled. Message: \(rpcError.message)")
             return .cancelled
         case .unknown:
