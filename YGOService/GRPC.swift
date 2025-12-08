@@ -25,8 +25,8 @@ fileprivate actor GRPCManager {
                         )
                         
                         config.backoff = .init(
-                            initial: .milliseconds(150),
-                            max: .seconds(12),
+                            initial: .milliseconds(250),
+                            max: .seconds(8),
                             multiplier: 1.3,
                             jitter: 0.2
                         )
@@ -34,7 +34,7 @@ fileprivate actor GRPCManager {
                         config.connection = .init(
                             maxIdleTime: .seconds(2 * 60),
                             keepalive: .init(
-                                time: .seconds(25),
+                                time: .seconds(30),
                                 timeout: .seconds(5),
                                 allowWithoutCalls: true
                             )
@@ -47,7 +47,7 @@ fileprivate actor GRPCManager {
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
                                 waitForReady: true,
-                                timeout: .seconds(12)
+                                timeout: .seconds(5)
                             )
                         ]
                     )
@@ -87,15 +87,17 @@ async -> Result<[U], any Error> where U: Decodable {
             $0.effectiveDate = date
         })
         let values = scores.entries.map({
-            mapper($0.card.id,
-                   $0.card.name,
-                   $0.card.color,
-                   $0.card.attribute,
-                   $0.card.effect,
-                   $0.card.monsterType.value,
-                   Int($0.card.attack.value),
-                   Int($0.card.defense.value),
-                   $0.score
+            let card = $0.card
+            return mapper(
+                card.id,
+                card.name,
+                card.color,
+                card.attribute,
+                card.effect,
+                (card.hasMonsterType) ?  card.monsterType.value : nil,
+                (card.hasAttack) ? Int(card.attack.value) : nil,
+                (card.hasDefense) ? Int(card.defense.value) : nil,
+                $0.score
             )
         })
         return .success(values)
@@ -106,7 +108,7 @@ async -> Result<[U], any Error> where U: Decodable {
 
 @concurrent
 nonisolated public func getCardScore<U>(cardID: String,
-                            mapper: ([String: UInt32], [String], [String]) -> U
+                                        mapper: ([String: UInt32], [String], [String]) -> U
 ) async -> Result<U, any Error> where U: Decodable {
     do {
         let cardScore = try await GRPCManager.services.score.getCardScoreByID(.with { $0.id = cardID })
