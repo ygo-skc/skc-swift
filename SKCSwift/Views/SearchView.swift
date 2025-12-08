@@ -31,6 +31,7 @@ struct SearchView: View {
                                            dataTaskStatus: recentlyViewedModel.dataTaskStatus,
                                            requestError: recentlyViewedModel.requestError,
                                            loadDataCB: { await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history) })
+                        .equatable()
                     } else {
                         TrendingView(path: $path, trendingModel: $trendingModel)
                     }
@@ -44,6 +45,7 @@ struct SearchView: View {
                         dataTaskStatus: searchModel.dataTaskStatus,
                         requestError: searchModel.requestError,
                         retryCB: { await searchModel.searchDB(oldValue: searchModel.searchText, newValue: searchModel.searchText) })
+                    .equatable()
                 }
             }
             .ignoresSafeArea(.keyboard)
@@ -64,7 +66,14 @@ struct SearchView: View {
         }
     }
     
-    private struct RecentlyViewedView: View {
+    private struct RecentlyViewedView: View, Equatable {
+        static func == (lhs: RecentlyViewedView, rhs: RecentlyViewedView) -> Bool {
+            lhs.history == rhs.history
+            && lhs.dataTaskStatus == rhs.dataTaskStatus
+            && lhs.requestError == rhs.requestError
+            && lhs.recentlyViewedCardDetails == rhs.recentlyViewedCardDetails
+        }
+        
         @Binding var path: NavigationPath
         let history: [History]
         let recentlyViewedCardDetails: [Card]
@@ -134,7 +143,12 @@ struct SearchView: View {
         }
     }
     
-    private struct SearchResultsView: View {
+    private struct SearchResultsView: View, Equatable {
+        static func == (lhs: SearchResultsView, rhs: SearchResultsView) -> Bool {
+            lhs.dataTaskStatus == rhs.dataTaskStatus
+            && lhs.requestError == rhs.requestError
+        }
+        
         @Binding var path: NavigationPath
         let results: [SearchResults]
         let dataTaskStatus: DataTaskStatus

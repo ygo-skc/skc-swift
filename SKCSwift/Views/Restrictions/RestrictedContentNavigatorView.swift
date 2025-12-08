@@ -65,7 +65,7 @@ struct RestrictedContentNavigatorView: View {
     }
 }
 
-struct RestrictedContentDatesView: View {
+private struct RestrictedContentDatesView: View {
     @Binding var dateRangeIndex: Int
     let dates: [BanListDate]
     
