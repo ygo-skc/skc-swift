@@ -18,32 +18,12 @@ nonisolated struct MonsterAssociation: Codable, Equatable {
     let linkRating: UInt8?
     let linkArrows: [String]?
     
-    init(level: UInt8?, rank: UInt8?, scaleRating: UInt8?, linkRating: UInt8?, linkArrows: [String]?) {
+    init(level: UInt8? = nil, rank: UInt8? = nil, scaleRating: UInt8? = nil, linkRating: UInt8? = nil, linkArrows: [String]? = nil) {
         self.level = level
         self.rank = rank
         self.scaleRating = scaleRating
         self.linkRating = linkRating
         self.linkArrows = linkArrows
-    }
-    
-    init(level: UInt8) {
-        self.init(level: level, rank: nil, scaleRating: nil, linkRating: nil, linkArrows: nil)
-    }
-    
-    init(rank: UInt8) {
-        self.init(level: nil, rank: rank, scaleRating: nil, linkRating: nil, linkArrows: nil)
-    }
-    
-    init(level: UInt8, scaleRating: UInt8) {
-        self.init(level: level, rank: nil, scaleRating: scaleRating, linkRating: nil, linkArrows: nil)
-    }
-    
-    init(rank: UInt8, scaleRating: UInt8) {
-        self.init(level: nil, rank: rank, scaleRating: scaleRating, linkRating: nil, linkArrows: nil)
-    }
-    
-    init(linkRating: UInt8, linkArrows: [String]) {
-        self.init(level: nil, rank: nil, scaleRating: nil, linkRating: linkRating, linkArrows: linkArrows)
     }
 }
 
@@ -65,12 +45,12 @@ nonisolated struct Card: Codable, Equatable {
          cardColor: String,
          cardAttribute: String?,
          cardEffect: String,
-         monsterType: String?,
-         monsterAssociation: MonsterAssociation?,
-         monsterAttack: Int?,
-         monsterDefense: Int?,
-         restrictedIn: BanListsForCard?,
-         foundIn: [Product]?) {
+         monsterType: String? = nil,
+         monsterAssociation: MonsterAssociation? = nil,
+         monsterAttack: Int? = nil,
+         monsterDefense: Int? = nil,
+         restrictedIn: BanListsForCard? = nil,
+         foundIn: [Product]? = nil) {
         self.cardID = cardID
         self.cardName = cardName
         self.cardColor = cardColor
@@ -84,26 +64,35 @@ nonisolated struct Card: Codable, Equatable {
         self.foundIn = foundIn
     }
     
-    init(cardID: String,
-         cardName: String,
-         cardColor: String,
-         cardAttribute: String?,
-         cardEffect: String,
-         monsterType: String? = nil,
-         monsterAssociation: MonsterAssociation? = nil,
-         monsterAttack: Int? = nil,
-         monsterDefense: Int? = nil) {
-        self.cardID = cardID
-        self.cardName = cardName
-        self.cardColor = cardColor
-        self.cardAttribute = cardAttribute
-        self.cardEffect = cardEffect
-        self.monsterType = monsterType
-        self.monsterAssociation = monsterAssociation
-        self.monsterAttack = monsterAttack
-        self.monsterDefense = monsterDefense
-        self.restrictedIn = nil
-        self.foundIn = nil
+    var attribute: Attribute {
+        Attribute(rawValue: cardAttribute ?? "") ?? .unknown
+    }
+    
+    var isPendulum: Bool {
+        cardColor.starts(with: "Pendulum")
+    }
+    
+    var cardType: String {
+        (monsterType != nil) ? monsterType! : cardAttribute ?? ""
+    }
+    
+    var atk: String {
+        (monsterAttack == nil) ? Card.nilStat.description : String(monsterAttack!)
+    }
+    
+    var def: String {
+        if cardColor == "Link" {
+            return Card.linkDefStat.description
+        }
+        return (monsterDefense == nil) ? Card.nilStat.description : String(monsterDefense!)
+    }
+    
+    var isGod: Bool {
+        cardAttribute != nil && cardAttribute!.lowercased() == "divine"
+    }
+    
+    var products: [Product] {
+        foundIn ?? [Product]()
     }
     
     static let placeholder: Card = .init(cardID: "XXXXXXXX",
@@ -114,48 +103,12 @@ nonisolated struct Card: Codable, Equatable {
                                          monsterType: "Divine",
                                          monsterAttack: 9999,
                                          monsterDefense: 9999)
-    
-    var attribute: Attribute {
-        get{ Attribute(rawValue: cardAttribute ?? "") ?? .unknown }
-    }
-    
-    var isPendulum: Bool {
-        get{ cardColor.starts(with: "Pendulum") }
-    }
-    
-    var cardType: String {
-        get{ return (monsterType != nil) ? monsterType! : cardAttribute ?? "" }
-    }
-    
-    var atk: String {
-        get{ return (monsterAttack == nil) ? Card.nilStat : String(monsterAttack!) }
-    }
-    
-    var def: String {
-        get {
-            if cardColor == "Link" {
-                return Card.linkDefStat
-            }
-            
-            return (monsterDefense == nil) ? Card.nilStat : String(monsterDefense!)
-        }
-    }
-    
-    var isGod: Bool {
-        get {
-            return cardAttribute != nil && cardAttribute!.lowercased() == "divine"
-        }
-    }
-    
-    private static let nilStat = "?"
-    private static let linkDefStat = "-"
-    
-    func getProducts() -> [Product] {
-        return foundIn ?? [Product]()
-    }
+    private static let nilStat: StaticString = "?"
+    private static let linkDefStat: StaticString = "-"
     
     func getRarityDistribution() -> [String: Int] {
-        return getProducts()
+        return products
+            .lazy
             .compactMap { $0.productContent }
             .flatMap { $0 }
             .map { $0.rarities }
@@ -273,14 +226,10 @@ struct ProductContent: Codable, Equatable, Identifiable {
     let productPosition: String
     let rarities: [String]
     
-    init(card: Card?, productPosition: String, rarities: [String]) {
+    init(card: Card? = nil, productPosition: String, rarities: [String]) {
         self.card = card
         self.productPosition = productPosition
         self.rarities = rarities
-    }
-    
-    init(productPosition: String, rarities: [String]) {
-        self.init(card: nil, productPosition: productPosition, rarities: rarities)
     }
     
     var id: String {

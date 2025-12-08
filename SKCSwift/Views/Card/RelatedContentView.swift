@@ -25,7 +25,7 @@ struct CardReleasesView: View {
         self.cardID = card.cardID
         self.cardName = card.cardName
         self.cardColor = card.cardColor
-        self.products = card.getProducts()
+        self.products = card.products
         self.rarityDistribution = card.getRarityDistribution()
         
         if !products.isEmpty {

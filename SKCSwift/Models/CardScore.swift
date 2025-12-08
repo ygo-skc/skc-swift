@@ -43,7 +43,7 @@ nonisolated struct CardScoreEntry: Codable, Equatable {
                                 cardEffect: cardEffect,
                                 monsterType: monsterType,
                                 monsterAttack: monsterAttack,
-                                monsterDefense: monsterDefense,),
+                                monsterDefense: monsterDefense),
                      score: score)
     }
 }
