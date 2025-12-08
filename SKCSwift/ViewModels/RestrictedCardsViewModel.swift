@@ -61,6 +61,8 @@ final class RestrictedCardsViewModel {
     }
     
     func fetchRestrictedCards() async {
+        if timelineNE != nil { return }
+        
         contentDTS = .pending
         switch format {
         case .tcg, .md:
@@ -83,7 +85,6 @@ final class RestrictedCardsViewModel {
     }
     
     private func fetchBannedContent() async {
-        if timelineNE != nil { return }
         let res = await data(bannedContentURL(format: format,
                                               listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
                                               saveBandwidth: false,
@@ -98,6 +99,6 @@ final class RestrictedCardsViewModel {
                                                             date: restrictionDates[dateRangeIndex].effectiveDate,
                                                             mapper: CardScoreEntry.fromRPC)
         cardScores = CardScores(entries: (try? res.get()) ?? [])
-        contentDTS = .done // handle error etc like other non rpc calls
+        (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
     }
 }
