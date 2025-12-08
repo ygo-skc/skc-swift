@@ -10,8 +10,19 @@ import SwiftUI
 
 @Observable
 final class HomeViewModel {
-    private(set) var dataTaskStatus: [HomeModelDataType: DataTaskStatus] = Dictionary(uniqueKeysWithValues: HomeModelDataType.allCases.map { ($0, .uninitiated) })
-    private(set) var requestErrors = [HomeModelDataType: NetworkError?]()
+    private(set) var dbStatsDTS: DataTaskStatus = .uninitiated
+    private(set) var cotdDTS: DataTaskStatus = .uninitiated
+    private(set) var upcomingTCGProductsDTS: DataTaskStatus = .uninitiated
+    private(set) var ytUploadsDTS: DataTaskStatus = .uninitiated
+    
+    @ObservationIgnored
+    private(set) var dbStatsNE: NetworkError? = nil
+    @ObservationIgnored
+    private(set) var cotdNE: NetworkError? = nil
+    @ObservationIgnored
+    private(set) var upcomingTCGProductsNE: NetworkError? = nil
+    @ObservationIgnored
+    private(set) var ytUploadsNE: NetworkError? = nil
     
     @ObservationIgnored
     private(set) var dbStats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
@@ -40,55 +51,31 @@ final class HomeViewModel {
     }
     
     func fetchDBStatsData() async {
-        requestErrors[.dbStats] = nil
-        dataTaskStatus[.dbStats] = .pending
-        switch await data(dbStatsURL(), resType: SKCDatabaseStats.self) {
-        case .success(let dbStats):
-            self.dbStats = dbStats
-            requestErrors[.dbStats] = nil
-        case .failure(let error):
-            requestErrors[.dbStats] = error
-        }
-        dataTaskStatus[.dbStats] = .done
+        dbStatsDTS = .pending
+        let res = await data(dbStatsURL(), resType: SKCDatabaseStats.self)
+        dbStats = (try? res.get()) ?? dbStats
+        (dbStatsNE, dbStatsDTS) = res.validate()
     }
     
     func fetchCardOfTheDayData() async {
-        requestErrors[.cardOfTheDay] = nil
-        dataTaskStatus[.cardOfTheDay] = .pending
-        switch await data(cardOfTheDayURL(), resType: CardOfTheDay.self) {
-        case .success(let cardOfTheDay):
-            self.cardOfTheDay = cardOfTheDay
-            requestErrors[.cardOfTheDay] = nil
-        case .failure(let error):
-            requestErrors[.cardOfTheDay] = error
-        }
-        dataTaskStatus[.cardOfTheDay] = .done
+        cotdDTS = .pending
+        let res = await data(cardOfTheDayURL(), resType: CardOfTheDay.self)
+        cardOfTheDay = (try? res.get()) ?? cardOfTheDay
+        (cotdNE, cotdDTS) = res.validate()
     }
     
     func fetchUpcomingTCGProducts() async {
-        requestErrors[.upcomingTCGProducts] = nil
-        dataTaskStatus[.upcomingTCGProducts] = .pending
-        switch await data(upcomingEventsURL(), resType: Events.self) {
-        case .success(let upcomingTCGProducts):
-            self.upcomingTCGProducts = upcomingTCGProducts.events
-            requestErrors[.upcomingTCGProducts] = nil
-        case .failure(let error):
-            requestErrors[.upcomingTCGProducts] = error
-        }
-        dataTaskStatus[.upcomingTCGProducts] = .done
+        upcomingTCGProductsDTS = .pending
+        let res = await data(upcomingEventsURL(), resType: Events.self)
+        upcomingTCGProducts = (try? res.get().events) ?? upcomingTCGProducts
+        (upcomingTCGProductsNE, upcomingTCGProductsDTS) = res.validate()
     }
     
     func fetchYouTubeUploadsData() async {
-        requestErrors[.youtubeUploads] = nil
-        dataTaskStatus[.youtubeUploads] = .pending
-        switch await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self) {
-        case .success(let uploadData):
-            self.ytUploads = uploadData.videos
-            requestErrors[.youtubeUploads] = nil
-        case .failure(let error):
-            requestErrors[.youtubeUploads] = error
-        }
-        dataTaskStatus[.youtubeUploads] = .done
+        ytUploadsDTS = .pending
+        let res = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
+        ytUploads = (try? res.get().videos) ?? ytUploads
+        (ytUploadsNE, ytUploadsDTS) = res.validate()
     }
     
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {
@@ -100,7 +87,7 @@ final class HomeViewModel {
         return .systemAction
     }
     
-    private func determineTypeOfURLClick(path: String) -> (String?, String) {
+    nonisolated private func determineTypeOfURLClick(path: String) -> (String?, String) {
         if path.contains("/card/") {
             return (path.replacingOccurrences(of: "/card/", with: ""), "card")
         } else if path.contains("/product/") {
@@ -108,8 +95,4 @@ final class HomeViewModel {
         }
         return( nil, "")
     }
-}
-
-enum HomeModelDataType: CaseIterable {
-    case dbStats, cardOfTheDay, upcomingTCGProducts, youtubeUploads
 }

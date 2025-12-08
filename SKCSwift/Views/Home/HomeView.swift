@@ -15,30 +15,29 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 30) {
                     DBStatsView(dbStats: model.dbStats,
-                                isDataLoaded: model.dataTaskStatus[.dbStats, default: .uninitiated] == .done,
-                                networkError: model.requestErrors[.dbStats, default: nil],
+                                dataTaskStatus: model.dbStatsDTS,
+                                networkError: model.dbStatsNE,
                                 retryCB: model.fetchDBStatsData)
                     .equatable()
                     
                     CardOfTheDayView(path: $model.path, cotd: model.cardOfTheDay,
-                                     isDataLoaded:  model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] == .done,
-                                     networkError: model.requestErrors[.cardOfTheDay, default: nil],
+                                     dataTaskStatus:  model.cotdDTS,
+                                     networkError: model.cotdNE,
                                      retryCB: model.fetchCardOfTheDayData)
                     .equatable()
                     
                     UpcomingTCGProductsView(events: model.upcomingTCGProducts,
-                                            isDataLoaded: model.dataTaskStatus[.upcomingTCGProducts, default: .uninitiated] == .done,
-                                            networkError: model.requestErrors[.upcomingTCGProducts, default: nil],
+                                            dataTaskStatus: model.upcomingTCGProductsDTS,
+                                            networkError: model.upcomingTCGProductsNE,
                                             retryCB: model.fetchUpcomingTCGProducts)
                     .equatable()
                     
-                    YouTubeUploadsView(ytUplaods: model.ytUploads,
-                                       isDataLoaded: model.dataTaskStatus[.youtubeUploads, default: .uninitiated] == .done,
-                                       networkError: model.requestErrors[.youtubeUploads, default: nil],
-                                       retryCB: model.fetchYouTubeUploadsData)
-                    .equatable()
-                    .if(model.dataTaskStatus[.cardOfTheDay, default: .uninitiated] != .done) { view in
-                        view.hidden()
+                    if model.upcomingTCGProductsDTS == .done {
+                        YouTubeUploadsView(ytUplaods: model.ytUploads,
+                                           dataTaskStatus: model.ytUploadsDTS,
+                                           networkError: model.ytUploadsNE,
+                                           retryCB: model.fetchYouTubeUploadsData)
+                        .equatable()
                     }
                 }
                 .toolbar {
@@ -61,30 +60,30 @@ struct HomeView: View {
             }
         }
     }
-}
-
-private struct HomeViewToolbar: ToolbarContent {
-    @State private var isSettingsSheetPresented = false
-    @Namespace private var animation
     
-    var body: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button {
-                isSettingsSheetPresented = true
-            } label: {
-                Image(systemName: "gear")
+    private struct HomeViewToolbar: ToolbarContent {
+        @State private var isSettingsSheetPresented = false
+        @Namespace private var animation
+        
+        var body: some ToolbarContent {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isSettingsSheetPresented = true
+                } label: {
+                    Image(systemName: "gear")
+                }
+                .sheet(isPresented: $isSettingsSheetPresented) {
+                    SettingsView()
+                        .presentationDetents([.medium, .large])
+                        .navigationTransition(.zoom(sourceID: "settings", in: animation))
+                }
             }
-            .sheet(isPresented: $isSettingsSheetPresented) {
-                SettingsView()
-                    .presentationDetents([.medium, .large])
-                    .navigationTransition(.zoom(sourceID: "settings", in: animation))
-            }
-        }
-        .modify {
-            if #available(iOS 26.0, *) {
-                $0.matchedTransitionSource(id: "settings", in: animation)
-            } else {
-                $0
+            .modify {
+                if #available(iOS 26.0, *) {
+                    $0.matchedTransitionSource(id: "settings", in: animation)
+                } else {
+                    $0
+                }
             }
         }
     }
@@ -102,7 +101,7 @@ private struct SettingsView: View {
                 SectionView(header: "Data",
                             content: {
                     SettingsModule(
-                        moduleHeader: "Network Cache (~\(String(format: "%.2f", model.networkCacheSize)) MB)",
+                        moduleHeader: "Network Cache (~\(model.networkCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
                         moduleFootnote: "Cache data is used to speed up loading times and improve performance.",
                         action: model.deleteNetworkCache) {
                             Label("Delete Network Cache", systemImage: "trash.fill")
@@ -111,7 +110,7 @@ private struct SettingsView: View {
                         .padding(.bottom)
                     
                     SettingsModule(
-                        moduleHeader: "Cache Files (~\(String(format: "%.2f", model.fileCacheSize)) MB)",
+                        moduleHeader: "Cache Files (~\(model.fileCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
                         moduleFootnote: "This will also delete network cache.",
                         action: model.deleteFileCache) {
                             Label("Delete File Cache", systemImage: "trash.fill")
@@ -142,40 +141,40 @@ private struct SettingsView: View {
             }
         }
     }
-}
-
-private struct SettingsModule<Label: View>: View {
-    let moduleHeader: String
-    let moduleFootnote: String?
-    let action: () async -> Void
-    @ViewBuilder let label: () -> Label
     
-    @State private var isAlertOpen = false
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(moduleHeader)
-                .font(.headline)
-            if let moduleFootnote = moduleFootnote {
-                Text(moduleFootnote)
-                    .font(.footnote)
-            }
-            
-            Button { isAlertOpen.toggle() } label: { label() }
-                .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("🫡", role: .destructive) {
-                        Task {
-                            await action()
-                        }
-                    }
-                } message: {
-                    Text("Action is irreversible.")
+    private struct SettingsModule<Label: View>: View {
+        let moduleHeader: String
+        let moduleFootnote: String?
+        let action: () async -> Void
+        @ViewBuilder let label: () -> Label
+        
+        @State private var isAlertOpen = false
+        
+        var body: some View {
+            VStack(alignment: .leading) {
+                Text(moduleHeader)
+                    .font(.headline)
+                if let moduleFootnote = moduleFootnote {
+                    Text(moduleFootnote)
+                        .font(.footnote)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.regular)
+                
+                Button { isAlertOpen.toggle() } label: { label() }
+                    .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("🫡", role: .destructive) {
+                            Task {
+                                await action()
+                            }
+                        }
+                    } message: {
+                        Text("Action is irreversible.")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.regular)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
     }
 }
 

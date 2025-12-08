@@ -81,7 +81,7 @@ private struct ProductInfoView: View {
     @State private var showStats = false
     
     @concurrent
-    public func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
+    nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
         return await Task.detached {
             let rarities = productContents.flatMap { $0.rarities }
             let cards = productContents.compactMap { $0.card }

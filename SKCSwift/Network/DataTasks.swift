@@ -17,16 +17,26 @@ struct DataTaskStatusParser {
 
 nonisolated fileprivate struct NilReqBody: Encodable {}
 
-fileprivate let customSession: URLSession = {
+fileprivate nonisolated let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
     
-    configuration.timeoutIntervalForRequest = 3
-    configuration.timeoutIntervalForResource = 5
+    configuration.timeoutIntervalForRequest = 5
+    configuration.timeoutIntervalForResource = 15
     configuration.multipathServiceType = .handover
     configuration.requestCachePolicy = .useProtocolCachePolicy
     configuration.allowsCellularAccess = true
     configuration.tlsMinimumSupportedProtocolVersion = .TLSv13
-    configuration.httpMaximumConnectionsPerHost = 8
+    configuration.httpMaximumConnectionsPerHost = 4
+    
+    configuration.httpShouldSetCookies = false
+    configuration.httpCookieAcceptPolicy = .never
+    
+    configuration.waitsForConnectivity = true
+    
+    if #available(iOS 13.0, *) {
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.allowsConstrainedNetworkAccess = true
+    }
     
     if #available(iOS 26.0, *) {
         configuration.enablesEarlyData = true
@@ -51,7 +61,7 @@ nonisolated fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: 
     return request
 }
 
-fileprivate func validateResponse(response: URLResponse?) async throws {
+nonisolated fileprivate func validateResponse(response: URLResponse?) async throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         switch code {
@@ -72,12 +82,16 @@ fileprivate func validateResponse(response: URLResponse?) async throws {
 }
 
 @concurrent
-func data<U>(_ url: URL, resType: U.Type) async -> Result<U, NetworkError> where U: Decodable {
-    await data(url, reqBody: Optional<NilReqBody>.none, resType: resType)
+nonisolated func data<U>(_ url: URL, resType: U.Type) async -> Result<U, NetworkError> where U: Decodable {
+    await dataTask(url, reqBody: Optional<NilReqBody>.none, resType: resType)
 }
 
 @concurrent
-func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
+nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
+    await dataTask(url, reqBody: reqBody, resType: resType, httpMethod: httpMethod)
+}
+
+fileprivate nonisolated func dataTask<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
         let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
         try Task.checkCancellation()

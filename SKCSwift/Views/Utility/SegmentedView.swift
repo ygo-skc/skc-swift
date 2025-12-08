@@ -10,7 +10,7 @@ import SwiftUI
 struct SegmentedView<MainContent: View, SheetContent: View>: View {
     @Binding var mainSheetContentHeight: CGFloat
     @ViewBuilder var mainContent: () -> MainContent
-    @ViewBuilder var mainSheetContent: () -> SheetContent
+    @ViewBuilder var sheetContent: () -> SheetContent
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
@@ -20,7 +20,7 @@ struct SegmentedView<MainContent: View, SheetContent: View>: View {
                 mainContent()
                 
                 BottomSheet(frame: frame, mainSheetContentHeight: $mainSheetContentHeight) {
-                    mainSheetContent()
+                    sheetContent()
                 }
             }
         }

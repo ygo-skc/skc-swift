@@ -23,8 +23,7 @@ struct TrendingView: View {
                 }
                 .pickerStyle(.segmented)
                 
-                
-                if trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] == nil  {
+                if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
                     switch trendingModel.focusedTrend {
                     case .card:
                         TrendingCardsView(path: $path, trendingCards: trendingModel.cards)
@@ -39,69 +38,68 @@ struct TrendingView: View {
             }
             .dynamicTypeSize(...DynamicTypeSize.medium)
         }
-        .scrollDisabled(trendingModel.trendingRequestErrors[trendingModel.focusedTrend] != nil)
+        .scrollDisabled(trendingModel.focusedTrendNE != nil)
         .frame(maxWidth: .infinity)
         .overlay {
-            if let networkError = trendingModel.trendingRequestErrors[trendingModel.focusedTrend, default: nil] {
+            if trendingModel.focusedTrendDTS == .error, let networkError = trendingModel.focusedTrendNE {
                 NetworkErrorView(error: networkError, action: {
                     Task {
                         await trendingModel.fetchTrendingData(forceRefresh: true)
                     }
                 })
-            } else if DataTaskStatusParser.isDataPending(trendingModel.trendingDataTaskStatuses[trendingModel.focusedTrend]!) {
+            } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
                 ProgressView("Loading...")
                     .controlSize(.large)
             }
         }
     }
-}
-
-private struct TrendingCardsView: View {
-    @Binding var path: NavigationPath
-    let trendingCards: [TrendingMetric<Card>]
     
-    var body: some View {
-        VStack {
-            ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) { position, m in
-                let card = m.resource
-                Button {
-                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                } label: {
-                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                        CardListItemView(card: card)
-                            .equatable()
+    private struct TrendingCardsView: View {
+        @Binding var path: NavigationPath
+        let trendingCards: [TrendingMetric<Card>]
+        
+        var body: some View {
+            VStack {
+                ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) { position, m in
+                    let card = m.resource
+                    Button {
+                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                    } label: {
+                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                            CardListItemView(card: card)
+                                .equatable()
+                        }
+                        .groupBoxStyle(.listItem)
                     }
-                    .groupBoxStyle(.listItem)
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private struct TrendingProductsView: View {
+        @Binding var path: NavigationPath
+        let trendingProducts: [TrendingMetric<Product>]
+        
+        var body: some View {
+            VStack {
+                ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
+                    let product = m.resource
+                    Button {
+                        path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
+                    } label: {
+                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                            ProductListItemView(product: product)
+                                .equatable()
+                        }
+                        .groupBoxStyle(.listItem)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
     }
 }
-
-private struct TrendingProductsView: View {
-    @Binding var path: NavigationPath
-    let trendingProducts: [TrendingMetric<Product>]
-    
-    var body: some View {
-        VStack {
-            ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
-                let product = m.resource
-                Button {
-                    path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
-                } label: {
-                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                        ProductListItemView(product: product)
-                            .equatable()
-                    }
-                    .groupBoxStyle(.listItem)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-}
-
 
 private struct TrendChangeView: View, Equatable {
     private let position: Int
@@ -129,13 +127,15 @@ private struct TrendChangeView: View, Equatable {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: 10) {
             Label {
                 Text(trendLabel)
             } icon: {
                 Image(systemName: trendImage)
             }
             .foregroundColor(trendColor)
+            
+            Divider()
             
             Label {
                 Text(String(hits))

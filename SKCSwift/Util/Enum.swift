@@ -6,14 +6,45 @@
 //
 
 enum Attribute: String {
-    case dark = "Dark", light = "Light", earth = "Earth", wind = "Wind", water = "Water", fire = "Fire", divine = "Divine", spell = "Spell", trap = "Trap", unknown
+    case dark = "Dark",
+         light = "Light",
+         earth = "Earth",
+         wind = "Wind",
+         water = "Water",
+         fire = "Fire",
+         divine = "Divine",
+         spell = "Spell",
+         trap = "Trap",
+         unknown
 }
 
 enum MonsterType: String {
-    case aqua = "Aqua", beastWarrior = "Beast-Warrior", beast = "Beast", cyberse = "Cyberse", dinosaur = "Dinosaur", divineBeast = "Divine-Beast",
-         dragon = "Dragon", fairy = "Fairy", fiend = "Fiend", fish = "Fish", illusion = "Illusion", insect = "Insect", machine = "Machine",
-         plant = "Plant", psychic = "Psychic", pyro = "Pyro", reptile = "Reptile", rock = "Rock", seaSerpent = "Sea Serpent",
-         spellcaster = "Spellcaster", thunder = "Thunder", warrior = "Warrior", wingedBeast = "Winged Beast", wyrm = "Wyrm", zombie = "Zombie", unknown
+    case aqua = "Aqua",
+         beastWarrior = "Beast-Warrior",
+         beast = "Beast",
+         cyberse = "Cyberse",
+         dinosaur = "Dinosaur",
+         divineBeast = "Divine-Beast",
+         dragon = "Dragon",
+         fairy = "Fairy",
+         fiend = "Fiend",
+         fish = "Fish",
+         illusion = "Illusion",
+         insect = "Insect",
+         machine = "Machine",
+         plant = "Plant",
+         psychic = "Psychic",
+         pyro = "Pyro",
+         reptile = "Reptile",
+         rock = "Rock",
+         seaSerpent = "Sea Serpent",
+         spellcaster = "Spellcaster",
+         thunder = "Thunder",
+         warrior = "Warrior",
+         wingedBeast = "Winged Beast",
+         wyrm = "Wyrm",
+         zombie = "Zombie",
+         unknown
 }
 
 enum CardRestrictionFormat: String {
@@ -63,5 +94,5 @@ enum TrendingResourceType: String, Codable, CaseIterable {
 }
 
 enum DataTaskStatus: String, Codable, CaseIterable {
-    case pending, done, uninitiated
+    case pending, done, uninitiated, error
 }

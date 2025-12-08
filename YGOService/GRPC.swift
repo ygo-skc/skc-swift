@@ -9,36 +9,45 @@ import GRPCCore
 import GRPCNIOTransportHTTP2
 import SwiftProtobuf
 
-fileprivate class GRPCManager {
-    static let client: GRPCClient<HTTP2ClientTransport.Posix> = {
+fileprivate actor GRPCManager {
+    static let services = GRPCManager()
+    
+    private(set) lazy var client: GRPCClient<HTTP2ClientTransport.Posix> = {
         do {
             let client = try GRPCClient(
                 transport: .http2NIOPosix(
                     target: .dns(host: "ygo-service.skc.cards", port: 443),
                     transportSecurity: .tls,
                     config: .defaults { config in
-                        config.compression = .init(algorithm: .gzip, enabledAlgorithms: [.gzip, .none])
+                        config.compression = .init(
+                            algorithm: .gzip,
+                            enabledAlgorithms: [.gzip]
+                        )
+                        
                         config.backoff = .init(
-                            initial: .milliseconds(80),
-                            max: .seconds(1),
-                            multiplier: 1.6,
+                            initial: .milliseconds(250),
+                            max: .seconds(8),
+                            multiplier: 1.3,
                             jitter: 0.2
                         )
+                        
                         config.connection = .init(
-                            maxIdleTime: .seconds(30 * 60),
+                            maxIdleTime: .seconds(2 * 60),
                             keepalive: .init(
-                                time: .seconds(60),
-                                timeout: .seconds(3),
+                                time: .seconds(30),
+                                timeout: .seconds(5),
                                 allowWithoutCalls: true
                             )
                         )
+                        
+                        config.http2 = .init(maxFrameSize: 2 * 1024, targetWindowSize: 24 * 1024, authority: nil)
                     },
                     serviceConfig: .init(
                         methodConfig: [
                             .init(
-                                names: [.init(service: "")],  // Empty service means all methods
+                                names: [.init(service: "", method: "")],  // Empty service means all methods
                                 waitForReady: true,
-                                timeout: .seconds(3)
+                                timeout: .seconds(5)
                             )
                         ]
                     )
@@ -53,19 +62,14 @@ fileprivate class GRPCManager {
         }
     }()
     
-    static let restrictionService: Ygo_CardRestrictionService.Client = {
-        return Ygo_CardRestrictionService.Client(wrapping: GRPCManager.client)
-    }()
-    
-    static let scoreService: Ygo_ScoreService.Client = {
-        return Ygo_ScoreService.Client(wrapping: GRPCManager.client)
-    }()
+    private(set) lazy var restrictions = Ygo_CardRestrictionService.Client(wrapping: client)
+    private(set) lazy var score = Ygo_ScoreService.Client(wrapping: client)
 }
 
 @concurrent
-public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
+nonisolated public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
     do {
-        let timeline = try await GRPCManager.restrictionService.getEffectiveTimelineForFormat(.with { $0.value = format })
+        let timeline = try await GRPCManager.services.restrictions.getEffectiveTimelineForFormat(.with { $0.value = format })
         return .success(.init(timeline.allDates))
     } catch {
         return .failure(error)
@@ -73,25 +77,27 @@ public func getRestrictionDates(format: String) async -> Result<[String], any Er
 }
 
 @concurrent
-public func getScoresByFormatAndDate<U>(format: String,
-                                        date: String,
-                                        mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
+nonisolated public func getScoresByFormatAndDate<U>(format: String,
+                                                    date: String,
+                                                    mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
 async -> Result<[U], any Error> where U: Decodable {
     do {
-        let scores = try await GRPCManager.scoreService.getScoresByFormatAndDate(.with {
+        let scores = try await GRPCManager.services.score.getScoresByFormatAndDate(.with {
             $0.format = format
             $0.effectiveDate = date
         })
         let values = scores.entries.map({
-            mapper($0.card.id,
-                   $0.card.name,
-                   $0.card.color,
-                   $0.card.attribute,
-                   $0.card.effect,
-                   $0.card.monsterType.value,
-                   Int($0.card.attack.value),
-                   Int($0.card.defense.value),
-                   $0.score
+            let card = $0.card
+            return mapper(
+                card.id,
+                card.name,
+                card.color,
+                card.attribute,
+                card.effect,
+                (card.hasMonsterType) ?  card.monsterType.value : nil,
+                (card.hasAttack) ? Int(card.attack.value) : nil,
+                (card.hasDefense) ? Int(card.defense.value) : nil,
+                $0.score
             )
         })
         return .success(values)
@@ -101,11 +107,11 @@ async -> Result<[U], any Error> where U: Decodable {
 }
 
 @concurrent
-public func getCardScore<U>(cardID: String,
-                            mapper: ([String: UInt32], [String], [String]) -> U
+nonisolated public func getCardScore<U>(cardID: String,
+                                        mapper: ([String: UInt32], [String], [String]) -> U
 ) async -> Result<U, any Error> where U: Decodable {
     do {
-        let cardScore = try await GRPCManager.scoreService.getCardScoreByID(.with { $0.id = cardID })
+        let cardScore = try await GRPCManager.services.score.getCardScoreByID(.with { $0.id = cardID })
         return .success(mapper(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
     } catch {
         return .failure(error)

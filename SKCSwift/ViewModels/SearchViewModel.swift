@@ -9,17 +9,21 @@ import Foundation
 
 @Observable
 final class SearchViewModel {
-    var isSearching = false
+    var isSearching = false // user has search open
     var searchText = ""
     
     private(set) var requestError: NetworkError? = nil
     private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
+    private(set) var isSearchSlow = false
     
+    @ObservationIgnored
     private(set) var searchResults = [SearchResults]()
     @ObservationIgnored
     private var cardIDsForSearchResults: Set<String> = []
     @ObservationIgnored
     private var searchTask: Task<(), any Error>?
+    @ObservationIgnored
+    private var slowSearchDispatch: DispatchWorkItem?
     
     func searchDB(oldValue: String, newValue: String) async {
         if requestError == .notFound && newValue.starts(with: oldValue) {
@@ -27,18 +31,24 @@ final class SearchViewModel {
         }
         
         searchTask?.cancel()
+        slowSearchDispatch?.cancel()
         if newValue == "" {
             resetSearchResults()
             requestError = nil
             dataTaskStatus = .done
         } else {
             searchTask = Task {
-                requestError = nil
                 dataTaskStatus = .pending
+                slowSearchDispatch = DispatchWorkItem { [weak self] in
+                    self?.isSearchSlow = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: slowSearchDispatch!)
                 
-                let (requestResults, searchErr) = await search(subject: newValue)
-                requestError = searchErr
-                if requestResults.isEmpty || searchErr != nil {
+                let (requestResults, searchErr, searchTaskStatus) = await search(subject: newValue)
+                if Task.isCancelled {
+                    return
+                }
+                if requestResults.isEmpty || searchErr != nil || searchErr == .notFound {
                     resetSearchResults()
                 } else {
                     let (newSearchResults, newSearchResultsCardIDs) = await partitionResults(newSearchResults: requestResults,
@@ -48,7 +58,10 @@ final class SearchViewModel {
                         cardIDsForSearchResults = newSearchResultsCardIDs
                     }
                 }
-                dataTaskStatus = .done
+                slowSearchDispatch?.cancel()
+                isSearchSlow = false
+                requestError = searchErr
+                dataTaskStatus = searchTaskStatus
             }
         }
     }
@@ -59,21 +72,16 @@ final class SearchViewModel {
     }
     
     @concurrent
-    private func search(subject: String) async -> ([Card], NetworkError?) {
-        switch await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self) {
-        case .success(let cards):
-            if cards.isEmpty {
-                return ([], NetworkError.notFound)
-            }
-            return (cards, nil)
-        case .failure(let err):
-            return ([], err)
-        }
+    nonisolated private func search(subject: String) async -> ([Card], NetworkError?, DataTaskStatus) {
+        let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self)
+        let cards = (try? res.get()) ?? []  // on error hard code results to empty list
+        let (networkError, taskStatus) = res.validate()
+        return (cards, (cards.isEmpty && networkError == nil) ? .notFound : networkError, taskStatus)   // if empty results list returned w/ no errors, treat it as not found
     }
     
     @concurrent
-    private func partitionResults(newSearchResults newResults: [Card],
-                                              previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
+    nonisolated private func partitionResults(newSearchResults newResults: [Card],
+                                  previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
         var sections: [String] = []
         var cardIDs: Set<String> = []
         
