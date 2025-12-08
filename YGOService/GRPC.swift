@@ -53,13 +53,13 @@ fileprivate struct YGOClients {
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
                                 waitForReady: true,
-                                timeout: .seconds(6),
+                                timeout: .seconds(8),
                                 executionPolicy: .retry(
                                     .init(
                                         maxAttempts: 2,
                                         initialBackoff: .milliseconds(150),
                                         maxBackoff: .seconds(3),
-                                        backoffMultiplier: 1.3,
+                                        backoffMultiplier: 1.5,
                                         retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
                             )
                         ]
