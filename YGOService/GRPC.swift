@@ -10,13 +10,19 @@ import GRPCNIOTransportHTTP2
 import SwiftProtobuf
 
 fileprivate actor GRPCManager {
-    static let services = GRPCManager()
+    static let ygoClients = YGOClients(host: "ygo-service.skc.cards")
+}
+
+fileprivate struct YGOClients {
+    let restrictions: Ygo_CardRestrictionService.Client<HTTP2ClientTransport.Posix>
+    let score: Ygo_ScoreService.Client<HTTP2ClientTransport.Posix>
+    private let client: GRPCClient<HTTP2ClientTransport.Posix>
     
-    private(set) lazy var client: GRPCClient<HTTP2ClientTransport.Posix> = {
+    init(host: String) {
         do {
             let client = try GRPCClient(
                 transport: .http2NIOPosix(
-                    target: .dns(host: "ygo-service.skc.cards", port: 443),
+                    target: .dns(host: host, port: 443),
                     transportSecurity: .tls,
                     config: .defaults { config in
                         config.compression = .init(
@@ -63,20 +69,19 @@ fileprivate actor GRPCManager {
             Task {
                 try await client.runConnections()
             }
-            return client
+            restrictions = Ygo_CardRestrictionService.Client(wrapping: client)
+            score = Ygo_ScoreService.Client(wrapping: client)
+            self.client = client
         } catch {
             fatalError("Failed to create GRPC client: \(error)")
         }
-    }()
-    
-    private(set) lazy var restrictions = Ygo_CardRestrictionService.Client(wrapping: client)
-    private(set) lazy var score = Ygo_ScoreService.Client(wrapping: client)
+    }
 }
 
 @concurrent
 nonisolated public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
     do {
-        let timeline = try await GRPCManager.services.restrictions.getEffectiveTimelineForFormat(.with { $0.value = format })
+        let timeline = try await GRPCManager.ygoClients.restrictions.getEffectiveTimelineForFormat(.with { $0.value = format })
         return .success(.init(timeline.allDates))
     } catch {
         return .failure(error)
@@ -89,7 +94,7 @@ nonisolated public func getScoresByFormatAndDate<U>(format: String,
                                                     mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
 async -> Result<[U], any Error> where U: Decodable {
     do {
-        let scores = try await GRPCManager.services.score.getScoresByFormatAndDate(.with {
+        let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(.with {
             $0.format = format
             $0.effectiveDate = date
         })
@@ -118,7 +123,7 @@ nonisolated public func getCardScore<U>(cardID: String,
                                         mapper: ([String: UInt32], [String], [String]) -> U
 ) async -> Result<U, any Error> where U: Decodable {
     do {
-        let cardScore = try await GRPCManager.services.score.getCardScoreByID(.with { $0.id = cardID })
+        let cardScore = try await GRPCManager.ygoClients.score.getCardScoreByID(.with { $0.id = cardID })
         return .success(mapper(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
     } catch {
         return .failure(error)
