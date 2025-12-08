@@ -59,22 +59,20 @@ final class RecentlyViewedViewModel {
     }
     
     nonisolated private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
-        switch await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
-                          resType: BatchSuggestions.self, httpMethod: "POST") {
-        case .success(let suggestions):
+        let data = await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
+                          resType: BatchSuggestions.self, httpMethod: "POST")
+        if case .success(let suggestions) = data {
             return suggestions
-        default: break
         }
         return BatchSuggestions(namedMaterials: [], namedReferences: [], materialArchetypes: Set(), referencedArchetypes: Set(),
                                 unknownResources: Set(), falsePositives: Set())
     }
     
     nonisolated private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
-        switch await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
-                          resType: BatchSupport.self, httpMethod: "POST") {
-        case .success(let suggestions):
+        let data = await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
+                          resType: BatchSupport.self, httpMethod: "POST")
+        if case .success(let suggestions) = data {
             return suggestions
-        default: break
         }
         return BatchSupport(referencedBy: [], materialFor: [], unknownResources: Set(), falsePositives: Set())
     }
