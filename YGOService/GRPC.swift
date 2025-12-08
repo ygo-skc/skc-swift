@@ -25,8 +25,8 @@ fileprivate actor GRPCManager {
                         )
                         
                         config.backoff = .init(
-                            initial: .milliseconds(250),
-                            max: .seconds(8),
+                            initial: .milliseconds(100),
+                            max: .seconds(1),
                             multiplier: 1.3,
                             jitter: 0.2
                         )
@@ -47,7 +47,14 @@ fileprivate actor GRPCManager {
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
                                 waitForReady: true,
-                                timeout: .seconds(5)
+                                timeout: .seconds(6),
+                                executionPolicy: .retry(
+                                    .init(
+                                        maxAttempts: 2,
+                                        initialBackoff: .milliseconds(150),
+                                        maxBackoff: .seconds(3),
+                                        backoffMultiplier: 1.3,
+                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss]))
                             )
                         ]
                     )
