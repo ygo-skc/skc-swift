@@ -15,8 +15,8 @@ final class RestrictedCardsViewModel {
     var dateRangeIndex: Int = 0
     var chosenBannedContentCategory = BannedContentCategory.forbidden
     
-    private(set) var timelineDTS: DataTaskStatus = .uninitiated
-    private(set) var contentDTS: DataTaskStatus = .uninitiated
+    private(set) var timelineDTS: DataTaskStatus = .pending
+    private(set) var contentDTS: DataTaskStatus = .pending
     
     @ObservationIgnored
     private(set) var timelineNE: NetworkError? = nil

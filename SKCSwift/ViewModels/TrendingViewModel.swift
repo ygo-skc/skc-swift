@@ -16,8 +16,8 @@ final class TrendingViewModel {
     @ObservationIgnored
     private(set) var products: [TrendingMetric<Product>] = []
     
-    private(set) var trendingCardsDTS: DataTaskStatus = .uninitiated
-    private(set) var trendingProductsDTS: DataTaskStatus = .uninitiated
+    private(set) var trendingCardsDTS: DataTaskStatus = .pending
+    private(set) var trendingProductsDTS: DataTaskStatus = .pending
     
     @ObservationIgnored
     private(set) var trendingCardsNE: NetworkError? = nil

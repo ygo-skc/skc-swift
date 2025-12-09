@@ -9,7 +9,7 @@ import Foundation
 
 @Observable
 final class RecentlyViewedViewModel {
-    private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
+    private(set) var dataTaskStatus: DataTaskStatus = .pending
     private(set) var requestError: NetworkError? = nil
     
     @ObservationIgnored

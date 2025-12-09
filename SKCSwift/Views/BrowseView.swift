@@ -82,7 +82,7 @@ struct BrowseView: View {
             .overlay {
                 switch focusedResource {
                 case .card:
-                    if cardBrowseViewModel.dataStatus == .uninitiated {
+                    if cardBrowseViewModel.dataStatus == .pending {
                         CardBrowseCriteriaOverlay(dataRequestStatus: cardBrowseViewModel.criteriaStatus,
                                                   dataRequestError: cardBrowseViewModel.criteriaError,
                                                   retryDataRequest: cardBrowseViewModel.fetchCardBrowseCriteria)
@@ -109,7 +109,7 @@ private struct CardBrowseCriteriaOverlay: View {
     
     var body: some View {
         switch dataRequestStatus {
-        case .pending, .uninitiated:
+        case .pending:
             ProgressView("Loading...")
                 .controlSize(.large)
         case .done, .error:
@@ -128,7 +128,7 @@ private struct CardBrowseDataOverlay: View {
     
     var body: some View {
         switch dataRequestStatus {
-        case .pending, .uninitiated:
+        case .pending:
             ProgressView("Loading...")
                 .controlSize(.large)
         case .done, .error:
@@ -148,7 +148,7 @@ private struct ProductBrowseOverlay: View {
     
     var body: some View {
         switch dataRequestStatus {
-        case .pending, .uninitiated:
+        case .pending:
             ProgressView("Loading...")
                 .controlSize(.large)
         case .done, .error:

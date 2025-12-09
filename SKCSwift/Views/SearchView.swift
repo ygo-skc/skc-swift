@@ -21,8 +21,7 @@ struct SearchView: View {
             VStack {
                 switch searchModel.dataTaskStatus {
                 case .done where searchModel.searchText.isEmpty,
-                        .pending where searchModel.searchText.isEmpty,
-                        .uninitiated:
+                        .pending where searchModel.searchText.isEmpty:
                     if searchModel.isSearching {
                         RecentlyViewedView(path: $path,
                                            history: history,

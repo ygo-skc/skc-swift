@@ -10,10 +10,10 @@ import SwiftUI
 
 @Observable
 final class HomeViewModel {
-    private(set) var dbStatsDTS: DataTaskStatus = .uninitiated
-    private(set) var cotdDTS: DataTaskStatus = .uninitiated
-    private(set) var upcomingTCGProductsDTS: DataTaskStatus = .uninitiated
-    private(set) var ytUploadsDTS: DataTaskStatus = .uninitiated
+    private(set) var dbStatsDTS: DataTaskStatus = .pending
+    private(set) var cotdDTS: DataTaskStatus = .pending
+    private(set) var upcomingTCGProductsDTS: DataTaskStatus = .pending
+    private(set) var ytUploadsDTS: DataTaskStatus = .pending
     
     @ObservationIgnored
     private(set) var dbStatsNE: NetworkError? = nil
