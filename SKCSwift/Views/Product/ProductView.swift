@@ -35,29 +35,35 @@ struct ProductView: View {
                            product: model.product,
                            productDTS: model.productDTS,
                            productNE: model.productNE,
-                           retryCB: { await model.fetchProductData(forceRefresh: true) }) {
+                           retryCB: { await model.fetchProductData(forceRefresh: true) },
+                           suggestions: {
             ProductCardSuggestionsView(productID: model.productID,
                                        product: model.product,
                                        suggestions: model.suggestions,
-                                       suggestionsDTE: model.suggestionsDTS,
+                                       suggestionsDTS: model.suggestionsDTS,
                                        suggestionsNE: model.suggestionsNE) { forceRefresh in
                 await model.fetchProductSuggestions(forceRefresh: forceRefresh)
+            }.equatable()
+        })
+        .equatable()
+        .navigationTitle(model.product?.productName ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+        .task {
+            await model.fetchProductData()
+        }
+        .onChange(of: model.product) {
+            Task {
+                let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
+                newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
             }
         }
-                           .navigationTitle(model.product?.productName ?? "")
-                           .navigationBarTitleDisplayMode(.inline)
-                           .task {
-                               await model.fetchProductData()
-                           }
-                           .onChange(of: model.product) {
-                               Task {
-                                   let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
-                                   newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
-                               }
-                           }
     }
     
-    private struct ProductDetailsView<Suggestions: View>: View {
+    private struct ProductDetailsView<Suggestions: View>: View, Equatable {
+        static func == (lhs: ProductView.ProductDetailsView<Suggestions>, rhs: ProductView.ProductDetailsView<Suggestions>) -> Bool {
+            lhs.productDTS == rhs.productDTS && lhs.productNE == rhs.productNE
+        }
+        
         let productID: String
         let product: Product?
         let productDTS: DataTaskStatus
