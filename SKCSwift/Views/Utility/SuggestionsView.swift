@@ -75,7 +75,7 @@ struct ProductCardSuggestionsView: View {
                 subjectType: .product,
                 areSuggestionsLoaded: model.suggestions != nil,
                 hasSuggestions: model.hasSuggestions(),
-                hasError: model.suggestionRequestHasErrors(),
+                hasError: model.suggestionsNE != nil,
                 namedMaterials: model.suggestions?.suggestions.namedMaterials ?? [],
                 namedReferences: model.suggestions?.suggestions.namedReferences ?? [],
                 referencedBy: model.suggestions?.support.referencedBy ?? [],
@@ -84,22 +84,20 @@ struct ProductCardSuggestionsView: View {
             .modifier(.parentView)
             .padding(.bottom, 30)
         }
-        .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
+        .scrollDisabled(model.suggestionsNE != nil || !model.hasSuggestions())
         .task(priority: .userInitiated) {
             await model.fetchProductSuggestions()
         }
         .overlay {
             SuggestionOverlayView(areSuggestionsLoaded: model.suggestions != nil,
                                   noSuggestionsFound: !model.hasSuggestions(),
-                                  networkError: model.requestErrors[.suggestions, default: nil],
+                                  networkError: model.suggestionsNE,
                                   action: {
                 Task {
-                    model.resetSuggestionErrors()
                     await model.fetchProductSuggestions(forceRefresh: true)
                 }
             })
         }
-        .scrollDisabled(!model.hasSuggestions())
     }
 }
 
