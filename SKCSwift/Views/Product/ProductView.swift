@@ -36,9 +36,16 @@ struct ProductView: View {
                            productDTS: model.productDTS,
                            productNE: model.productNE,
                            retryCB: { await model.fetchProductData(forceRefresh: true) }) {
-            ProductCardSuggestionsView(model: model)
+            ProductCardSuggestionsView(productID: model.productID,
+                                       product: model.product,
+                                       suggestions: model.suggestions,
+                                       suggestionsDTE: model.suggestionsDTS,
+                                       suggestionsNE: model.suggestionsNE) { forceRefresh in
+                await model.fetchProductSuggestions(forceRefresh: forceRefresh)
+            }
         }
                            .navigationTitle(model.product?.productName ?? "")
+                           .navigationBarTitleDisplayMode(.inline)
                            .task {
                                await model.fetchProductData()
                            }
@@ -73,6 +80,7 @@ struct ProductView: View {
                             .modifier(.centeredParentView)
                             .padding(.bottom, 40)
                         }
+                        .scrollDisabled(productDTS != .done)
                     }
                 }
                 
@@ -193,10 +201,9 @@ private struct ProductStatsView: View  {
                     .padding(.bottom)
                 }
             }
-            .frame(alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.bottom)
-        .frame(maxWidth: .infinity)
     }
     
     private struct ProductMetricsView: View {

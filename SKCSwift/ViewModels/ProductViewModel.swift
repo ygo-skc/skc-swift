@@ -17,9 +17,11 @@ final class ProductViewModel {
     }
     
     private(set) var productDTS: DataTaskStatus = .pending
-    private(set) var suggestionDTS: DataTaskStatus = .pending
+    private(set) var suggestionsDTS: DataTaskStatus = .pending
     
+    @ObservationIgnored
     private(set) var productNE: NetworkError?
+    @ObservationIgnored
     private(set) var suggestionsNE: NetworkError?
     
     @ObservationIgnored
@@ -40,23 +42,12 @@ final class ProductViewModel {
     
     func fetchProductSuggestions(forceRefresh: Bool = false) async {
         if forceRefresh || suggestions == nil {
-            suggestionDTS = .pending
+            suggestionsDTS = .pending
             let res = await data(productSuggestionsURL(productID: productID), resType: ProductSuggestions.self)
             if case .success(let suggestions) = res {
                 self.suggestions = suggestions
             }
-            (suggestionsNE, suggestionDTS) = res.validate()
+            (suggestionsNE, suggestionsDTS) = res.validate()
         }
-    }
-    
-    func hasSuggestions() -> Bool {
-        if let namedMaterials = suggestions?.suggestions.namedMaterials,
-           let namedReferences = suggestions?.suggestions.namedReferences,
-           let referencedBy = suggestions?.support.referencedBy,
-           let materialFor = suggestions?.support.materialFor,
-           namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
-            return false
-        }
-        return true
     }
 }
