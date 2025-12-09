@@ -140,7 +140,7 @@ private struct BanListDateRangePicker: View {
         let initialOffset = numYears > 5 ? 5 : numYears - 1
         recentYears = Array(yearsSortedDesc[...initialOffset])
         if numYears > 5 {
-            olderYears = Array(yearsSortedDesc[initialOffset...])
+            olderYears = Array(yearsSortedDesc[(initialOffset + 1 )...])
         } else {
             olderYears = nil
         }
