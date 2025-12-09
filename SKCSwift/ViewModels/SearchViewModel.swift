@@ -13,7 +13,7 @@ final class SearchViewModel {
     var searchText = ""
     
     private(set) var requestError: NetworkError? = nil
-    private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
+    private(set) var dataTaskStatus: DataTaskStatus = .pending
     private(set) var isSearchSlow = false
     
     @ObservationIgnored

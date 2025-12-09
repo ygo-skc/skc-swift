@@ -15,7 +15,7 @@ final class ProductBrowseViewModel {
     var productSubTypeFilters: [FilteredItem<String>] = []
     
     private(set) var dataError: NetworkError?
-    private(set) var dataStatus = DataTaskStatus.uninitiated
+    private(set) var dataStatus = DataTaskStatus.pending
     
     private(set) var filteredProducts: [String: [Product]] = [:]
     
@@ -34,7 +34,7 @@ final class ProductBrowseViewModel {
     private var lastRefreshTimestamp = Date.distantPast
     
     func fetchProductBrowseData() async {
-        if dataError != nil || dataStatus == .uninitiated || lastRefreshTimestamp.isDateInvalidated(10) {
+        if dataError != nil || dataStatus == .pending || lastRefreshTimestamp.isDateInvalidated(10) {
             dataStatus = .pending
             switch await data(productsURL(), resType: Products.self) {
             case .success(let p):

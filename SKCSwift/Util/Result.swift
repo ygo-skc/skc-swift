@@ -24,8 +24,13 @@ extension Result where Success: Decodable, Failure == any Error {
         case .success(_):
             return (nil, .done)
         case .failure(let e):
-            let networkError = NetworkError.fromRPCError(e as? RPCError ?? RPCError(code: .unknown, message: e.localizedDescription), method: method)
-            return (networkError, .error)
+            if case let rpcError as RPCError = e {
+                return (NetworkError.fromRPCError(rpcError, method: method), .error)
+            } else if case let cancellationError as CancellationError = e {
+                return (NetworkError.fromRPCError(RPCError(code: .deadlineExceeded, message: cancellationError.localizedDescription), method: method), .error)
+            } else {
+                return (NetworkError.fromRPCError(RPCError(code: .unknown, message: e.localizedDescription), method: method), .error)
+            }
         }
     }
 }

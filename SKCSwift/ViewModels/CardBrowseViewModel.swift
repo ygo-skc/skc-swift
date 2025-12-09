@@ -15,10 +15,10 @@ final class CardBrowseViewModel {
     private(set) var cards: [Card] = []
     
     private(set) var criteriaError: NetworkError?
-    private(set) var criteriaStatus = DataTaskStatus.uninitiated
+    private(set) var criteriaStatus = DataTaskStatus.pending
     
     private(set) var dataError: NetworkError?
-    private(set) var dataStatus = DataTaskStatus.uninitiated
+    private(set) var dataStatus = DataTaskStatus.pending
     
     
     func fetchCardBrowseCriteria() async {

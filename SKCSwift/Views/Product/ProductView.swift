@@ -13,7 +13,7 @@ struct ProductLinkDestinationView: View {
     
     var body: some View {
         ProductView(productID: productLinkDestinationValue.productID)
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.automatic)
     }
 }
 
@@ -31,49 +31,85 @@ struct ProductView: View {
     }
     
     var body: some View {
-        TabView {
-            Tab("Info", systemImage: "info.circle.fill") {
-                ScrollView {
-                    if model.requestErrors[.product, default: nil] == nil {
-                        ProductInfoView(productID: model.productID, product: model.product)
-                    }
-                }
-                .scrollDisabled(model.requestErrors[.product, default: nil] != nil)
-                .task(priority: .userInitiated) {
-                    await model.fetchProductData()
-                }
-            }
-            
-            Tab("Suggestions", systemImage: "sparkles") {
-                ProductCardSuggestionsView(model: model)
+        ProductDetailsView(productID: model.productID,
+                           product: model.product,
+                           productDTS: model.productDTS,
+                           productNE: model.productNE,
+                           retryCB: { await model.fetchProductData(forceRefresh: true) }) {
+            ProductCardSuggestionsView(productID: model.productID,
+                                       product: model.product,
+                                       suggestions: model.suggestions,
+                                       suggestionsDTE: model.suggestionsDTS,
+                                       suggestionsNE: model.suggestionsNE) { forceRefresh in
+                await model.fetchProductSuggestions(forceRefresh: forceRefresh)
             }
         }
-        .navigationTitle(model.product?.productName ?? "")
-        .frame(maxWidth:.infinity, maxHeight: .infinity)
-        .overlay {
-            if let networkError = model.requestErrors[.product, default: nil] {
-                NetworkErrorView(error: networkError, action: {
-                    Task{
-                        model.resetProductError()
-                        await model.fetchProductData(forceRefresh: true)
+                           .navigationTitle(model.product?.productName ?? "")
+                           .navigationBarTitleDisplayMode(.inline)
+                           .task {
+                               await model.fetchProductData()
+                           }
+                           .onChange(of: model.product) {
+                               Task {
+                                   let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
+                                   newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
+                               }
+                           }
+    }
+    
+    private struct ProductDetailsView<Suggestions: View>: View {
+        let productID: String
+        let product: Product?
+        let productDTS: DataTaskStatus
+        let productNE: NetworkError?
+        let retryCB: () async -> Void
+        
+        @ViewBuilder let suggestions: () -> Suggestions
+        
+        var body: some View {
+            TabView {
+                Tab("Info", systemImage: "info.circle.fill") {
+                    if productNE == nil {
+                        ScrollView {
+                            VStack{
+                                ProductStatsView(productID: productID, product: product)
+                                if let product = product, let productContents = product.productContent {
+                                    ProductContentView(productID: productID, contents: productContents)
+                                }
+                            }
+                            .modifier(.centeredParentView)
+                            .padding(.bottom, 40)
+                        }
+                        .scrollDisabled(productDTS != .done)
                     }
                 }
-                )
-                .padding(.top, 20)
+                
+                if productDTS == .done {
+                    Tab("Suggestions", systemImage: "sparkles") {
+                        suggestions()
+                    }
+                }
             }
-        }
-        .tabViewStyle(.page(indexDisplayMode: .always))
-        .indexViewStyle(.page(backgroundDisplayMode: .always))
-        .onChange(of: model.product) {
-            Task {
-                let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
-                newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
+            .frame(maxWidth:.infinity, maxHeight: .infinity)
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            .overlay {
+                if DataTaskStatusParser.isDataPending(productDTS) {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                } else if let productNE {
+                    NetworkErrorView(error: productNE, action: {
+                        Task{
+                            await retryCB()
+                        }
+                    })
+                }
             }
         }
     }
 }
 
-private struct ProductInfoView: View {
+private struct ProductStatsView: View  {
     let productID: String
     let product: Product?
     
@@ -122,107 +158,95 @@ private struct ProductInfoView: View {
     }
     
     var body: some View {
-        VStack{
-            HStack(alignment: .top) {
-                ProductImageView(width: 150, productID: productID, imgSize: .small)
-                
-                VStack(alignment: .leading) {
-                    if let product = product, let productContents = product.productContent {
-                        InlineDateView(date: product.productReleaseDate)
-                            .padding(.bottom, 3)
-                        
-                        FlowLayout(spacing: 10) {
-                            Group {
-                                Label(product.productId, systemImage: "number")
-                                Label(product.productType, systemImage: "tag")
-                                Label(product.productSubType, systemImage: "tag")
-                                Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
-                            }
-                            .modifier(TagModifier(font: .caption))
-                        }
-                        .padding(.bottom)
-                        
-                        Button {
-                            showStats = true
-                            if chartData == nil {
-                                Task {
-                                    await chartData = productData(productContents: productContents)
-                                }
-                            }
-                        } label: {
-                            Label("Metrics", systemImage: "chart.bar.fill")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.large)
-                        .sheet(isPresented: $showStats, onDismiss: {showStats = false}) {
-                            if let data = chartData {
-                                ProductStatsView(productID: product.productId, productName: product.productName, data: data)
-                            } else {
-                                ProgressView("Loading...")
-                                    .controlSize(.large)
-                            }
-                        }
-                        .padding(.bottom)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.bottom)
-            .frame(maxWidth: .infinity, alignment: .topLeading)
+        HStack(alignment: .top) {
+            ProductImageView(width: 150, productID: productID, imgSize: .small)
             
-            if let product = product, let productContents = product.productContent {
-                ProductContentView(productID: productID, contents: productContents)
-            } else {
-                ProgressView("Loading...")
+            VStack(alignment: .leading) {
+                if let product = product, let productContents = product.productContent {
+                    InlineDateView(date: product.productReleaseDate)
+                        .padding(.bottom, 3)
+                    
+                    FlowLayout(spacing: 10) {
+                        Group {
+                            Label(product.productId, systemImage: "number")
+                            Label(product.productType, systemImage: "tag")
+                            Label(product.productSubType, systemImage: "tag")
+                            Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
+                        }
+                        .modifier(TagModifier(font: .caption))
+                    }
+                    .padding(.bottom)
+                    
+                    Button {
+                        showStats = true
+                        if chartData == nil {
+                            Task {
+                                await chartData = productData(productContents: productContents)
+                            }
+                        }
+                    } label: {
+                        Label("Metrics", systemImage: "chart.bar.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
                     .controlSize(.large)
-            }
-        }
-        .modifier(.centeredParentView)
-        .padding(.bottom, 40)
-    }
-}
-
-private struct ProductStatsView: View {
-    let productID: String
-    let productName: String
-    
-    private let rarityData: [ChartData]
-    private let mstData: [ChartData]
-    private let monsterColorData: [ChartData]
-    private let monsterAttributeData: [ChartData]
-    
-    init(productID: String, productName: String, data: ([ChartData], [ChartData], [ChartData], [ChartData])) {
-        self.productID = productID
-        self.productName = productName
-        (rarityData, mstData, monsterColorData, monsterAttributeData) = data
-    }
-    
-    var body: some View {
-        ScrollView {
-            VStack {
-                Label {
-                    Text("Metrics")
-                        .font(.title)
-                } icon: {
-                    ProductImageView(width: 50, productID: productID, imgSize: .tiny)
+                    .sheet(isPresented: $showStats, onDismiss: {showStats = false}) {
+                        if let data = chartData {
+                            ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
+                        } else {
+                            ProgressView("Loading...")
+                                .controlSize(.large)
+                        }
+                    }
+                    .padding(.bottom)
                 }
-                .padding(.bottom)
-                
-                PieChartGroupView(
-                    description: "Distribution of all cards printed in **\(productName)** and their unique rarities. In some cases, cards might have multiple rarities (e.g. common, rare, etc).",
-                    dataTitle: "Rarity Distribution", data: rarityData)
-                PieChartGroupView(
-                    description: "Cards printed in **\(productName)** categorized into three main types: Monster, Spell, and Trap.",
-                    dataTitle: "M/S/T Distribution", data: mstData)
-                PieChartGroupView(
-                    description: "Monster cards printed in **\(productName)** categorized into their respective card color.",
-                    dataTitle: "Monster Color", data: monsterColorData)
-                PieChartGroupView(
-                    description: "Monster cards printed in **\(productName)** categorized by their attribute.",
-                    dataTitle: "Monster Attribute", data: monsterAttributeData)
             }
-            .modifier(.parentView)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.bottom)
+    }
+    
+    private struct ProductMetricsView: View {
+        let productID: String
+        let productName: String
+        
+        private let rarityData: [ChartData]
+        private let mstData: [ChartData]
+        private let monsterColorData: [ChartData]
+        private let monsterAttributeData: [ChartData]
+        
+        init(productID: String, productName: String, data: ([ChartData], [ChartData], [ChartData], [ChartData])) {
+            self.productID = productID
+            self.productName = productName
+            (rarityData, mstData, monsterColorData, monsterAttributeData) = data
+        }
+        
+        var body: some View {
+            ScrollView {
+                VStack {
+                    Label {
+                        Text("Metrics")
+                            .font(.title)
+                    } icon: {
+                        ProductImageView(width: 50, productID: productID, imgSize: .tiny)
+                    }
+                    .padding(.bottom)
+                    
+                    PieChartGroupView(
+                        description: "Distribution of all cards printed in **\(productName)** and their unique rarities. In some cases, cards might have multiple rarities (e.g. common, rare, etc).",
+                        dataTitle: "Rarity Distribution", data: rarityData)
+                    PieChartGroupView(
+                        description: "Cards printed in **\(productName)** categorized into three main types: Monster, Spell, and Trap.",
+                        dataTitle: "M/S/T Distribution", data: mstData)
+                    PieChartGroupView(
+                        description: "Monster cards printed in **\(productName)** categorized into their respective card color.",
+                        dataTitle: "Monster Color", data: monsterColorData)
+                    PieChartGroupView(
+                        description: "Monster cards printed in **\(productName)** categorized by their attribute.",
+                        dataTitle: "Monster Attribute", data: monsterAttributeData)
+                }
+                .modifier(.parentView)
+            }
         }
     }
 }

@@ -34,7 +34,7 @@ struct NetworkErrorView: View {
     
     var body: some View {
         switch error {
-        case .server, .timeout:
+        case .server, .timeout, .unknown:
             ContentUnavailableView {
                 Label(description, systemImage: icon)
             } description: {

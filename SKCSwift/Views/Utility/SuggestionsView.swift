@@ -65,41 +65,53 @@ struct SuggestionOverlayView: View {
 }
 
 struct ProductCardSuggestionsView: View {
-    let model: ProductViewModel
+    let productID: String
+    let product: Product?
+    let suggestions: ProductSuggestions?
+    let suggestionsDTE: DataTaskStatus
+    let suggestionsNE: NetworkError?
+    
+    let dataCB: (Bool) async -> Void
+    
+    var hasSuggestions: Bool {
+        if let suggestions {
+            return suggestions.hasSuggestions
+        } else {
+            return false
+        }
+    }
     
     var body: some View {
         ScrollView {
             SuggestionsView(
-                subjectID: model.productID,
-                subjectName: model.product?.productName,
+                subjectID: productID,
+                subjectName: product?.productName,
                 subjectType: .product,
-                areSuggestionsLoaded: model.suggestions != nil,
-                hasSuggestions: model.hasSuggestions(),
-                hasError: model.suggestionRequestHasErrors(),
-                namedMaterials: model.suggestions?.suggestions.namedMaterials ?? [],
-                namedReferences: model.suggestions?.suggestions.namedReferences ?? [],
-                referencedBy: model.suggestions?.support.referencedBy ?? [],
-                materialFor: model.suggestions?.support.materialFor ?? []
+                areSuggestionsLoaded: suggestions != nil,
+                hasSuggestions: hasSuggestions,
+                hasError: suggestionsDTE == .error,
+                namedMaterials: suggestions?.suggestions.namedMaterials ?? [],
+                namedReferences: suggestions?.suggestions.namedReferences ?? [],
+                referencedBy: suggestions?.support.referencedBy ?? [],
+                materialFor: suggestions?.support.materialFor ?? []
             )
             .modifier(.parentView)
             .padding(.bottom, 30)
         }
-        .scrollDisabled(model.requestErrors[.suggestions, default: nil] != nil)
-        .task(priority: .userInitiated) {
-            await model.fetchProductSuggestions()
+        .scrollDisabled(suggestionsNE != nil || !hasSuggestions)
+        .task {
+            await dataCB(false)
         }
         .overlay {
-            SuggestionOverlayView(areSuggestionsLoaded: model.suggestions != nil,
-                                  noSuggestionsFound: !model.hasSuggestions(),
-                                  networkError: model.requestErrors[.suggestions, default: nil],
+            SuggestionOverlayView(areSuggestionsLoaded: suggestions != nil,
+                                  noSuggestionsFound: !hasSuggestions,
+                                  networkError: suggestionsNE,
                                   action: {
                 Task {
-                    model.resetSuggestionErrors()
-                    await model.fetchProductSuggestions(forceRefresh: true)
+                    await dataCB(true)
                 }
             })
         }
-        .scrollDisabled(!model.hasSuggestions())
     }
 }
 

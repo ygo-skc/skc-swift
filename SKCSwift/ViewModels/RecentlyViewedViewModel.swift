@@ -9,7 +9,7 @@ import Foundation
 
 @Observable
 final class RecentlyViewedViewModel {
-    private(set) var dataTaskStatus: DataTaskStatus = .uninitiated
+    private(set) var dataTaskStatus: DataTaskStatus = .pending
     private(set) var requestError: NetworkError? = nil
     
     @ObservationIgnored
@@ -41,7 +41,7 @@ final class RecentlyViewedViewModel {
     
     @concurrent
     nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
-                                            recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?, DataTaskStatus) {
+                                                        recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?, DataTaskStatus) {
         let res = await data(cardDetailsUrl(),
                              reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
                              resType: CardDetailsResponse.self, httpMethod: "POST")
@@ -59,29 +59,27 @@ final class RecentlyViewedViewModel {
     }
     
     nonisolated private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
-        switch await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
-                          resType: BatchSuggestions.self, httpMethod: "POST") {
-        case .success(let suggestions):
+        let data = await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
+                              resType: BatchSuggestions.self, httpMethod: "POST")
+        if case .success(let suggestions) = data {
             return suggestions
-        default: break
         }
         return BatchSuggestions(namedMaterials: [], namedReferences: [], materialArchetypes: Set(), referencedArchetypes: Set(),
                                 unknownResources: Set(), falsePositives: Set())
     }
     
     nonisolated private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
-        switch await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
-                          resType: BatchSupport.self, httpMethod: "POST") {
-        case .success(let suggestions):
+        let data = await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
+                              resType: BatchSupport.self, httpMethod: "POST")
+        if case .success(let suggestions) = data {
             return suggestions
-        default: break
         }
         return BatchSupport(referencedBy: [], materialFor: [], unknownResources: Set(), falsePositives: Set())
     }
     
     nonisolated private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
         let s = suggestions.namedMaterials + suggestions.namedReferences + support.materialFor + support.referencedBy
-        return Array(s
+        return Array(s.lazy
             .reduce(into: [String: CardReference]()) { accumulator, ref in
                 accumulator[ref.card.cardID] = CardReference(occurrences: accumulator[ref.card.cardID]?.occurrences ?? 0 + ref.occurrences, card: ref.card)
             }

@@ -28,6 +28,14 @@ struct CardSupport: Codable {
 struct ProductSuggestions: Codable {
     let suggestions: CardSuggestions
     let support: CardSupport
+    
+    var hasSuggestions: Bool {
+        if suggestions.namedMaterials.isEmpty && suggestions.namedReferences.isEmpty
+            && support.referencedBy.isEmpty && support.materialFor.isEmpty {
+            return false
+        }
+        return true
+    }
 }
 
 struct TrendingMetric<R:Codable & Equatable>: Codable, Equatable {
