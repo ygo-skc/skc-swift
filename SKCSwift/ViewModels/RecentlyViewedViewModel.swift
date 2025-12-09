@@ -41,7 +41,7 @@ final class RecentlyViewedViewModel {
     
     @concurrent
     nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
-                                            recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?, DataTaskStatus) {
+                                                        recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?, DataTaskStatus) {
         let res = await data(cardDetailsUrl(),
                              reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
                              resType: CardDetailsResponse.self, httpMethod: "POST")
@@ -60,7 +60,7 @@ final class RecentlyViewedViewModel {
     
     nonisolated private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
         let data = await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
-                          resType: BatchSuggestions.self, httpMethod: "POST")
+                              resType: BatchSuggestions.self, httpMethod: "POST")
         if case .success(let suggestions) = data {
             return suggestions
         }
@@ -70,7 +70,7 @@ final class RecentlyViewedViewModel {
     
     nonisolated private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
         let data = await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
-                          resType: BatchSupport.self, httpMethod: "POST")
+                              resType: BatchSupport.self, httpMethod: "POST")
         if case .success(let suggestions) = data {
             return suggestions
         }
@@ -79,7 +79,7 @@ final class RecentlyViewedViewModel {
     
     nonisolated private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
         let s = suggestions.namedMaterials + suggestions.namedReferences + support.materialFor + support.referencedBy
-        return Array(s
+        return Array(s.lazy
             .reduce(into: [String: CardReference]()) { accumulator, ref in
                 accumulator[ref.card.cardID] = CardReference(occurrences: accumulator[ref.card.cardID]?.occurrences ?? 0 + ref.occurrences, card: ref.card)
             }
