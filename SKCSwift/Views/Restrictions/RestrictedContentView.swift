@@ -34,8 +34,8 @@ struct RestrictedContentView: View {
                 RestrictedContentNavigatorView(format: $model.format,
                                                dateRangeIndex: $model.dateRangeIndex,
                                                contentCategory: $model.chosenBannedContentCategory,
-                                               dates: model.restrictionDates)
-                .disabled(DataTaskStatusParser.isDataPending(model.timelineDTS) || DataTaskStatusParser.isDataPending(model.contentDTS))
+                                               dates: model.restrictionDates,
+                                               isDisabled: DataTaskStatusParser.isDataPending(model.timelineDTS) || DataTaskStatusParser.isDataPending(model.contentDTS))
             }
             .onChange(of: model.format) {
                 Task {
