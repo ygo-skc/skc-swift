@@ -112,6 +112,36 @@ struct ProductView: View {
                 }
             }
         }
+        
+        private struct ProductContentView: View {
+            let productID: String
+            let contents: [ProductContent]
+            
+            var body: some View {
+                LazyVStack {
+                    ForEach(contents) { content in
+                        if let card = content.card {
+                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                                GroupBox(label: Label("\(productID)-\(content.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
+                                    CardListItemView(card: card, showAllInfo: true)
+                                        .equatable()
+                                    
+                                    FlowLayout(spacing: 6) {
+                                        ForEach(content.rarities, id: \.self) { rarity in
+                                            Text(rarity.cardRarityShortHand())
+                                                .modifier(TagModifier())
+                                        }
+                                    }
+                                }
+                                .groupBoxStyle(.listItem)
+                            })
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
     }
 }
 
@@ -254,36 +284,6 @@ private struct ProductStatsView: View  {
                 .modifier(.parentView)
             }
         }
-    }
-}
-
-private struct ProductContentView: View {
-    let productID: String
-    let contents: [ProductContent]
-    
-    var body: some View {
-        LazyVStack {
-            ForEach(contents) { content in
-                if let card = content.card {
-                    NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                        GroupBox(label: Label("\(productID)-\(content.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
-                            CardListItemView(card: card, showAllInfo: true)
-                                .equatable()
-                            
-                            FlowLayout(spacing: 6) {
-                                ForEach(content.rarities, id: \.self) { rarity in
-                                    Text(rarity.cardRarityShortHand())
-                                        .modifier(TagModifier())
-                                }
-                            }
-                        }
-                        .groupBoxStyle(.listItem)
-                    })
-                    .buttonStyle(.plain)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity)
     }
 }
 
