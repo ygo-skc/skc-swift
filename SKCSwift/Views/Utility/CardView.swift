@@ -19,24 +19,18 @@ struct CardView<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading) {
             content
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .frame(alignment: .topLeading)
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color(.systemBackground))
-                .shadow(
-                    color: colorScheme == .dark
-                    ? .white.opacity(0.2)
-                    : .black.opacity(0.2),
-                    radius: 6, x: 0, y: 3
-                )
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(colorScheme == .dark ? .white.opacity(0.4) : .black.opacity(0.2), lineWidth: 1)
         )
-        .frame(maxWidth: 180, alignment: .topLeading)
+        .frame(maxWidth: 200, alignment: .topLeading)
     }
 }
 

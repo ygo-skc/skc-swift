@@ -93,31 +93,37 @@ struct CardReleasesView: View {
                     .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
                 }
                 
-                HStack(spacing: 10) {
-                    CardView {
-                        Group {
-                            Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
-                                .font(.title3)
-                                .padding(.bottom, 2)
-                            Text(initialReleaseSubHeader)
-                                .font(.subheadline)
-                                .padding(.bottom, 2)
-                        }
-                    }
-                    if let latestReleaseHeader, let latestReleaseSubHeader {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 10) {
                         CardView {
                             Group {
-                                Label(latestReleaseHeader, systemImage: "calendar")
+                                Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
                                     .font(.title3)
                                     .padding(.bottom, 2)
-                                Text(latestReleaseSubHeader)
+                                Text(initialReleaseSubHeader)
                                     .font(.subheadline)
                                     .padding(.bottom, 2)
                             }
                         }
+                        if let latestReleaseHeader, let latestReleaseSubHeader {
+                            CardView {
+                                Group {
+                                    Label(latestReleaseHeader, systemImage: "calendar")
+                                        .font(.title3)
+                                        .padding(.bottom, 2)
+                                    Text(latestReleaseSubHeader)
+                                        .font(.subheadline)
+                                        .padding(.bottom, 2)
+                                }
+                            }
+                        }
                     }
+                    .padding(.top)
+                    .padding(.bottom, 1)
+                    .padding(.horizontal, 16)
                 }
-                .padding(.top)
+                .padding(.horizontal, -16)
+                .scrollIndicators(.hidden)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
         })
