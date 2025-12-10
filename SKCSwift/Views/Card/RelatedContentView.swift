@@ -99,22 +99,20 @@ struct CardReleasesView: View {
                             Group {
                                 Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
                                     .font(.title3)
-                                    .padding(.bottom, 2)
                                 Text(initialReleaseSubHeader)
                                     .font(.subheadline)
-                                    .padding(.bottom, 2)
                             }
+                            .padding(.bottom, 2)
                         }
                         if let latestReleaseHeader, let latestReleaseSubHeader {
                             CardView {
                                 Group {
                                     Label(latestReleaseHeader, systemImage: "calendar")
                                         .font(.title3)
-                                        .padding(.bottom, 2)
                                     Text(latestReleaseSubHeader)
                                         .font(.subheadline)
-                                        .padding(.bottom, 2)
                                 }
+                                .padding(.bottom, 2)
                             }
                         }
                     }
