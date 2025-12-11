@@ -58,6 +58,7 @@ final class RecentlyViewedViewModel {
         return await consolidateSuggestions(suggestions: await suggestionAsync, support: await supportAsync)
     }
     
+    @concurrent
     nonisolated private func fetchRecentlyViewedSuggestionData(newlyViewed: Set<String>) async -> BatchSuggestions {
         let data = await data(batchCardSuggestionsURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                               resType: BatchSuggestions.self, httpMethod: "POST")
@@ -68,6 +69,7 @@ final class RecentlyViewedViewModel {
                                 unknownResources: Set(), falsePositives: Set())
     }
     
+    @concurrent
     nonisolated private func fetchRecentlyViewedSupportData(newlyViewed: Set<String>) async -> BatchSupport {
         let data = await data(batchCardSupportURL(), reqBody: BatchCardRequest(cardIDs: newlyViewed),
                               resType: BatchSupport.self, httpMethod: "POST")
@@ -77,9 +79,10 @@ final class RecentlyViewedViewModel {
         return BatchSupport(referencedBy: [], materialFor: [], unknownResources: Set(), falsePositives: Set())
     }
     
+    @concurrent
     nonisolated private func consolidateSuggestions(suggestions: BatchSuggestions, support: BatchSupport) async -> [CardReference] {
         let s = suggestions.namedMaterials + suggestions.namedReferences + support.materialFor + support.referencedBy
-        return Array(s.lazy
+        return Array(s
             .reduce(into: [String: CardReference]()) { accumulator, ref in
                 accumulator[ref.card.cardID] = CardReference(occurrences: accumulator[ref.card.cardID]?.occurrences ?? 0 + ref.occurrences, card: ref.card)
             }
