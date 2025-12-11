@@ -76,7 +76,7 @@ struct TrendingView: View {
             }
         }
     }
-
+    
     private struct TrendingProductsView: View {
         @Binding var path: NavigationPath
         let trendingProducts: [TrendingMetric<Product>]
@@ -127,7 +127,7 @@ private struct TrendChangeView: View, Equatable {
     }
     
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             Label {
                 Text(trendLabel)
             } icon: {
@@ -155,12 +155,18 @@ private struct TrendChangeView: View, Equatable {
 
 #Preview("Trend Change Positive") {
     TrendChangeView(position: 1, trendChange: 1, hits: 1040)
+        .frame(height: 20)
+        .padding(.horizontal)
 }
 
 #Preview("Trend Change Negative") {
     TrendChangeView(position: 2, trendChange: -1, hits: 100203)
+        .frame(height: 20)
+        .padding(.horizontal)
 }
 
 #Preview("Trend Change Neutral") {
     TrendChangeView(position: 4, trendChange: 0, hits: 10)
+        .frame(height: 20)
+        .padding(.horizontal)
 }
