@@ -90,8 +90,8 @@ struct ProductView: View {
                     }
                 }
                 
-                if productDTS == .done {
-                    Tab("Suggestions", systemImage: "sparkles") {
+                Tab("Suggestions", systemImage: "sparkles") {
+                    if productDTS == .done {
                         suggestions()
                     }
                 }
@@ -287,6 +287,14 @@ private struct ProductStatsView: View  {
     }
 }
 
-#Preview {
+#Preview("Legacy of Destruction") {
     ProductView(productID: "LEDE")
+}
+
+#Preview("TP5 - No Suggestions") {
+    ProductView(productID: "TP5")
+}
+
+#Preview("Product DNE") {
+    ProductView(productID: "JAVI")
 }
