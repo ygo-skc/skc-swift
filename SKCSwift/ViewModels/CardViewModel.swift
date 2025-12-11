@@ -10,12 +10,30 @@ import GRPCCore
 
 @Observable
 final class CardViewModel {
+    @ObservationIgnored
+    let cardID: String
+    
+    init(cardID: String) {
+        self.cardID = cardID
+    }
+    
+    private(set) var cardDTS: DataTaskStatus = .pending
+    private(set) var cardScoreDTS: DataTaskStatus = .pending
+    
+    private(set) var suggestionsDTS: DataTaskStatus = .pending
+    private(set) var supportDTS: DataTaskStatus = .pending
+    
+    @ObservationIgnored
+    private(set) var cardNE: NetworkError?
+    @ObservationIgnored
+    private(set) var cardScoredNE: NetworkError?
+    @ObservationIgnored
+    private(set) var suggestionsNE: NetworkError?
+    @ObservationIgnored
+    private(set) var supportNE: NetworkError?
+    
+    @ObservationIgnored
     private(set) var card: Card?
-    private(set) var requestErrors: [CardModelDataType: NetworkError?] = [:]
-    
-    private(set) var areSuggestionsLoaded = false
-    private(set) var isSupportLoaded = false
-    
     private(set) var score: CardScore?
     
     @ObservationIgnored
@@ -28,10 +46,10 @@ final class CardViewModel {
     private(set) var materialFor: [CardReference]?
     
     @ObservationIgnored
-    let cardID: String
-    
-    init(cardID: String) {
-        self.cardID = cardID
+    var areSuggestionsLoaded: Bool { suggestionsDTS == .done && supportDTS == .done }
+    @ObservationIgnored
+    var suggestionsError: NetworkError? {
+        return (suggestionsNE != nil) ? suggestionsNE : supportNE
     }
     
     func fetchCardInfo(forceRefresh: Bool = false) async {
@@ -43,63 +61,53 @@ final class CardViewModel {
     
     private func fetchCardData(forceRefresh: Bool = false) async {
         if forceRefresh || card == nil {
-            switch await data(cardInfoURL(cardID: cardID), resType: Card.self) {
-            case .success(let card):
+            cardDTS = .pending
+            let res = await data(cardInfoURL(cardID: cardID), resType: Card.self)
+            if case .success(let card) = res {
                 self.card = card
-                requestErrors[.card] = nil
-            case .failure(let error):
-                requestErrors[.card] = error
             }
+            (cardNE, cardDTS) = res.validate()
         }
     }
     
     private func fetchCardScore() async {
         if score == nil {
-            switch await YGOService.getCardScore(cardID: cardID, mapper: CardScore.fromRPC) {
-            case .success(let score):
+            cardScoreDTS = .pending
+            let res = await YGOService.getCardScore(cardID: cardID, mapper: CardScore.fromRPC)
+            if case .success(let score) = res {
                 self.score = score
-            case .failure(let error):
-                requestErrors[.cardScore] = NetworkError.fromRPCError(
-                    error as? RPCError ?? RPCError(code: .unknown, message: error.localizedDescription),
-                    method: "Card Score"
-                )
             }
+            (cardScoredNE, cardScoreDTS) = res.validate(method: "Card Score Timeline")
         }
     }
     
     func fetchAllSuggestions(forceRefresh: Bool = false) async {
-        await withTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask { await self.fetchSuggestions(forceRefresh: forceRefresh) }
-            taskGroup.addTask { await self.fetchSupport(forceRefresh: forceRefresh) }
-        }
-    }
-    
-    private func fetchSuggestions(forceRefresh: Bool = false) async {
-        if forceRefresh || !areSuggestionsLoaded {
-            switch await data(cardSuggestionsURL(cardID: cardID), resType: CardSuggestions.self) {
-            case .success(let suggestions):
-                namedMaterials = suggestions.namedMaterials
-                namedReferences = suggestions.namedReferences
-                areSuggestionsLoaded = true
-                requestErrors[.suggestions] = nil
-            case .failure(let error):
-                requestErrors[.suggestions] = error
+        if forceRefresh || !areSuggestionsLoaded || suggestionsError != nil {
+            await withTaskGroup(of: Void.self) { taskGroup in
+                taskGroup.addTask { await self.fetchSuggestions() }
+                taskGroup.addTask { await self.fetchSupport() }
             }
         }
     }
     
-    private func fetchSupport(forceRefresh: Bool = false) async {
-        if forceRefresh || !isSupportLoaded {
-            switch await data(cardSupportURL(cardID: cardID), resType: CardSupport.self) {
-            case .success(let support):
-                referencedBy = support.referencedBy
-                materialFor = support.materialFor
-                isSupportLoaded = true
-                requestErrors[.support] = nil
-            case .failure(let error):
-                requestErrors[.support] = error
-            }
+    private func fetchSuggestions() async {
+        suggestionsDTS = .pending
+        let res = await data(cardSuggestionsURL(cardID: cardID), resType: CardSuggestions.self)
+        if case .success(let suggestions) = res {
+            namedMaterials = suggestions.namedMaterials
+            namedReferences = suggestions.namedReferences
         }
+        (suggestionsNE, suggestionsDTS) = res.validate()
+    }
+    
+    private func fetchSupport() async {
+        supportDTS = .pending
+        let res = await data(cardSupportURL(cardID: cardID), resType: CardSupport.self)
+        if case .success(let support) = res {
+            referencedBy = support.referencedBy
+            materialFor = support.materialFor
+        }
+        (supportNE, supportDTS) = res.validate()
     }
     
     func hasSuggestions() -> Bool {
@@ -108,22 +116,5 @@ final class CardViewModel {
             return false
         }
         return true
-    }
-    
-    func resetCardError() {
-        requestErrors[.card] = nil
-    }
-    
-    func resetSuggestionErrors() {
-        requestErrors[.suggestions] = nil
-        requestErrors[.support] = nil
-    }
-    
-    func suggestionRequestHasErrors() -> Bool {
-        return requestErrors[.suggestions] != nil && requestErrors[.support] != nil
-    }
-    
-    enum CardModelDataType {
-        case card, cardScore, suggestions, support
     }
 }
