@@ -64,11 +64,15 @@ struct SuggestionOverlayView: View {
     }
 }
 
-struct ProductCardSuggestionsView: View {
+struct ProductCardSuggestionsView: View, Equatable {
+    static func == (lhs: ProductCardSuggestionsView, rhs: ProductCardSuggestionsView) -> Bool {
+        lhs.suggestionsDTS == rhs.suggestionsDTS && lhs.suggestionsNE == rhs.suggestionsNE
+    }
+    
     let productID: String
     let product: Product?
     let suggestions: ProductSuggestions?
-    let suggestionsDTE: DataTaskStatus
+    let suggestionsDTS: DataTaskStatus
     let suggestionsNE: NetworkError?
     
     let dataCB: (Bool) async -> Void
@@ -89,7 +93,7 @@ struct ProductCardSuggestionsView: View {
                 subjectType: .product,
                 areSuggestionsLoaded: suggestions != nil,
                 hasSuggestions: hasSuggestions,
-                hasError: suggestionsDTE == .error,
+                hasError: suggestionsDTS == .error,
                 namedMaterials: suggestions?.suggestions.namedMaterials ?? [],
                 namedReferences: suggestions?.suggestions.namedReferences ?? [],
                 referencedBy: suggestions?.support.referencedBy ?? [],

@@ -27,8 +27,6 @@ struct ProductListItemView: View, Equatable {
                 
                 if let contents = product.productContent, !contents.isEmpty {
                     FlowLayout(spacing: 6) {
-                        Text("Printed as:")
-                            .font(.callout)
                         ForEach(contents[0].rarities, id: \.self) { rarity in
                             Text(rarity.cardRarityShortHand())
                                 .modifier(TagModifier())

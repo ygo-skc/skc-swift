@@ -74,13 +74,17 @@ final class RestrictedCardsViewModel {
     
     private func fetchBannedContentTimeline() async {
         let res = await data(banListDatesURL(format: format), resType: BanListDates.self)
-        restrictionDates = (try? res.get().banListDates) ?? [BanListDate]()
+        if case .success(let data) = res {
+            restrictionDates = data.banListDates
+        }
         (timelineNE, timelineDTS) = res.validate()
     }
     
     private func fetchCardScoreTimeline() async {
         let res = await YGOService.getRestrictionDates(format: format.rawValue)
-        restrictionDates = (try? res.get().map( {BanListDate(effectiveDate: $0) } )) ?? []
+        if case .success(let data) = res {
+            restrictionDates = data.map({BanListDate(effectiveDate: $0)})
+        }
         (timelineNE, timelineDTS) = res.validate(method: "Card Score Timeline")
     }
     
@@ -90,7 +94,9 @@ final class RestrictedCardsViewModel {
                                               saveBandwidth: false,
                                               allInfo: false),
                              resType: BannedContent.self)
-        bannedContent = (try? res.get())
+        if case .success(let bannedContent) = res {
+            self.bannedContent = bannedContent
+        }
         (contentNE, contentDTS) = res.validate()
     }
     
@@ -98,7 +104,9 @@ final class RestrictedCardsViewModel {
         let res = await YGOService.getScoresByFormatAndDate(format: format.rawValue,
                                                             date: restrictionDates[dateRangeIndex].effectiveDate,
                                                             mapper: CardScoreEntry.fromRPC)
-        cardScores = CardScores(entries: (try? res.get()) ?? [])
+        if case .success(let cardScores) = res {
+            self.cardScores = CardScores(entries: cardScores)
+        }
         (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
     }
 }

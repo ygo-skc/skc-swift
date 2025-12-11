@@ -53,28 +53,36 @@ final class HomeViewModel {
     func fetchDBStatsData() async {
         dbStatsDTS = .pending
         let res = await data(dbStatsURL(), resType: SKCDatabaseStats.self)
-        dbStats = (try? res.get()) ?? dbStats
+        if case .success(let dbStats) = res {
+            self.dbStats = dbStats
+        }
         (dbStatsNE, dbStatsDTS) = res.validate()
     }
     
     func fetchCardOfTheDayData() async {
         cotdDTS = .pending
         let res = await data(cardOfTheDayURL(), resType: CardOfTheDay.self)
-        cardOfTheDay = (try? res.get()) ?? cardOfTheDay
+        if case .success(let cardOfTheDay) = res {
+            self.cardOfTheDay = cardOfTheDay
+        }
         (cotdNE, cotdDTS) = res.validate()
     }
     
     func fetchUpcomingTCGProducts() async {
         upcomingTCGProductsDTS = .pending
         let res = await data(upcomingEventsURL(), resType: Events.self)
-        upcomingTCGProducts = (try? res.get().events) ?? upcomingTCGProducts
+        if case .success(let data) = res {
+            self.upcomingTCGProducts = data.events
+        }
         (upcomingTCGProductsNE, upcomingTCGProductsDTS) = res.validate()
     }
     
     func fetchYouTubeUploadsData() async {
         ytUploadsDTS = .pending
         let res = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
-        ytUploads = (try? res.get().videos) ?? ytUploads
+        if case .success(let data) = res {
+            self.ytUploads = data.videos
+        }
         (ytUploadsNE, ytUploadsDTS) = res.validate()
     }
     

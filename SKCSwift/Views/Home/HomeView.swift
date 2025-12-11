@@ -75,7 +75,13 @@ struct HomeView: View {
                 .sheet(isPresented: $isSettingsSheetPresented) {
                     SettingsView()
                         .presentationDetents([.medium, .large])
-                        .navigationTransition(.zoom(sourceID: "settings", in: animation))
+                        .modify {
+                            if #available(iOS 26.0, *) {
+                                $0.navigationTransition(.zoom(sourceID: "settings", in: animation))
+                            } else {
+                                $0
+                            }
+                        }
                 }
             }
             .modify {

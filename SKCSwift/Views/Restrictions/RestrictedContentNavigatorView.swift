@@ -13,13 +13,16 @@ struct RestrictedContentNavigatorView: View {
     @Binding var contentCategory: BannedContentCategory
     
     let dates: [BanListDate]
+    let isDisabled: Bool    // bubbling up since disabling the parent causes issues w/ popover in iOS 18
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             RestrictedContentFormatsView(format: $format)
-            RestrictedContentDatesView(dateRangeIndex: $dateRangeIndex, dates: dates)
+                .disabled(isDisabled)
+            RestrictedContentDatesView(dateRangeIndex: $dateRangeIndex, dates: dates, isDisabled: isDisabled)
             if format == .tcg || format == .md {
                 BannedContentCategoryView(contentCategory: $contentCategory)
+                    .disabled(isDisabled)
             }
         }
     }
@@ -68,6 +71,7 @@ struct RestrictedContentNavigatorView: View {
 struct RestrictedContentDatesView: View {
     @Binding var dateRangeIndex: Int
     let dates: [BanListDate]
+    let isDisabled: Bool
     
     @State private var isSelectorSheetPresented = false
     @Namespace private var animation
@@ -87,17 +91,18 @@ struct RestrictedContentDatesView: View {
                 }
             }
             .buttonStyle(.bordered)
-            .matchedTransitionSource(id: "ban-list-date-range", in: animation)
+            .disabled(isDisabled)
             .tint(Color.accentColor.opacity(0.5))
             .foregroundColor(.black)
-        }
-        .popover(isPresented: $isSelectorSheetPresented) {
-            BanListDateRangePicker(
-                chosenDateRange: $dateRangeIndex,
-                showDateSelectorSheet: $isSelectorSheetPresented,
-                banListDates: dates
-            )
-            .navigationTransition(.zoom(sourceID: "ban-list-date-range", in: animation))
+            .matchedTransitionSource(id: "dates", in: animation)
+            .popover(isPresented: $isSelectorSheetPresented) {
+                BanListDateRangePicker(
+                    chosenDateRange: $dateRangeIndex,
+                    showDateSelectorSheet: $isSelectorSheetPresented,
+                    banListDates: dates
+                )
+                .navigationTransition(.zoom(sourceID: "dates", in: animation))
+            }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
