@@ -37,7 +37,3 @@ nonisolated extension URL {
         }
     }
 }
-
-extension URLCache {
-    static let imageCache = URLCache(memoryCapacity: 15 * 1024 * 1024, diskCapacity: 20 * 1024 * 1024)
-}
