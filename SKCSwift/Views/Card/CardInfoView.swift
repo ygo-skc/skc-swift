@@ -39,19 +39,36 @@ private struct CardInfoView: View {
                         cardNE: model.cardNE,
                         retryCB: { await model.fetchCardInfo(forceRefresh: true) },
                         suggestions: {
-            CardSuggestionsView(cardID: model.cardID,
-                                cardName: model.card?.cardName ?? "",
-                                namedMaterials: model.namedMaterials ?? [],
-                                namedReferences: model.namedReferences ?? [],
-                                referencedBy: model.referencedBy ?? [],
-                                materialFor: model.materialFor ?? [],
-                                areSuggestionsLoaded: model.areSuggestionsLoaded,
-                                hasSuggestions: model.hasSuggestions(),
-                                suggestionsError: model.suggestionsError,
-                                dataCB: { forceRefresh in
+            SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil
+                                  || !model.areSuggestionsLoaded
+                                  || !model.hasSuggestions(),
+                                  dataCB: { forceRefresh in
                 await model.fetchAllSuggestions(forceRefresh: forceRefresh)
+            }, suggestionsView: {
+                SuggestionsView(
+                    subjectID: model.cardID,
+                    subjectName: model.card?.cardName ?? "",
+                    subjectType: .card,
+                    areSuggestionsLoaded: model.areSuggestionsLoaded,
+                    hasSuggestions: model.hasSuggestions(),
+                    hasError: model.suggestionsError != nil,
+                    namedMaterials: model.namedMaterials ?? [],
+                    namedReferences: model.namedReferences ?? [],
+                    referencedBy: model.referencedBy ?? [],
+                    materialFor: model.materialFor ?? []
+                )
+                .equatable()
+            }, overlayView: {
+                SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                                      noSuggestionsFound: !model.hasSuggestions(),
+                                      networkError: model.suggestionsError,
+                                      action: {
+                    Task {
+                        await model.fetchAllSuggestions(forceRefresh: true)
+                    }
+                })
+                .equatable()
             })
-            .equatable()
         })
         .equatable()
         .navigationTitle(model.card?.cardName ?? "Loading…")

@@ -37,13 +37,36 @@ struct ProductView: View {
                            productNE: model.productNE,
                            retryCB: { await model.fetchProductData(forceRefresh: true) },
                            suggestions: {
-            ProductCardSuggestionsView(productID: model.productID,
-                                       product: model.product,
-                                       suggestions: model.suggestions,
-                                       suggestionsDTS: model.suggestionsDTS,
-                                       suggestionsNE: model.suggestionsNE) { forceRefresh in
-                await model.fetchProductSuggestions(forceRefresh: forceRefresh)
-            }.equatable()
+            SuggestionsParentView(isScrollDisabled: model.suggestionsNE != nil
+                                  || model.suggestionsDTS != .done
+                                  || !model.hasSuggestions,
+                                  dataCB: { forceRefresh in
+                await model.fetchProductSuggestions(forceRefresh: true)
+            }, suggestionsView: {
+                SuggestionsView(
+                    subjectID: model.productID,
+                    subjectName: model.product?.productName ?? "",
+                    subjectType: .product,
+                    areSuggestionsLoaded: model.suggestionsDTS == .done,
+                    hasSuggestions: model.hasSuggestions,
+                    hasError: model.suggestionsNE != nil,
+                    namedMaterials: model.suggestions?.suggestions.namedMaterials ?? [],
+                    namedReferences: model.suggestions?.suggestions.namedReferences ?? [],
+                    referencedBy: model.suggestions?.support.referencedBy ?? [],
+                    materialFor: model.suggestions?.support.materialFor ?? []
+                )
+                .equatable()
+            }, overlayView: {
+                SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
+                                      noSuggestionsFound: !model.hasSuggestions,
+                                      networkError: model.suggestionsNE,
+                                      action: {
+                    Task {
+                        await model.fetchProductSuggestions(forceRefresh: true)
+                    }
+                })
+                .equatable()
+            })
         })
         .equatable()
         .navigationTitle(model.product?.productName ?? "")
