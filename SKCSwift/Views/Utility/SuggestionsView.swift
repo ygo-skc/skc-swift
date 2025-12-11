@@ -9,7 +9,10 @@ import SwiftUI
 
 struct CardSuggestionsView: View, Equatable {
     static func == (lhs: CardSuggestionsView, rhs: CardSuggestionsView) -> Bool {
-        lhs.cardName == rhs.cardName && lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded && lhs.suggestionsError == rhs.suggestionsError
+        lhs.cardID == rhs.cardID
+        && lhs.cardName == rhs.cardName
+        && lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
+        && lhs.suggestionsError == rhs.suggestionsError
     }
     
     let cardID: String
@@ -53,26 +56,7 @@ struct CardSuggestionsView: View, Equatable {
                 }
             })
         }
-        .scrollDisabled(!hasSuggestions)
-    }
-}
-
-struct SuggestionOverlayView: View {
-    let areSuggestionsLoaded: Bool
-    let noSuggestionsFound: Bool
-    
-    let networkError: NetworkError?
-    let action: () -> Void
-    
-    var body: some View {
-        if let networkError {
-            NetworkErrorView(error: networkError, action: action)
-        } else if areSuggestionsLoaded, noSuggestionsFound {
-            ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
-        } else if !areSuggestionsLoaded {
-            ProgressView("Loading...")
-                .controlSize(.large)
-        }
+        .scrollDisabled(suggestionsError != nil || !areSuggestionsLoaded)
     }
 }
 
@@ -114,7 +98,6 @@ struct ProductCardSuggestionsView: View, Equatable {
             .modifier(.parentView)
             .padding(.bottom, 30)
         }
-        .scrollDisabled(suggestionsNE != nil || !hasSuggestions)
         .task {
             await dataCB(false)
         }
@@ -127,6 +110,26 @@ struct ProductCardSuggestionsView: View, Equatable {
                     await dataCB(true)
                 }
             })
+        }
+        .scrollDisabled(suggestionsNE != nil || !hasSuggestions)
+    }
+}
+
+struct SuggestionOverlayView: View {
+    let areSuggestionsLoaded: Bool
+    let noSuggestionsFound: Bool
+    
+    let networkError: NetworkError?
+    let action: () -> Void
+    
+    var body: some View {
+        if let networkError {
+            NetworkErrorView(error: networkError, action: action)
+        } else if areSuggestionsLoaded, noSuggestionsFound {
+            ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
+        } else if !areSuggestionsLoaded {
+            ProgressView("Loading...")
+                .controlSize(.large)
         }
     }
 }
@@ -315,29 +318,45 @@ struct CarouselItemViewModifier: ViewModifier {
     }
 }
 
-//#Preview("Air Neos Suggestions") {
-//    let model = CardViewModel(cardID: "11502550")
-//    
-//    ScrollView {
-//        CardSuggestionsView(model: model)
-//            .padding(.horizontal)
-//    }
-//    .task {
-//        await model.fetchCardInfo()
-//    }
-//}
-//
-//#Preview("Dark Magician Girl Suggestions") {
-//    let model = CardViewModel(cardID: "38033121")
-//    
-//    ScrollView {
-//        CardSuggestionsView(model: model)
-//            .padding(.horizontal)
-//    }
-//    .task {
-//        await model.fetchCardInfo()
-//    }
-//}
+#Preview("Air Neos Suggestions") {
+    @Previewable @State var model = CardViewModel(cardID: "11502550")
+    
+    CardSuggestionsView(cardID: model.cardID,
+                        cardName: model.card?.cardName ?? "",
+                        namedMaterials: model.namedMaterials ?? [],
+                        namedReferences: model.namedReferences ?? [],
+                        referencedBy: model.referencedBy ?? [],
+                        materialFor: model.materialFor ?? [],
+                        areSuggestionsLoaded: model.areSuggestionsLoaded,
+                        hasSuggestions: model.hasSuggestions(),
+                        suggestionsError: model.suggestionsError,
+                        dataCB: { forceRefresh in
+        await model.fetchAllSuggestions(forceRefresh: forceRefresh)
+    })
+    .task {
+        await model.fetchCardInfo()
+    }
+}
+
+#Preview("Dark Magician Girl Suggestions") {
+    @Previewable @State var model = CardViewModel(cardID: "38033121")
+    
+    CardSuggestionsView(cardID: model.cardID,
+                        cardName: model.card?.cardName ?? "",
+                        namedMaterials: model.namedMaterials ?? [],
+                        namedReferences: model.namedReferences ?? [],
+                        referencedBy: model.referencedBy ?? [],
+                        materialFor: model.materialFor ?? [],
+                        areSuggestionsLoaded: model.areSuggestionsLoaded,
+                        hasSuggestions: model.hasSuggestions(),
+                        suggestionsError: model.suggestionsError,
+                        dataCB: { forceRefresh in
+        await model.fetchAllSuggestions(forceRefresh: forceRefresh)
+    })
+    .task {
+        await model.fetchCardInfo()
+    }
+}
 
 private struct SuggestedCardView: View {
     var card: Card

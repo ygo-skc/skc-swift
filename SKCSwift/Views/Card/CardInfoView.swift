@@ -85,22 +85,25 @@ private struct CardInfoView: View {
                 let width = reader.size.width
                 TabView {
                     Tab("Info", systemImage: "info.circle.fill") {
-                        ScrollView {
-                            YGOCardView(cardID: cardID, card: card, width: width)
-                                .equatable()
-                                .padding(.bottom)
-                            
-                            if let card = card {
-                                CardReleasesView(card: card)
-                                    .modifier(.parentView)
+                        if cardNE == nil {
+                            ScrollView {
+                                YGOCardView(cardID: cardID, card: card, width: width)
+                                    .equatable()
+                                    .padding(.bottom)
                                 
-                                CardRestrictionsView(card: card, score: score)
-                                    .modifier(.parentView)
-                                    .padding(.bottom, 50)
-                            } else {
-                                ProgressView("Loading...")
-                                    .controlSize(.large)
+                                if let card = card {
+                                    CardReleasesView(card: card)
+                                        .modifier(.parentView)
+                                    
+                                    CardRestrictionsView(card: card, score: score)
+                                        .modifier(.parentView)
+                                        .padding(.bottom, 50)
+                                } else {
+                                    ProgressView("Loading...")
+                                        .controlSize(.large)
+                                }
                             }
+                            .disabled(cardDTS != .done)
                         }
                     }
                     
