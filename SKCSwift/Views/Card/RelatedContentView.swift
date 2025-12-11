@@ -118,9 +118,8 @@ struct CardReleasesView: View {
                     }
                     .padding(.top)
                     .padding(.bottom, 1)
-                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, -16)
+                .scrollClipDisabled()
                 .scrollIndicators(.hidden)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)

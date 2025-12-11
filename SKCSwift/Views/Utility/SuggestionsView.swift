@@ -226,7 +226,7 @@ struct SuggestionCarouselView: View {
             }
         }
         .frame(maxWidth: .infinity, minHeight: height)
-        .padding(.horizontal, -16)
+        .scrollClipDisabled()
     }
 }
 
