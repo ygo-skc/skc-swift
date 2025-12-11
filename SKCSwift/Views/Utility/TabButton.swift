@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
-    @Binding var selected: T    // current selected value
-    var value: T   // current tab button value
-    var animmation: Namespace.ID
+    @Binding var selected: T
+    var value: T
+    var animation: Namespace.ID
     
     var body: some View {
         Button(action: {
@@ -21,20 +21,19 @@ struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(selected == value ? .white : .primary)
-                .padding(.vertical, 5)
+                .padding(.vertical, 7)
                 .padding(.horizontal, 10)
                 .if(selected == value) {
                     $0.background {
                         Color.accentColor
-                            .clipShape(Capsule())
-                            .matchedGeometryEffect(id: "Tab", in: animmation)
+                            .matchedGeometryEffect(id: "Tab", in: animation)
                     }
                 } else: {
                     $0.background {
                         Color.gray.opacity(0.3)
-                            .clipShape(Capsule())
                     }
                 }
+                .cornerRadius(7)
         }
     }
 }
@@ -45,8 +44,8 @@ struct TabButton_Previews: PreviewProvider {
         @Namespace var animation
         
         HStack {
-            TabButton(selected: $format, value: .tcg, animmation: animation)
-            TabButton(selected: $format, value: .md, animmation: animation)
+            TabButton(selected: $format, value: .tcg, animation: animation)
+            TabButton(selected: $format, value: .md, animation: animation)
         }
     }
 }

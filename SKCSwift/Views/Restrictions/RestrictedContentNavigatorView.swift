@@ -40,7 +40,7 @@ struct RestrictedContentNavigatorView: View {
                     .fontWeight(.semibold)
                 
                 ForEach(RestrictedContentFormatsView.formats, id: \.rawValue) { format in
-                    TabButton(selected: $format, value: format, animmation: animation)
+                    TabButton(selected: $format, value: format, animation: animation)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -60,7 +60,7 @@ struct RestrictedContentNavigatorView: View {
                     .fontWeight(.semibold)
                 
                 ForEach(BannedContentCategoryView.categories, id: \.rawValue) { category in
-                    TabButton(selected: $contentCategory, value: category, animmation: animation)
+                    TabButton(selected: $contentCategory, value: category, animation: animation)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
