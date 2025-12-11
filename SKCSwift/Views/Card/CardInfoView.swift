@@ -27,64 +27,52 @@ private struct CardInfoView: View {
     private var cardFromTable: [History]
     
     init(cardID: String) {
-        self.model = .init(cardID: cardID)    
+        self.model = .init(cardID: cardID)
         _cardFromTable = Query(ArchiveContainer.fetchHistoryResourceByID(id: cardID))
     }
     
     var body: some View {
-        VStack {
-            GeometryReader { reader in
-                let width = reader.size.width
-                if model.requestErrors[.card, default: nil] == nil {
-                    TabView {
-                        Tab("Info", systemImage: "info.circle.fill") {
-                            ScrollView {
-                                YGOCardView(cardID: model.cardID, card: model.card, width: width)
-                                    .equatable()
-                                    .padding(.bottom)
-                                
-                                if let card = model.card {
-                                    CardReleasesView(card: card)
-                                        .modifier(.parentView)
-                                    
-                                    CardRestrictionsView(card: card, score: model.score)
-                                        .modifier(.parentView)
-                                        .padding(.bottom, 50)
-                                } else {
-                                    ProgressView("Loading...")
-                                        .controlSize(.large)
-                                }
-                            }
-                        }
-                        
-                        Tab("Suggestions", systemImage: "sparkles") {
-                            CardSuggestionsView(model: model)
-                        }
+        CardDetailsView(cardID: model.cardID,
+                        card: model.card,
+                        score: model.score,
+                        cardDTS: model.cardDTS,
+                        cardNE: model.cardNE,
+                        retryCB: { await model.fetchCardInfo(forceRefresh: true) },
+                        suggestions: {
+            SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil
+                                  || !model.areSuggestionsLoaded
+                                  || !model.hasSuggestions(),
+                                  dataCB: { forceRefresh in
+                await model.fetchAllSuggestions(forceRefresh: forceRefresh)
+            }, suggestionsView: {
+                SuggestionsView(
+                    subjectID: model.cardID,
+                    subjectName: model.card?.cardName ?? "",
+                    subjectType: .card,
+                    areSuggestionsLoaded: model.areSuggestionsLoaded,
+                    hasSuggestions: model.hasSuggestions(),
+                    hasError: model.suggestionsError != nil,
+                    namedMaterials: model.namedMaterials ?? [],
+                    namedReferences: model.namedReferences ?? [],
+                    referencedBy: model.referencedBy ?? [],
+                    materialFor: model.materialFor ?? []
+                )
+                .equatable()
+            }, overlayView: {
+                SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                                      noSuggestionsFound: !model.hasSuggestions(),
+                                      networkError: model.suggestionsError,
+                                      action: {
+                    Task {
+                        await model.fetchAllSuggestions(forceRefresh: true)
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .always))
-                    .indexViewStyle(.page(backgroundDisplayMode: .always))
-                }
-            }
-        }
+                })
+                .equatable()
+            })
+        })
+        .equatable()
         .navigationTitle(model.card?.cardName ?? "Loading…")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
-        .overlay {
-            if let networkError = model.requestErrors[.card, default: nil] {
-                switch networkError {
-                case .badRequest, .unprocessableEntity:
-                    ContentUnavailableView("Card not currently supported",
-                                           systemImage: "exclamationmark.square.fill",
-                                           description: Text("Please check back later"))
-                default:
-                    NetworkErrorView(error: networkError, action: {
-                        Task {
-                            model.resetCardError()
-                            await model.fetchCardInfo(forceRefresh: true)
-                        }
-                    })
-                }
-            }
-        }
         .task {
             await model.fetchCardInfo()
         }
@@ -92,6 +80,74 @@ private struct CardInfoView: View {
             Task {
                 let newItem = History(resource: .card, id: model.cardID, timesAccessed: 1)
                 newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
+            }
+        }
+    }
+    
+    private struct CardDetailsView<Suggestions: View>: View, Equatable {
+        static func == (lhs: CardInfoView.CardDetailsView<Suggestions>, rhs: CardInfoView.CardDetailsView<Suggestions>) -> Bool {
+            lhs.cardDTS == rhs.cardDTS && lhs.cardNE == rhs.cardNE && lhs.score == rhs.score
+        }
+        
+        let cardID: String
+        let card: Card?
+        let score: CardScore?
+        let cardDTS: DataTaskStatus
+        let cardNE: NetworkError?
+        let retryCB: () async -> Void
+        @ViewBuilder let suggestions: () -> Suggestions
+        
+        var body: some View {
+            GeometryReader { reader in
+                let width = reader.size.width
+                TabView {
+                    Tab("Info", systemImage: "info.circle.fill") {
+                        if cardNE == nil {
+                            ScrollView {
+                                YGOCardView(cardID: cardID, card: card, width: width)
+                                    .equatable()
+                                    .padding(.bottom)
+                                
+                                if let card = card {
+                                    CardReleasesView(card: card)
+                                        .modifier(.parentView)
+                                    
+                                    CardRestrictionsView(card: card, score: score)
+                                        .modifier(.parentView)
+                                        .padding(.bottom, 50)
+                                } else {
+                                    ProgressView("Loading...")
+                                        .controlSize(.large)
+                                }
+                            }
+                            .disabled(cardDTS != .done)
+                        }
+                    }
+                    
+                    Tab("Suggestions", systemImage: "sparkles") {
+                        if cardDTS == .done {
+                            suggestions()
+                        }
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .overlay {
+                    if let networkError = cardNE {
+                        switch networkError {
+                        case .badRequest, .unprocessableEntity:
+                            ContentUnavailableView("Card not currently supported",
+                                                   systemImage: "exclamationmark.square.fill",
+                                                   description: Text("Please check back later"))
+                        default:
+                            NetworkErrorView(error: networkError, action: {
+                                Task {
+                                    await retryCB()
+                                }
+                            })
+                        }
+                    }
+                }
             }
         }
     }

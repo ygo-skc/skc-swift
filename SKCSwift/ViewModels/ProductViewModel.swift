@@ -29,6 +29,15 @@ final class ProductViewModel {
     @ObservationIgnored
     private(set) var suggestions: ProductSuggestions? = nil
     
+    @ObservationIgnored
+    var hasSuggestions: Bool {
+        if let suggestions {
+            return suggestions.hasSuggestions
+        } else {
+            return false
+        }
+    }
+    
     func fetchProductData(forceRefresh: Bool = false) async {
         if forceRefresh || product == nil {
             productDTS = .pending

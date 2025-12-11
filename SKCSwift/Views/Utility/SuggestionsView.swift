@@ -7,45 +7,40 @@
 
 import SwiftUI
 
-struct CardSuggestionsView: View {
-    let model: CardViewModel
+struct SuggestionsParentView<SuggestionsView: View, OverlayView: View>: View, Equatable {
+    static func == (lhs: SuggestionsParentView<SuggestionsView, OverlayView>,
+                    rhs: SuggestionsParentView<SuggestionsView, OverlayView>) -> Bool {
+        lhs.isScrollDisabled == rhs.isScrollDisabled
+    }
+    
+    let isScrollDisabled: Bool
+    let dataCB: (Bool) async -> Void
+    @ViewBuilder let suggestionsView: () -> SuggestionsView
+    @ViewBuilder let overlayView: () -> OverlayView
     
     var body: some View {
         ScrollView {
-            SuggestionsView(
-                subjectID: model.cardID,
-                subjectName: model.card?.cardName ?? "",
-                subjectType: .card,
-                areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
-                hasSuggestions: model.hasSuggestions(),
-                hasError: model.suggestionRequestHasErrors(),
-                namedMaterials: model.namedMaterials ?? [],
-                namedReferences: model.namedReferences ?? [],
-                referencedBy: model.referencedBy ?? [],
-                materialFor: model.materialFor ?? []
-            )
-            .modifier(.parentView)
-            .padding(.bottom, 30)
+            suggestionsView()
+                .modifier(.parentView)
+                .padding(.bottom, 30)
         }
-        .task(priority: .userInitiated) {
-            await model.fetchAllSuggestions(forceRefresh: true)
+        .task {
+            await dataCB(false)
         }
         .overlay {
-            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded && model.isSupportLoaded,
-                                  noSuggestionsFound: !model.hasSuggestions(),
-                                  networkError: model.requestErrors[.suggestions, default: nil] ?? model.requestErrors[.support, default: nil],
-                                  action: {
-                Task {
-                    model.resetSuggestionErrors()
-                    await model.fetchAllSuggestions(forceRefresh: true)
-                }
-            })
+            overlayView()
         }
-        .scrollDisabled(!model.hasSuggestions())
+        .scrollDisabled(isScrollDisabled)
+        .scrollIndicators(.hidden)
     }
 }
 
-struct SuggestionOverlayView: View {
+struct SuggestionOverlayView: View, Equatable {
+    static func == (lhs: SuggestionOverlayView, rhs: SuggestionOverlayView) -> Bool {
+        lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
+        && lhs.noSuggestionsFound == rhs.noSuggestionsFound
+    }
+    
     let areSuggestionsLoaded: Bool
     let noSuggestionsFound: Bool
     
@@ -64,67 +59,18 @@ struct SuggestionOverlayView: View {
     }
 }
 
-struct ProductCardSuggestionsView: View, Equatable {
-    static func == (lhs: ProductCardSuggestionsView, rhs: ProductCardSuggestionsView) -> Bool {
-        lhs.suggestionsDTS == rhs.suggestionsDTS && lhs.suggestionsNE == rhs.suggestionsNE
-    }
-    
-    let productID: String
-    let product: Product?
-    let suggestions: ProductSuggestions?
-    let suggestionsDTS: DataTaskStatus
-    let suggestionsNE: NetworkError?
-    
-    let dataCB: (Bool) async -> Void
-    
-    var hasSuggestions: Bool {
-        if let suggestions {
-            return suggestions.hasSuggestions
-        } else {
-            return false
-        }
-    }
-    
-    var body: some View {
-        ScrollView {
-            SuggestionsView(
-                subjectID: productID,
-                subjectName: product?.productName,
-                subjectType: .product,
-                areSuggestionsLoaded: suggestions != nil,
-                hasSuggestions: hasSuggestions,
-                hasError: suggestionsDTS == .error,
-                namedMaterials: suggestions?.suggestions.namedMaterials ?? [],
-                namedReferences: suggestions?.suggestions.namedReferences ?? [],
-                referencedBy: suggestions?.support.referencedBy ?? [],
-                materialFor: suggestions?.support.materialFor ?? []
-            )
-            .modifier(.parentView)
-            .padding(.bottom, 30)
-        }
-        .scrollDisabled(suggestionsNE != nil || !hasSuggestions)
-        .task {
-            await dataCB(false)
-        }
-        .overlay {
-            SuggestionOverlayView(areSuggestionsLoaded: suggestions != nil,
-                                  noSuggestionsFound: !hasSuggestions,
-                                  networkError: suggestionsNE,
-                                  action: {
-                Task {
-                    await dataCB(true)
-                }
-            })
-        }
-    }
-}
-
-private enum CardSuggestionSubject {
+enum CardSuggestionSubject {
     case card
     case product
 }
 
-private struct SuggestionsView: View {
+struct SuggestionsView: View, Equatable {
+    static func == (lhs: SuggestionsView, rhs: SuggestionsView) -> Bool {
+        lhs.subjectName == rhs.subjectName
+        && lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
+        && lhs.hasError == rhs.hasError
+    }
+    
     let subjectID: String
     let subjectName: String?
     let subjectType: CardSuggestionSubject
@@ -284,7 +230,7 @@ struct SuggestionCarouselView: View {
     }
 }
 
-struct CarouselItemViewModifier: ViewModifier {
+private struct CarouselItemViewModifier: ViewModifier {
     @State private var height: CGFloat = 0.0
     
     func body(content: Content) -> some View {
@@ -300,30 +246,6 @@ struct CarouselItemViewModifier: ViewModifier {
             .onPreferenceChange(SuggestionHeightPreferenceKey.self) { [$height] h in
                 $height.wrappedValue = h
             }
-    }
-}
-
-#Preview("Air Neos Suggestions") {
-    let model = CardViewModel(cardID: "11502550")
-    
-    ScrollView {
-        CardSuggestionsView(model: model)
-            .padding(.horizontal)
-    }
-    .task {
-        await model.fetchCardInfo()
-    }
-}
-
-#Preview("Dark Magician Girl Suggestions") {
-    let model = CardViewModel(cardID: "38033121")
-    
-    ScrollView {
-        CardSuggestionsView(model: model)
-            .padding(.horizontal)
-    }
-    .task {
-        await model.fetchCardInfo()
     }
 }
 
@@ -350,6 +272,76 @@ private struct SuggestedCardView: View {
             .contentShape(Rectangle())
             .frame(width: 220)
         })
+    }
+}
+
+#Preview("Air Neos Suggestions") {
+    @Previewable @State var model = CardViewModel(cardID: "11502550")
+    
+    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
+                          dataCB: { forceRefresh in
+        await model.fetchAllSuggestions(forceRefresh: forceRefresh)
+    }, suggestionsView: {
+        SuggestionsView(
+            subjectID: model.cardID,
+            subjectName: model.card?.cardName ?? "",
+            subjectType: .card,
+            areSuggestionsLoaded: model.areSuggestionsLoaded,
+            hasSuggestions: model.hasSuggestions(),
+            hasError: model.suggestionsError != nil,
+            namedMaterials: model.namedMaterials ?? [],
+            namedReferences: model.namedReferences ?? [],
+            referencedBy: model.referencedBy ?? [],
+            materialFor: model.materialFor ?? []
+        )
+    }, overlayView: {
+        
+        SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                              noSuggestionsFound: !model.hasSuggestions(),
+                              networkError: model.suggestionsError,
+                              action: {
+            Task {
+                await model.fetchAllSuggestions(forceRefresh: true)
+            }
+        })
+    })
+    .task {
+        await model.fetchCardInfo()
+    }
+}
+
+#Preview("Dark Magician Girl Suggestions") {
+    @Previewable @State var model = CardViewModel(cardID: "38033121")
+    
+    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
+                          dataCB: { forceRefresh in
+        await model.fetchAllSuggestions(forceRefresh: forceRefresh)
+    }, suggestionsView: {
+        SuggestionsView(
+            subjectID: model.cardID,
+            subjectName: model.card?.cardName ?? "",
+            subjectType: .card,
+            areSuggestionsLoaded: model.areSuggestionsLoaded,
+            hasSuggestions: model.hasSuggestions(),
+            hasError: model.suggestionsError != nil,
+            namedMaterials: model.namedMaterials ?? [],
+            namedReferences: model.namedReferences ?? [],
+            referencedBy: model.referencedBy ?? [],
+            materialFor: model.materialFor ?? []
+        )
+    }, overlayView: {
+        
+        SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                              noSuggestionsFound: !model.hasSuggestions(),
+                              networkError: model.suggestionsError,
+                              action: {
+            Task {
+                await model.fetchAllSuggestions(forceRefresh: true)
+            }
+        })
+    })
+    .task {
+        await model.fetchCardInfo()
     }
 }
 
