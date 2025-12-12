@@ -17,6 +17,8 @@ final class RecentlyViewedViewModel {
     @ObservationIgnored
     private(set) var recentlyViewedSuggestions: [CardReference] = []
     @ObservationIgnored
+    private(set) var recentlyViewedArchetypeSuggestions: Set<String> = []
+    @ObservationIgnored
     private var recentlyViewedCardInfo = [String: Card]()
     
     func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
@@ -30,7 +32,7 @@ final class RecentlyViewedViewModel {
             
             var detailsTaskStatus: DataTaskStatus
             (recentlyViewedCardInfo, requestError, detailsTaskStatus) = await detailsAsync
-            recentlyViewedSuggestions = await suggestionAsync
+            (recentlyViewedSuggestions, recentlyViewedArchetypeSuggestions) = await suggestionAsync
             recentlyViewedCardDetails = newHistory.map{ recentlyViewedCardInfo[$0.id] }.compactMap{ $0 }
             dataTaskStatus = detailsTaskStatus
         } else {
@@ -51,11 +53,16 @@ final class RecentlyViewedViewModel {
     }
     
     @concurrent
-    nonisolated private func fetchRecentlyViewedSuggestions(newlyViewed: Set<String>) async  -> [CardReference] {
+    nonisolated private func fetchRecentlyViewedSuggestions(newlyViewed: Set<String>) async  -> ([CardReference], Set<String>){
         async let suggestionAsync = fetchRecentlyViewedSuggestionData(newlyViewed: newlyViewed)
         async let supportAsync = fetchRecentlyViewedSupportData(newlyViewed: newlyViewed)
         
-        return await consolidateSuggestions(suggestions: await suggestionAsync, support: await supportAsync)
+        let suggestions = await suggestionAsync
+        let support = await supportAsync
+        return (
+            await consolidateSuggestions(suggestions: suggestions, support: support),
+            Set(suggestions.materialArchetypes.union(suggestions.referencedArchetypes))
+        )
     }
     
     @concurrent
@@ -65,8 +72,12 @@ final class RecentlyViewedViewModel {
         if case .success(let suggestions) = data {
             return suggestions
         }
-        return BatchSuggestions(namedMaterials: [], namedReferences: [], materialArchetypes: Set(), referencedArchetypes: Set(),
-                                unknownResources: Set(), falsePositives: Set())
+        return BatchSuggestions(namedMaterials: [],
+                                namedReferences: [],
+                                materialArchetypes: Set(),
+                                referencedArchetypes: Set(),
+                                unknownResources: Set(),
+                                falsePositives: Set())
     }
     
     @concurrent

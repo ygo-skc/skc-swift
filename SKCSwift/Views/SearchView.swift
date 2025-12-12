@@ -27,6 +27,7 @@ struct SearchView: View {
                                            history: history,
                                            recentlyViewedCardDetails: recentlyViewedModel.recentlyViewedCardDetails,
                                            recentlyViewedSuggestions: recentlyViewedModel.recentlyViewedSuggestions,
+                                           recentlyViewedArchetypeSuggestions: recentlyViewedModel.recentlyViewedArchetypeSuggestions,
                                            dataTaskStatus: recentlyViewedModel.dataTaskStatus,
                                            requestError: recentlyViewedModel.requestError,
                                            loadDataCB: { await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history) })
@@ -77,6 +78,7 @@ struct SearchView: View {
         let history: [History]
         let recentlyViewedCardDetails: [Card]
         let recentlyViewedSuggestions: [CardReference]
+        let recentlyViewedArchetypeSuggestions: Set<String>
         let dataTaskStatus: DataTaskStatus
         let requestError: NetworkError?
         let loadDataCB: () async -> Void
@@ -96,6 +98,8 @@ struct SearchView: View {
                                     .padding(.bottom)
                             }
                             
+                            YGOCardArchetypesView(title: "Suggested archetypes (BETA)", archetypes: recentlyViewedArchetypeSuggestions)
+                                .padding(.bottom)
                             
                             Label("Recently viewed", systemImage: "clock.arrow.circlepath")
                                 .font(.headline)
