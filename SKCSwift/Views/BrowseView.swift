@@ -167,7 +167,7 @@ private struct ProductBrowseView: View {
         LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
             ForEach(filteredProducts.keys.sorted(by: >), id: \.self) { year in
                 if let filteredProducts = filteredProducts[year] {
-                    Section(header: HeaderView(header: "\(year) • \(filteredProducts.count) total")) {
+                    Section(header: SectionHeaderView(header: "\(year) • \(filteredProducts.count) total")) {
                         LazyVStack {
                             ForEach(filteredProducts, id: \.productId) { product in
                                 Button {

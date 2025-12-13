@@ -74,7 +74,7 @@ struct FiltersSubGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING / 2)
-        .background(.thickMaterial, in: RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS))
     }
 }
 

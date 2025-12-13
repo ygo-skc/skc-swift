@@ -194,12 +194,12 @@ struct CardStatsView: View, Equatable {
             case .normal:
                 content
                     .padding(.all, 5)
-                    .background(.thickMaterial)
+                    .background(.regularMaterial)
                     .cornerRadius(10)
             case .condensed, .listView:
                 content
                     .padding(.all, 4)
-                    .background(.thickMaterial)
+                    .background(.regularMaterial)
                     .cornerRadius(8)
             }
         }
