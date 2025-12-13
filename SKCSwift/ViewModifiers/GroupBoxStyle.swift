@@ -23,9 +23,9 @@ struct ListItemGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING)
-        .background(Color(UIColor.systemBackground).mix(with: .white, by: 0.27), in: RoundedRectangle(cornerRadius: 12))
+        .background(Color(.systemGray6).mix(with: .white, by: 0.15), in: RoundedRectangle(cornerRadius: 12))
         .clipped()
-        .shadow(color: Color(UIColor.systemGray5), radius: 2, x: 0, y: 2)
+        .shadow(color: Color(.systemGray2), radius: 2, x: 0, y: 2)
         .overlay(
             RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS)
                 .stroke(GroupBoxStyleConstants.BORDER_COLOR, lineWidth: 1)
@@ -40,7 +40,7 @@ struct SectionContentGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .background(Color(.systemGray6).mix(with: .white, by: 0.15), in: RoundedRectangle(cornerRadius: 12))
         .clipped()
         .overlay(
             RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS)
