@@ -98,7 +98,8 @@ struct SearchView: View {
                                     .padding(.bottom)
                             }
                             
-                            YGOCardArchetypesView(title: "Suggested archetypes (BETA)", archetypes: recentlyViewedArchetypeSuggestions)
+                            YGOCardArchetypesView(title: "Suggested archetypes (BETA)",
+                                                  archetypes: recentlyViewedArchetypeSuggestions)
                                 .padding(.bottom)
                             
                             Label("Recently viewed", systemImage: "clock.arrow.circlepath")
