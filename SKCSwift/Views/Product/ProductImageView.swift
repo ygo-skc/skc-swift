@@ -32,6 +32,7 @@ struct ProductImageView: View, Equatable {
     
     var body: some View {
         KFImage(URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!)
+            .backgroundDecode()
             .placeholder {
                 PlaceholderView(width: width, height: height, radius: 0)
             }

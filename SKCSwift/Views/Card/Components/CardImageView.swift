@@ -36,6 +36,7 @@ struct CardImageView: View, Equatable {
             PlaceholderView(width: length, height: length, radius: radius)
         } else {
             KFImage(URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!)
+                .backgroundDecode()
                 .placeholder {
                     PlaceholderView(width: length, height: length, radius: radius)
                 }

@@ -16,6 +16,7 @@ struct RoundedRectImage: View, Equatable {
     
     var body: some View {
         KFImage(imageUrl)
+            .backgroundDecode()
             .placeholder {
                 PlaceholderView(width: width, height: height, radius: cornerRadius)
             }
