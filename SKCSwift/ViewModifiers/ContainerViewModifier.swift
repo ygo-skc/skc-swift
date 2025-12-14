@@ -30,12 +30,12 @@ struct CardViewModifier: ViewModifier {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color(.systemGray6))
             )
-            .clipped()
-            .if(hasShadow) { $0.shadow(color: Color(.systemGray3), radius: 2, x: 0, y: 2) }
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(Color(UIColor.systemGray5), lineWidth: 1)
             )
+            .clipped()
+            .if(hasShadow) { $0.shadow(color: Color(.systemGray4), radius: 2, x: 0, y: 2) }
     }
 }
 
