@@ -29,7 +29,7 @@ struct YGOCardArchetypesView: View {
                                 selectedArchetype = archetype
                             }
                             .buttonStyle(.borderedProminent)
-                            .tint(.container)
+                            .tint(.blueGray)
                         }
                     }
                 }
