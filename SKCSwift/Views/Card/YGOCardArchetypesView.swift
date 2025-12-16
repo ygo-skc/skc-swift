@@ -68,31 +68,19 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
     
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading) {
+            VStack {
                 if dts == .done {
                     Text("Archetype - \(archetype)")
                         .font(.title2)
                         .bold()
-                    
-                    ForEach(archetypeData.usingName, id: \.cardID) { card in
-                        Button {
-                            isPopoverShown = false
-                            path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                        } label: {
-                            GroupBox() {
-                                CardListItemView(card: card)
-                                    .equatable()
-                            }
-                            .groupBoxStyle(.listItem)
-                        }
-                        .buttonStyle(.plain)
+                    CardListView(cards: archetypeData.usingName, path: $path) {
+                        isPopoverShown = false
                     }
                 }
             }
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
-            .frame(maxHeight: .infinity, alignment: .topLeading)
-            .padding(.horizontal)
+            .modifier(.parentView)
             .padding(.top)
         }
         .gesture(DragGesture(minimumDistance: 0))

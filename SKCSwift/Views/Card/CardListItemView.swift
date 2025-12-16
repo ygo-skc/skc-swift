@@ -8,9 +8,50 @@
 import SwiftUI
 
 
+struct CardListView: View, Equatable {
+    static func == (lhs: CardListView, rhs: CardListView) -> Bool {
+        lhs.showAllInfo == rhs.showAllInfo && lhs.cards == rhs.cards
+    }
+    
+    let cards: [Card]
+    let showAllInfo: Bool
+    @Binding var path: NavigationPath
+    let action: () -> Void
+    
+    init(cards: [Card], showAllInfo: Bool = false, path: Binding<NavigationPath>, action: @escaping () -> Void) {
+        self.cards = cards
+        self.showAllInfo = showAllInfo
+        self._path = path
+        self.action = action
+    }
+    
+    var body: some View {
+        LazyVStack(alignment: .leading, spacing: 10) {
+            ForEach(cards, id: \.cardID) { card in
+                Button {
+                    action()
+                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                } label: {
+                    GroupBox() {
+                        CardListItemView(card: card)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
 struct CardListItemView: View, Equatable {
     let card: Card
     let showAllInfo: Bool
+    
+    init(card: Card, showAllInfo: Bool = false) {
+        self.card = card
+        self.showAllInfo = showAllInfo
+    }
     
     var body: some View {
         HStack(alignment: .top, spacing: 15) {
@@ -77,12 +118,6 @@ private struct ListItemThirdRow: View {
                     .equatable()
             }
         }
-    }
-}
-
-extension CardListItemView {
-    init(card: Card) {
-        self.init(card: card, showAllInfo: false)
     }
 }
 
