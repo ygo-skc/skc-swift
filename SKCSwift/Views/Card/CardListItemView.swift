@@ -22,40 +22,61 @@ struct CardListItemView: View, Equatable {
                     .fontWeight(.bold)
                     .lineLimit(1)
                 
-                HStack {
-                    Text(card.monsterType ?? card.cardColor)
-                        .font(.subheadline)
-                        .fontWeight(.light)
-                        .lineLimit(1)
-                    
-                    Spacer()
-                    
-                    if !card.isGod {
-                        Text(card.cardID)
-                            .font(.caption)
-                            .fontWeight(.thin)
-                    }
-                }
-                
-                HStack {
-                    CardColorIndicatorView(cardColor: card.cardColor, variant: .regular)
-                        .equatable()
-                    if showAllInfo {
-                        MonsterAssociationView(monsterAssociation: card.monsterAssociation,
-                                               attribute: card.attribute,
-                                               variant: .listView,
-                                               iconVariant: .regular)
-                        .equatable()
-                    } else {
-                        AttributeView(attribute: card.attribute, variant: .regular)
-                            .equatable()
-                    }
-                }
+                ListItemSecondRow(cardID: card.cardID, cardColor: card.cardColor, monsterType: card.monsterType, isCardAGod: card.isGod)
+                ListItemThirdRow(cardColor: card.cardColor, attribute: card.attribute, monsterAssociation: card.monsterAssociation, showAllInfo: showAllInfo)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         .dynamicTypeSize(...DynamicTypeSize.medium)
         .frame(maxWidth: .infinity, alignment: .center)
+    }
+}
+
+private struct ListItemSecondRow: View {
+    let cardID: String
+    let cardColor: String
+    let monsterType: String?
+    let isCardAGod: Bool
+    
+    var body: some View {
+        HStack {
+            Text(monsterType ?? cardColor)
+                .font(.subheadline)
+                .fontWeight(.light)
+                .lineLimit(1)
+            
+            Spacer()
+            
+            if !isCardAGod {
+                Text(cardID)
+                    .font(.caption)
+                    .fontWeight(.thin)
+            }
+        }
+    }
+}
+
+private struct ListItemThirdRow: View {
+    let cardColor: String
+    let attribute: Attribute
+    let monsterAssociation: MonsterAssociation?
+    let showAllInfo: Bool
+    
+    var body: some View {
+        HStack {
+            CardColorIndicatorView(cardColor: cardColor, variant: .regular)
+                .equatable()
+            if showAllInfo {
+                MonsterAssociationView(monsterAssociation: monsterAssociation,
+                                       attribute: attribute,
+                                       variant: .listView,
+                                       iconVariant: .regular)
+                .equatable()
+            } else {
+                AttributeView(attribute: attribute, variant: .regular)
+                    .equatable()
+            }
+        }
     }
 }
 
