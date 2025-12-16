@@ -41,7 +41,6 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
                 })
                 .buttonStyle(.plain)
             }
-            .listStyle(.plain)
         }
         .ignoresSafeArea(.keyboard)
         .frame(maxWidth: .infinity, alignment: .leading)
