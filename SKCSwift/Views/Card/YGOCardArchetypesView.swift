@@ -13,7 +13,7 @@ struct YGOCardArchetypesView: View {
     @State private var path = NavigationPath()
     
     @State var isPopoverShown: Bool = false
-    @State var selectedArchetype: String = ""
+    @State var model = ArchetypesViewModel()
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -26,7 +26,10 @@ struct YGOCardArchetypesView: View {
                     LazyHStack(spacing: 5) {
                         ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
                             Button(archetype) {
-                                selectedArchetype = archetype
+                                Task {
+                                    isPopoverShown.toggle()
+                                    await model.fetchArchetypeData(archetype: archetype)
+                                }
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(.blueGray)
@@ -37,21 +40,14 @@ struct YGOCardArchetypesView: View {
                 .scrollClipDisabled()
             }
             .ygoNavigationDestination()
-            .onChange(of: selectedArchetype) {
-                if !selectedArchetype.isEmpty {
-                    isPopoverShown.toggle()
-                }
-            }
-            .onChange(of: isPopoverShown) {
-                if !isPopoverShown {
-                    selectedArchetype = ""
-                }
-            }
             .popover(isPresented: $isPopoverShown) {
-                YGOCardArchetypesPopoverView(archetype: selectedArchetype,
-                                             isPopoverShown: $isPopoverShown,
-                                             path: $path)
-                .equatable()
+                YGOCardArchetypesPopoverView(archetype: model.archetype,
+                                             archetypeData: model.data,
+                                             dts: model.dataDTS,
+                                             ne: model.dataNE,
+                                             retryCB: { archetype in
+                    await model.fetchArchetypeData(archetype: archetype)
+                }, isPopoverShown: $isPopoverShown, path: $path)
             }
         }
     }
@@ -59,34 +55,38 @@ struct YGOCardArchetypesView: View {
 
 private struct YGOCardArchetypesPopoverView: View, Equatable {
     static func == (lhs: YGOCardArchetypesPopoverView, rhs: YGOCardArchetypesPopoverView) -> Bool {
-        lhs.archetype == rhs.archetype
+        lhs.dts == rhs.dts && lhs.archetype == rhs.archetype
     }
     
     let archetype: String
+    let archetypeData: ArchetypeData
+    let dts: DataTaskStatus
+    let ne: NetworkError?
+    let retryCB: (String) async -> Void
     @Binding var isPopoverShown: Bool
     @Binding var path: NavigationPath
-    
-    @State var suggestions: ArchetypeSuggestions = .init(usingName: [], usingText: [], exclusions: [])
     
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                Text("Archetype - \(archetype)")
-                    .font(.title2)
-                    .bold()
-                
-                ForEach(suggestions.usingName, id: \.cardID) { card in
-                    Button {
-                        isPopoverShown = false
-                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                    } label: {
-                        GroupBox() {
-                            CardListItemView(card: card)
-                                .equatable()
+                if dts == .done {
+                    Text("Archetype - \(archetype)")
+                        .font(.title2)
+                        .bold()
+                    
+                    ForEach(archetypeData.usingName, id: \.cardID) { card in
+                        Button {
+                            isPopoverShown = false
+                            path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
+                        } label: {
+                            GroupBox() {
+                                CardListItemView(card: card)
+                                    .equatable()
+                            }
+                            .groupBoxStyle(.listItem)
                         }
-                        .groupBoxStyle(.listItem)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
             .presentationDetents([.medium, .large])
@@ -96,10 +96,16 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
             .padding(.top)
         }
         .gesture(DragGesture(minimumDistance: 0))
-        .task {
-            let res = await data(archetypeSuggestionsURL(archetype: archetype), resType: ArchetypeSuggestions.self)
-            if case .success(let data) = res {
-                suggestions = data
+        .overlay {
+            if dts == .pending {
+                ProgressView("Loading...")
+                    .controlSize(.large)
+            } else if let networkError = ne {
+                NetworkErrorView(error: networkError, action: {
+                    Task {
+                        await retryCB(archetype)
+                    }
+                })
             }
         }
     }

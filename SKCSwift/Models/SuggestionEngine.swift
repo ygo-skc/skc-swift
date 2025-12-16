@@ -84,7 +84,7 @@ struct BatchSupport: Codable {
     let falsePositives: Set<String>
 }
 
-struct ArchetypeSuggestions: Codable {
+struct ArchetypeData: Codable {
     let usingName: [Card]
     let usingText: [Card]
     let exclusions: [Card]
