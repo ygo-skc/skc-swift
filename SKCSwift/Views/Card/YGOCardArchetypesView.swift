@@ -10,9 +10,6 @@ struct YGOCardArchetypesView: View {
     let title: String
     let archetypes: Set<String>
     
-    @State var isPopoverShown: Bool = false
-    @State var model = ArchetypesViewModel()
-    
     var body: some View {
         VStack(alignment: .leading) {
             Label(title, systemImage: "apple.books.pages")
@@ -22,12 +19,9 @@ struct YGOCardArchetypesView: View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 5) {
                     ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
-                        Button(archetype) {
-                            Task {
-                                isPopoverShown.toggle()
-                                await model.fetchArchetypeData(archetype: archetype)
-                            }
-                        }
+                        NavigationLink(value: ArchetypeLinkDestinationValue(archetype: archetype), label: {
+                            Text(archetype)
+                        })
                         .buttonStyle(.borderedProminent)
                         .tint(.blueGray)
                     }
@@ -36,38 +30,24 @@ struct YGOCardArchetypesView: View {
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
         }
-        .popover(isPresented: $isPopoverShown) {
-            YGOCardArchetypesPopoverView(archetype: model.archetype,
-                                         archetypeData: model.data,
-                                         dts: model.dataDTS,
-                                         ne: model.dataNE,
-                                         retryCB: { archetype in
-                await model.fetchArchetypeData(archetype: archetype)
-            }, isPopoverShown: $isPopoverShown)
-        }
     }
 }
 
-private struct YGOCardArchetypesPopoverView: View, Equatable {
-    static func == (lhs: YGOCardArchetypesPopoverView, rhs: YGOCardArchetypesPopoverView) -> Bool {
-        lhs.dts == rhs.dts && lhs.archetype == rhs.archetype
-    }
+struct YGOCardArchetypeView: View {
+    @State private var model: ArchetypesViewModel
     
-    let archetype: String
-    let archetypeData: ArchetypeData
-    let dts: DataTaskStatus
-    let ne: NetworkError?
-    let retryCB: (String) async -> Void
-    @Binding var isPopoverShown: Bool
+    init(archetype: String) {
+        self.model = .init(archetype: archetype)
+    }
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                if dts == .done {
-                    Text("Archetype - \(archetype)")
+                if model.dataDTS == .done {
+                    Text("Archetype - \(model.archetype)")
                         .font(.title2)
                         .bold()
-                    CardListView(cards: archetypeData.usingName)
+                    CardListView(cards: model.data.usingName)
                 }
             }
             .presentationDetents([.medium, .large])
@@ -75,14 +55,17 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
             .modifier(.parentView)
         }
         .gesture(DragGesture(minimumDistance: 0))
+        .task {
+            await model.fetchArchetypeData()
+        }
         .overlay {
-            if dts == .pending {
+            if model.dataDTS == .pending {
                 ProgressView("Loading...")
                     .controlSize(.large)
-            } else if let networkError = ne {
+            } else if let networkError = model.dataNE {
                 NetworkErrorView(error: networkError, action: {
                     Task {
-                        await retryCB(archetype)
+                        await model.fetchArchetypeData()
                     }
                 })
             }

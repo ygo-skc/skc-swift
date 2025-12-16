@@ -9,7 +9,12 @@ import Foundation
 
 @Observable
 final class ArchetypesViewModel {
-    private(set) var archetype = ""
+    @ObservationIgnored
+    let archetype: String
+    
+    init(archetype: String) {
+        self.archetype = archetype
+    }
     
     private(set) var dataDTS: DataTaskStatus = .pending
     @ObservationIgnored
@@ -18,9 +23,8 @@ final class ArchetypesViewModel {
     @ObservationIgnored
     private(set) var data: ArchetypeData = .init(usingName: [], usingText: [], exclusions: [])
     
-    func fetchArchetypeData(archetype: String) async {
+    func fetchArchetypeData() async {
         dataDTS = .pending
-        self.archetype = archetype
         let res = await SKCSwift.data(archetypeSuggestionsURL(archetype: archetype), resType: ArchetypeData.self)
         if case .success(let data) = res {
             self.data = data

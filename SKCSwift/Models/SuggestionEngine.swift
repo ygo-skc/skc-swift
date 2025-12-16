@@ -89,3 +89,7 @@ struct ArchetypeData: Codable {
     let usingText: [Card]
     let exclusions: [Card]
 }
+
+struct ArchetypeLinkDestinationValue: Hashable {
+    let archetype: String
+}
