@@ -15,8 +15,7 @@ struct RestrictedContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
-                RestrictedCardsView(path: $path,
-                                    format: model.format,
+                RestrictedCardsView(format: model.format,
                                     restrictedCards: model.restrictedCards,
                                     scoreEntries: model.scoreEntries,
                                     timelineDTS: model.timelineDTS,
@@ -70,8 +69,6 @@ private struct RestrictedCardsView: View, Equatable {
         && lhs.restrictedCards == rhs.restrictedCards
     }
     
-    @Binding var path: NavigationPath
-    
     let format: CardRestrictionFormat
     let restrictedCards: [Card]
     let scoreEntries: [CardScoreEntry]
@@ -93,9 +90,9 @@ private struct RestrictedCardsView: View, Equatable {
                             content: {
                     switch format {
                     case .md, .tcg:
-                        CardListView(cards: restrictedCards, path: $path)
+                        CardListView(cards: restrictedCards)
                     case .genesys:
-                        CardListView(cards: scoreEntries.map({ $0.card }), path: $path, label: { ind in
+                        CardListView(cards: scoreEntries.map({ $0.card }), label: { ind in
                             Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
                         })
                     }
@@ -103,9 +100,9 @@ private struct RestrictedCardsView: View, Equatable {
                 })
                 .modifier(.parentView)
                 .padding(.bottom, 0)
-                .ygoNavigationDestination()
             }
         }
+        .ygoNavigationDestination()
         .frame(maxWidth: .infinity)
         .scrollDisabled(DataTaskStatusParser.isDataPending(timelineDTS)
                         || DataTaskStatusParser.isDataPending(contentDTS)
@@ -134,9 +131,7 @@ private struct RestrictedCardsView: View, Equatable {
 }
 
 #Preview("Timeline pending") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .pending,
@@ -148,9 +143,7 @@ private struct RestrictedCardsView: View, Equatable {
 }
 
 #Preview("Timeline content pending") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .done,
@@ -162,9 +155,7 @@ private struct RestrictedCardsView: View, Equatable {
 }
 
 #Preview("Timeline error") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .error,
@@ -176,9 +167,7 @@ private struct RestrictedCardsView: View, Equatable {
 }
 
 #Preview("Content error") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .done,

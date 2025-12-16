@@ -15,20 +15,17 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
     
     let cards: [Card]
     let showAllInfo: Bool
-    @Binding var path: NavigationPath
     let action: (() -> Void)?
     @ViewBuilder let label: (Int) -> Label
     @ViewBuilder let info: (Int) -> Info
     
     init(cards: [Card],
          showAllInfo: Bool = false,
-         path: Binding<NavigationPath>,
          action: (() -> Void)? = nil,
          @ViewBuilder label: @escaping (Int) -> Label = { _ in EmptyView() },
          @ViewBuilder info: @escaping (Int) -> Info = { _ in EmptyView() }) {
         self.cards = cards
         self.showAllInfo = showAllInfo
-        self._path = path
         self.action = action
         self.label = label
         self.info = info
@@ -37,18 +34,18 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 10) {
             ForEach(Array(cards.enumerated()), id: \.element.cardID) { ind, card in
-                Button {
-                    action?()
-                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                } label: {
+                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                     GroupBox(label: label(ind)) {
                         CardListItemView(card: card, showAllInfo: showAllInfo)
                             .equatable()
                         info(ind)
                     }
                     .groupBoxStyle(.listItem)
-                }
+                })
                 .buttonStyle(.plain)
+                .onTapGesture {
+                    action?()
+                }
             }
             .listStyle(.plain)
         }

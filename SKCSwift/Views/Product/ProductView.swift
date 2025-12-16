@@ -17,10 +17,10 @@ struct ProductLinkDestinationView: View {
     }
 }
 
-struct ProductView: View {
+private struct ProductView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @State var model: ProductViewModel
+    @State private var model: ProductViewModel
     
     @Query
     private var productFromTable: [History]
@@ -103,7 +103,16 @@ struct ProductView: View {
                             VStack{
                                 ProductStatsView(productID: productID, product: product)
                                 if let product = product, let productContents = product.productContent {
-                                    ProductContentView(productID: productID, contents: productContents)
+                                    CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card! }), label: { ind in
+                                        Label("\(productID)-\(productContents[ind].productPosition)", systemImage: "number.circle.fill").font(.subheadline)
+                                    }) { ind in
+                                        FlowLayout(spacing: 6) {
+                                            ForEach(productContents[ind].rarities, id: \.self) { rarity in
+                                                Text(rarity.cardRarityShortHand())
+                                                    .modifier(TagModifier())
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             .modifier(.centeredParentView)
@@ -133,36 +142,6 @@ struct ProductView: View {
                         }
                     })
                 }
-            }
-        }
-        
-        private struct ProductContentView: View {
-            let productID: String
-            let contents: [ProductContent]
-            
-            var body: some View {
-                LazyVStack {
-                    ForEach(contents) { content in
-                        if let card = content.card {
-                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                GroupBox(label: Label("\(productID)-\(content.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
-                                    CardListItemView(card: card, showAllInfo: true)
-                                        .equatable()
-                                    
-                                    FlowLayout(spacing: 6) {
-                                        ForEach(content.rarities, id: \.self) { rarity in
-                                            Text(rarity.cardRarityShortHand())
-                                                .modifier(TagModifier())
-                                        }
-                                    }
-                                }
-                                .groupBoxStyle(.listItem)
-                            })
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity)
             }
         }
     }

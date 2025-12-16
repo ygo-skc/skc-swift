@@ -26,7 +26,7 @@ struct TrendingView: View {
                 if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
                     switch trendingModel.focusedTrend {
                     case .card:
-                        CardListView(cards: trendingModel.cards.map({ $0.resource }), path: $path, label: { ind in
+                        CardListView(cards: trendingModel.cards.map({ $0.resource }), label: { ind in
                             TrendChangeView(position: ind + 1,
                                             trendChange: trendingModel.cards[ind].change,
                                             hits: trendingModel.cards[ind].occurrences)

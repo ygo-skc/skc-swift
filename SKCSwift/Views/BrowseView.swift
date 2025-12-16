@@ -27,7 +27,7 @@ struct BrowseView: View {
                     
                     switch (focusedResource) {
                     case .card:
-                        CardListView(cards: cardBrowseViewModel.cards, showAllInfo: true, path: $path)
+                        CardListView(cards: cardBrowseViewModel.cards, showAllInfo: true)
                             .task(priority: .userInitiated) {
                                 await cardBrowseViewModel.fetchCardBrowseCriteria()
                             }

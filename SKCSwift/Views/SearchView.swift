@@ -23,8 +23,7 @@ struct SearchView: View {
                 case .done where searchModel.searchText.isEmpty,
                         .pending where searchModel.searchText.isEmpty:
                     if searchModel.isSearching {
-                        RecentlyViewedView(path: $path,
-                                           history: history,
+                        RecentlyViewedView(history: history,
                                            recentlyViewedCardDetails: recentlyViewedModel.recentlyViewedCardDetails,
                                            recentlyViewedSuggestions: recentlyViewedModel.recentlyViewedSuggestions,
                                            recentlyViewedArchetypeSuggestions: recentlyViewedModel.recentlyViewedArchetypeSuggestions,
@@ -74,7 +73,6 @@ struct SearchView: View {
             && lhs.recentlyViewedCardDetails == rhs.recentlyViewedCardDetails
         }
         
-        @Binding var path: NavigationPath
         let history: [History]
         let recentlyViewedCardDetails: [Card]
         let recentlyViewedSuggestions: [CardReference]
@@ -106,7 +104,7 @@ struct SearchView: View {
                                 .font(.headline)
                                 .fontWeight(.medium)
                             
-                            CardListView(cards: recentlyViewedCardDetails, path: $path)
+                            CardListView(cards: recentlyViewedCardDetails)
                                 .equatable()
                         }
                     })

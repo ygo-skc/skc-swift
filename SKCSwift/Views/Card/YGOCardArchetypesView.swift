@@ -10,45 +10,40 @@ struct YGOCardArchetypesView: View {
     let title: String
     let archetypes: Set<String>
     
-    @State private var path = NavigationPath()
-    
     @State var isPopoverShown: Bool = false
     @State var model = ArchetypesViewModel()
     
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack(alignment: .leading) {
-                Label(title, systemImage: "apple.books.pages")
-                    .font(.headline)
-                    .fontWeight(.medium)
-                
-                ScrollView(.horizontal) {
-                    LazyHStack(spacing: 5) {
-                        ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
-                            Button(archetype) {
-                                Task {
-                                    isPopoverShown.toggle()
-                                    await model.fetchArchetypeData(archetype: archetype)
-                                }
+        VStack(alignment: .leading) {
+            Label(title, systemImage: "apple.books.pages")
+                .font(.headline)
+                .fontWeight(.medium)
+            
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 5) {
+                    ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
+                        Button(archetype) {
+                            Task {
+                                isPopoverShown.toggle()
+                                await model.fetchArchetypeData(archetype: archetype)
                             }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.blueGray)
                         }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.blueGray)
                     }
                 }
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
             }
-            .ygoNavigationDestination()
-            .popover(isPresented: $isPopoverShown) {
-                YGOCardArchetypesPopoverView(archetype: model.archetype,
-                                             archetypeData: model.data,
-                                             dts: model.dataDTS,
-                                             ne: model.dataNE,
-                                             retryCB: { archetype in
-                    await model.fetchArchetypeData(archetype: archetype)
-                }, isPopoverShown: $isPopoverShown, path: $path)
-            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+        .popover(isPresented: $isPopoverShown) {
+            YGOCardArchetypesPopoverView(archetype: model.archetype,
+                                         archetypeData: model.data,
+                                         dts: model.dataDTS,
+                                         ne: model.dataNE,
+                                         retryCB: { archetype in
+                await model.fetchArchetypeData(archetype: archetype)
+            }, isPopoverShown: $isPopoverShown)
         }
     }
 }
@@ -64,7 +59,6 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
     let ne: NetworkError?
     let retryCB: (String) async -> Void
     @Binding var isPopoverShown: Bool
-    @Binding var path: NavigationPath
     
     var body: some View {
         ScrollView {
@@ -73,7 +67,7 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
                     Text("Archetype - \(archetype)")
                         .font(.title2)
                         .bold()
-                    CardListView(cards: archetypeData.usingName, path: $path) {
+                    CardListView(cards: archetypeData.usingName) {
                         isPopoverShown = false
                     }
                 }
