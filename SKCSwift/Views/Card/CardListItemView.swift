@@ -15,18 +15,15 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
     
     let cards: [Card]
     let showAllInfo: Bool
-    let action: (() -> Void)?
     @ViewBuilder let label: (Int) -> Label
     @ViewBuilder let info: (Int) -> Info
     
     init(cards: [Card],
          showAllInfo: Bool = false,
-         action: (() -> Void)? = nil,
          @ViewBuilder label: @escaping (Int) -> Label = { _ in EmptyView() },
          @ViewBuilder info: @escaping (Int) -> Info = { _ in EmptyView() }) {
         self.cards = cards
         self.showAllInfo = showAllInfo
-        self.action = action
         self.label = label
         self.info = info
     }
@@ -43,9 +40,6 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
                     .groupBoxStyle(.listItem)
                 })
                 .buttonStyle(.plain)
-                .onTapGesture {
-                    action?()
-                }
             }
             .listStyle(.plain)
         }

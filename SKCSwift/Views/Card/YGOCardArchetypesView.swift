@@ -67,9 +67,7 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
                     Text("Archetype - \(archetype)")
                         .font(.title2)
                         .bold()
-                    CardListView(cards: archetypeData.usingName) {
-                        isPopoverShown = false
-                    }
+                    CardListView(cards: archetypeData.usingName)
                 }
             }
             .presentationDetents([.medium, .large])
