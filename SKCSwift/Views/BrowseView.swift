@@ -27,7 +27,7 @@ struct BrowseView: View {
                     
                     switch (focusedResource) {
                     case .card:
-                        CardBrowseView(path: $path, filteredCards: cardBrowseViewModel.cards)
+                        CardListView(cards: cardBrowseViewModel.cards, showAllInfo: true, path: $path)
                             .task(priority: .userInitiated) {
                                 await cardBrowseViewModel.fetchCardBrowseCriteria()
                             }
@@ -184,30 +184,6 @@ private struct ProductBrowseView: View {
                         }
                     }
                 }
-            }
-            .listStyle(.plain)
-            .ignoresSafeArea(.keyboard)
-        }
-    }
-}
-
-private struct CardBrowseView: View {
-    @Binding var path: NavigationPath
-    let filteredCards: [Card]
-    
-    var body: some View {
-        LazyVStack(alignment: .leading) {
-            ForEach(filteredCards, id: \.self.cardID) { card in
-                Button {
-                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                } label: {
-                    GroupBox {
-                        CardListItemView(card: card, showAllInfo: true)
-                            .equatable()
-                    }
-                    .groupBoxStyle(.listItem)
-                }
-                .buttonStyle(.plain)
             }
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)

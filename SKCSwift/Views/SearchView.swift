@@ -100,24 +100,14 @@ struct SearchView: View {
                             
                             YGOCardArchetypesView(title: "Suggested archetypes (BETA)",
                                                   archetypes: recentlyViewedArchetypeSuggestions)
-                                .padding(.bottom)
+                            .padding(.bottom)
                             
                             Label("Recently viewed", systemImage: "clock.arrow.circlepath")
                                 .font(.headline)
                                 .fontWeight(.medium)
                             
-                            ForEach(recentlyViewedCardDetails, id: \.cardID) { card in
-                                Button {
-                                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                                } label: {
-                                    GroupBox() {
-                                        CardListItemView(card: card)
-                                            .equatable()
-                                    }
-                                    .groupBoxStyle(.listItem)
-                                }
-                                .buttonStyle(.plain)
-                            }
+                            CardListView(cards: recentlyViewedCardDetails, path: $path)
+                                .equatable()
                         }
                     })
                     .modifier(.parentView)

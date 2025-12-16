@@ -93,7 +93,7 @@ private struct RestrictedCardsView: View, Equatable {
                             content: {
                     switch format {
                     case .md, .tcg:
-                        BannedContentView(path: $path, content: restrictedCards)
+                        CardListView(cards: restrictedCards, path: $path)
                     case .genesys:
                         CardScoresView(path: $path, content: scoreEntries)
                     }
@@ -125,28 +125,6 @@ private struct RestrictedCardsView: View, Equatable {
                     Task {
                         await contentCB()
                     }
-                }
-            }
-        }
-    }
-    
-    private struct BannedContentView: View {
-        @Binding var path: NavigationPath
-        let content: [Card]
-        
-        var body: some View {
-            LazyVStack {
-                ForEach(content, id: \.self.cardID) { card in
-                    Button {
-                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                    } label: {
-                        GroupBox {
-                            CardListItemView(card: card)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
                 }
             }
         }
