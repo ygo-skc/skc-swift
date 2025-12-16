@@ -68,7 +68,7 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 if dts == .done {
                     Text("Archetype - \(archetype)")
                         .font(.title2)
@@ -81,7 +81,6 @@ private struct YGOCardArchetypesPopoverView: View, Equatable {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
             .modifier(.parentView)
-            .padding(.top)
         }
         .gesture(DragGesture(minimumDistance: 0))
         .overlay {

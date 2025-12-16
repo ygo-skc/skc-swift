@@ -26,7 +26,11 @@ struct TrendingView: View {
                 if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
                     switch trendingModel.focusedTrend {
                     case .card:
-                        TrendingCardsView(path: $path, trendingCards: trendingModel.cards)
+                        CardListView(cards: trendingModel.cards.map({ $0.resource }), path: $path, label: { ind in
+                            TrendChangeView(position: ind + 1,
+                                            trendChange: trendingModel.cards[ind].change,
+                                            hits: trendingModel.cards[ind].occurrences)
+                        })
                     case .product:
                         TrendingProductsView(path: $path, trendingProducts: trendingModel.products)
                     }
@@ -50,29 +54,6 @@ struct TrendingView: View {
             } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
                 ProgressView("Loading...")
                     .controlSize(.large)
-            }
-        }
-    }
-    
-    private struct TrendingCardsView: View {
-        @Binding var path: NavigationPath
-        let trendingCards: [TrendingMetric<Card>]
-        
-        var body: some View {
-            VStack {
-                ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) { position, m in
-                    let card = m.resource
-                    Button {
-                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                    } label: {
-                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                            CardListItemView(card: card)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
-                }
             }
         }
     }

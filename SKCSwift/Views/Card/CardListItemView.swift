@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct CardListView: View, Equatable {
+struct CardListView<Label: View, Info: View>: View, Equatable {
     static func == (lhs: CardListView, rhs: CardListView) -> Bool {
         lhs.showAllInfo == rhs.showAllInfo && lhs.cards == rhs.cards
     }
@@ -17,24 +17,34 @@ struct CardListView: View, Equatable {
     let showAllInfo: Bool
     @Binding var path: NavigationPath
     let action: (() -> Void)?
+    @ViewBuilder let label: (Int) -> Label
+    @ViewBuilder let info: (Int) -> Info
     
-    init(cards: [Card], showAllInfo: Bool = false, path: Binding<NavigationPath>, action: (() -> Void)? = nil) {
+    init(cards: [Card],
+         showAllInfo: Bool = false,
+         path: Binding<NavigationPath>,
+         action: (() -> Void)? = nil,
+         @ViewBuilder label: @escaping (Int) -> Label = { _ in EmptyView() },
+         @ViewBuilder info: @escaping (Int) -> Info = { _ in EmptyView() }) {
         self.cards = cards
         self.showAllInfo = showAllInfo
         self._path = path
         self.action = action
+        self.label = label
+        self.info = info
     }
     
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 10) {
-            ForEach(cards, id: \.cardID) { card in
+            ForEach(Array(cards.enumerated()), id: \.element.cardID) { ind, card in
                 Button {
                     action?()
                     path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
                 } label: {
-                    GroupBox {
+                    GroupBox(label: label(ind)) {
                         CardListItemView(card: card, showAllInfo: showAllInfo)
                             .equatable()
+                        info(ind)
                     }
                     .groupBoxStyle(.listItem)
                 }

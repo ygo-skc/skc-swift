@@ -95,7 +95,9 @@ private struct RestrictedCardsView: View, Equatable {
                     case .md, .tcg:
                         CardListView(cards: restrictedCards, path: $path)
                     case .genesys:
-                        CardScoresView(path: $path, content: scoreEntries)
+                        CardListView(cards: scoreEntries.map({ $0.card }), path: $path, label: { ind in
+                            Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
+                        })
                     }
                     
                 })
@@ -125,29 +127,6 @@ private struct RestrictedCardsView: View, Equatable {
                     Task {
                         await contentCB()
                     }
-                }
-            }
-        }
-    }
-    
-    private struct CardScoresView: View {
-        @Binding var path: NavigationPath
-        let content: [CardScoreEntry]
-        
-        var body: some View {
-            LazyVStack {
-                ForEach(content, id: \.self.card.cardID) { entry in
-                    let card = entry.card
-                    Button {
-                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                    } label: {
-                        GroupBox(label: Label("\(entry.score) points", systemImage: "medal.star.fill")) {
-                            CardListItemView(card: card)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
                 }
             }
         }
