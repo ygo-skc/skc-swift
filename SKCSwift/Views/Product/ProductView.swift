@@ -8,16 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct ProductLinkDestinationView: View {
-    let productLinkDestinationValue: ProductLinkDestinationValue
-    
-    var body: some View {
-        ProductView(productID: productLinkDestinationValue.productID)
-            .navigationBarTitleDisplayMode(.automatic)
-    }
-}
-
-private struct ProductView: View {
+struct ProductView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var model: ProductViewModel

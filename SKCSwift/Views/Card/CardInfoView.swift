@@ -9,16 +9,7 @@ import SwiftUI
 import SwiftData
 import YGOService
 
-struct CardLinkDestinationView: View {
-    let cardLinkDestinationValue: CardLinkDestinationValue
-    
-    var body: some View {
-        CardInfoView(cardID: cardLinkDestinationValue.cardID)
-            .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-private struct CardInfoView: View {
+struct CardInfoView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var model: CardViewModel
@@ -71,6 +62,7 @@ private struct CardInfoView: View {
             })
         })
         .equatable()
+        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.card?.cardName ?? "Loading…")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
         .task {
