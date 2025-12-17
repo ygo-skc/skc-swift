@@ -26,6 +26,15 @@ struct RestrictedContentView: View {
                                     contentCB: { await model.fetchRestrictedCards() }
                 )
                 .equatable()
+                .navigationTitle("Restrictions")
+                .modify {
+                    if #available(iOS 26.0, *) {
+                        $0.navigationSubtitle("\(model.format.rawValue) format")
+                    } else {
+                        $0
+                    }
+                }
+                .navigationBarTitleDisplayMode(.large)
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: mainSheetContentHeight)
                 }
@@ -85,9 +94,7 @@ private struct RestrictedCardsView: View, Equatable {
     var body: some View {
         ScrollView {
             if timelineDTS == .done && (contentDTS == .done && contentDTS != .error) {
-                SectionView(header: "\(format.rawValue) Content",
-                            variant: .plain,
-                            content: {
+                VStack {
                     switch format {
                     case .md, .tcg:
                         CardListView(cards: restrictedCards)
@@ -96,10 +103,8 @@ private struct RestrictedCardsView: View, Equatable {
                             Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
                         })
                     }
-                    
-                })
+                }
                 .modifier(.parentView)
-                .padding(.bottom, 0)
             }
         }
         .ygoNavigationDestination()

@@ -44,7 +44,7 @@ struct CardReleasesView: View {
             
             let elapsedDays = products.last!.productReleaseDate.timeIntervalSinceNow()
             if elapsedDays < 0 {
-                initialReleaseHeader = "\(elapsedDays.decimal) day(s)"
+                initialReleaseHeader = "\(abs(elapsedDays).decimal) day(s)"
                 initialReleaseSubHeader = "From card debuts"
             } else {
                 initialReleaseHeader = "\(elapsedDays.decimal) day(s)"
@@ -246,7 +246,7 @@ private struct RelatedContentsView<Content: View>: View {
                 
                 content()
             }
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
     }
 }

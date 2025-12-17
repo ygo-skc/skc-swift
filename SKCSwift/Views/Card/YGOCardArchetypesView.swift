@@ -44,9 +44,6 @@ struct YGOCardArchetypeView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 if model.dataDTS == .done {
-                    Text("Archetype - \(model.archetype)")
-                        .font(.title2)
-                        .bold()
                     CardListView(cards: model.data.usingName)
                 }
             }
@@ -55,6 +52,8 @@ struct YGOCardArchetypeView: View {
             .modifier(.parentView)
         }
         .gesture(DragGesture(minimumDistance: 0))
+        .navigationTitle(model.archetype)
+        .navigationBarTitleDisplayMode(.large)
         .task {
             await model.fetchArchetypeData()
         }

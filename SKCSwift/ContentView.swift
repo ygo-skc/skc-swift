@@ -13,7 +13,7 @@ struct ContentView: View, Equatable {
             Tab("Home", systemImage: "house") {
                 HomeView()
             }
-            Tab("Ban Lists", systemImage: "x.square") {
+            Tab("Restrictions", systemImage: "x.square") {
                 RestrictedContentView()
             }
             Tab("Browse", systemImage: "square.grid.2x2") {

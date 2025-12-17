@@ -17,7 +17,23 @@ struct ParentViewModifier: ViewModifier {
                 maxHeight: .infinity,
                 alignment: alignment
             )
-            .padding(.all)
+            .padding(.horizontal)
+    }
+}
+
+struct SheetParentViewModifier: ViewModifier {
+    let alignment: Alignment
+    
+    func body(content: Content) -> some View {
+        content
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: alignment
+            )
+            .presentationDragIndicator(.visible)
+            .padding(.horizontal)
+            .padding(.top)
     }
 }
 
@@ -41,6 +57,7 @@ struct CardViewModifier: ViewModifier {
 
 extension ViewModifier where Self == ParentViewModifier {
     static var parentView: ParentViewModifier { .init(alignment: .topLeading) }
+    static var sheetParentView: SheetParentViewModifier { .init(alignment: .topLeading) }
     static var centeredParentView: ParentViewModifier { .init(alignment: .center) }
 }
 

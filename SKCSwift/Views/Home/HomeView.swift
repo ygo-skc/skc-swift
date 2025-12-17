@@ -101,7 +101,7 @@ private struct SettingsView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading, spacing: 15) {
                 Text("Settings")
                     .font(.title)
                 SectionView(header: "Data",
@@ -135,7 +135,7 @@ private struct SettingsView: View {
                 })
             }
             .allowsHitTesting(!model.isDeleting)
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
         .task {
             await model.calculateDataUsage()

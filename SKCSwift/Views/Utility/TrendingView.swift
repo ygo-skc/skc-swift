@@ -13,9 +13,7 @@ struct TrendingView: View {
     
     var body: some View {
         ScrollView {
-            SectionView(header: "Trending",
-                        variant: .plain,
-                        content: {
+            VStack {
                 Picker("Select Trend Type", selection: $trendingModel.focusedTrend) {
                     ForEach(TrendingResourceType.allCases, id: \.self) { type in
                         Text(type.rawValue.capitalized).tag(type)
@@ -35,13 +33,13 @@ struct TrendingView: View {
                         TrendingProductsView(path: $path, trendingProducts: trendingModel.products)
                     }
                 }
-            })
-            .modifier(.parentView)
-            .task {
-                await trendingModel.fetchTrendingData(forceRefresh: false)
             }
-            .dynamicTypeSize(...DynamicTypeSize.medium)
+            .modifier(.parentView)
         }
+        .task {
+            await trendingModel.fetchTrendingData(forceRefresh: false)
+        }
+        .dynamicTypeSize(...DynamicTypeSize.medium)
         .scrollDisabled(trendingModel.focusedTrendNE != nil)
         .frame(maxWidth: .infinity)
         .overlay {

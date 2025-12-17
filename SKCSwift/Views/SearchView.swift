@@ -50,7 +50,7 @@ struct SearchView: View {
             .ignoresSafeArea(.keyboard)
             .ygoNavigationDestination()
             .navigationTitle("Search & Trending")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
                 Task {
                     await searchModel.searchDB(oldValue: oldValue, newValue: newValue)

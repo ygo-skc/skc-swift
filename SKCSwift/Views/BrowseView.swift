@@ -213,7 +213,7 @@ private struct ProductFiltersView: View {
                                   filterImage: "2.circle",
                                   columns: Array(repeating: GridItem(.flexible()), count: 2))
             }
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
     }
 }
@@ -280,7 +280,7 @@ private struct CardFiltersView: View {
                         .fontWeight(.heavy)
                 }
             }
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
     }
 }

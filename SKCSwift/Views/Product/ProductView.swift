@@ -252,7 +252,7 @@ private struct ProductStatsView: View  {
         
         var body: some View {
             ScrollView {
-                VStack {
+                VStack(alignment: .leading) {
                     Label {
                         Text("Metrics")
                             .font(.title)
@@ -274,7 +274,7 @@ private struct ProductStatsView: View  {
                         description: "Monster cards printed in **\(productName)** categorized by their attribute.",
                         dataTitle: "Monster Attribute", data: monsterAttributeData)
                 }
-                .modifier(.parentView)
+                .modifier(.sheetParentView)
             }
         }
     }

@@ -190,9 +190,7 @@ private struct BanListDateRangePicker: View {
                 }
             }
             .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
-            .frame(maxHeight: .infinity, alignment: .topLeading)
-            .padding(.horizontal)
+            .modifier(.sheetParentView)
         }
     }
     
