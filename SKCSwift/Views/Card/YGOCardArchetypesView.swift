@@ -28,7 +28,6 @@ struct YGOCardArchetypesView: View {
                 }
             }
             .scrollIndicators(.hidden)
-            .scrollClipDisabled()
         }
     }
 }

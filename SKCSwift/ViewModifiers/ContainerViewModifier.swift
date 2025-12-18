@@ -17,7 +17,7 @@ struct ParentViewModifier: ViewModifier {
                 maxHeight: .infinity,
                 alignment: alignment
             )
-            .padding(.horizontal)
+            .safeAreaPadding(.horizontal)
     }
 }
 
@@ -32,8 +32,8 @@ struct SheetParentViewModifier: ViewModifier {
                 alignment: alignment
             )
             .presentationDragIndicator(.visible)
-            .padding(.horizontal)
-            .padding(.top)
+            .safeAreaPadding(.horizontal)
+            .safeAreaPadding(.top)
     }
 }
 

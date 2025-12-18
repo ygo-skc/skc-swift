@@ -102,7 +102,6 @@ struct CardReleasesView: View {
                                 Text(initialReleaseSubHeader)
                                     .font(.subheadline)
                             }
-                            .padding(.bottom, 2)
                         }
                         if let latestReleaseHeader, let latestReleaseSubHeader {
                             CardView {
@@ -112,14 +111,11 @@ struct CardReleasesView: View {
                                     Text(latestReleaseSubHeader)
                                         .font(.subheadline)
                                 }
-                                .padding(.bottom, 2)
                             }
                         }
                     }
-                    .padding(.top)
-                    .padding(.bottom, 1)
+                    .padding(.bottom, 10)
                 }
-                .scrollClipDisabled()
                 .scrollIndicators(.hidden)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
