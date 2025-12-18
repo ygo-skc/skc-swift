@@ -32,7 +32,7 @@ struct CardImageView: View, Equatable {
     }
     
     var body: some View {
-        if cardID == Card.placeholder.cardID {
+        if cardID == YGOCard.placeholder.cardID {
             PlaceholderView(width: length, height: length, radius: radius)
         } else {
             KFImage(URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!)

@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct CardStatsView: View, Equatable {
-    let card: Card
+    let card: YGOCard
     let variant: YGOCardViewVariant
     
     private let attribute: Attribute
     
-    init(card: Card?, variant: YGOCardViewVariant = .normal) {
+    init(card: YGOCard?, variant: YGOCardViewVariant = .normal) {
         self.card = (card == nil) ? .placeholder : card!
         self.variant = variant
         
@@ -208,7 +208,7 @@ struct CardStatsView: View, Equatable {
 
 #Preview("Card Stats - Default") {
     CardStatsView(
-        card: Card(
+        card: YGOCard(
             cardID: "90307498",
             cardName: "Elemental HERO Neos Kluger",
             cardColor: "Fusion",
@@ -224,7 +224,7 @@ struct CardStatsView: View, Equatable {
 
 #Preview("Card Stats - Condensed") {
     CardStatsView(
-        card: Card(
+        card: YGOCard(
             cardID: "90307498",
             cardName: "Elemental HERO Neos Kluger",
             cardColor: "Fusion",

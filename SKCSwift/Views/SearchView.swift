@@ -74,7 +74,7 @@ struct SearchView: View {
         }
         
         let history: [History]
-        let recentlyViewedCardDetails: [Card]
+        let recentlyViewedCardDetails: [YGOCard]
         let recentlyViewedSuggestions: [CardReference]
         let recentlyViewedArchetypeSuggestions: Set<String>
         let dataTaskStatus: DataTaskStatus

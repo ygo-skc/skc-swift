@@ -13,12 +13,12 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
         lhs.showAllInfo == rhs.showAllInfo && lhs.cards == rhs.cards
     }
     
-    let cards: [Card]
+    let cards: [YGOCard]
     let showAllInfo: Bool
     @ViewBuilder let label: (Int) -> Label
     @ViewBuilder let info: (Int) -> Info
     
-    init(cards: [Card],
+    init(cards: [YGOCard],
          showAllInfo: Bool = false,
          @ViewBuilder label: @escaping (Int) -> Label = { _ in EmptyView() },
          @ViewBuilder info: @escaping (Int) -> Info = { _ in EmptyView() }) {
@@ -48,10 +48,10 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
 }
 
 struct CardListItemView: View, Equatable {
-    let card: Card
+    let card: YGOCard
     let showAllInfo: Bool
     
-    init(card: Card, showAllInfo: Bool = false) {
+    init(card: YGOCard, showAllInfo: Bool = false) {
         self.card = card
         self.showAllInfo = showAllInfo
     }
@@ -125,7 +125,7 @@ private struct ListItemThirdRow: View {
 }
 
 #Preview("Card Search Result") {
-    CardListItemView(card: Card(
+    CardListItemView(card: YGOCard(
         cardID: "40044918",
         cardName: "Elemental HERO Stratos",
         cardColor: "Effect",
@@ -136,7 +136,7 @@ private struct ListItemThirdRow: View {
 }
 
 #Preview("Card Search Result - IMG DNE") {
-    CardListItemView(card: Card(
+    CardListItemView(card: YGOCard(
         cardID: "40044918",
         cardName: "Elemental HERO Stratos",
         cardColor: "Effect",

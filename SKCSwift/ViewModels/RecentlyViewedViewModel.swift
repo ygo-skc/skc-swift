@@ -13,13 +13,13 @@ final class RecentlyViewedViewModel {
     private(set) var requestError: NetworkError? = nil
     
     @ObservationIgnored
-    private(set) var recentlyViewedCardDetails = [Card]()
+    private(set) var recentlyViewedCardDetails = [YGOCard]()
     @ObservationIgnored
     private(set) var recentlyViewedSuggestions: [CardReference] = []
     @ObservationIgnored
     private(set) var recentlyViewedArchetypeSuggestions: Set<String> = []
     @ObservationIgnored
-    private var recentlyViewedCardInfo = [String: Card]()
+    private var recentlyViewedCardInfo = [String: YGOCard]()
     
     func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
         let newRecentlyViewedSet = Set(newHistory.map { $0.id })
@@ -43,7 +43,7 @@ final class RecentlyViewedViewModel {
     
     @concurrent
     nonisolated private func fetchRecentlyViewedDetails(newRecentlyViewed: Set<String>,
-                                                        recentlyViewedCardInfo: [String: Card]) async -> ([String: Card], NetworkError?, DataTaskStatus) {
+                                                        recentlyViewedCardInfo: [String: YGOCard]) async -> ([String: YGOCard], NetworkError?, DataTaskStatus) {
         let res = await data(cardDetailsUrl(),
                              reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
                              resType: CardDetailsResponse.self, httpMethod: "POST")

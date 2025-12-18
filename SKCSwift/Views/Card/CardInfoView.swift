@@ -25,6 +25,9 @@ struct CardInfoView: View {
     var body: some View {
         CardDetailsView(cardID: model.cardID,
                         card: model.card,
+                        products: model.products,
+                        tcgBanLists: model.restrictions?.TCG ?? [],
+                        mdBanLists: model.restrictions?.MD ?? [],
                         score: model.score,
                         cardDTS: model.cardDTS,
                         cardNE: model.cardNE,
@@ -82,7 +85,10 @@ struct CardInfoView: View {
         }
         
         let cardID: String
-        let card: Card?
+        let card: YGOCard?
+        let products: [Product]?
+        let tcgBanLists: [BanList]
+        let mdBanLists: [BanList]
         let score: CardScore?
         let cardDTS: DataTaskStatus
         let cardNE: NetworkError?
@@ -100,11 +106,11 @@ struct CardInfoView: View {
                                     .equatable()
                                     .padding(.bottom)
                                 
-                                if let card = card {
-                                    CardReleasesView(card: card)
+                                if let card = card, let products = products {
+                                    CardReleasesView(card: card, products: products)
                                         .modifier(.parentView)
                                     
-                                    CardRestrictionsView(card: card, score: score)
+                                    CardRestrictionsView(card: card, tcgBanList: tcgBanLists, mdBanLists: mdBanLists, score: score)
                                         .modifier(.parentView)
                                         .padding(.bottom, 50)
                                 } else {

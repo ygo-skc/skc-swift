@@ -29,7 +29,7 @@ final class RestrictedCardsViewModel {
     @ObservationIgnored
     private var bannedContent: BannedContent?
     @ObservationIgnored
-    var restrictedCards: [Card] {
+    var restrictedCards: [YGOCard] {
         return switch chosenBannedContentCategory {
         case .forbidden:
             bannedContent?.forbidden ?? []

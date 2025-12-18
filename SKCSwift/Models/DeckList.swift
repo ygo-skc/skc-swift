@@ -7,7 +7,7 @@
 
 struct DeckContent: Codable {
     let quantity: UInt8
-    let card: Card
+    let card: YGOCard
 }
 
 struct DeckList: Codable {

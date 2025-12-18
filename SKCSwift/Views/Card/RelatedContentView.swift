@@ -21,12 +21,12 @@ struct CardReleasesView: View {
     private let latestReleaseHeader: String?
     private let latestReleaseSubHeader: String?
     
-    init(card: Card) {
+    init(card: YGOCard, products: [Product]) {
         self.cardID = card.cardID
         self.cardName = card.cardName
         self.cardColor = card.cardColor
-        self.products = card.products
-        self.rarityDistribution = card.getRarityDistribution()
+        self.products = products
+        self.rarityDistribution = products.rarityDistribution()
         
         if !products.isEmpty {
             if products.count > 1 {
@@ -136,13 +136,13 @@ struct CardRestrictionsView: View {
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
-    init(card: Card, score: CardScore?) {
+    init(card: YGOCard, tcgBanList: [BanList], mdBanLists: [BanList], score: CardScore?) {
         self.cardID = card.cardID
         self.cardName = card.cardName
         self.cardColor = card.cardColor
         self.score = score
-        self.tcgBanLists = card.getBanList(format: .tcg)
-        self.mdBanLists =  card.getBanList(format: .md)
+        self.tcgBanLists = tcgBanList
+        self.mdBanLists =  mdBanLists
     }
     
     var body: some View {

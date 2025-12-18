@@ -79,7 +79,7 @@ private struct RestrictedCardsView: View, Equatable {
     }
     
     let format: CardRestrictionFormat
-    let restrictedCards: [Card]
+    let restrictedCards: [YGOCard]
     let scoreEntries: [CardScoreEntry]
     
     let timelineDTS: DataTaskStatus

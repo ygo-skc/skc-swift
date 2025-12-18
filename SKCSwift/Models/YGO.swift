@@ -7,10 +7,6 @@
 
 import Foundation
 
-/*
- Card models
- */
-
 nonisolated struct MonsterAssociation: Codable, Equatable {
     let level: UInt8?
     let rank: UInt8?
@@ -27,7 +23,7 @@ nonisolated struct MonsterAssociation: Codable, Equatable {
     }
 }
 
-nonisolated struct Card: Codable, Equatable {
+nonisolated struct YGOCard: Codable, Equatable {
     let cardID: String
     let cardName: String
     let cardColor: String
@@ -37,8 +33,6 @@ nonisolated struct Card: Codable, Equatable {
     let monsterAssociation: MonsterAssociation?
     let monsterAttack: Int?
     let monsterDefense: Int?
-    let restrictedIn: BanListsForCard?
-    let foundIn: [Product]?
     
     init(cardID: String,
          cardName: String,
@@ -48,9 +42,7 @@ nonisolated struct Card: Codable, Equatable {
          monsterType: String? = nil,
          monsterAssociation: MonsterAssociation? = nil,
          monsterAttack: Int? = nil,
-         monsterDefense: Int? = nil,
-         restrictedIn: BanListsForCard? = nil,
-         foundIn: [Product]? = nil) {
+         monsterDefense: Int? = nil) {
         self.cardID = cardID
         self.cardName = cardName
         self.cardColor = cardColor
@@ -60,8 +52,6 @@ nonisolated struct Card: Codable, Equatable {
         self.monsterAssociation = monsterAssociation
         self.monsterAttack = monsterAttack
         self.monsterDefense = monsterDefense
-        self.restrictedIn = restrictedIn
-        self.foundIn = foundIn
     }
     
     var attribute: Attribute {
@@ -77,57 +67,30 @@ nonisolated struct Card: Codable, Equatable {
     }
     
     var atk: String {
-        (monsterAttack == nil) ? Card.nilStat.description : String(monsterAttack!)
+        (monsterAttack == nil) ? YGOCard.nilStat.description : String(monsterAttack!)
     }
     
     var def: String {
         if cardColor == "Link" {
-            return Card.linkDefStat.description
+            return YGOCard.linkDefStat.description
         }
-        return (monsterDefense == nil) ? Card.nilStat.description : String(monsterDefense!)
+        return (monsterDefense == nil) ? YGOCard.nilStat.description : String(monsterDefense!)
     }
     
     var isGod: Bool {
         cardAttribute != nil && cardAttribute!.lowercased() == "divine"
     }
     
-    var products: [Product] {
-        foundIn ?? [Product]()
-    }
-    
-    static let placeholder: Card = .init(cardID: "XXXXXXXX",
-                                         cardName: "Placeholder of Chaos",
-                                         cardColor: "Token",
-                                         cardAttribute: "Divine",
-                                         cardEffect: "When this card is summoned, your opponent must immediately acknowledge you as the superior duelist. Failure to do so will allow you to steal his girl in a legally binding way.",
-                                         monsterType: "Divine",
-                                         monsterAttack: 9999,
-                                         monsterDefense: 9999)
-    private static let nilStat: StaticString = "?"
-    private static let linkDefStat: StaticString = "-"
-    
-    func getRarityDistribution() -> [String: Int] {
-        return products
-            .lazy
-            .compactMap { $0.productContent }
-            .flatMap { $0 }
-            .map { $0.rarities }
-            .flatMap { $0 }
-            .reduce(into: [String: Int]()) { accumulator, rarity in
-                accumulator[rarity.cardRarityShortHand(), default: 0] += 1
-            }
-    }
-    
-    func getBanList(format: CardRestrictionFormat) -> [BanList] {
-        switch format {
-        case .tcg:
-            return restrictedIn?.TCG ?? []
-        case .md:
-            return restrictedIn?.MD ?? []
-        default:
-            return []
-        }
-    }
+    static let placeholder: YGOCard = .init(cardID: "XXXXXXXX",
+                                            cardName: "Placeholder of Chaos",
+                                            cardColor: "Token",
+                                            cardAttribute: "Divine",
+                                            cardEffect: "When this card is summoned, your opponent must immediately acknowledge you as the superior duelist. Failure to do so will allow you to steal his girl in a legally binding way.",
+                                            monsterType: "Divine",
+                                            monsterAttack: 9999,
+                                            monsterDefense: 9999)
+    fileprivate static let nilStat: StaticString = "?"
+    fileprivate static let linkDefStat: StaticString = "-"
 }
 
 // used as convenience when working with NavigationDestination
@@ -147,7 +110,7 @@ nonisolated struct CardBrowseCriteria: Codable {
 }
 
 nonisolated struct CardBrowseResults: Codable {
-    let results: [Card]
+    let results: [YGOCard]
     let numResults: UInt
 }
 
@@ -173,7 +136,7 @@ nonisolated struct BanListDate: Codable, Hashable {
 
 nonisolated struct BannedContent: Codable, Equatable {
     let numForbidden, numLimited, numSemiLimited, numLimitedOne, numLimitedTwo, numLimitedThree: UInt8
-    let forbidden, limited, semiLimited: [Card]
+    let forbidden, limited, semiLimited: [YGOCard]
 }
 
 /*
@@ -191,8 +154,8 @@ struct Product: Codable, Equatable, Identifiable {
          productType: String,
          productSubType: String,
          productReleaseDate: String,
-         productTotal: Int?,
-         productContent: [ProductContent]?) {
+         productTotal: Int? = nil,
+         productContent: [ProductContent]? = nil) {
         self.productId = productId
         self.productLocale = productLocale
         self.productName = productName
@@ -201,15 +164,6 @@ struct Product: Codable, Equatable, Identifiable {
         self.productReleaseDate = productReleaseDate
         self.productTotal = productTotal
         self.productContent = productContent
-    }
-    
-    init(productId: String, productLocale: String, productName: String, productType: String, productSubType: String, productReleaseDate: String, productTotal: Int) {
-        self.init(productId: productId, productLocale: productLocale, productName: productName, productType: productType,
-                  productSubType: productSubType, productReleaseDate: productReleaseDate, productTotal: productTotal, productContent: [])
-    }
-    init(productId: String, productLocale: String, productName: String, productType: String, productSubType: String, productReleaseDate: String, productContent: [ProductContent]) {
-        self.init(productId: productId, productLocale: productLocale, productName: productName, productType: productType,
-                  productSubType: productSubType, productReleaseDate: productReleaseDate, productTotal: productContent.count, productContent: productContent)
     }
     
     var id: String {
@@ -221,12 +175,25 @@ struct Product: Codable, Equatable, Identifiable {
     }
 }
 
+extension Array where Element == Product {
+    func rarityDistribution() -> [String: Int] {
+        return self.lazy
+            .compactMap { $0.productContent }
+            .flatMap { $0 }
+            .map { $0.rarities }
+            .flatMap { $0 }
+            .reduce(into: [String: Int]()) { accumulator, rarity in
+                accumulator[rarity.cardRarityShortHand(), default: 0] += 1
+            }
+    }
+}
+
 struct ProductContent: Codable, Equatable, Identifiable {
-    let card: Card?
+    let card: YGOCard?
     let productPosition: String
     let rarities: [String]
     
-    init(card: Card? = nil, productPosition: String, rarities: [String]) {
+    init(card: YGOCard? = nil, productPosition: String, rarities: [String]) {
         self.card = card
         self.productPosition = productPosition
         self.rarities = rarities
@@ -260,11 +227,104 @@ struct ProductLinkDestinationValue: Hashable {
 struct SearchResults: Identifiable, Equatable {
     let id = UUID()
     let section: String
-    let results: [Card]
+    let results: [YGOCard]
 }
 
 struct SKCDatabaseStats: Codable, Equatable {
     let productTotal: Int
     let cardTotal: Int
     let banListTotal: Int
+}
+
+/*
+ Suggestions
+ */
+
+struct CardReference: Codable, Equatable {
+    let occurrences: Int
+    let card: YGOCard
+}
+
+struct CardSuggestions: Codable {
+    let card: YGOCard?
+    let hasSelfReference: Bool?
+    let namedMaterials: [CardReference]
+    let namedReferences: [CardReference]
+    let materialArchetypes: [String]
+    let referencedArchetypes: [String]
+}
+
+struct CardSupport: Codable {
+    let card: YGOCard?
+    let referencedBy: [CardReference]
+    let materialFor: [CardReference]
+}
+
+struct ProductSuggestions: Codable {
+    let suggestions: CardSuggestions
+    let support: CardSupport
+    
+    var hasSuggestions: Bool {
+        if suggestions.namedMaterials.isEmpty && suggestions.namedReferences.isEmpty
+            && support.referencedBy.isEmpty && support.materialFor.isEmpty {
+            return false
+        }
+        return true
+    }
+}
+
+struct TrendingMetric<R:Codable & Equatable>: Codable, Equatable {
+    let resource: R
+    let occurrences: Int
+    let change: Int
+}
+
+struct Trending<R:Codable & Equatable>: Codable, Equatable {
+    let resourceName: TrendingResourceType
+    let metrics: [TrendingMetric<R>]
+}
+
+struct CardOfTheDay: Codable, Equatable {
+    static func == (lhs: CardOfTheDay, rhs: CardOfTheDay) -> Bool {
+        lhs.date == rhs.date && lhs.card.cardID == rhs.card.cardID
+    }
+    
+    let date: String
+    let version: UInt8
+    let card: YGOCard
+}
+
+nonisolated struct BatchCardRequest: Codable {
+    let cardIDs: Set<String>
+}
+
+nonisolated struct CardDetailsResponse: Codable {
+    let cardInfo: [String: YGOCard]
+    let unknownResources: [String]
+}
+
+struct BatchSuggestions: Codable {
+    let namedMaterials: [CardReference]
+    let namedReferences: [CardReference]
+    let materialArchetypes: Set<String>
+    let referencedArchetypes: Set<String>
+    let unknownResources: Set<String>
+    let falsePositives: Set<String>
+}
+
+struct BatchSupport: Codable {
+    let referencedBy: [CardReference]
+    let materialFor: [CardReference]
+    let unknownResources: Set<String>
+    let falsePositives: Set<String>
+}
+
+struct ArchetypeData: Codable {
+    let usingName: [YGOCard]
+    let usingText: [YGOCard]
+    let exclusions: [YGOCard]
+}
+
+struct ArchetypeLinkDestinationValue: Hashable {
+    let archetype: String
 }

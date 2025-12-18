@@ -9,14 +9,14 @@ import SwiftUI
 
 struct YGOCardView: View, Equatable {
     let cardID: String
-    let card: Card?
+    let card: YGOCard?
     let variant: YGOCardViewVariant
     
     private let width: CGFloat
     private let imageSize: CGFloat
     private let imageSizeVariant: ImageSize
     
-    init(cardID: String, card: Card?, width: CGFloat = 220, variant: YGOCardViewVariant = .normal) {
+    init(cardID: String, card: YGOCard?, width: CGFloat = 220, variant: YGOCardViewVariant = .normal) {
         self.cardID = cardID
         self.card = card
         self.variant = variant
@@ -41,7 +41,7 @@ struct YGOCardView: View, Equatable {
 #Preview {
     YGOCardView(
         cardID: "40044918",
-        card: Card(
+        card: YGOCard(
             cardID: "40044918",
             cardName: "Elemental HERO Stratos",
             cardColor: "Effect",
@@ -55,7 +55,7 @@ struct YGOCardView: View, Equatable {
 #Preview("Condensed") {
     YGOCardView(
         cardID: "40044918",
-        card: Card(
+        card: YGOCard(
             cardID: "40044918",
             cardName: "Elemental HERO Stratos",
             cardColor: "Effect",

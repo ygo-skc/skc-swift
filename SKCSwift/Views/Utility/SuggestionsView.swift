@@ -250,7 +250,7 @@ private struct CarouselItemViewModifier: ViewModifier {
 }
 
 private struct SuggestedCardView: View {
-    var card: Card
+    var card: YGOCard
     var occurrence: Int
     
     var body: some View {
@@ -347,7 +347,7 @@ private struct SuggestedCardView: View {
 
 #Preview {
     SuggestedCardView(
-        card: Card(
+        card: YGOCard(
             cardID: "40044918",
             cardName: "Elemental HERO Stratos",
             cardColor: "Effect",
