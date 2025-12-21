@@ -21,8 +21,6 @@ struct SuggestionsParentView<SuggestionsView: View, OverlayView: View>: View, Eq
     var body: some View {
         ScrollView {
             suggestionsView()
-                .modifier(.parentView)
-                .padding(.bottom, 50)
         }
         .task {
             await dataCB(false)
@@ -72,7 +70,7 @@ struct SuggestionsView: View, Equatable {
     }
     
     let subjectID: String
-    let subjectName: String?
+    let subjectName: String
     let subjectType: CardSuggestionSubject
     
     let areSuggestionsLoaded: Bool
@@ -86,74 +84,77 @@ struct SuggestionsView: View, Equatable {
     private var namedMaterialSubHeader: String {
         switch subjectType {
         case .card:
-            return "Cards that can be used as summoning material for **\(subjectName ?? "")**."
+            return "Cards that can be used as summoning material for **\(subjectName)**."
         case .product:
-            return "Cards that can be used as summoning material for a card included in **\(subjectName ?? "")**."
+            return "Cards that can be used as summoning material for a card included in **\(subjectName)**."
         }
     }
     
     private var namedReferenceSubHeader: String {
         switch subjectType {
         case .card:
-            return "Cards found in the text of **\(subjectName ?? "")** but aren't explicitly listed as a summoning material."
+            return "Cards found in the text of **\(subjectName)** but aren't explicitly listed as a summoning material."
         case .product:
-            return "Cards found in the text of a card included in **\(subjectName ?? "")** but aren't explicitly listed as a summoning material."
+            return "Cards found in the text of a card included in **\(subjectName)** but aren't explicitly listed as a summoning material."
         }
     }
     
     private var materialForSubHeader: String {
         switch subjectType {
         case .card:
-            return "ED cards that can be summoned using **\(subjectName ?? "")** as material"
+            return "ED cards that can be summoned using **\(subjectName)** as material"
         case .product:
-            return "ED cards that can be summoned using a card found in **\(subjectName ?? "")**."
+            return "ED cards that can be summoned using a card found in **\(subjectName)**."
         }
     }
     
     private var referencedBySubHeader: String {
         switch subjectType {
         case .card:
-            return "Cards that reference **\(subjectName ?? "")** excluding ED cards that reference **\(subjectName ?? "")** as a summoning material."
+            return "Cards that reference **\(subjectName)** excluding ED cards that reference **\(subjectName)** as a summoning material."
         case .product:
-            return "Cards that reference a card found in **\(subjectName ?? "")** excluding ED cards that reference a card in this set as a summoning material."
+            return "Cards that reference a card found in **\(subjectName)** excluding ED cards that reference a card in this set as a summoning material."
         }
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            Label {
-                Text("Suggestions")
-                    .font(.title)
-            } icon: {
-                switch subjectType {
-                case .card:
-                    CardImageView(length: 50, cardID: subjectID, imgSize: .tiny)
-                case .product:
-                    ProductImageView(width: 50, productID: subjectID, imgSize: .tiny)
+            VStack {
+                Label {
+                    Text("Suggestions")
+                        .font(.title)
+                } icon: {
+                    switch subjectType {
+                    case .card:
+                        CardImageView(length: 50, cardID: subjectID, imgSize: .tiny)
+                    case .product:
+                        ProductImageView(width: 50, productID: subjectID, imgSize: .tiny)
+                    }
                 }
             }
             .padding(.bottom)
+            .padding(.horizontal)
             
-            if areSuggestionsLoaded && hasSuggestions {
-                VStack(alignment: .leading, spacing: 25) {
-                    SuggestionSectionView(header: "Named Materials",
-                                          subHeader: namedMaterialSubHeader,
-                                          references: namedMaterials,
-                                          variant: .suggestion)
-                    SuggestionSectionView(header: "Named References",
-                                          subHeader: namedReferenceSubHeader,
-                                          references: namedReferences,
-                                          variant: .suggestion)
-                    SuggestionSectionView(header: "Material For",
-                                          subHeader: materialForSubHeader,
-                                          references: materialFor,
-                                          variant: .support)
-                    SuggestionSectionView(header: "Referenced By",
-                                          subHeader: referencedBySubHeader,
-                                          references: referencedBy,
-                                          variant: .support)
-                }
+            VStack(alignment: .leading, spacing: 25) {
+                SuggestionSectionView(header: "Named Materials",
+                                      subHeader: namedMaterialSubHeader,
+                                      references: namedMaterials,
+                                      variant: .suggestion)
+                SuggestionSectionView(header: "Named References",
+                                      subHeader: namedReferenceSubHeader,
+                                      references: namedReferences,
+                                      variant: .suggestion)
+                SuggestionSectionView(header: "Material For",
+                                      subHeader: materialForSubHeader,
+                                      references: materialFor,
+                                      variant: .support)
+                SuggestionSectionView(header: "Referenced By",
+                                      subHeader: referencedBySubHeader,
+                                      references: referencedBy,
+                                      variant: .support)
             }
+            .modifier(.parentView)
+            .padding(.bottom, 50)
         }
     }
 }
@@ -190,7 +191,7 @@ struct SuggestionCarouselView: View {
     let references: [CardReference]
     let variant: CarouselItemVariant
     
-    @State private var height: CGFloat = 200
+    @State private var height: CGFloat = 0
     
     init(references: [CardReference], variant: CarouselItemVariant) {
         self.references = references
@@ -210,7 +211,6 @@ struct SuggestionCarouselView: View {
                         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                             YGOCardView(cardID: card.cardID, card: card, variant: .condensed)
                                 .equatable()
-                                .contentShape(Rectangle())
                         })
                         .modifier(CarouselItemViewModifier(height: $height))
                     }
@@ -218,6 +218,7 @@ struct SuggestionCarouselView: View {
             }
             .frame(maxWidth: .infinity, minHeight: height)
         }
+        .scrollIndicators(.automatic)
     }
 }
 
@@ -227,13 +228,16 @@ private struct CarouselItemViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .buttonStyle(.plain)
+            .contentShape(Rectangle())
             .overlay(
                 GeometryReader { geometry in
-                    Color.clear.onAppear {
-                        if height < geometry.size.height {
-                            height = geometry.size.height
+                    Color.clear
+                        .onAppear {
+                            height = max(height, geometry.size.height)
                         }
-                    }
+                        .onChange(of: geometry.size.height) {
+                            height = max(height, geometry.size.height)
+                        }
                 }
             )
     }
@@ -254,12 +258,10 @@ private struct SuggestedCardView: View {
                         .font(.subheadline)
                 }
                 .padding(.horizontal)
-                .frame(width: 220)
                 
                 CardStatsView(card: card, variant: .condensed)
                     .equatable()
             }
-            .contentShape(Rectangle())
             .frame(width: 220)
         })
     }
