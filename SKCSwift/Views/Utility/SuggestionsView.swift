@@ -158,14 +158,6 @@ struct SuggestionsView: View, Equatable {
     }
 }
 
-private struct SuggestionHeightPreferenceKey: PreferenceKey {
-    static let defaultValue: CGFloat = 200
-    
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
-    }
-}
-
 enum CarouselItemVariant {
     case suggestion
     case support
@@ -212,7 +204,7 @@ struct SuggestionCarouselView: View {
                     switch variant {
                     case .suggestion:
                         SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
-                            .modifier(CarouselItemViewModifier())
+                            .modifier(CarouselItemViewModifier(height: $height))
                     case .support:
                         let card = suggestion.card
                         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
@@ -220,12 +212,9 @@ struct SuggestionCarouselView: View {
                                 .equatable()
                                 .contentShape(Rectangle())
                         })
-                        .modifier(CarouselItemViewModifier())
+                        .modifier(CarouselItemViewModifier(height: $height))
                     }
                 }
-            }
-            .onPreferenceChange(SuggestionHeightPreferenceKey.self) { h in
-                height = h
             }
             .frame(maxWidth: .infinity, minHeight: height)
         }
@@ -233,15 +222,18 @@ struct SuggestionCarouselView: View {
 }
 
 private struct CarouselItemViewModifier: ViewModifier {
+    @Binding var height: CGFloat
+    
     func body(content: Content) -> some View {
         content
             .buttonStyle(.plain)
             .overlay(
                 GeometryReader { geometry in
-                    Color.clear.preference(
-                        key: SuggestionHeightPreferenceKey.self,
-                        value: geometry.size.height
-                    )
+                    Color.clear.onAppear {
+                        if height < geometry.size.height {
+                            height = geometry.size.height
+                        }
+                    }
                 }
             )
     }
