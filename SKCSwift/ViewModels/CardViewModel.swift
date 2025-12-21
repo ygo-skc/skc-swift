@@ -112,6 +112,7 @@ final class CardViewModel {
                                   cardAttribute: card.cardAttribute,
                                   cardEffect: card.cardEffect,
                                   monsterType: card.monsterType,
+                                  monsterAssociation: card.monsterAssociation,
                                   monsterAttack: card.monsterAttack,
                                   monsterDefense: card.monsterDefense)
                 self.products = card.foundIn
