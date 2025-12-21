@@ -22,7 +22,7 @@ struct SuggestionsParentView<SuggestionsView: View, OverlayView: View>: View, Eq
         ScrollView {
             suggestionsView()
                 .modifier(.parentView)
-                .padding(.bottom, 30)
+                .padding(.bottom, 50)
         }
         .task {
             await dataCB(false)
@@ -159,7 +159,7 @@ struct SuggestionsView: View, Equatable {
 }
 
 private struct SuggestionHeightPreferenceKey: PreferenceKey {
-    static let defaultValue: CGFloat = 0
+    static let defaultValue: CGFloat = 200
     
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = max(value, nextValue())
@@ -198,7 +198,7 @@ struct SuggestionCarouselView: View {
     let references: [CardReference]
     let variant: CarouselItemVariant
     
-    @State private var height: CGFloat = 0.0
+    @State private var height: CGFloat = 200
     
     init(references: [CardReference], variant: CarouselItemVariant) {
         self.references = references
@@ -224,27 +224,26 @@ struct SuggestionCarouselView: View {
                     }
                 }
             }
+            .onPreferenceChange(SuggestionHeightPreferenceKey.self) { h in
+                height = h
+            }
+            .frame(maxWidth: .infinity, minHeight: height)
         }
-        .frame(maxWidth: .infinity, minHeight: height)
     }
 }
 
 private struct CarouselItemViewModifier: ViewModifier {
-    @State private var height: CGFloat = 0.0
-    
     func body(content: Content) -> some View {
         content
             .buttonStyle(.plain)
-            .background(
+            .overlay(
                 GeometryReader { geometry in
                     Color.clear.preference(
                         key: SuggestionHeightPreferenceKey.self,
                         value: geometry.size.height
                     )
-                })
-            .onPreferenceChange(SuggestionHeightPreferenceKey.self) { [$height] h in
-                $height.wrappedValue = h
-            }
+                }
+            )
     }
 }
 
