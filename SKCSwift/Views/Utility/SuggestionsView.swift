@@ -216,6 +216,7 @@ struct SuggestionCarouselView: View {
             .frame(maxWidth: .infinity, minHeight: height)
         }
         .scrollIndicators(.automatic)
+        .gesture(DragGesture(minimumDistance: 0))
     }
 }
 
@@ -246,15 +247,15 @@ private struct SuggestedCardView: View {
     
     var body: some View {
         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-            VStack {
-                HStack(spacing: 10) {
+            VStack(spacing: 5) {
+                HStack(spacing: 15) {
                     CardImageView(length: 75, cardID: card.cardID, imgSize: .tiny, variant: .roundedCorner)
                         .equatable()
                     
                     Text("\(occurrence) Reference(s)")
                         .font(.subheadline)
                 }
-                .padding(.horizontal)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 CardStatsView(card: card, variant: .condensed)
                     .equatable()
@@ -284,7 +285,6 @@ private struct SuggestedCardView: View {
             materialFor: model.materialFor ?? []
         )
     }, overlayView: {
-        
         SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
                               noSuggestionsFound: !model.hasSuggestions(),
                               networkError: model.suggestionsError,
@@ -319,7 +319,6 @@ private struct SuggestedCardView: View {
             materialFor: model.materialFor ?? []
         )
     }, overlayView: {
-        
         SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
                               noSuggestionsFound: !model.hasSuggestions(),
                               networkError: model.suggestionsError,
