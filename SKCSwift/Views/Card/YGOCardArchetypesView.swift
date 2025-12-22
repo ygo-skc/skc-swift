@@ -47,8 +47,6 @@ struct YGOCardArchetypeView: View {
                     CardListView(cards: model.data.usingName)
                 }
             }
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
             .modifier(.parentView)
         }
         .gesture(DragGesture(minimumDistance: 0))
