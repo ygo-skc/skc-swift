@@ -119,21 +119,18 @@ struct SuggestionsView: View, Equatable {
     
     var body: some View {
         VStack(alignment: .leading) {
-            VStack {
-                Label {
-                    Text("Suggestions")
-                        .font(.title)
-                } icon: {
-                    switch subjectType {
-                    case .card:
-                        CardImageView(length: 50, cardID: subjectID, imgSize: .tiny)
-                    case .product:
-                        ProductImageView(width: 50, productID: subjectID, imgSize: .tiny)
-                    }
+            Label {
+                Text("Suggestions")
+                    .font(.title)
+            } icon: {
+                switch subjectType {
+                case .card:
+                    CardImageView(length: 50, cardID: subjectID, imgSize: .tiny)
+                case .product:
+                    ProductImageView(width: 50, productID: subjectID, imgSize: .tiny)
                 }
             }
             .padding(.bottom)
-            .padding(.horizontal)
             
             VStack(alignment: .leading, spacing: 25) {
                 SuggestionSectionView(header: "Named Materials",
@@ -153,9 +150,9 @@ struct SuggestionsView: View, Equatable {
                                       references: referencedBy,
                                       variant: .support)
             }
-            .modifier(.parentView)
-            .padding(.bottom, 50)
         }
+        .modifier(.parentView)
+        .padding(.bottom, 50)
     }
 }
 
@@ -179,10 +176,10 @@ private struct SuggestionSectionView: View {
                 
                 Text(LocalizedStringKey(subHeader))
                     .font(.callout)
-                    .padding(.bottom)
+                    .fixedSize(horizontal: false, vertical: true)
                 SuggestionCarouselView(references: references, variant: variant)
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
