@@ -23,7 +23,13 @@ final class ArchetypesViewModel {
     @ObservationIgnored
     private(set) var data: ArchetypeData = .init(usingName: [], usingText: [], exclusions: [])
     
+    @ObservationIgnored
+    var hasContent: Bool {
+        dataDTS == .done
+    }
+    
     func fetchArchetypeData() async {
+        if dataDTS == .done { return }
         dataDTS = .pending
         let res = await SKCSwift.data(archetypeSuggestionsURL(archetype: archetype), resType: ArchetypeData.self)
         if case .success(let data) = res {

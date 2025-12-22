@@ -17,7 +17,8 @@ struct YGOCardArchetypesView: View {
                 .fontWeight(.medium)
             
             ScrollView(.horizontal) {
-                LazyHStack(spacing: 5) {
+                
+                HStack(spacing: 5) {
                     ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
                         NavigationLink(value: ArchetypeLinkDestinationValue(archetype: archetype), label: {
                             Text(archetype)
@@ -51,6 +52,7 @@ struct YGOCardArchetypeView: View {
             .modifier(.parentView)
         }
         .gesture(DragGesture(minimumDistance: 0))
+        .scrollDisabled(!model.hasContent)
         .navigationTitle(model.archetype)
         .navigationBarTitleDisplayMode(.large)
         .task {
@@ -61,11 +63,16 @@ struct YGOCardArchetypeView: View {
                 ProgressView("Loading...")
                     .controlSize(.large)
             } else if let networkError = model.dataNE {
-                NetworkErrorView(error: networkError, action: {
-                    Task {
-                        await model.fetchArchetypeData()
-                    }
-                })
+                if networkError == .notFound {
+                    ContentUnavailableView("This suggested archetype is a false positive. We are actively improving our database.",
+                                           systemImage: "exclamationmark.square.fill")
+                } else {
+                    NetworkErrorView(error: networkError, action: {
+                        Task {
+                            await model.fetchArchetypeData()
+                        }
+                    })
+                }
             }
         }
     }
