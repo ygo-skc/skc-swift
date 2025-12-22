@@ -17,7 +17,6 @@ struct YGOCardArchetypesView: View {
                 .fontWeight(.medium)
             
             ScrollView(.horizontal) {
-                
                 HStack(spacing: 5) {
                     ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
                         NavigationLink(value: ArchetypeLinkDestinationValue(archetype: archetype), label: {
@@ -41,18 +40,31 @@ struct YGOCardArchetypeView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                if model.dataDTS == .done {
-                    CardListView(cards: model.data.usingName)
+        VStack {
+            if model.dataDTS == .done {
+                TabView {
+                    ScrollView {
+                        CardListView(cards: model.data.usingName)
+                            .modifier(.parentView)
+                    }
+                    
+                    ScrollView {
+                        CardListView(cards: model.data.usingText)
+                            .modifier(.parentView)
+                    }
+                    
+                    ScrollView {
+                        CardListView(cards: model.data.exclusions)
+                            .modifier(.parentView)
+                    }
                 }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
-            .modifier(.parentView)
         }
-        .gesture(DragGesture(minimumDistance: 0))
-        .scrollDisabled(!model.hasContent)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle(model.archetype)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .task {
             await model.fetchArchetypeData()
         }
