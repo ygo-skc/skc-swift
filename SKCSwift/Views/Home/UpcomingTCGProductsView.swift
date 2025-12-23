@@ -29,8 +29,11 @@ struct UpcomingTCGProductsView: View, Equatable {
                     if let networkError {
                         NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
                     } else {
-                        ProgressView("Loading...")
-                            .controlSize(.large)
+                        HStack {
+                            ProgressView("Loading...")
+                                .controlSize(.large)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                 }
             }

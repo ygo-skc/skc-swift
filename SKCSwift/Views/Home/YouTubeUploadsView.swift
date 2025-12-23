@@ -27,8 +27,11 @@ struct YouTubeUploadsView: View, Equatable {
                 if dataTaskStatus == .done || !ytUplaods.isEmpty {
                     YouTubeUploadsContentView(ytUplaods: ytUplaods)
                 } else {
-                    ProgressView("Loading...")
-                        .controlSize(.large)
+                    HStack {
+                        ProgressView("Loading...")
+                            .controlSize(.large)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
             }
         }
