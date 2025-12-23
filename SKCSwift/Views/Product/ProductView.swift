@@ -31,9 +31,7 @@ struct ProductView: View {
             SuggestionsParentView(isScrollDisabled: model.suggestionsNE != nil
                                   || model.suggestionsDTS != .done
                                   || !model.hasSuggestions,
-                                  dataCB: { forceRefresh in
-                await model.fetchProductSuggestions(forceRefresh: true)
-            }, suggestionsView: {
+                                  suggestionsView: {
                 SuggestionsView(
                     subjectID: model.productID,
                     subjectName: model.product?.productName ?? "",
@@ -47,7 +45,11 @@ struct ProductView: View {
                     materialFor: model.suggestions?.support.materialFor ?? []
                 )
                 .equatable()
-            }, overlayView: {
+            })
+            .task {
+                await model.fetchProductSuggestions()
+            }
+            .overlay {
                 SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
                                       noSuggestionsFound: !model.hasSuggestions,
                                       networkError: model.suggestionsNE,
@@ -57,9 +59,8 @@ struct ProductView: View {
                     }
                 })
                 .equatable()
-            })
+            }
         })
-        .equatable()
         .navigationTitle(model.product?.productName ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -73,18 +74,28 @@ struct ProductView: View {
         }
     }
     
-    private struct ProductDetailsView<Suggestions: View>: View, Equatable {
-        static func == (lhs: ProductView.ProductDetailsView<Suggestions>, rhs: ProductView.ProductDetailsView<Suggestions>) -> Bool {
-            lhs.productDTS == rhs.productDTS && lhs.productNE == rhs.productNE
-        }
-        
+    private struct ProductDetailsView<Suggestions: View>: View {
         let productID: String
         let product: Product?
         let productDTS: DataTaskStatus
         let productNE: NetworkError?
         let retryCB: () async -> Void
         
-        @ViewBuilder let suggestions: () -> Suggestions
+        let suggestions: Suggestions
+        
+        init(productID: String,
+             product: Product?,
+             productDTS: DataTaskStatus,
+             productNE: NetworkError?,
+             retryCB: @escaping () async -> Void,
+             @ViewBuilder suggestions: () -> Suggestions) {
+            self.productID = productID
+            self.product = product
+            self.productDTS = productDTS
+            self.productNE = productNE
+            self.retryCB = retryCB
+            self.suggestions = suggestions()
+        }
         
         var body: some View {
             TabView {
@@ -115,7 +126,7 @@ struct ProductView: View {
                 
                 Tab("Suggestions", systemImage: "sparkles") {
                     if productDTS == .done {
-                        suggestions()
+                        suggestions
                     }
                 }
             }

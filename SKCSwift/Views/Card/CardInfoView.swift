@@ -36,9 +36,7 @@ struct CardInfoView: View {
             SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil
                                   || !model.areSuggestionsLoaded
                                   || !model.hasSuggestions(),
-                                  dataCB: { forceRefresh in
-                await model.fetchAllSuggestions(forceRefresh: forceRefresh)
-            }, suggestionsView: {
+                                  suggestionsView: {
                 SuggestionsView(
                     subjectID: model.cardID,
                     subjectName: model.card?.cardName ?? "",
@@ -52,7 +50,11 @@ struct CardInfoView: View {
                     materialFor: model.materialFor ?? []
                 )
                 .equatable()
-            }, overlayView: {
+            })
+            .task {
+                await model.fetchAllSuggestions()
+            }
+            .overlay {
                 SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
                                       noSuggestionsFound: !model.hasSuggestions(),
                                       networkError: model.suggestionsError,
@@ -62,9 +64,8 @@ struct CardInfoView: View {
                     }
                 })
                 .equatable()
-            })
+            }
         })
-        .equatable()
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.card?.cardName ?? "Loading…")
         .frame(maxWidth:.infinity, maxHeight: .infinity)
@@ -79,11 +80,7 @@ struct CardInfoView: View {
         }
     }
     
-    private struct CardDetailsView<Suggestions: View>: View, Equatable {
-        static func == (lhs: CardInfoView.CardDetailsView<Suggestions>, rhs: CardInfoView.CardDetailsView<Suggestions>) -> Bool {
-            lhs.cardDTS == rhs.cardDTS && lhs.cardNE == rhs.cardNE && lhs.score == rhs.score
-        }
-        
+    private struct CardDetailsView<Suggestions: View>: View {
         let cardID: String
         let card: YGOCard?
         let products: [Product]?
@@ -93,7 +90,29 @@ struct CardInfoView: View {
         let cardDTS: DataTaskStatus
         let cardNE: NetworkError?
         let retryCB: () async -> Void
-        @ViewBuilder let suggestions: () -> Suggestions
+        let suggestions: Suggestions
+        
+        init(cardID: String,
+             card: YGOCard?,
+             products: [Product]?,
+             tcgBanLists: [BanList],
+             mdBanLists: [BanList],
+             score: CardScore?,
+             cardDTS: DataTaskStatus,
+             cardNE: NetworkError?,
+             retryCB: @escaping () async -> Void,
+             @ViewBuilder suggestions: () -> Suggestions) {
+            self.cardID = cardID
+            self.card = card
+            self.products = products
+            self.tcgBanLists = tcgBanLists
+            self.mdBanLists = mdBanLists
+            self.score = score
+            self.cardDTS = cardDTS
+            self.cardNE = cardNE
+            self.retryCB = retryCB
+            self.suggestions = suggestions()
+        }
         
         var body: some View {
             GeometryReader { reader in
@@ -124,7 +143,7 @@ struct CardInfoView: View {
                     
                     Tab("Suggestions", systemImage: "sparkles") {
                         if cardDTS == .done {
-                            suggestions()
+                            suggestions
                         }
                     }
                 }

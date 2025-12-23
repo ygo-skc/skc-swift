@@ -64,11 +64,6 @@ enum CardType {
     case nonMonster
 }
 
-enum SectionViewVariant {
-    case plain
-    case styled
-}
-
 enum DateBadgeViewVariant {
     case normal
     case condensed

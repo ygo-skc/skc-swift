@@ -18,23 +18,21 @@ struct YouTubeUploadsView: View, Equatable {
     let retryCB: () async -> Void
     
     var body: some View {
-        SectionView(header: "YouTube videos",
-                    variant: .plain,
-                    content: {
-            VStack {
-                if let networkError {
-                    NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+        VStack(alignment: .leading) {
+            Text("YouTube videos")
+                .modifier(.headerText)
+            if let networkError {
+                NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+            } else {
+                if dataTaskStatus == .done || !ytUplaods.isEmpty {
+                    YouTubeUploadsContentView(ytUplaods: ytUplaods)
                 } else {
-                    if dataTaskStatus == .done || !ytUplaods.isEmpty {
-                        YouTubeUploadsContentView(ytUplaods: ytUplaods)
-                    } else {
-                        ProgressView("Loading...")
-                            .controlSize(.large)
-                    }
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 }
             }
-            .frame(maxWidth: .infinity)
-        })
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private struct YouTubeUploadsContentView: View {

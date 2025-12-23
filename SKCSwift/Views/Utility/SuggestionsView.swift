@@ -7,26 +7,19 @@
 
 import SwiftUI
 
-struct SuggestionsParentView<SuggestionsView: View, OverlayView: View>: View, Equatable {
-    static func == (lhs: SuggestionsParentView<SuggestionsView, OverlayView>,
-                    rhs: SuggestionsParentView<SuggestionsView, OverlayView>) -> Bool {
-        lhs.isScrollDisabled == rhs.isScrollDisabled
-    }
-    
+struct SuggestionsParentView<SuggestionsView: View>: View {
     let isScrollDisabled: Bool
-    let dataCB: (Bool) async -> Void
-    @ViewBuilder let suggestionsView: () -> SuggestionsView
-    @ViewBuilder let overlayView: () -> OverlayView
+    let suggestionsView: SuggestionsView
+    
+    init(isScrollDisabled: Bool,
+         @ViewBuilder suggestionsView: () -> SuggestionsView) {
+        self.isScrollDisabled = isScrollDisabled
+        self.suggestionsView = suggestionsView()
+    }
     
     var body: some View {
         ScrollView {
-            suggestionsView()
-        }
-        .task {
-            await dataCB(false)
-        }
-        .overlay {
-            overlayView()
+            suggestionsView
         }
         .scrollDisabled(isScrollDisabled)
         .scrollIndicators(.hidden)
@@ -269,9 +262,7 @@ private struct SuggestedCardView: View {
     @Previewable @State var model = CardViewModel(cardID: "11502550")
     
     SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
-                          dataCB: { forceRefresh in
-        await model.fetchAllSuggestions(forceRefresh: forceRefresh)
-    }, suggestionsView: {
+                          suggestionsView: {
         SuggestionsView(
             subjectID: model.cardID,
             subjectName: model.card?.cardName ?? "",
@@ -284,15 +275,19 @@ private struct SuggestedCardView: View {
             referencedBy: model.referencedBy ?? [],
             materialFor: model.materialFor ?? []
         )
-    }, overlayView: {
-        SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-                              noSuggestionsFound: !model.hasSuggestions(),
-                              networkError: model.suggestionsError,
-                              action: {
-            Task {
-                await model.fetchAllSuggestions(forceRefresh: true)
-            }
-        })
+        .task {
+            await model.fetchAllSuggestions()
+        }
+        .overlay {
+            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                                  noSuggestionsFound: !model.hasSuggestions(),
+                                  networkError: model.suggestionsError,
+                                  action: {
+                Task {
+                    await model.fetchAllSuggestions(forceRefresh: true)
+                }
+            })
+        }
     })
     .task {
         await model.fetchCardInfo()
@@ -303,9 +298,7 @@ private struct SuggestedCardView: View {
     @Previewable @State var model = CardViewModel(cardID: "38033121")
     
     SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
-                          dataCB: { forceRefresh in
-        await model.fetchAllSuggestions(forceRefresh: forceRefresh)
-    }, suggestionsView: {
+                          suggestionsView: {
         SuggestionsView(
             subjectID: model.cardID,
             subjectName: model.card?.cardName ?? "",
@@ -318,15 +311,19 @@ private struct SuggestedCardView: View {
             referencedBy: model.referencedBy ?? [],
             materialFor: model.materialFor ?? []
         )
-    }, overlayView: {
-        SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-                              noSuggestionsFound: !model.hasSuggestions(),
-                              networkError: model.suggestionsError,
-                              action: {
-            Task {
-                await model.fetchAllSuggestions(forceRefresh: true)
-            }
-        })
+        .task {
+            await model.fetchAllSuggestions()
+        }
+        .overlay {
+            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                                  noSuggestionsFound: !model.hasSuggestions(),
+                                  networkError: model.suggestionsError,
+                                  action: {
+                Task {
+                    await model.fetchAllSuggestions(forceRefresh: true)
+                }
+            })
+        }
     })
     .task {
         await model.fetchCardInfo()

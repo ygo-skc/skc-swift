@@ -291,7 +291,9 @@ private struct CardFilterView<T: Equatable & Sendable, Content: View>: View {
     let gridItemCount: Int
     @ViewBuilder let content: (T) -> Content
     
-    init(filters: Binding<[FilteredItem<T>]>, filterInfo: String, gridItemCount: Int, content: @escaping (T) -> Content) {
+    init(filters: Binding<[FilteredItem<T>]>,
+         filterInfo: String,
+         gridItemCount: Int, @ViewBuilder content: @escaping (T) -> Content) {
         self._filters = filters
         self.filterInfo = filterInfo
         self.gridItemCount = gridItemCount
@@ -328,7 +330,12 @@ extension CardFilterView {
 
 private struct FilterButton<Content: View>: View {
     @Binding var showFilters: Bool
-    @ViewBuilder let content: () -> Content
+    let content: Content
+    
+    init(showFilters: Binding<Bool>, @ViewBuilder content: () -> Content) {
+        self._showFilters = showFilters
+        self.content = content()
+    }
     
     var body: some View {
         Button {
@@ -337,7 +344,7 @@ private struct FilterButton<Content: View>: View {
             Image(systemName: "line.3.horizontal.decrease")
         }
         .sheet(isPresented: $showFilters, onDismiss: { showFilters = false }) {
-            content()
+            content
         }
     }
 }

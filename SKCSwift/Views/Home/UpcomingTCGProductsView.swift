@@ -18,24 +18,24 @@ struct UpcomingTCGProductsView: View, Equatable {
     let retryCB: () async -> Void
     
     var body: some View {
-        SectionView(header: "Upcoming products",
-                    variant: .plain,
-                    content: {
-            VStack(alignment: .leading, spacing: 5) {
-                if let networkError {
-                    NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
-                } else {
-                    if dataTaskStatus == .done || !events.isEmpty {
-                        UpcomingTCGProductsContentView(events: events)
-                    }
-                    else {
+        VStack(alignment: .leading, spacing: 5) {
+            Text("Upcoming products")
+                .modifier(.headerText)
+            
+            if dataTaskStatus == .done || !events.isEmpty {
+                UpcomingTCGProductsContentView(events: events)
+            } else {
+                VStack {
+                    if let networkError {
+                        NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+                    } else {
                         ProgressView("Loading...")
                             .controlSize(.large)
                     }
                 }
             }
-            .frame(maxWidth: .infinity)
-        })
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private struct UpcomingTCGProductsContentView: View, Equatable {

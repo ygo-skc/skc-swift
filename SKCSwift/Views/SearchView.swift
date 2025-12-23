@@ -84,30 +84,28 @@ struct SearchView: View {
         var body: some View {
             ScrollView {
                 if !recentlyViewedCardDetails.isEmpty {
-                    SectionView(header: "History",
-                                variant: .plain,
-                                content: {
-                        LazyVStack(alignment: .leading) {
-                            if !recentlyViewedSuggestions.isEmpty {
-                                Label("Personalized suggestions", systemImage: "sparkles")
-                                    .font(.headline)
-                                    .fontWeight(.medium)
-                                SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
-                                    .padding(.bottom)
-                            }
-                            
-                            YGOCardArchetypesView(title: "Suggested archetypes (BETA)",
-                                                  archetypes: recentlyViewedArchetypeSuggestions)
-                            .padding(.bottom)
-                            
-                            Label("Recently viewed", systemImage: "clock.arrow.circlepath")
+                    LazyVStack(alignment: .leading) {
+                        Text("History")
+                            .modifier(.headerText)
+                        if !recentlyViewedSuggestions.isEmpty {
+                            Label("Personalized suggestions", systemImage: "sparkles")
                                 .font(.headline)
                                 .fontWeight(.medium)
-                            
-                            CardListView(cards: recentlyViewedCardDetails)
-                                .equatable()
+                            SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
+                                .padding(.bottom)
                         }
-                    })
+                        
+                        YGOCardArchetypesView(title: "Suggested archetypes (BETA)",
+                                              archetypes: recentlyViewedArchetypeSuggestions)
+                        .padding(.bottom)
+                        
+                        Label("Recently viewed", systemImage: "clock.arrow.circlepath")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                        
+                        CardListView(cards: recentlyViewedCardDetails)
+                            .equatable()
+                    }
                     .modifier(.parentView)
                 }
             }
