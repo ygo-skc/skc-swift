@@ -41,30 +41,16 @@ struct YGOCardArchetypeView: View {
     
     var body: some View {
         VStack {
-            if model.dataDTS == .done {
-                TabView {
-                    ScrollView {
-                        CardListView(cards: model.data.usingName)
-                            .modifier(.parentView)
-                    }
-                    
-                    ScrollView {
-                        CardListView(cards: model.data.usingText)
-                            .modifier(.parentView)
-                    }
-                    
-                    ScrollView {
-                        CardListView(cards: model.data.exclusions)
-                            .modifier(.parentView)
-                    }
+            ScrollView {
+                if model.dataDTS == .done {
+                    CardListView(cards: model.data.usingName)
+                        .modifier(.parentView)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle(model.archetype)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Archetype Data")
+        .navigationBarTitleDisplayMode(.large)
         .task {
             await model.fetchArchetypeData()
         }
