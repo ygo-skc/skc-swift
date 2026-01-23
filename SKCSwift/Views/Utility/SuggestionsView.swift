@@ -145,7 +145,6 @@ struct SuggestionsView: View, Equatable {
             }
         }
         .modifier(.parentView)
-        .padding(.bottom, 50)
     }
 }
 
@@ -208,8 +207,8 @@ struct SuggestionCarouselView: View {
             }
             .frame(maxWidth: .infinity, minHeight: height)
         }
+        .scrollTargetBehavior(.viewAligned(limitBehavior: .alwaysByFew))
         .scrollIndicators(.automatic)
-        .gesture(DragGesture(minimumDistance: 0))
     }
 }
 
