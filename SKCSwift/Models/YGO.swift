@@ -29,10 +29,11 @@ nonisolated struct YGOCard: Codable, Equatable {
     let cardColor: String
     let cardAttribute: String?
     let cardEffect: String
-    let monsterType: String?
+    private let monsterType: String?
     let monsterAssociation: MonsterAssociation?
-    let monsterAttack: Int?
-    let monsterDefense: Int?
+    private let monsterAttack: Int?
+    private let monsterDefense: Int?
+    private let qualifier: String?
     
     init(cardID: String,
          cardName: String,
@@ -42,7 +43,8 @@ nonisolated struct YGOCard: Codable, Equatable {
          monsterType: String? = nil,
          monsterAssociation: MonsterAssociation? = nil,
          monsterAttack: Int? = nil,
-         monsterDefense: Int? = nil) {
+         monsterDefense: Int? = nil,
+         qualifier: String? = "") {
         self.cardID = cardID
         self.cardName = cardName
         self.cardColor = cardColor
@@ -52,6 +54,25 @@ nonisolated struct YGOCard: Codable, Equatable {
         self.monsterAssociation = monsterAssociation
         self.monsterAttack = monsterAttack
         self.monsterDefense = monsterDefense
+        self.qualifier = qualifier == nil ? "" : qualifier!
+    }
+    
+    func withQualifier(qualifier: String) -> YGOCard {
+        .init(cardID: cardID,
+                    cardName: cardName,
+                    cardColor: cardColor,
+                    cardAttribute: cardAttribute,
+                    cardEffect: cardEffect,
+                    monsterType: monsterType,
+                    monsterAssociation: monsterAssociation,
+                    monsterAttack: monsterAttack,
+                    monsterDefense: monsterDefense,
+                    qualifier: qualifier)
+    }
+    
+    /// this ID attribute can be customized to avoid List key issues in case List has multiple cards w/ same ID
+    var id: String {
+        cardID + (qualifier == nil ? "" : qualifier!)
     }
     
     var attribute: Attribute {

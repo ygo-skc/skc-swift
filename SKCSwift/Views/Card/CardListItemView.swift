@@ -30,7 +30,7 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
     
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 10) {
-            ForEach(Array(cards.enumerated()), id: \.element.cardID) { ind, card in
+            ForEach(Array(cards.enumerated()), id: \.element.id) { ind, card in
                 NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                     GroupBox(label: label(ind)) {
                         CardListItemView(card: card, showAllInfo: showAllInfo)
@@ -66,7 +66,7 @@ struct CardListItemView: View, Equatable {
                     .fontWeight(.bold)
                     .lineLimit(1)
                 
-                ListItemSecondRow(cardID: card.cardID, cardColor: card.cardColor, monsterType: card.monsterType, isCardAGod: card.isGod)
+                ListItemSecondRow(cardID: card.cardID, cardColor: card.cardColor, monsterType: card.cardType, isCardAGod: card.isGod)
                 ListItemThirdRow(cardColor: card.cardColor, attribute: card.attribute, monsterAssociation: card.monsterAssociation, showAllInfo: showAllInfo)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
