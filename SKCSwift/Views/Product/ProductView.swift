@@ -106,6 +106,7 @@ private struct ProductStatsView: View  {
     
     @State private var chartData: ([ChartData], [ChartData], [ChartData], [ChartData])?
     @State private var showStats = false
+    @State private var showSuggestions = false
     
     @concurrent
     nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
@@ -189,7 +190,29 @@ private struct ProductStatsView: View  {
                                 .controlSize(.large)
                         }
                     }
+                    
+                    Button {
+                        showSuggestions = true
+                    } label: {
+                        Label("Suggestions", systemImage: "sparkles")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
                     .padding(.bottom)
+                    .sheet(isPresented: $showSuggestions, onDismiss: {showStats = false}) {
+                        VStack {
+                            Label {
+                                Text("Suggestions")
+                                    .font(.title)
+                            } icon: {
+                                ProductImageView(width: 50, productID: productID, imgSize: .tiny)
+                            }
+                            .padding(.bottom)
+                        }
+                        .modifier(.parentView)
+                        .padding(.top)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
