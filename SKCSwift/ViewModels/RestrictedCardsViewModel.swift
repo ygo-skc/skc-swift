@@ -48,7 +48,7 @@ final class RestrictedCardsViewModel {
     }
     
     func fetchTimelineData() async {
-        timelineDTS = .pending
+        (timelineNE, timelineDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
             await fetchBannedContentTimeline()
@@ -63,7 +63,7 @@ final class RestrictedCardsViewModel {
     func fetchRestrictedCards() async {
         if timelineNE != nil { return }
         
-        contentDTS = .pending
+        (contentNE, contentDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
             await fetchBannedContent()

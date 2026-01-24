@@ -24,7 +24,7 @@ final class RecentlyViewedViewModel {
     func fetchRecentlyViewedDetails(recentlyViewed newHistory: [History]) async {
         let newRecentlyViewedSet = Set(newHistory.map { $0.id })
         
-        dataTaskStatus = .pending
+        (requestError, dataTaskStatus) = (nil, .pending)
         if !newHistory.isEmpty && newRecentlyViewedSet != Set(recentlyViewedCardInfo.values.map { $0.cardID }) {
             async let detailsAsync = fetchRecentlyViewedDetails(newRecentlyViewed: newRecentlyViewedSet,
                                                                 recentlyViewedCardInfo: recentlyViewedCardInfo)

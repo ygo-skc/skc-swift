@@ -47,7 +47,7 @@ final class TrendingViewModel {
     }
     
     private func fetchTrendingCards(forceRefresh: Bool = false) async {
-        trendingCardsDTS = .pending
+        (trendingCardsNE, trendingCardsDTS) = (nil, .pending)
         let res = await data(trendingUrl(resource: .card), resType: Trending<YGOCard>.self)
         if case .success(let data) = res {
             cards = data.metrics
@@ -56,7 +56,7 @@ final class TrendingViewModel {
     }
     
     private func fetchTrendingProducts(forceRefresh: Bool = false) async {
-        trendingProductsDTS = .pending
+        (trendingProductsNE, trendingProductsDTS) = (nil, .pending)
         let res = await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
         if case .success(let data) = res {
             products = data.metrics

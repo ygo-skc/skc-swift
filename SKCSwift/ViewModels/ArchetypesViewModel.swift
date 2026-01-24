@@ -30,7 +30,7 @@ final class ArchetypesViewModel {
     
     func fetchArchetypeData() async {
         if dataDTS == .done { return }
-        dataDTS = .pending
+        (dataNE, dataDTS) = (nil, .pending)
         let res = await SKCSwift.data(archetypeSuggestionsURL(archetype: archetype), resType: ArchetypeData.self)
         if case .success(let data) = res {
             self.data = data

@@ -51,7 +51,7 @@ final class HomeViewModel {
     }
     
     func fetchDBStatsData() async {
-        dbStatsDTS = .pending
+        (dbStatsNE, dbStatsDTS) = (nil, .pending)
         let res = await data(dbStatsURL(), resType: SKCDatabaseStats.self)
         if case .success(let dbStats) = res {
             self.dbStats = dbStats
@@ -60,7 +60,7 @@ final class HomeViewModel {
     }
     
     func fetchCardOfTheDayData() async {
-        cotdDTS = .pending
+        (cotdNE, cotdDTS) = (nil, .pending)
         let res = await data(cardOfTheDayURL(), resType: CardOfTheDay.self)
         if case .success(let cardOfTheDay) = res {
             self.cardOfTheDay = cardOfTheDay
@@ -69,7 +69,7 @@ final class HomeViewModel {
     }
     
     func fetchUpcomingTCGProducts() async {
-        upcomingTCGProductsDTS = .pending
+        (upcomingTCGProductsNE, upcomingTCGProductsDTS) = (nil, .pending)
         let res = await data(upcomingEventsURL(), resType: Events.self)
         if case .success(let data) = res {
             self.upcomingTCGProducts = data.events
@@ -78,7 +78,7 @@ final class HomeViewModel {
     }
     
     func fetchYouTubeUploadsData() async {
-        ytUploadsDTS = .pending
+        (ytUploadsNE, ytUploadsDTS) = (nil, .pending)
         let res = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
         if case .success(let data) = res {
             self.ytUploads = data.videos

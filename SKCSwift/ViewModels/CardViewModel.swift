@@ -103,7 +103,7 @@ final class CardViewModel {
     
     private func fetchCardData(forceRefresh: Bool = false) async {
         if forceRefresh || card == nil {
-            cardDTS = .pending
+            (cardNE, cardDTS) = (nil, .pending)
             let res = await data(cardInfoURL(cardID: cardID), resType: YGOCardInfo.self)
             if case .success(let card) = res {
                 self.card = .init(cardID: card.cardID,
@@ -143,7 +143,7 @@ final class CardViewModel {
     }
     
     private func fetchSuggestions() async {
-        suggestionsDTS = .pending
+        (suggestionsNE, suggestionsDTS) = (nil, .pending)
         let res = await data(cardSuggestionsURL(cardID: cardID), resType: CardSuggestions.self)
         if case .success(let suggestions) = res {
             namedMaterials = suggestions.namedMaterials
@@ -153,7 +153,7 @@ final class CardViewModel {
     }
     
     private func fetchSupport() async {
-        supportDTS = .pending
+        (supportNE, supportDTS) = (nil, .pending)
         let res = await data(cardSupportURL(cardID: cardID), resType: CardSupport.self)
         if case .success(let support) = res {
             referencedBy = support.referencedBy

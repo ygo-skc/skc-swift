@@ -38,7 +38,7 @@ final class SearchViewModel {
             dataTaskStatus = .done
         } else {
             searchTask = Task {
-                dataTaskStatus = .pending
+                (requestError, dataTaskStatus) = (nil, .pending)
                 slowSearchDispatch = DispatchWorkItem { [weak self] in
                     self?.isSearchSlow = true
                 }
