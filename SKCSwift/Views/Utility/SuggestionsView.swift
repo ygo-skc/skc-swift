@@ -11,6 +11,7 @@ struct SuggestionOverlayView: View, Equatable {
     static func == (lhs: SuggestionOverlayView, rhs: SuggestionOverlayView) -> Bool {
         lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
         && lhs.noSuggestionsFound == rhs.noSuggestionsFound
+        && lhs.networkError == rhs.networkError
     }
     
     let areSuggestionsLoaded: Bool
