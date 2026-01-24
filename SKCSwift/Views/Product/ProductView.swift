@@ -63,7 +63,14 @@ struct ProductView: View {
             ScrollView {
                 VStack{
                     if productNE == nil {
-                        ProductStatsView(productID: productID, product: product)
+                        ProductStatsView(productID: productID) {
+                            ProductTagsView(product: product)
+                        } metrics: {
+                            ProductMetricsButton(product: product)
+                        } suggestions: {
+                            ProductSuggestionsButton(product: product)
+                        }
+                        
                         if let product = product, let productContents = product.productContent {
                             CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card!.withQualifier(qualifier: $0.productPosition) })
                                          , label: { ind in
@@ -100,16 +107,36 @@ struct ProductView: View {
     }
 }
 
-private struct ProductStatsView: View  {
-    let productID: String
+private struct ProductTagsView: View {
+    let product: Product?
+    
+    var body: some View {
+        if let product = product {
+            InlineDateView(date: product.productReleaseDate)
+                .padding(.bottom, 3)
+            
+            FlowLayout(spacing: 10) {
+                Group {
+                    Label(product.productId, systemImage: "number")
+                    Label(product.productType, systemImage: "tag")
+                    Label(product.productSubType, systemImage: "tag")
+                    Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
+                }
+                .modifier(TagModifier(font: .caption))
+            }
+            .padding(.bottom)
+        }
+    }
+}
+
+private struct ProductMetricsButton: View {
     let product: Product?
     
     @State private var chartData: ([ChartData], [ChartData], [ChartData], [ChartData])?
-    @State private var showStats = false
-    @State private var showSuggestions = false
+    @State private var toggle = false
     
     @concurrent
-    nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
+    private nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
         return await Task.detached {
             let rarities = productContents.flatMap { $0.rarities }
             let cards = productContents.compactMap { $0.card }
@@ -150,74 +177,29 @@ private struct ProductStatsView: View  {
     }
     
     var body: some View {
-        HStack(alignment: .top) {
-            ProductImageView(width: 150, productID: productID, imgSize: .small)
-            
-            VStack(alignment: .leading) {
-                if let product = product, let productContents = product.productContent {
-                    InlineDateView(date: product.productReleaseDate)
-                        .padding(.bottom, 3)
-                    
-                    FlowLayout(spacing: 10) {
-                        Group {
-                            Label(product.productId, systemImage: "number")
-                            Label(product.productType, systemImage: "tag")
-                            Label(product.productSubType, systemImage: "tag")
-                            Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
-                        }
-                        .modifier(TagModifier(font: .caption))
-                    }
-                    .padding(.bottom)
-                    
-                    Button {
-                        showStats = true
-                        if chartData == nil {
-                            Task {
-                                await chartData = productData(productContents: productContents)
-                            }
-                        }
-                    } label: {
-                        Label("Metrics", systemImage: "chart.bar.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-                    .sheet(isPresented: $showStats, onDismiss: {showStats = false}) {
-                        if let data = chartData {
-                            ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
-                        } else {
-                            ProgressView("Loading...")
-                                .controlSize(.large)
-                        }
-                    }
-                    
-                    Button {
-                        showSuggestions = true
-                    } label: {
-                        Label("Suggestions", systemImage: "sparkles")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-                    .padding(.bottom)
-                    .sheet(isPresented: $showSuggestions, onDismiss: {showStats = false}) {
-                        VStack {
-                            Label {
-                                Text("Suggestions")
-                                    .font(.title)
-                            } icon: {
-                                ProductImageView(width: 50, productID: productID, imgSize: .tiny)
-                            }
-                            .padding(.bottom)
-                        }
-                        .modifier(.parentView)
-                        .padding(.top)
+        if let product = product, let productContents = product.productContent {
+            Button {
+                toggle = true
+                if chartData == nil {
+                    Task {
+                        await chartData = productData(productContents: productContents)
                     }
                 }
+            } label: {
+                Label("Metrics", systemImage: "chart.bar.fill")
+                    .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .sheet(isPresented: $toggle, onDismiss: {toggle = false}) {
+                if let data = chartData {
+                    ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
+                } else {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
+                }
+            }
         }
-        .padding(.bottom)
     }
     
     private struct ProductMetricsView: View {
@@ -262,6 +244,60 @@ private struct ProductStatsView: View  {
                 .modifier(.sheetParentView)
             }
         }
+    }
+}
+
+private struct ProductSuggestionsButton: View {
+    let product: Product?
+    
+    @State private var toggle = false
+    
+    var body: some View {
+        if let product = product {
+            Button {
+                toggle = true
+            } label: {
+                Label("Suggestions", systemImage: "sparkles")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .padding(.bottom)
+            .sheet(isPresented: $toggle, onDismiss: {toggle = false}) {
+                VStack {
+                    Label {
+                        Text("Suggestions")
+                            .font(.title)
+                    } icon: {
+                        ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
+                    }
+                    .padding(.bottom)
+                }
+                .modifier(.parentView)
+                .padding(.top)
+            }
+        }
+    }
+}
+
+private struct ProductStatsView<Tags: View, Metrics: View, Suggestions: View>: View  {
+    let productID: String
+    @ViewBuilder let tags: () -> Tags
+    @ViewBuilder let metrics: () -> Metrics
+    @ViewBuilder let suggestions: () -> Suggestions
+    
+    var body: some View {
+        HStack(alignment: .top) {
+            ProductImageView(width: 150, productID: productID, imgSize: .small)
+            
+            VStack(alignment: .leading) {
+                tags()
+                metrics()
+                suggestions()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.bottom)
     }
 }
 
