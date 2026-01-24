@@ -7,25 +7,6 @@
 
 import SwiftUI
 
-struct SuggestionsParentView<SuggestionsView: View>: View {
-    let isScrollDisabled: Bool
-    let suggestionsView: SuggestionsView
-    
-    init(isScrollDisabled: Bool,
-         @ViewBuilder suggestionsView: () -> SuggestionsView) {
-        self.isScrollDisabled = isScrollDisabled
-        self.suggestionsView = suggestionsView()
-    }
-    
-    var body: some View {
-        ScrollView {
-            suggestionsView
-        }
-        .scrollDisabled(isScrollDisabled)
-        .scrollIndicators(.hidden)
-    }
-}
-
 struct SuggestionOverlayView: View, Equatable {
     static func == (lhs: SuggestionOverlayView, rhs: SuggestionOverlayView) -> Bool {
         lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
@@ -50,110 +31,12 @@ struct SuggestionOverlayView: View, Equatable {
     }
 }
 
-enum CardSuggestionSubject {
-    case card
-    case product
-}
-
-struct SuggestionsView: View, Equatable {
-    static func == (lhs: SuggestionsView, rhs: SuggestionsView) -> Bool {
-        lhs.subjectName == rhs.subjectName
-        && lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
-        && lhs.hasError == rhs.hasError
-    }
-    
-    let subjectID: String
-    let subjectName: String
-    let subjectType: CardSuggestionSubject
-    
-    let areSuggestionsLoaded: Bool
-    let hasSuggestions: Bool
-    let hasError: Bool
-    let namedMaterials: [CardReference]
-    let namedReferences: [CardReference]
-    let referencedBy: [CardReference]
-    let materialFor: [CardReference]
-    
-    private var namedMaterialSubHeader: String {
-        switch subjectType {
-        case .card:
-            return "Cards that can be used as summoning material for **\(subjectName)**."
-        case .product:
-            return "Cards that can be used as summoning material for a card included in **\(subjectName)**."
-        }
-    }
-    
-    private var namedReferenceSubHeader: String {
-        switch subjectType {
-        case .card:
-            return "Cards found in the text of **\(subjectName)** but aren't explicitly listed as a summoning material."
-        case .product:
-            return "Cards found in the text of a card included in **\(subjectName)** but aren't explicitly listed as a summoning material."
-        }
-    }
-    
-    private var materialForSubHeader: String {
-        switch subjectType {
-        case .card:
-            return "ED cards that can be summoned using **\(subjectName)** as material"
-        case .product:
-            return "ED cards that can be summoned using a card found in **\(subjectName)**."
-        }
-    }
-    
-    private var referencedBySubHeader: String {
-        switch subjectType {
-        case .card:
-            return "Cards that reference **\(subjectName)** excluding ED cards that reference **\(subjectName)** as a summoning material."
-        case .product:
-            return "Cards that reference a card found in **\(subjectName)** excluding ED cards that reference a card in this set as a summoning material."
-        }
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Label {
-                Text("Suggestions")
-                    .font(.title)
-            } icon: {
-                switch subjectType {
-                case .card:
-                    CardImageView(length: 50, cardID: subjectID, imgSize: .tiny)
-                case .product:
-                    ProductImageView(width: 50, productID: subjectID, imgSize: .tiny)
-                }
-            }
-            .padding(.bottom)
-            
-            VStack(alignment: .leading, spacing: 25) {
-                SuggestionSectionView(header: "Named Materials",
-                                      subHeader: namedMaterialSubHeader,
-                                      references: namedMaterials,
-                                      variant: .suggestion)
-                SuggestionSectionView(header: "Named References",
-                                      subHeader: namedReferenceSubHeader,
-                                      references: namedReferences,
-                                      variant: .suggestion)
-                SuggestionSectionView(header: "Material For",
-                                      subHeader: materialForSubHeader,
-                                      references: materialFor,
-                                      variant: .support)
-                SuggestionSectionView(header: "Referenced By",
-                                      subHeader: referencedBySubHeader,
-                                      references: referencedBy,
-                                      variant: .support)
-            }
-        }
-        .modifier(.parentView)
-    }
-}
-
 enum CarouselItemVariant {
     case suggestion
     case support
 }
 
-private struct SuggestionSectionView: View {
+struct SuggestionSectionView: View {
     let header: String
     let subHeader: String
     let references: [CardReference]
@@ -257,77 +140,75 @@ private struct SuggestedCardView: View {
     }
 }
 
-#Preview("Air Neos Suggestions") {
-    @Previewable @State var model = CardViewModel(cardID: "11502550")
-    
-    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
-                          suggestionsView: {
-        SuggestionsView(
-            subjectID: model.cardID,
-            subjectName: model.card?.cardName ?? "",
-            subjectType: .card,
-            areSuggestionsLoaded: model.areSuggestionsLoaded,
-            hasSuggestions: model.hasSuggestions(),
-            hasError: model.suggestionsError != nil,
-            namedMaterials: model.namedMaterials ?? [],
-            namedReferences: model.namedReferences ?? [],
-            referencedBy: model.referencedBy ?? [],
-            materialFor: model.materialFor ?? []
-        )
-        .task {
-            await model.fetchAllSuggestions()
-        }
-        .overlay {
-            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-                                  noSuggestionsFound: !model.hasSuggestions(),
-                                  networkError: model.suggestionsError,
-                                  action: {
-                Task {
-                    await model.fetchAllSuggestions(forceRefresh: true)
-                }
-            })
-        }
-    })
-    .task {
-        await model.fetchCardInfo()
-    }
-}
-
-#Preview("Dark Magician Girl Suggestions") {
-    @Previewable @State var model = CardViewModel(cardID: "38033121")
-    
-    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
-                          suggestionsView: {
-        SuggestionsView(
-            subjectID: model.cardID,
-            subjectName: model.card?.cardName ?? "",
-            subjectType: .card,
-            areSuggestionsLoaded: model.areSuggestionsLoaded,
-            hasSuggestions: model.hasSuggestions(),
-            hasError: model.suggestionsError != nil,
-            namedMaterials: model.namedMaterials ?? [],
-            namedReferences: model.namedReferences ?? [],
-            referencedBy: model.referencedBy ?? [],
-            materialFor: model.materialFor ?? []
-        )
-        .task {
-            await model.fetchAllSuggestions()
-        }
-        .overlay {
-            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-                                  noSuggestionsFound: !model.hasSuggestions(),
-                                  networkError: model.suggestionsError,
-                                  action: {
-                Task {
-                    await model.fetchAllSuggestions(forceRefresh: true)
-                }
-            })
-        }
-    })
-    .task {
-        await model.fetchCardInfo()
-    }
-}
+//#Preview("Air Neos Suggestions") {
+//    @Previewable @State var model = CardViewModel(cardID: "11502550")
+//    
+//    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
+//                          suggestionsView: {
+//        SuggestionsView(
+//            subjectName: model.card?.cardName ?? "",
+//            subjectType: .card,
+//            areSuggestionsLoaded: model.areSuggestionsLoaded,
+//            hasSuggestions: model.hasSuggestions(),
+//            hasError: model.suggestionsError != nil,
+//            namedMaterials: model.namedMaterials ?? [],
+//            namedReferences: model.namedReferences ?? [],
+//            referencedBy: model.referencedBy ?? [],
+//            materialFor: model.materialFor ?? []
+//        )
+//        .task {
+//            await model.fetchAllSuggestions()
+//        }
+//        .overlay {
+//            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+//                                  noSuggestionsFound: !model.hasSuggestions(),
+//                                  networkError: model.suggestionsError,
+//                                  action: {
+//                Task {
+//                    await model.fetchAllSuggestions(forceRefresh: true)
+//                }
+//            })
+//        }
+//    })
+//    .task {
+//        await model.fetchCardInfo()
+//    }
+//}
+//
+//#Preview("Dark Magician Girl Suggestions") {
+//    @Previewable @State var model = CardViewModel(cardID: "38033121")
+//    
+//    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
+//                          suggestionsView: {
+//        SuggestionsView(
+//            subjectName: model.card?.cardName ?? "",
+//            subjectType: .card,
+//            areSuggestionsLoaded: model.areSuggestionsLoaded,
+//            hasSuggestions: model.hasSuggestions(),
+//            hasError: model.suggestionsError != nil,
+//            namedMaterials: model.namedMaterials ?? [],
+//            namedReferences: model.namedReferences ?? [],
+//            referencedBy: model.referencedBy ?? [],
+//            materialFor: model.materialFor ?? []
+//        )
+//        .task {
+//            await model.fetchAllSuggestions()
+//        }
+//        .overlay {
+//            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+//                                  noSuggestionsFound: !model.hasSuggestions(),
+//                                  networkError: model.suggestionsError,
+//                                  action: {
+//                Task {
+//                    await model.fetchAllSuggestions(forceRefresh: true)
+//                }
+//            })
+//        }
+//    })
+//    .task {
+//        await model.fetchCardInfo()
+//    }
+//}
 
 #Preview {
     SuggestedCardView(

@@ -43,23 +43,29 @@ struct CardInfoView: View {
                 }
                 
                 if model.cardDTS == .done {
-                    LazyVStack {
-                        SuggestionsView(
-                            subjectID: model.cardID,
-                            subjectName: model.card?.cardName ?? "",
-                            subjectType: .card,
-                            areSuggestionsLoaded: model.areSuggestionsLoaded,
-                            hasSuggestions: model.hasSuggestions(),
-                            hasError: model.suggestionsError != nil,
-                            namedMaterials: model.namedMaterials ?? [],
-                            namedReferences: model.namedReferences ?? [],
-                            referencedBy: model.referencedBy ?? [],
-                            materialFor: model.materialFor ?? []
-                        )
-                        .equatable()
-                        .task {
-                            await model.fetchAllSuggestions()
-                        }
+                    LazyVStack(alignment: .leading, spacing: 25) {
+                        Label("Suggestions", systemImage: "sparkles")
+                            .font(.title)
+                            .task {
+                                await model.fetchAllSuggestions()
+                            }
+                        
+                        SuggestionSectionView(header: "Named Materials",
+                                              subHeader: "Cards that can be used as summoning material for **\(model.card?.cardName ?? "")**.",
+                                              references: model.namedMaterials ?? [],
+                                              variant: .suggestion)
+                        SuggestionSectionView(header: "Named References",
+                                              subHeader: "Cards found in the text of **\(model.card?.cardName ?? "")** but aren't explicitly listed as a summoning material.",
+                                              references: model.namedReferences ?? [],
+                                              variant: .suggestion)
+                        SuggestionSectionView(header: "Material For",
+                                              subHeader: "ED cards that can be summoned using **\(model.card?.cardName ?? "")** as material",
+                                              references: model.materialFor ?? [],
+                                              variant: .support)
+                        SuggestionSectionView(header: "Referenced By",
+                                              subHeader: "Cards that reference **\(model.card?.cardName ?? "")** excluding ED cards that reference **\(model.card?.cardName ?? "")** as a summoning material.",
+                                              references: model.referencedBy ?? [],
+                                              variant: .support)
                         
                         SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
                                               noSuggestionsFound: !model.hasSuggestions(),
@@ -71,6 +77,7 @@ struct CardInfoView: View {
                         })
                         .equatable()
                     }
+                    .modifier(.parentView)
                 }
             }
         }

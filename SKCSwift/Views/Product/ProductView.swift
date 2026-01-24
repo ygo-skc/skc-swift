@@ -26,41 +26,7 @@ struct ProductView: View {
                            product: model.product,
                            productDTS: model.productDTS,
                            productNE: model.productNE,
-                           retryCB: { await model.fetchProductData(forceRefresh: true) },
-                           suggestions: {
-            SuggestionsParentView(isScrollDisabled: model.suggestionsNE != nil
-                                  || model.suggestionsDTS != .done
-                                  || !model.hasSuggestions,
-                                  suggestionsView: {
-                SuggestionsView(
-                    subjectID: model.productID,
-                    subjectName: model.product?.productName ?? "",
-                    subjectType: .product,
-                    areSuggestionsLoaded: model.suggestionsDTS == .done,
-                    hasSuggestions: model.hasSuggestions,
-                    hasError: model.suggestionsNE != nil,
-                    namedMaterials: model.suggestions?.suggestions.namedMaterials ?? [],
-                    namedReferences: model.suggestions?.suggestions.namedReferences ?? [],
-                    referencedBy: model.suggestions?.support.referencedBy ?? [],
-                    materialFor: model.suggestions?.support.materialFor ?? []
-                )
-                .equatable()
-            })
-            .task {
-                await model.fetchProductSuggestions()
-            }
-            .overlay {
-                SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
-                                      noSuggestionsFound: !model.hasSuggestions,
-                                      networkError: model.suggestionsNE,
-                                      action: {
-                    Task {
-                        await model.fetchProductSuggestions(forceRefresh: true)
-                    }
-                })
-                .equatable()
-            }
-        })
+                           retryCB: { await model.fetchProductData(forceRefresh: true) })
         .navigationTitle(model.product?.productName ?? "")
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -74,65 +40,49 @@ struct ProductView: View {
         }
     }
     
-    private struct ProductDetailsView<Suggestions: View>: View {
+    private struct ProductDetailsView: View {
         let productID: String
         let product: Product?
         let productDTS: DataTaskStatus
         let productNE: NetworkError?
         let retryCB: () async -> Void
         
-        let suggestions: Suggestions
-        
         init(productID: String,
              product: Product?,
              productDTS: DataTaskStatus,
              productNE: NetworkError?,
-             retryCB: @escaping () async -> Void,
-             @ViewBuilder suggestions: () -> Suggestions) {
+             retryCB: @escaping () async -> Void) {
             self.productID = productID
             self.product = product
             self.productDTS = productDTS
             self.productNE = productNE
             self.retryCB = retryCB
-            self.suggestions = suggestions()
         }
         
         var body: some View {
-            TabView {
-                Tab("Info", systemImage: "info.circle.fill") {
-                    if productNE == nil {
-                        ScrollView {
-                            VStack{
-                                ProductStatsView(productID: productID, product: product)
-                                if let product = product, let productContents = product.productContent {
-                                    CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card! }), label: { ind in
-                                        Label("\(productID)-\(productContents[ind].productPosition)", systemImage: "number.circle.fill").font(.subheadline)
-                                    }) { ind in
-                                        FlowLayout(spacing: 6) {
-                                            ForEach(productContents[ind].rarities, id: \.self) { rarity in
-                                                Text(rarity.cardRarityShortHand())
-                                                    .modifier(TagModifier())
-                                            }
+                ScrollView {
+                    VStack{
+                        if productNE == nil {
+                            ProductStatsView(productID: productID, product: product)
+                            if let product = product, let productContents = product.productContent {
+                                CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card! }), label: { ind in
+                                    Label("\(productID)-\(productContents[ind].productPosition)", systemImage: "number.circle.fill").font(.subheadline)
+                                }) { ind in
+                                    FlowLayout(spacing: 6) {
+                                        ForEach(productContents[ind].rarities, id: \.self) { rarity in
+                                            Text(rarity.cardRarityShortHand())
+                                                .modifier(TagModifier())
                                         }
                                     }
                                 }
                             }
-                            .modifier(.centeredParentView)
-                            .padding(.bottom, 40)
                         }
-                        .scrollDisabled(productDTS != .done)
                     }
+                    .modifier(.centeredParentView)
+                    .padding(.bottom, 40)
                 }
-                
-                Tab("Suggestions", systemImage: "sparkles") {
-                    if productDTS == .done {
-                        suggestions
-                    }
-                }
-            }
+                .scrollDisabled(productDTS != .done)
             .frame(maxWidth:.infinity, maxHeight: .infinity)
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
             .overlay {
                 if DataTaskStatusParser.isDataPending(productDTS) {
                     ProgressView("Loading...")
