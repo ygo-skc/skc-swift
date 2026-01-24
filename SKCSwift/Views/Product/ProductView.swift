@@ -60,28 +60,29 @@ struct ProductView: View {
         }
         
         var body: some View {
-                ScrollView {
-                    VStack{
-                        if productNE == nil {
-                            ProductStatsView(productID: productID, product: product)
-                            if let product = product, let productContents = product.productContent {
-                                CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card! }), label: { ind in
-                                    Label("\(productID)-\(productContents[ind].productPosition)", systemImage: "number.circle.fill").font(.subheadline)
-                                }) { ind in
-                                    FlowLayout(spacing: 6) {
-                                        ForEach(productContents[ind].rarities, id: \.self) { rarity in
-                                            Text(rarity.cardRarityShortHand())
-                                                .modifier(TagModifier())
-                                        }
+            ScrollView {
+                VStack{
+                    if productNE == nil {
+                        ProductStatsView(productID: productID, product: product)
+                        if let product = product, let productContents = product.productContent {
+                            CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card!.withQualifier(qualifier: $0.productPosition) })
+                                         , label: { ind in
+                                Label("\(productID)-\(productContents[ind].productPosition)", systemImage: "number.circle.fill").font(.subheadline)
+                            }) { ind in
+                                FlowLayout(spacing: 6) {
+                                    ForEach(productContents[ind].rarities, id: \.self) { rarity in
+                                        Text(rarity.cardRarityShortHand())
+                                            .modifier(TagModifier())
                                     }
                                 }
                             }
                         }
                     }
-                    .modifier(.centeredParentView)
-                    .padding(.bottom, 40)
                 }
-                .scrollDisabled(productDTS != .done)
+                .modifier(.centeredParentView)
+                .padding(.bottom, 40)
+            }
+            .scrollDisabled(productDTS != .done)
             .frame(maxWidth:.infinity, maxHeight: .infinity)
             .overlay {
                 if DataTaskStatusParser.isDataPending(productDTS) {
