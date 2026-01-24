@@ -140,75 +140,69 @@ private struct SuggestedCardView: View {
     }
 }
 
-//#Preview("Air Neos Suggestions") {
-//    @Previewable @State var model = CardViewModel(cardID: "11502550")
-//    
-//    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
-//                          suggestionsView: {
-//        SuggestionsView(
-//            subjectName: model.card?.cardName ?? "",
-//            subjectType: .card,
-//            areSuggestionsLoaded: model.areSuggestionsLoaded,
-//            hasSuggestions: model.hasSuggestions(),
-//            hasError: model.suggestionsError != nil,
-//            namedMaterials: model.namedMaterials ?? [],
-//            namedReferences: model.namedReferences ?? [],
-//            referencedBy: model.referencedBy ?? [],
-//            materialFor: model.materialFor ?? []
-//        )
-//        .task {
-//            await model.fetchAllSuggestions()
-//        }
-//        .overlay {
-//            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-//                                  noSuggestionsFound: !model.hasSuggestions(),
-//                                  networkError: model.suggestionsError,
-//                                  action: {
-//                Task {
-//                    await model.fetchAllSuggestions(forceRefresh: true)
-//                }
-//            })
-//        }
-//    })
-//    .task {
-//        await model.fetchCardInfo()
-//    }
-//}
-//
-//#Preview("Dark Magician Girl Suggestions") {
-//    @Previewable @State var model = CardViewModel(cardID: "38033121")
-//    
-//    SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil || !model.areSuggestionsLoaded,
-//                          suggestionsView: {
-//        SuggestionsView(
-//            subjectName: model.card?.cardName ?? "",
-//            subjectType: .card,
-//            areSuggestionsLoaded: model.areSuggestionsLoaded,
-//            hasSuggestions: model.hasSuggestions(),
-//            hasError: model.suggestionsError != nil,
-//            namedMaterials: model.namedMaterials ?? [],
-//            namedReferences: model.namedReferences ?? [],
-//            referencedBy: model.referencedBy ?? [],
-//            materialFor: model.materialFor ?? []
-//        )
-//        .task {
-//            await model.fetchAllSuggestions()
-//        }
-//        .overlay {
-//            SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-//                                  noSuggestionsFound: !model.hasSuggestions(),
-//                                  networkError: model.suggestionsError,
-//                                  action: {
-//                Task {
-//                    await model.fetchAllSuggestions(forceRefresh: true)
-//                }
-//            })
-//        }
-//    })
-//    .task {
-//        await model.fetchCardInfo()
-//    }
-//}
+#Preview("Air Neos Suggestions") {
+    @Previewable @State var model = CardViewModel(cardID: "11502550")
+    
+    ScrollView {
+        VStack {
+            if model.supportDTS == .done && model.suggestionsDTS == .done, let cardName = model.card?.cardName {
+                SuggestionSectionView(header: "Named Materials",
+                                      subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
+                                      references: model.namedMaterials ?? [],
+                                      variant: .suggestion)
+                SuggestionSectionView(header: "Named References",
+                                      subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
+                                      references: model.namedReferences ?? [],
+                                      variant: .suggestion)
+                SuggestionSectionView(header: "Material For",
+                                      subHeader: "ED cards that can be summoned using **\(cardName)** as material",
+                                      references: model.materialFor ?? [],
+                                      variant: .support)
+                SuggestionSectionView(header: "Referenced By",
+                                      subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
+                                      references: model.referencedBy ?? [],
+                                      variant: .support)
+            }
+        }
+        .modifier(.parentView)
+        .task {
+            await model.fetchCardInfo()
+            await model.fetchAllSuggestions()
+        }
+    }
+}
+
+#Preview("Dark Magician Girl Suggestions") {
+    @Previewable @State var model = CardViewModel(cardID: "38033121")
+    
+    ScrollView {
+        VStack {
+            if model.supportDTS == .done && model.suggestionsDTS == .done, let cardName = model.card?.cardName {
+                SuggestionSectionView(header: "Named Materials",
+                                      subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
+                                      references: model.namedMaterials ?? [],
+                                      variant: .suggestion)
+                SuggestionSectionView(header: "Named References",
+                                      subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
+                                      references: model.namedReferences ?? [],
+                                      variant: .suggestion)
+                SuggestionSectionView(header: "Material For",
+                                      subHeader: "ED cards that can be summoned using **\(cardName)** as material",
+                                      references: model.materialFor ?? [],
+                                      variant: .support)
+                SuggestionSectionView(header: "Referenced By",
+                                      subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
+                                      references: model.referencedBy ?? [],
+                                      variant: .support)
+            }
+        }
+        .modifier(.parentView)
+        .task {
+            await model.fetchCardInfo()
+            await model.fetchAllSuggestions()
+        }
+    }
+}
 
 #Preview {
     SuggestedCardView(
