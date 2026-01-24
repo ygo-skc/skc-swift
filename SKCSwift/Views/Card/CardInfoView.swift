@@ -42,7 +42,7 @@ struct CardInfoView: View {
                     }
                 }
                 
-                if model.cardDTS == .done {
+                if model.cardDTS == .done, let cardName = model.card?.cardName {
                     LazyVStack(alignment: .leading, spacing: 25) {
                         Label("Suggestions", systemImage: "sparkles")
                             .font(.title)
@@ -50,22 +50,24 @@ struct CardInfoView: View {
                                 await model.fetchAllSuggestions()
                             }
                         
-                        SuggestionSectionView(header: "Named Materials",
-                                              subHeader: "Cards that can be used as summoning material for **\(model.card?.cardName ?? "")**.",
-                                              references: model.namedMaterials ?? [],
-                                              variant: .suggestion)
-                        SuggestionSectionView(header: "Named References",
-                                              subHeader: "Cards found in the text of **\(model.card?.cardName ?? "")** but aren't explicitly listed as a summoning material.",
-                                              references: model.namedReferences ?? [],
-                                              variant: .suggestion)
-                        SuggestionSectionView(header: "Material For",
-                                              subHeader: "ED cards that can be summoned using **\(model.card?.cardName ?? "")** as material",
-                                              references: model.materialFor ?? [],
-                                              variant: .support)
-                        SuggestionSectionView(header: "Referenced By",
-                                              subHeader: "Cards that reference **\(model.card?.cardName ?? "")** excluding ED cards that reference **\(model.card?.cardName ?? "")** as a summoning material.",
-                                              references: model.referencedBy ?? [],
-                                              variant: .support)
+                        if model.areSuggestionsLoaded && model.suggestionsError == nil {
+                            SuggestionSectionView(header: "Named Materials",
+                                                  subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
+                                                  references: model.namedMaterials ?? [],
+                                                  variant: .suggestion)
+                            SuggestionSectionView(header: "Named References",
+                                                  subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
+                                                  references: model.namedReferences ?? [],
+                                                  variant: .suggestion)
+                            SuggestionSectionView(header: "Material For",
+                                                  subHeader: "ED cards that can be summoned using **\(cardName)** as material",
+                                                  references: model.materialFor ?? [],
+                                                  variant: .support)
+                            SuggestionSectionView(header: "Referenced By",
+                                                  subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(model.card?.cardName ?? "")** as a summoning material.",
+                                                  references: model.referencedBy ?? [],
+                                                  variant: .support)
+                        }
                         
                         SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
                                               noSuggestionsFound: !model.hasSuggestions(),
@@ -115,6 +117,14 @@ struct CardInfoView: View {
 
 #Preview("Kluger")  {
     CardInfoView(cardID: "90307498")
+}
+
+#Preview("Air Neos")  {
+    CardInfoView(cardID: "11502550")
+}
+
+#Preview("No Suggestions")  {
+    CardInfoView(cardID: "61269611")
 }
 
 #Preview("Token")  {

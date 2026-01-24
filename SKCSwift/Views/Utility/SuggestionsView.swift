@@ -25,8 +25,11 @@ struct SuggestionOverlayView: View, Equatable {
         } else if areSuggestionsLoaded, noSuggestionsFound {
             ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
         } else if !areSuggestionsLoaded {
-            ProgressView("Loading...")
-                .controlSize(.large)
+            HStack {
+                ProgressView("Loading...")
+                    .controlSize(.large)
+            }
+            .frame(maxWidth: .infinity)
         }
     }
 }
