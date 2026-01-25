@@ -1,12 +1,12 @@
 //
-//  YGOCardArchetypesView.swift
+//  YGOArchetypesView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 12/11/25.
 //
 import SwiftUI
 
-struct YGOCardArchetypesView: View {
+struct YGOArchetypesView: View {
     let title: String
     let archetypes: Set<String>
     
@@ -37,7 +37,7 @@ struct YGOCardArchetypesView: View {
     }
 }
 
-struct YGOCardArchetypeView: View {
+struct YGOArchetypeView: View {
     @State private var model: ArchetypesViewModel
     
     init(archetype: String) {

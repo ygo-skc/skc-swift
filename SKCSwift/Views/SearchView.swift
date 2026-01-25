@@ -95,7 +95,7 @@ struct SearchView: View {
                                 .padding(.bottom)
                         }
                         
-                        YGOCardArchetypesView(title: "Suggested archetypes (BETA)",
+                        YGOArchetypesView(title: "Suggested archetypes (BETA)",
                                               archetypes: recentlyViewedArchetypeSuggestions)
                         .padding(.bottom)
                         
