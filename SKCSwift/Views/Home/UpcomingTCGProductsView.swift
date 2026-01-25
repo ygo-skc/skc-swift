@@ -68,7 +68,6 @@ struct UpcomingTCGProductsView: View, Equatable {
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         Text(LocalizedStringKey(event.notes))
-                            .lineLimit(7)
                             .font(.body)
                         
                         Divider()
