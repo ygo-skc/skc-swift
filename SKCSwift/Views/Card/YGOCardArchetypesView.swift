@@ -16,18 +16,23 @@ struct YGOCardArchetypesView: View {
                 .font(.headline)
                 .fontWeight(.medium)
             
-            ScrollView(.horizontal) {
-                HStack(spacing: 5) {
-                    ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
-                        NavigationLink(value: ArchetypeLinkDestinationValue(archetype: archetype), label: {
-                            Text(archetype)
-                        })
-                        .buttonStyle(.borderedProminent)
-                        .tint(.blueGray)
+            if archetypes.isEmpty {
+                Text("Nothing to suggested based on your recent browsing history…")
+                    .font(.subheadline)
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 5) {
+                        ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
+                            NavigationLink(value: ArchetypeLinkDestinationValue(archetype: archetype), label: {
+                                Text(archetype)
+                            })
+                            .buttonStyle(.borderedProminent)
+                            .tint(.blueGray)
+                        }
                     }
                 }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
         }
     }
 }
@@ -40,19 +45,24 @@ struct YGOCardArchetypeView: View {
     }
     
     var body: some View {
-        VStack {
-            ScrollView {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 40) {
                 if model.dataDTS == .done {
-                    CardListView(cards: model.data.usingName)
-                        .modifier(.parentView)
+                    Text("Cards tied the the archetype \"\(model.archetype)\" and how they are tied")
+                        .font(.subheadline)
+                        .padding(.bottom, -20)
+                    
+                    YGOArchetypeSectionView(category: .byName, cards: model.data.usingName)
+                    YGOArchetypeSectionView(category: .byText, cards: model.data.usingText)
+                    YGOArchetypeSectionView(category: .exclusions, cards: model.data.exclusions)
                 }
             }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .navigationTitle("Archetype Data")
-        .navigationBarTitleDisplayMode(.large)
-        .task {
-            await model.fetchArchetypeData()
+            .modifier(.parentView)
+            .navigationTitle(model.archetype)
+            .navigationBarTitleDisplayMode(.large)
+            .task {
+                await model.fetchArchetypeData()
+            }
         }
         .overlay {
             if model.dataDTS == .pending {
@@ -72,4 +82,50 @@ struct YGOCardArchetypeView: View {
             }
         }
     }
+    
+    private struct YGOArchetypeSectionView: View {
+        let category: YGOArchetypeCategory
+        let cards: [YGOCard]
+        
+        var body: some View {
+            if !cards.isEmpty {
+                VStack(alignment: .leading) {
+                    NavigationLink {
+                        YGOArchetypeCategoryView(category: category, cards: cards)
+                    } label: {
+                        HStack {
+                            Text(category.rawValue)
+                            Spacer()
+                            Image(systemName: "chevron.forward")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    CardListView(cards: Array(cards.prefix(5)))
+                }
+            }
+        }
+    }
+    
+    private struct YGOArchetypeCategoryView: View {
+        let category: YGOArchetypeCategory
+        let cards: [YGOCard]
+        
+        var body: some View {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    CardListView(cards: cards)
+                }
+                .modifier(.parentView)
+                .navigationTitle(category.rawValue)
+                .navigationBarTitleDisplayMode(.large)
+            }
+        }
+    }
+}
+
+private enum YGOArchetypeCategory: String {
+    case byName = "By Name", byText = "By Text", exclusions = "Exclusions"
 }
