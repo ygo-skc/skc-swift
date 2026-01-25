@@ -258,14 +258,14 @@ private struct ProductSuggestionsButton: View {
                 NavigationStack {
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 25) {
+                            Label {
+                                Text("Suggestions")
+                                    .font(.title)
+                            } icon: {
+                                ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
+                            }
+                            
                             if model.suggestionsDTS == .done && model.suggestionsNE == nil, let productName = model.product?.productName {
-                                Label {
-                                    Text("Suggestions")
-                                        .font(.title)
-                                } icon: {
-                                    ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
-                                }
-                                
                                 SuggestionSectionView(header: "Named Materials",
                                                       subHeader: "Cards that can be used as summoning material for a card included in **\(productName)**.",
                                                       references: model.suggestions?.suggestions.namedMaterials ?? [],
