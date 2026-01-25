@@ -7,7 +7,7 @@
 
 import Foundation
 
-nonisolated struct MonsterAssociation: Codable, Equatable {
+nonisolated struct MonsterAssociation: Codable, Equatable, Hashable {
     let level: UInt8?
     let rank: UInt8?
     let scaleRating: UInt8?
@@ -23,7 +23,7 @@ nonisolated struct MonsterAssociation: Codable, Equatable {
     }
 }
 
-nonisolated struct YGOCard: Codable, Equatable {
+nonisolated struct YGOCard: Codable, Equatable, Hashable {
     let cardID: String
     let cardName: String
     let cardColor: String
@@ -340,12 +340,18 @@ struct BatchSupport: Codable {
     let falsePositives: Set<String>
 }
 
-struct ArchetypeData: Codable {
+struct YGOArchetypeData: Codable {
     let usingName: [YGOCard]
     let usingText: [YGOCard]
     let exclusions: [YGOCard]
 }
 
-struct ArchetypeLinkDestinationValue: Hashable {
+struct YGOArchetypeLinkDestinationValue: Hashable {
     let archetype: String
+}
+
+struct YGOArchetypeCategoryLinkDestinationValue: Hashable {
+    let archetype: String
+    let category: YGOArchetypeCategory
+    let cards: [YGOCard]
 }

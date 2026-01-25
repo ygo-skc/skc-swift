@@ -23,7 +23,7 @@ struct YGOCardArchetypesView: View {
                 ScrollView(.horizontal) {
                     HStack(spacing: 5) {
                         ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
-                            NavigationLink(value: ArchetypeLinkDestinationValue(archetype: archetype), label: {
+                            NavigationLink(value: YGOArchetypeLinkDestinationValue(archetype: archetype), label: {
                                 Text(archetype)
                             })
                             .buttonStyle(.borderedProminent)
@@ -103,9 +103,7 @@ struct YGOCardArchetypeView: View {
         var body: some View {
             if !cards.isEmpty {
                 VStack(alignment: .leading) {
-                    NavigationLink {
-                        YGOArchetypeCategoryView(archetype: archetype, category: category, cards: cards)
-                    } label: {
+                    NavigationLink(value: YGOArchetypeCategoryLinkDestinationValue(archetype: archetype, category: category, cards: cards)) {
                         HStack {
                             Label("\(category.rawValue) • \(cards.count)", systemImage: categorySystemImage)
                                 .font(.headline)
@@ -117,43 +115,44 @@ struct YGOCardArchetypeView: View {
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    
                     CardListView(cards: Array(cards.prefix(5)))
                 }
             }
         }
     }
-    
-    private struct YGOArchetypeCategoryView: View {
-        let category: YGOArchetypeCategory
-        let categoryExplanation: String
-        let cards: [YGOCard]
-        
-        init(archetype: String, category: YGOArchetypeCategory, cards: [YGOCard]) {
-            self.category = category
-            self.categoryExplanation = switch (category) {
-            case .byName: "The cards below are part of the **\(archetype)** archetype because the archetype is found in the name of the card verbatim"
-            case .byText: "The cards below are part of the **\(archetype)** archetype because the text box explicitly denotes them as such"
-            case .exclusions: "The cards below are not part of the **\(archetype)** archetype because the text box explicitly excludes them"
-            }
-            self.cards = cards
-        }
-        
-        var body: some View {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    Label(LocalizedStringKey(categoryExplanation), systemImage: "info.circle")
-                        .font(.callout)
-                        .padding(.bottom)
-                    CardListView(cards: cards)
-                }
-                .modifier(.parentView)
-                .navigationTitle(category.rawValue)
-                .navigationBarTitleDisplayMode(.large)
-            }
-        }
-    }
 }
 
-private enum YGOArchetypeCategory: String {
+enum YGOArchetypeCategory: String {
     case byName = "By Name", byText = "By Text", exclusions = "Exclusions"
+}
+
+struct YGOArchetypeCategoryView: View {
+    let category: YGOArchetypeCategory
+    let categoryExplanation: String
+    let cards: [YGOCard]
+    
+    init(values: YGOArchetypeCategoryLinkDestinationValue) {
+        self.category = values.category
+        self.categoryExplanation = switch (values.category) {
+        case .byName: "The cards below are part of the **\(values.archetype)** archetype because the archetype is found in the name of the card verbatim"
+        case .byText: "The cards below are part of the **\(values.archetype)** archetype because the text box explicitly denotes them as such"
+        case .exclusions: "The cards below are not part of the **\(values.archetype)** archetype because the text box explicitly excludes them"
+        }
+        self.cards = values.cards
+    }
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading) {
+                Label(LocalizedStringKey(categoryExplanation), systemImage: "info.circle")
+                    .font(.callout)
+                    .padding(.bottom)
+                CardListView(cards: cards)
+            }
+            .modifier(.parentView)
+            .navigationTitle(category.rawValue)
+            .navigationBarTitleDisplayMode(.large)
+        }
+    }
 }

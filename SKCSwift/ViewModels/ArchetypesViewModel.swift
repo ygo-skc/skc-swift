@@ -21,7 +21,7 @@ final class ArchetypesViewModel {
     private(set) var dataNE: NetworkError?
     
     @ObservationIgnored
-    private(set) var data: ArchetypeData = .init(usingName: [], usingText: [], exclusions: [])
+    private(set) var data: YGOArchetypeData = .init(usingName: [], usingText: [], exclusions: [])
     
     @ObservationIgnored
     var hasContent: Bool {
@@ -31,7 +31,7 @@ final class ArchetypesViewModel {
     func fetchArchetypeData() async {
         if dataDTS == .done { return }
         (dataNE, dataDTS) = (nil, .pending)
-        let res = await SKCSwift.data(archetypeSuggestionsURL(archetype: archetype), resType: ArchetypeData.self)
+        let res = await SKCSwift.data(archetypeSuggestionsURL(archetype: archetype), resType: YGOArchetypeData.self)
         if case .success(let data) = res {
             self.data = data
         }
