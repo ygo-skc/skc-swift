@@ -48,8 +48,8 @@ struct YGOCardArchetypeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 40) {
                 if model.dataDTS == .done {
-                    Text("Cards tied the the archetype \"\(model.archetype)\" and how they are tied")
-                        .font(.subheadline)
+                    Text("Cards tied the the archetype **\(model.archetype)**")
+                        .font(.callout)
                         .padding(.bottom, -20)
                     
                     YGOArchetypeSectionView(category: .byName, cards: model.data.usingName)
@@ -85,7 +85,18 @@ struct YGOCardArchetypeView: View {
     
     private struct YGOArchetypeSectionView: View {
         let category: YGOArchetypeCategory
+        let categorySystemImage: String
         let cards: [YGOCard]
+        
+        init(category: YGOArchetypeCategory, cards: [YGOCard]) {
+            self.category = category
+            self.categorySystemImage = switch (category) {
+            case .byName: "person.crop.circle"
+            case .byText: "text.document"
+            case .exclusions: "xmark.circle"
+            }
+            self.cards = cards
+        }
         
         var body: some View {
             if !cards.isEmpty {
@@ -94,7 +105,8 @@ struct YGOCardArchetypeView: View {
                         YGOArchetypeCategoryView(category: category, cards: cards)
                     } label: {
                         HStack {
-                            Text(category.rawValue)
+                            Label("\(category.rawValue) • \(cards.count)", systemImage: categorySystemImage)
+                                .font(.headline)
                             Spacer()
                             Image(systemName: "chevron.forward")
                                 .font(.caption)
