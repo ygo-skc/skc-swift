@@ -26,50 +26,41 @@ struct ProductView: View {
                            product: model.product,
                            productDTS: model.productDTS,
                            productNE: model.productNE,
-                           retryCB: { await model.fetchProductData(forceRefresh: true) })
-        .navigationTitle(model.product?.productName ?? "")
-        .navigationBarTitleDisplayMode(.inline)
-        .task {
-            await model.fetchProductData()
-        }
-        .onChange(of: model.product) {
-            Task {
-                let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
-                newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
+                           retryCB: { await model.fetchProductData(forceRefresh: true) }) {
+            ProductStatsView(productID: model.productID) {
+                ProductTagsView(product: model.product)
+            } metrics: {
+                ProductMetricsButton(product: model.product)
+            } suggestions: {
+                ProductSuggestionsButton(model: model)
             }
         }
+                           .navigationTitle(model.product?.productName ?? "")
+                           .navigationBarTitleDisplayMode(.inline)
+                           .task {
+                               await model.fetchProductData()
+                           }
+                           .onChange(of: model.product) {
+                               Task {
+                                   let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
+                                   newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
+                               }
+                           }
     }
     
-    private struct ProductDetailsView: View {
+    private struct ProductDetailsView<Stats: View>: View {
         let productID: String
         let product: Product?
         let productDTS: DataTaskStatus
         let productNE: NetworkError?
         let retryCB: () async -> Void
-        
-        init(productID: String,
-             product: Product?,
-             productDTS: DataTaskStatus,
-             productNE: NetworkError?,
-             retryCB: @escaping () async -> Void) {
-            self.productID = productID
-            self.product = product
-            self.productDTS = productDTS
-            self.productNE = productNE
-            self.retryCB = retryCB
-        }
+        @ViewBuilder let stats: () -> Stats
         
         var body: some View {
             ScrollView {
                 VStack{
                     if productNE == nil {
-                        ProductStatsView(productID: productID) {
-                            ProductTagsView(product: product)
-                        } metrics: {
-                            ProductMetricsButton(product: product)
-                        } suggestions: {
-                            ProductSuggestionsButton(product: product)
-                        }
+                        stats()
                         
                         if let product = product, let productContents = product.productContent {
                             CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card!.withQualifier(qualifier: $0.productPosition) })
@@ -248,12 +239,12 @@ private struct ProductMetricsButton: View {
 }
 
 private struct ProductSuggestionsButton: View {
-    let product: Product?
+    let model: ProductViewModel
     
     @State private var toggle = false
     
     var body: some View {
-        if let product = product {
+        if let product = model.product {
             Button {
                 toggle = true
             } label: {
@@ -264,17 +255,56 @@ private struct ProductSuggestionsButton: View {
             .controlSize(.large)
             .padding(.bottom)
             .sheet(isPresented: $toggle, onDismiss: {toggle = false}) {
-                VStack {
-                    Label {
-                        Text("Suggestions")
-                            .font(.title)
-                    } icon: {
-                        ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
+                NavigationStack {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 25) {
+                            Label {
+                                Text("Suggestions")
+                                    .font(.title)
+                            } icon: {
+                                ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
+                            }
+                            .padding(.bottom)
+                            
+                            
+                            if model.suggestionsDTS == .done && model.suggestionsNE == nil, let productName = model.product?.productName {
+                                SuggestionSectionView(header: "Named Materials",
+                                                      subHeader: "Cards that can be used as summoning material for a card included in **\(productName)**.",
+                                                      references: model.suggestions?.suggestions.namedMaterials ?? [],
+                                                      variant: .suggestion)
+                                SuggestionSectionView(header: "Named References",
+                                                      subHeader: "Cards found in the text of a card included in **\(productName)** but aren't explicitly listed as a summoning material.",
+                                                      references: model.suggestions?.suggestions.namedReferences ?? [],
+                                                      variant: .suggestion)
+                                SuggestionSectionView(header: "Material For",
+                                                      subHeader: "ED cards that can be summoned using a card found in **\(productName)**.",
+                                                      references: model.suggestions?.support.materialFor ?? [],
+                                                      variant: .support)
+                                SuggestionSectionView(header: "Referenced By",
+                                                      subHeader: "Cards that reference a card found in **\(productName)** excluding ED cards that reference a card in this set as a summoning material.",
+                                                      references: model.suggestions?.support.referencedBy ?? [],
+                                                      variant: .support)
+                            }
+                        }
+                        .modifier(.parentView)
+                        .padding(.top)
+                        .overlay {
+                            SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
+                                                  noSuggestionsFound: !model.hasSuggestions,
+                                                  networkError: model.suggestionsNE,
+                                                  action: {
+                                Task {
+                                    await model.fetchProductSuggestions(forceRefresh: true)
+                                }
+                            })
+                            .equatable()
+                        }
+                        .task {
+                            await model.fetchProductSuggestions(forceRefresh: true)
+                        }
                     }
-                    .padding(.bottom)
+                    .ygoNavigationDestination()
                 }
-                .modifier(.parentView)
-                .padding(.top)
             }
         }
     }
