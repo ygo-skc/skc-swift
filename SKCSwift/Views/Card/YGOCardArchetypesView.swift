@@ -48,13 +48,13 @@ struct YGOCardArchetypeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 40) {
                 if model.dataDTS == .done {
-                    Text("Cards tied the the archetype **\(model.archetype)**")
+                    Text("Cards tied to the **\(model.archetype)** archetype")
                         .font(.callout)
                         .padding(.bottom, -20)
                     
-                    YGOArchetypeSectionView(category: .byName, cards: model.data.usingName)
-                    YGOArchetypeSectionView(category: .byText, cards: model.data.usingText)
-                    YGOArchetypeSectionView(category: .exclusions, cards: model.data.exclusions)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .byName, cards: model.data.usingName)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .byText, cards: model.data.usingText)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .exclusions, cards: model.data.exclusions)
                 }
             }
             .modifier(.parentView)
@@ -84,11 +84,13 @@ struct YGOCardArchetypeView: View {
     }
     
     private struct YGOArchetypeSectionView: View {
+        let archetype: String
         let category: YGOArchetypeCategory
         let categorySystemImage: String
         let cards: [YGOCard]
         
-        init(category: YGOArchetypeCategory, cards: [YGOCard]) {
+        init(archetype: String, category: YGOArchetypeCategory, cards: [YGOCard]) {
+            self.archetype = archetype
             self.category = category
             self.categorySystemImage = switch (category) {
             case .byName: "person.crop.circle"
@@ -102,7 +104,7 @@ struct YGOCardArchetypeView: View {
             if !cards.isEmpty {
                 VStack(alignment: .leading) {
                     NavigationLink {
-                        YGOArchetypeCategoryView(category: category, cards: cards)
+                        YGOArchetypeCategoryView(archetype: archetype, category: category, cards: cards)
                     } label: {
                         HStack {
                             Label("\(category.rawValue) • \(cards.count)", systemImage: categorySystemImage)
@@ -123,11 +125,25 @@ struct YGOCardArchetypeView: View {
     
     private struct YGOArchetypeCategoryView: View {
         let category: YGOArchetypeCategory
+        let categoryExplanation: String
         let cards: [YGOCard]
+        
+        init(archetype: String, category: YGOArchetypeCategory, cards: [YGOCard]) {
+            self.category = category
+            self.categoryExplanation = switch (category) {
+            case .byName: "The cards below are part of the **\(archetype)** archetype because the archetype is found in the name of the card verbatim"
+            case .byText: "The cards below are part of the **\(archetype)** archetype because the text box explicitly denotes them as such"
+            case .exclusions: "The cards below are not part of the **\(archetype)** archetype because the text box explicitly excludes them"
+            }
+            self.cards = cards
+        }
         
         var body: some View {
             ScrollView {
                 VStack(alignment: .leading) {
+                    Label(LocalizedStringKey(categoryExplanation), systemImage: "info.circle")
+                        .font(.callout)
+                        .padding(.bottom)
                     CardListView(cards: cards)
                 }
                 .modifier(.parentView)
