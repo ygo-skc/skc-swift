@@ -59,7 +59,7 @@ struct ProductView: View {
         var body: some View {
             ScrollView {
                 VStack{
-                    if productNE == nil {
+                    if productNE == nil && productDTS == .done {
                         stats()
                         
                         if let product = product, let productContents = product.productContent {
@@ -244,7 +244,7 @@ private struct ProductSuggestionsButton: View {
     @State private var toggle = false
     
     var body: some View {
-        if let product = model.product {
+        if let product = model.product, model.productDTS == .done {
             Button {
                 toggle = true
             } label: {
@@ -257,17 +257,15 @@ private struct ProductSuggestionsButton: View {
             .sheet(isPresented: $toggle, onDismiss: {toggle = false}) {
                 NavigationStack {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 25) {
-                            Label {
-                                Text("Suggestions")
-                                    .font(.title)
-                            } icon: {
-                                ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
-                            }
-                            .padding(.bottom)
-                            
-                            
+                        LazyVStack(alignment: .leading, spacing: 25) {
                             if model.suggestionsDTS == .done && model.suggestionsNE == nil, let productName = model.product?.productName {
+                                Label {
+                                    Text("Suggestions")
+                                        .font(.title)
+                                } icon: {
+                                    ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
+                                }
+                                
                                 SuggestionSectionView(header: "Named Materials",
                                                       subHeader: "Cards that can be used as summoning material for a card included in **\(productName)**.",
                                                       references: model.suggestions?.suggestions.namedMaterials ?? [],
@@ -288,20 +286,21 @@ private struct ProductSuggestionsButton: View {
                         }
                         .modifier(.parentView)
                         .padding(.top)
-                        .overlay {
-                            SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
-                                                  noSuggestionsFound: !model.hasSuggestions,
-                                                  networkError: model.suggestionsNE,
-                                                  action: {
-                                Task {
-                                    await model.fetchProductSuggestions(forceRefresh: true)
-                                }
-                            })
-                            .equatable()
-                        }
-                        .task {
-                            await model.fetchProductSuggestions(forceRefresh: true)
-                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .overlay {
+                        SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
+                                              noSuggestionsFound: !model.hasSuggestions,
+                                              networkError: model.suggestionsNE,
+                                              action: {
+                            Task {
+                                await model.fetchProductSuggestions(forceRefresh: true)
+                            }
+                        })
+                        .equatable()
+                    }
+                    .task {
+                        await model.fetchProductSuggestions(forceRefresh: true)
                     }
                     .ygoNavigationDestination()
                 }
