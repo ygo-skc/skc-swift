@@ -8,19 +8,10 @@
 import SwiftUI
 import SwiftData
 
-struct ProductLinkDestinationView: View {
-    let productLinkDestinationValue: ProductLinkDestinationValue
-    
-    var body: some View {
-        ProductView(productID: productLinkDestinationValue.productID)
-            .navigationBarTitleDisplayMode(.automatic)
-    }
-}
-
 struct ProductView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @State var model: ProductViewModel
+    @State private var model: ProductViewModel
     
     @Query
     private var productFromTable: [History]
@@ -35,93 +26,62 @@ struct ProductView: View {
                            product: model.product,
                            productDTS: model.productDTS,
                            productNE: model.productNE,
-                           retryCB: { await model.fetchProductData(forceRefresh: true) },
-                           suggestions: {
-            SuggestionsParentView(isScrollDisabled: model.suggestionsNE != nil
-                                  || model.suggestionsDTS != .done
-                                  || !model.hasSuggestions,
-                                  dataCB: { forceRefresh in
-                await model.fetchProductSuggestions(forceRefresh: true)
-            }, suggestionsView: {
-                SuggestionsView(
-                    subjectID: model.productID,
-                    subjectName: model.product?.productName ?? "",
-                    subjectType: .product,
-                    areSuggestionsLoaded: model.suggestionsDTS == .done,
-                    hasSuggestions: model.hasSuggestions,
-                    hasError: model.suggestionsNE != nil,
-                    namedMaterials: model.suggestions?.suggestions.namedMaterials ?? [],
-                    namedReferences: model.suggestions?.suggestions.namedReferences ?? [],
-                    referencedBy: model.suggestions?.support.referencedBy ?? [],
-                    materialFor: model.suggestions?.support.materialFor ?? []
-                )
-                .equatable()
-            }, overlayView: {
-                SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
-                                      noSuggestionsFound: !model.hasSuggestions,
-                                      networkError: model.suggestionsNE,
-                                      action: {
-                    Task {
-                        await model.fetchProductSuggestions(forceRefresh: true)
-                    }
-                })
-                .equatable()
-            })
-        })
-        .equatable()
-        .navigationTitle(model.product?.productName ?? "")
-        .navigationBarTitleDisplayMode(.inline)
-        .task {
-            await model.fetchProductData()
-        }
-        .onChange(of: model.product) {
-            Task {
-                let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
-                newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
+                           retryCB: { await model.fetchProductData(forceRefresh: true) }) {
+            ProductStatsView(productID: model.productID) {
+                ProductTagsView(product: model.product)
+            } metrics: {
+                ProductMetricsButton(product: model.product)
+            } suggestions: {
+                ProductSuggestionsButton(model: model)
             }
         }
+                           .navigationTitle(model.product?.productName ?? "")
+                           .navigationBarTitleDisplayMode(.inline)
+                           .task {
+                               await model.fetchProductData()
+                           }
+                           .onChange(of: model.product) {
+                               Task {
+                                   let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
+                                   newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
+                               }
+                           }
     }
     
-    private struct ProductDetailsView<Suggestions: View>: View, Equatable {
-        static func == (lhs: ProductView.ProductDetailsView<Suggestions>, rhs: ProductView.ProductDetailsView<Suggestions>) -> Bool {
-            lhs.productDTS == rhs.productDTS && lhs.productNE == rhs.productNE
-        }
-        
+    private struct ProductDetailsView<Stats: View>: View {
         let productID: String
         let product: Product?
         let productDTS: DataTaskStatus
         let productNE: NetworkError?
         let retryCB: () async -> Void
-        
-        @ViewBuilder let suggestions: () -> Suggestions
+        @ViewBuilder let stats: () -> Stats
         
         var body: some View {
-            TabView {
-                Tab("Info", systemImage: "info.circle.fill") {
-                    if productNE == nil {
-                        ScrollView {
-                            VStack{
-                                ProductStatsView(productID: productID, product: product)
-                                if let product = product, let productContents = product.productContent {
-                                    ProductContentView(productID: productID, contents: productContents)
+            ScrollView {
+                VStack{
+                    if productNE == nil && productDTS == .done {
+                        stats()
+                        
+                        if let product = product, let productContents = product.productContent {
+                            CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card!.withQualifier(qualifier: $0.productPosition) })
+                                         , label: { ind in
+                                Label("\(productID)-\(productContents[ind].productPosition)", systemImage: "number.circle.fill").font(.subheadline)
+                            }) { ind in
+                                FlowLayout(spacing: 6) {
+                                    ForEach(productContents[ind].rarities, id: \.self) { rarity in
+                                        Text(rarity.cardRarityShortHand())
+                                            .modifier(TagModifier())
+                                    }
                                 }
                             }
-                            .modifier(.centeredParentView)
-                            .padding(.bottom, 40)
                         }
-                        .scrollDisabled(productDTS != .done)
                     }
                 }
-                
-                Tab("Suggestions", systemImage: "sparkles") {
-                    if productDTS == .done {
-                        suggestions()
-                    }
-                }
+                .modifier(.centeredParentView)
+                .padding(.bottom, 40)
             }
+            .scrollDisabled(productDTS != .done)
             .frame(maxWidth:.infinity, maxHeight: .infinity)
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
             .overlay {
                 if DataTaskStatusParser.isDataPending(productDTS) {
                     ProgressView("Loading...")
@@ -135,48 +95,39 @@ struct ProductView: View {
                 }
             }
         }
-        
-        private struct ProductContentView: View {
-            let productID: String
-            let contents: [ProductContent]
+    }
+}
+
+private struct ProductTagsView: View {
+    let product: Product?
+    
+    var body: some View {
+        if let product = product {
+            InlineDateView(date: product.productReleaseDate)
+                .padding(.bottom, 3)
             
-            var body: some View {
-                LazyVStack {
-                    ForEach(contents) { content in
-                        if let card = content.card {
-                            NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
-                                GroupBox(label: Label("\(productID)-\(content.productPosition)", systemImage: "number.circle.fill").font(.subheadline)) {
-                                    CardListItemView(card: card, showAllInfo: true)
-                                        .equatable()
-                                    
-                                    FlowLayout(spacing: 6) {
-                                        ForEach(content.rarities, id: \.self) { rarity in
-                                            Text(rarity.cardRarityShortHand())
-                                                .modifier(TagModifier())
-                                        }
-                                    }
-                                }
-                                .groupBoxStyle(.listItem)
-                            })
-                            .buttonStyle(.plain)
-                        }
-                    }
+            FlowLayout(spacing: 10) {
+                Group {
+                    Label(product.productId, systemImage: "number")
+                    Label(product.productType, systemImage: "tag")
+                    Label(product.productSubType, systemImage: "tag")
+                    Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
                 }
-                .frame(maxWidth: .infinity)
+                .modifier(TagModifier(font: .caption))
             }
+            .padding(.bottom)
         }
     }
 }
 
-private struct ProductStatsView: View  {
-    let productID: String
+private struct ProductMetricsButton: View {
     let product: Product?
     
     @State private var chartData: ([ChartData], [ChartData], [ChartData], [ChartData])?
-    @State private var showStats = false
+    @State private var toggle = false
     
     @concurrent
-    nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
+    private nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
         return await Task.detached {
             let rarities = productContents.flatMap { $0.rarities }
             let cards = productContents.compactMap { $0.card }
@@ -217,52 +168,29 @@ private struct ProductStatsView: View  {
     }
     
     var body: some View {
-        HStack(alignment: .top) {
-            ProductImageView(width: 150, productID: productID, imgSize: .small)
-            
-            VStack(alignment: .leading) {
-                if let product = product, let productContents = product.productContent {
-                    InlineDateView(date: product.productReleaseDate)
-                        .padding(.bottom, 3)
-                    
-                    FlowLayout(spacing: 10) {
-                        Group {
-                            Label(product.productId, systemImage: "number")
-                            Label(product.productType, systemImage: "tag")
-                            Label(product.productSubType, systemImage: "tag")
-                            Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
-                        }
-                        .modifier(TagModifier(font: .caption))
+        if let product = product, let productContents = product.productContent {
+            Button {
+                toggle = true
+                if chartData == nil {
+                    Task {
+                        await chartData = productData(productContents: productContents)
                     }
-                    .padding(.bottom)
-                    
-                    Button {
-                        showStats = true
-                        if chartData == nil {
-                            Task {
-                                await chartData = productData(productContents: productContents)
-                            }
-                        }
-                    } label: {
-                        Label("Metrics", systemImage: "chart.bar.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-                    .sheet(isPresented: $showStats, onDismiss: {showStats = false}) {
-                        if let data = chartData {
-                            ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
-                        } else {
-                            ProgressView("Loading...")
-                                .controlSize(.large)
-                        }
-                    }
-                    .padding(.bottom)
+                }
+            } label: {
+                Label("Metrics", systemImage: "chart.bar.fill")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .sheet(isPresented: $toggle, onDismiss: {toggle = false}) {
+                if let data = chartData {
+                    ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
+                } else {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.bottom)
     }
     
     private struct ProductMetricsView: View {
@@ -282,7 +210,7 @@ private struct ProductStatsView: View  {
         
         var body: some View {
             ScrollView {
-                VStack {
+                VStack(alignment: .leading) {
                     Label {
                         Text("Metrics")
                             .font(.title)
@@ -304,9 +232,101 @@ private struct ProductStatsView: View  {
                         description: "Monster cards printed in **\(productName)** categorized by their attribute.",
                         dataTitle: "Monster Attribute", data: monsterAttributeData)
                 }
-                .modifier(.parentView)
+                .modifier(.sheetParentView)
             }
         }
+    }
+}
+
+private struct ProductSuggestionsButton: View {
+    let model: ProductViewModel
+    
+    @State private var toggle = false
+    
+    var body: some View {
+        if let product = model.product, model.productDTS == .done {
+            Button {
+                toggle = true
+            } label: {
+                Label("Suggestions", systemImage: "sparkles")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .padding(.bottom)
+            .sheet(isPresented: $toggle, onDismiss: {toggle = false}) {
+                NavigationStack {
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 25) {
+                            Label {
+                                Text("Suggestions")
+                                    .font(.title)
+                            } icon: {
+                                ProductImageView(width: 50, productID: product.productId, imgSize: .tiny)
+                            }
+                            
+                            if model.suggestionsDTS == .done && model.suggestionsNE == nil, let productName = model.product?.productName {
+                                SuggestionSectionView(header: "Named Materials",
+                                                      subHeader: "Cards that can be used as summoning material for a card included in **\(productName)**.",
+                                                      references: model.suggestions?.suggestions.namedMaterials ?? [],
+                                                      variant: .suggestion)
+                                SuggestionSectionView(header: "Named References",
+                                                      subHeader: "Cards found in the text of a card included in **\(productName)** but aren't explicitly listed as a summoning material.",
+                                                      references: model.suggestions?.suggestions.namedReferences ?? [],
+                                                      variant: .suggestion)
+                                SuggestionSectionView(header: "Material For",
+                                                      subHeader: "ED cards that can be summoned using a card found in **\(productName)**.",
+                                                      references: model.suggestions?.support.materialFor ?? [],
+                                                      variant: .support)
+                                SuggestionSectionView(header: "Referenced By",
+                                                      subHeader: "Cards that reference a card found in **\(productName)** excluding ED cards that reference a card in this set as a summoning material.",
+                                                      references: model.suggestions?.support.referencedBy ?? [],
+                                                      variant: .support)
+                            }
+                        }
+                        .modifier(.parentView)
+                        .padding(.top)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .overlay {
+                        SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
+                                              noSuggestionsFound: !model.hasSuggestions,
+                                              networkError: model.suggestionsNE,
+                                              action: {
+                            Task {
+                                await model.fetchProductSuggestions(forceRefresh: true)
+                            }
+                        })
+                        .equatable()
+                    }
+                    .task {
+                        await model.fetchProductSuggestions(forceRefresh: true)
+                    }
+                    .ygoNavigationDestination()
+                }
+            }
+        }
+    }
+}
+
+private struct ProductStatsView<Tags: View, Metrics: View, Suggestions: View>: View  {
+    let productID: String
+    @ViewBuilder let tags: () -> Tags
+    @ViewBuilder let metrics: () -> Metrics
+    @ViewBuilder let suggestions: () -> Suggestions
+    
+    var body: some View {
+        HStack(alignment: .top) {
+            ProductImageView(width: 150, productID: productID, imgSize: .small)
+            
+            VStack(alignment: .leading) {
+                tags()
+                metrics()
+                suggestions()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.bottom)
     }
 }
 

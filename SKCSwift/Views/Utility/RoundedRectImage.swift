@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
+import Kingfisher
 
 struct RoundedRectImage: View, Equatable {
     let width: CGFloat
@@ -15,21 +15,18 @@ struct RoundedRectImage: View, Equatable {
     var cornerRadius = 50.0
     
     var body: some View {
-        CachedAsyncImage(url: imageUrl, urlCache: URLCache.imageCache) { phase in
-            switch phase {
-            case .empty:
-                PlaceholderView(width: width, height: height, radius: cornerRadius)
-            case .success(let image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: width, height: height)
-                    .cornerRadius(cornerRadius)
-            default:
+        KFImage(imageUrl)
+            .backgroundDecode()
+            .placeholder {
                 PlaceholderView(width: width, height: height, radius: cornerRadius)
             }
-        }
-        .frame(width: width, height: height)
+            .onFailureView {
+                PlaceholderView(width: width, height: height, radius: cornerRadius)
+            }
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .cornerRadius(cornerRadius)
+            .frame(width: width, height: height)
     }
 }
 

@@ -8,6 +8,44 @@ import Foundation
 import YGOService
 import GRPCCore
 
+nonisolated struct YGOCardInfo: Codable, Equatable {
+    let cardID: String
+    let cardName: String
+    let cardColor: String
+    let cardAttribute: String?
+    let cardEffect: String
+    let monsterType: String?
+    let monsterAssociation: MonsterAssociation?
+    let monsterAttack: Int?
+    let monsterDefense: Int?
+    let restrictedIn: BanListsForCard?
+    let foundIn: [Product]?
+    
+    init(cardID: String,
+         cardName: String,
+         cardColor: String,
+         cardAttribute: String?,
+         cardEffect: String,
+         monsterType: String? = nil,
+         monsterAssociation: MonsterAssociation? = nil,
+         monsterAttack: Int? = nil,
+         monsterDefense: Int? = nil,
+         restrictedIn: BanListsForCard? = nil,
+         foundIn: [Product]? = nil) {
+        self.cardID = cardID
+        self.cardName = cardName
+        self.cardColor = cardColor
+        self.cardAttribute = cardAttribute
+        self.cardEffect = cardEffect
+        self.monsterType = monsterType
+        self.monsterAssociation = monsterAssociation
+        self.monsterAttack = monsterAttack
+        self.monsterDefense = monsterDefense
+        self.restrictedIn = restrictedIn
+        self.foundIn = foundIn
+    }
+}
+
 @Observable
 final class CardViewModel {
     @ObservationIgnored
@@ -33,7 +71,11 @@ final class CardViewModel {
     private(set) var supportNE: NetworkError?
     
     @ObservationIgnored
-    private(set) var card: Card?
+    private(set) var card: YGOCard?
+    @ObservationIgnored
+    private(set) var products: [Product]?
+    @ObservationIgnored
+    private(set) var restrictions: BanListsForCard?
     private(set) var score: CardScore?
     
     @ObservationIgnored
@@ -61,10 +103,20 @@ final class CardViewModel {
     
     private func fetchCardData(forceRefresh: Bool = false) async {
         if forceRefresh || card == nil {
-            cardDTS = .pending
-            let res = await data(cardInfoURL(cardID: cardID), resType: Card.self)
+            (cardNE, cardDTS) = (nil, .pending)
+            let res = await data(cardInfoURL(cardID: cardID), resType: YGOCardInfo.self)
             if case .success(let card) = res {
-                self.card = card
+                self.card = .init(cardID: card.cardID,
+                                  cardName: card.cardName,
+                                  cardColor: card.cardColor,
+                                  cardAttribute: card.cardAttribute,
+                                  cardEffect: card.cardEffect,
+                                  monsterType: card.monsterType,
+                                  monsterAssociation: card.monsterAssociation,
+                                  monsterAttack: card.monsterAttack,
+                                  monsterDefense: card.monsterDefense)
+                self.products = card.foundIn
+                self.restrictions = card.restrictedIn
             }
             (cardNE, cardDTS) = res.validate()
         }
@@ -91,7 +143,7 @@ final class CardViewModel {
     }
     
     private func fetchSuggestions() async {
-        suggestionsDTS = .pending
+        (suggestionsNE, suggestionsDTS) = (nil, .pending)
         let res = await data(cardSuggestionsURL(cardID: cardID), resType: CardSuggestions.self)
         if case .success(let suggestions) = res {
             namedMaterials = suggestions.namedMaterials
@@ -101,7 +153,7 @@ final class CardViewModel {
     }
     
     private func fetchSupport() async {
-        supportDTS = .pending
+        (supportNE, supportDTS) = (nil, .pending)
         let res = await data(cardSupportURL(cardID: cardID), resType: CardSupport.self)
         if case .success(let support) = res {
             referencedBy = support.referencedBy

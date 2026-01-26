@@ -20,11 +20,7 @@ struct TagModifier: ViewModifier {
         content
             .padding(.all, padding)
             .font(font)
-            .background(LinearGradient(
-                gradient: Gradient(colors: [Color.accentColor, Color.accentColor.opacity(0.8)]),
-                startPoint: .leading,
-                endPoint: .trailing
-            ))
+            .background(Color.accentColor)
             .foregroundColor(.white)
             .cornerRadius(padding)
             .lineLimit(1)

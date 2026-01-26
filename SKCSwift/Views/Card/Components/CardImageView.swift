@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
+import Kingfisher
 
 struct CardImageView: View, Equatable {
     private let length: CGFloat
@@ -32,33 +32,31 @@ struct CardImageView: View, Equatable {
     }
     
     var body: some View {
-        if cardID == Card.placeholder.cardID {
-            CardImageView.CARD_BACK_IMAGE
-                .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
+        if cardID == YGOCard.placeholder.cardID {
+            PlaceholderView(width: length, height: length, radius: radius)
         } else {
-            CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!,
-                             urlCache: URLCache.imageCache) { phase in
-                switch phase {
-                case .empty:
+            KFImage(URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!)
+                .backgroundDecode()
+                .placeholder {
                     PlaceholderView(width: length, height: length, radius: radius)
-                case .success(let image):
-                    image
-                        .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
-                default:
+                }
+                .onFailureView {
                     CardImageView.CARD_BACK_IMAGE
+                        .resizable()
+                        .aspectRatio(1.0, contentMode: .fit)
                         .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
                 }
-            }
-            .frame(width: length, height: length)
+                .resizable()
+                .aspectRatio(1.0, contentMode: .fit)
+                .cardImageViewModifier(length: length, radius: radius, cardColor: cardColor, colorOverLayWidth: colorOverLayWidth)
+                .frame(width: length, height: length)
         }
     }
 }
 
-private extension Image {
+private extension View {
     func cardImageViewModifier(length: CGFloat, radius: CGFloat, cardColor: String?, colorOverLayWidth: CGFloat) -> some View {
         self
-            .resizable()
-            .aspectRatio(1.0, contentMode: .fit)
             .clipped()
             .frame(width: length, height: length)
             .cornerRadius(radius)
@@ -83,5 +81,5 @@ private extension Image {
 }
 
 #Preview("Rounded Corner - IMG DNE") {
-    CardImageView(length: 240.0, cardID: "73146473", imgSize: .medium, variant: .roundedCorner)
+    CardImageView(length: 240.0, cardID: "1234", imgSize: .medium, variant: .roundedCorner)
 }

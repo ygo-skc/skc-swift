@@ -12,7 +12,7 @@
 		DE70C4BF2E9DF86D00C568A5 /* GRPCProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = DE70C4BE2E9DF86D00C568A5 /* GRPCProtobuf */; };
 		DE70C4C22E9DF87800C568A5 /* GRPCCore in Frameworks */ = {isa = PBXBuildFile; productRef = DE70C4C12E9DF87800C568A5 /* GRPCCore */; };
 		DE70C4C52E9DF88400C568A5 /* GRPCNIOTransportHTTP2 in Frameworks */ = {isa = PBXBuildFile; productRef = DE70C4C42E9DF88400C568A5 /* GRPCNIOTransportHTTP2 */; };
-		DEDE9F442C55AED7009E834C /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = DEDE9F432C55AED7009E834C /* CachedAsyncImage */; };
+		DEC4DB5B2EE9EF9800379086 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = DEC4DB5A2EE9EF9800379086 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEDE9F442C55AED7009E834C /* CachedAsyncImage in Frameworks */,
+				DEC4DB5B2EE9EF9800379086 /* Kingfisher in Frameworks */,
 				DE70C4BA2E9DF86100C568A5 /* libYGOService.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,7 +157,7 @@
 			);
 			name = SKCSwift;
 			packageProductDependencies = (
-				DEDE9F432C55AED7009E834C /* CachedAsyncImage */,
+				DEC4DB5A2EE9EF9800379086 /* Kingfisher */,
 			);
 			productName = SKCSwift;
 			productReference = DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */;
@@ -266,10 +266,10 @@
 			);
 			mainGroup = 1F8211DA2961FF0000238EE1;
 			packageReferences = (
-				DEDE9F422C55AED7009E834C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
 				DE70C4BD2E9DF86D00C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-protobuf" */,
 				DE70C4C02E9DF87800C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-2" */,
 				DE70C4C32E9DF88400C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-nio-transport" */,
+				DEC4DB592EE9EF9800379086 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 1F8211DA2961FF0000238EE1;
 			projectDirPath = "";
@@ -502,7 +502,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SKCSwift/SKCSwiftDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20251209.2248;
+				CURRENT_PROJECT_VERSION = 20260125.2319;
 				DEVELOPMENT_ASSET_PATHS = "\"SKCSwift/Preview Content\"";
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				ENABLE_PREVIEWS = YES;
@@ -520,7 +520,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.2.5;
+				MARKETING_VERSION = 2.3.0;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -554,7 +554,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SKCSwift/SKCSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20251209.2248;
+				CURRENT_PROJECT_VERSION = 20260125.2319;
 				DEVELOPMENT_ASSET_PATHS = "\"SKCSwift/Preview Content\"";
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				ENABLE_PREVIEWS = YES;
@@ -572,7 +572,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.2.5;
+				MARKETING_VERSION = 2.3.0;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -604,7 +604,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20251209.2248;
+				CURRENT_PROJECT_VERSION = 20260125.2319;
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -623,7 +623,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20251209.2248;
+				CURRENT_PROJECT_VERSION = 20260125.2319;
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -641,7 +641,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20251209.2248;
+				CURRENT_PROJECT_VERSION = 20260125.2319;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.SKCSwiftUITests;
@@ -657,7 +657,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20251209.2248;
+				CURRENT_PROJECT_VERSION = 20260125.2319;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.SKCSwiftUITests;
@@ -809,12 +809,12 @@
 				minimumVersion = 2.2.0;
 			};
 		};
-		DEDE9F422C55AED7009E834C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */ = {
+		DEC4DB592EE9EF9800379086 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-cached-async-image";
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.1;
+				minimumVersion = 8.6.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -835,10 +835,10 @@
 			package = DE70C4C32E9DF88400C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-nio-transport" */;
 			productName = GRPCNIOTransportHTTP2;
 		};
-		DEDE9F432C55AED7009E834C /* CachedAsyncImage */ = {
+		DEC4DB5A2EE9EF9800379086 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DEDE9F422C55AED7009E834C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
-			productName = CachedAsyncImage;
+			package = DEC4DB592EE9EF9800379086 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

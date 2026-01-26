@@ -13,9 +13,7 @@ struct TrendingView: View {
     
     var body: some View {
         ScrollView {
-            SectionView(header: "Trending",
-                        variant: .plain,
-                        content: {
+            VStack {
                 Picker("Select Trend Type", selection: $trendingModel.focusedTrend) {
                     ForEach(TrendingResourceType.allCases, id: \.self) { type in
                         Text(type.rawValue.capitalized).tag(type)
@@ -26,18 +24,22 @@ struct TrendingView: View {
                 if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
                     switch trendingModel.focusedTrend {
                     case .card:
-                        TrendingCardsView(path: $path, trendingCards: trendingModel.cards)
+                        CardListView(cards: trendingModel.cards.map({ $0.resource }), label: { ind in
+                            TrendChangeView(position: ind + 1,
+                                            trendChange: trendingModel.cards[ind].change,
+                                            hits: trendingModel.cards[ind].occurrences)
+                        })
                     case .product:
                         TrendingProductsView(path: $path, trendingProducts: trendingModel.products)
                     }
                 }
-            })
-            .modifier(.parentView)
-            .task {
-                await trendingModel.fetchTrendingData(forceRefresh: false)
             }
-            .dynamicTypeSize(...DynamicTypeSize.medium)
+            .modifier(.parentView)
         }
+        .task {
+            await trendingModel.fetchTrendingData(forceRefresh: false)
+        }
+        .dynamicTypeSize(...DynamicTypeSize.medium)
         .scrollDisabled(trendingModel.focusedTrendNE != nil)
         .frame(maxWidth: .infinity)
         .overlay {
@@ -50,29 +52,6 @@ struct TrendingView: View {
             } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
                 ProgressView("Loading...")
                     .controlSize(.large)
-            }
-        }
-    }
-    
-    private struct TrendingCardsView: View {
-        @Binding var path: NavigationPath
-        let trendingCards: [TrendingMetric<Card>]
-        
-        var body: some View {
-            VStack {
-                ForEach(Array(trendingCards.enumerated()), id: \.element.resource.cardID) { position, m in
-                    let card = m.resource
-                    Button {
-                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                    } label: {
-                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                            CardListItemView(card: card)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
-                }
             }
         }
     }

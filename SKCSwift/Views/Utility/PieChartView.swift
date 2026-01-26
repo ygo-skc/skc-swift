@@ -16,7 +16,7 @@ struct PieChartGroupView: View {
     var body: some View {
         GroupBox(label: Label(dataTitle, systemImage: "chart.pie.fill").foregroundColor(.accentColor).padding(.bottom, 4)) {
             Text(LocalizedStringKey(description))
-                .font(.headline)
+                .font(.subheadline)
                 .fontWeight(.regular)
                 .padding(.bottom)
             PieChartView(data: data, dataTitle: dataTitle)

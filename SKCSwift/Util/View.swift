@@ -10,10 +10,16 @@ import SwiftUI
 extension View {
     func ygoNavigationDestination() -> some View {
         self.navigationDestination(for: CardLinkDestinationValue.self) { card in
-            CardLinkDestinationView(cardLinkDestinationValue: card)
+            CardInfoView(cardID: card.cardID)
         }
         .navigationDestination(for: ProductLinkDestinationValue.self) { product in
-            ProductLinkDestinationView(productLinkDestinationValue: product)
+            ProductView(productID: product.productID)
+        }
+        .navigationDestination(for: YGOArchetypeLinkDestinationValue.self) { archetype in
+            YGOArchetypeView(archetype: archetype.archetype)
+        }
+        .navigationDestination(for: YGOArchetypeCategoryLinkDestinationValue.self) { values in
+            YGOArchetypeCategoryView(values: values)
         }
     }
     

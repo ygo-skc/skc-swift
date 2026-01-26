@@ -24,7 +24,7 @@ nonisolated struct CardScores: Codable, Equatable {
 }
 
 nonisolated struct CardScoreEntry: Codable, Equatable {
-    let card: Card
+    let card: YGOCard
     let score: UInt32
     
     nonisolated static func fromRPC(cardID: String,
@@ -36,14 +36,14 @@ nonisolated struct CardScoreEntry: Codable, Equatable {
                                     monsterAttack: Int? = nil,
                                     monsterDefense: Int? = nil,
                                     score: UInt32) -> Self {
-        return .init(card: Card(cardID: cardID,
-                                cardName: cardName,
-                                cardColor: cardColor,
-                                cardAttribute: cardAttribute,
-                                cardEffect: cardEffect,
-                                monsterType: monsterType,
-                                monsterAttack: monsterAttack,
-                                monsterDefense: monsterDefense),
+        return .init(card: YGOCard(cardID: cardID,
+                                   cardName: cardName,
+                                   cardColor: cardColor,
+                                   cardAttribute: cardAttribute,
+                                   cardEffect: cardEffect,
+                                   monsterType: monsterType,
+                                   monsterAttack: monsterAttack,
+                                   monsterDefense: monsterDefense),
                      score: score)
     }
 }

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
+import Kingfisher
 
 struct ProductImageView: View, Equatable {
     private let height: CGFloat
@@ -31,24 +31,20 @@ struct ProductImageView: View, Equatable {
     }
     
     var body: some View {
-        CachedAsyncImage(url: URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!,
-                         urlCache: URLCache.imageCache) { phase in
-            switch phase {
-            case .empty:
+        KFImage(URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!)
+            .backgroundDecode()
+            .placeholder {
                 PlaceholderView(width: width, height: height, radius: 0)
-            case .success(let image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: width, height: height)
-            default:
+            }
+            .onFailureView {
                 Image(.unknownProduct)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: width, height: height)
             }
-        }
-        .frame(width: width, height: height)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: width, height: height)
     }
 }
 

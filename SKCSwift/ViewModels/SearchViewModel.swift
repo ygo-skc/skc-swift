@@ -38,7 +38,7 @@ final class SearchViewModel {
             dataTaskStatus = .done
         } else {
             searchTask = Task {
-                dataTaskStatus = .pending
+                (requestError, dataTaskStatus) = (nil, .pending)
                 slowSearchDispatch = DispatchWorkItem { [weak self] in
                     self?.isSearchSlow = true
                 }
@@ -72,9 +72,9 @@ final class SearchViewModel {
     }
     
     @concurrent
-    nonisolated private func search(subject: String) async -> ([Card], NetworkError?, DataTaskStatus) {
-        let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [Card].self)
-        var cards: [Card] = []
+    nonisolated private func search(subject: String) async -> ([YGOCard], NetworkError?, DataTaskStatus) {
+        let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [YGOCard].self)
+        var cards: [YGOCard] = []
         if case let .success(results) = res {
             cards = results
         }
@@ -83,12 +83,12 @@ final class SearchViewModel {
     }
     
     @concurrent
-    nonisolated private func partitionResults(newSearchResults newResults: [Card],
+    nonisolated private func partitionResults(newSearchResults newResults: [YGOCard],
                                   previousSearchResultsCardIDs: Set<String>) async -> ([SearchResults]?, Set<String>) {
         var sections: [String] = []
         var cardIDs: Set<String> = []
         
-        let newResultsByCardID = newResults.reduce(into: [String: [Card]]()) { results, card in
+        let newResultsByCardID = newResults.reduce(into: [String: [YGOCard]]()) { results, card in
             let section = card.cardColor
             results[section, default: []].append(card)
             if !sections.contains(section) {

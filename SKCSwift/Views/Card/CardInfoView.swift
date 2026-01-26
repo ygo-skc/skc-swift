@@ -9,16 +9,7 @@ import SwiftUI
 import SwiftData
 import YGOService
 
-struct CardLinkDestinationView: View {
-    let cardLinkDestinationValue: CardLinkDestinationValue
-    
-    var body: some View {
-        CardInfoView(cardID: cardLinkDestinationValue.cardID)
-            .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-private struct CardInfoView: View {
+struct CardInfoView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var model: CardViewModel
@@ -32,47 +23,70 @@ private struct CardInfoView: View {
     }
     
     var body: some View {
-        CardDetailsView(cardID: model.cardID,
-                        card: model.card,
-                        score: model.score,
-                        cardDTS: model.cardDTS,
-                        cardNE: model.cardNE,
-                        retryCB: { await model.fetchCardInfo(forceRefresh: true) },
-                        suggestions: {
-            SuggestionsParentView(isScrollDisabled: model.suggestionsError != nil
-                                  || !model.areSuggestionsLoaded
-                                  || !model.hasSuggestions(),
-                                  dataCB: { forceRefresh in
-                await model.fetchAllSuggestions(forceRefresh: forceRefresh)
-            }, suggestionsView: {
-                SuggestionsView(
-                    subjectID: model.cardID,
-                    subjectName: model.card?.cardName ?? "",
-                    subjectType: .card,
-                    areSuggestionsLoaded: model.areSuggestionsLoaded,
-                    hasSuggestions: model.hasSuggestions(),
-                    hasError: model.suggestionsError != nil,
-                    namedMaterials: model.namedMaterials ?? [],
-                    namedReferences: model.namedReferences ?? [],
-                    referencedBy: model.referencedBy ?? [],
-                    materialFor: model.materialFor ?? []
-                )
-                .equatable()
-            }, overlayView: {
-                SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-                                      noSuggestionsFound: !model.hasSuggestions(),
-                                      networkError: model.suggestionsError,
-                                      action: {
-                    Task {
-                        await model.fetchAllSuggestions(forceRefresh: true)
+        ScrollView {
+            VStack(spacing: 30) {
+                if model.cardDTS != .error {
+                    VStack(spacing: 30) {
+                        YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
+                            .equatable()
+                        
+                        if let card = model.card, let products = model.products {
+                            CardReleasesView(card: card, products: products)
+                                .modifier(.parentView)
+                            CardRestrictionsView(card: card,
+                                                 tcgBanList: model.restrictions?.TCG ?? [],
+                                                 mdBanLists: model.restrictions?.MD ?? [],
+                                                 score: model.score)
+                            .modifier(.parentView)
+                        }
                     }
-                })
-                .equatable()
-            })
-        })
-        .equatable()
-        .navigationTitle(model.card?.cardName ?? "Loading…")
+                }
+                
+                if model.cardDTS == .done, let cardName = model.card?.cardName {
+                    LazyVStack(alignment: .leading, spacing: 25) {
+                        Label("Suggestions", systemImage: "sparkles")
+                            .font(.title)
+                            .task {
+                                await model.fetchAllSuggestions()
+                            }
+                        
+                        if model.areSuggestionsLoaded && model.suggestionsError == nil {
+                            SuggestionSectionView(header: "Named Materials",
+                                                  subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
+                                                  references: model.namedMaterials ?? [],
+                                                  variant: .suggestion)
+                            SuggestionSectionView(header: "Named References",
+                                                  subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
+                                                  references: model.namedReferences ?? [],
+                                                  variant: .suggestion)
+                            SuggestionSectionView(header: "Material For",
+                                                  subHeader: "ED cards that can be summoned using **\(cardName)** as material",
+                                                  references: model.materialFor ?? [],
+                                                  variant: .support)
+                            SuggestionSectionView(header: "Referenced By",
+                                                  subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(model.card?.cardName ?? "")** as a summoning material.",
+                                                  references: model.referencedBy ?? [],
+                                                  variant: .support)
+                        }
+                        
+                        SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                                              noSuggestionsFound: !model.hasSuggestions(),
+                                              networkError: model.suggestionsError,
+                                              action: {
+                            Task {
+                                await model.fetchAllSuggestions(forceRefresh: true)
+                            }
+                        })
+                        .equatable()
+                    }
+                    .modifier(.parentView)
+                }
+            }
+        }
         .frame(maxWidth:.infinity, maxHeight: .infinity)
+        .scrollDisabled(model.cardDTS == .error)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(model.card?.cardName ?? "Loading…")
         .task {
             await model.fetchCardInfo()
         }
@@ -82,71 +96,19 @@ private struct CardInfoView: View {
                 newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
             }
         }
-    }
-    
-    private struct CardDetailsView<Suggestions: View>: View, Equatable {
-        static func == (lhs: CardInfoView.CardDetailsView<Suggestions>, rhs: CardInfoView.CardDetailsView<Suggestions>) -> Bool {
-            lhs.cardDTS == rhs.cardDTS && lhs.cardNE == rhs.cardNE && lhs.score == rhs.score
-        }
-        
-        let cardID: String
-        let card: Card?
-        let score: CardScore?
-        let cardDTS: DataTaskStatus
-        let cardNE: NetworkError?
-        let retryCB: () async -> Void
-        @ViewBuilder let suggestions: () -> Suggestions
-        
-        var body: some View {
-            GeometryReader { reader in
-                let width = reader.size.width
-                TabView {
-                    Tab("Info", systemImage: "info.circle.fill") {
-                        if cardNE == nil {
-                            ScrollView {
-                                YGOCardView(cardID: cardID, card: card, width: width)
-                                    .equatable()
-                                    .padding(.bottom)
-                                
-                                if let card = card {
-                                    CardReleasesView(card: card)
-                                        .modifier(.parentView)
-                                    
-                                    CardRestrictionsView(card: card, score: score)
-                                        .modifier(.parentView)
-                                        .padding(.bottom, 50)
-                                } else {
-                                    ProgressView("Loading...")
-                                        .controlSize(.large)
-                                }
-                            }
-                            .disabled(cardDTS != .done)
+        .overlay {
+            if let networkError = model.cardNE {
+                switch networkError {
+                case .badRequest, .unprocessableEntity:
+                    ContentUnavailableView("Card not currently supported",
+                                           systemImage: "exclamationmark.square.fill",
+                                           description: Text("Please check back later"))
+                default:
+                    NetworkErrorView(error: networkError, action: {
+                        Task {
+                            await model.fetchCardInfo(forceRefresh: true)
                         }
-                    }
-                    
-                    Tab("Suggestions", systemImage: "sparkles") {
-                        if cardDTS == .done {
-                            suggestions()
-                        }
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
-                .overlay {
-                    if let networkError = cardNE {
-                        switch networkError {
-                        case .badRequest, .unprocessableEntity:
-                            ContentUnavailableView("Card not currently supported",
-                                                   systemImage: "exclamationmark.square.fill",
-                                                   description: Text("Please check back later"))
-                        default:
-                            NetworkErrorView(error: networkError, action: {
-                                Task {
-                                    await retryCB()
-                                }
-                            })
-                        }
-                    }
+                    })
                 }
             }
         }
@@ -155,6 +117,14 @@ private struct CardInfoView: View {
 
 #Preview("Kluger")  {
     CardInfoView(cardID: "90307498")
+}
+
+#Preview("Air Neos")  {
+    CardInfoView(cardID: "11502550")
+}
+
+#Preview("No Suggestions")  {
+    CardInfoView(cardID: "61269611")
 }
 
 #Preview("Token")  {

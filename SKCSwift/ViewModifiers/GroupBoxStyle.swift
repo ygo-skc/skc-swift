@@ -10,8 +10,6 @@ import SwiftUI
 fileprivate struct GroupBoxStyleConstants {
     static let CORNER_RADIUS: CGFloat = 12
     static let PADDING: CGFloat = 10
-    
-    static let BORDER_COLOR: Color = Color(UIColor.systemGray5).opacity(0.9)
 }
 
 struct ListItemGroupBoxStyle: GroupBoxStyle {
@@ -23,13 +21,7 @@ struct ListItemGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING)
-        .background(Color(UIColor.systemBackground).mix(with: .white, by: 0.27), in: RoundedRectangle(cornerRadius: 12))
-        .clipped()
-        .shadow(color: Color(UIColor.systemGray5), radius: 2, x: 0, y: 2)
-        .overlay(
-            RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS)
-                .stroke(GroupBoxStyleConstants.BORDER_COLOR, lineWidth: 1)
-        )
+        .modifier(.card)
     }
 }
 
@@ -40,12 +32,7 @@ struct SectionContentGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
-        .clipped()
-        .overlay(
-            RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS)
-                .stroke(GroupBoxStyleConstants.BORDER_COLOR, lineWidth: 1)
-        )
+        .modifier(.cardNoShadow)
     }
 }
 
@@ -74,7 +61,7 @@ struct FiltersSubGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING / 2)
-        .background(.thickMaterial, in: RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: GroupBoxStyleConstants.CORNER_RADIUS))
     }
 }
 

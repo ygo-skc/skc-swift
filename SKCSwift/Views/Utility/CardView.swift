@@ -22,14 +22,7 @@ struct CardView<Content: View>: View {
                 .frame(alignment: .topLeading)
         }
         .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(colorScheme == .dark ? .white.opacity(0.4) : .black.opacity(0.2), lineWidth: 1)
-        )
+        .modifier(.card)
         .frame(maxWidth: 200, alignment: .topLeading)
     }
 }

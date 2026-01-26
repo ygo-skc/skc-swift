@@ -8,9 +8,53 @@
 import SwiftUI
 
 
-struct CardListItemView: View, Equatable {
-    let card: Card
+struct CardListView<Label: View, Info: View>: View, Equatable {
+    static func == (lhs: CardListView, rhs: CardListView) -> Bool {
+        lhs.showAllInfo == rhs.showAllInfo && lhs.cards == rhs.cards
+    }
+    
+    let cards: [YGOCard]
     let showAllInfo: Bool
+    @ViewBuilder let label: (Int) -> Label
+    @ViewBuilder let info: (Int) -> Info
+    
+    init(cards: [YGOCard],
+         showAllInfo: Bool = false,
+         @ViewBuilder label: @escaping (Int) -> Label = { _ in EmptyView() },
+         @ViewBuilder info: @escaping (Int) -> Info = { _ in EmptyView() }) {
+        self.cards = cards
+        self.showAllInfo = showAllInfo
+        self.label = label
+        self.info = info
+    }
+    
+    var body: some View {
+        LazyVStack(alignment: .leading, spacing: 10) {
+            ForEach(Array(cards.enumerated()), id: \.element.id) { ind, card in
+                NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
+                    GroupBox(label: label(ind)) {
+                        CardListItemView(card: card, showAllInfo: showAllInfo)
+                            .equatable()
+                        info(ind)
+                    }
+                    .groupBoxStyle(.listItem)
+                })
+                .buttonStyle(.plain)
+            }
+        }
+        .ignoresSafeArea(.keyboard)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct CardListItemView: View, Equatable {
+    let card: YGOCard
+    let showAllInfo: Bool
+    
+    init(card: YGOCard, showAllInfo: Bool = false) {
+        self.card = card
+        self.showAllInfo = showAllInfo
+    }
     
     var body: some View {
         HStack(alignment: .top, spacing: 15) {
@@ -22,35 +66,8 @@ struct CardListItemView: View, Equatable {
                     .fontWeight(.bold)
                     .lineLimit(1)
                 
-                HStack {
-                    Text(card.monsterType ?? card.cardColor)
-                        .font(.subheadline)
-                        .fontWeight(.light)
-                        .lineLimit(1)
-                    
-                    Spacer()
-                    
-                    if !card.isGod {
-                        Text(card.cardID)
-                            .font(.caption)
-                            .fontWeight(.thin)
-                    }
-                }
-                
-                HStack {
-                    CardColorIndicatorView(cardColor: card.cardColor, variant: .regular)
-                        .equatable()
-                    if showAllInfo {
-                        MonsterAssociationView(monsterAssociation: card.monsterAssociation,
-                                               attribute: card.attribute,
-                                               variant: .listView,
-                                               iconVariant: .regular)
-                        .equatable()
-                    } else {
-                        AttributeView(attribute: card.attribute, variant: .regular)
-                            .equatable()
-                    }
-                }
+                ListItemSecondRow(cardID: card.cardID, cardColor: card.cardColor, monsterType: card.cardType, isCardAGod: card.isGod)
+                ListItemThirdRow(cardColor: card.cardColor, attribute: card.attribute, monsterAssociation: card.monsterAssociation, showAllInfo: showAllInfo)
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
@@ -59,14 +76,56 @@ struct CardListItemView: View, Equatable {
     }
 }
 
-extension CardListItemView {
-    init(card: Card) {
-        self.init(card: card, showAllInfo: false)
+private struct ListItemSecondRow: View {
+    let cardID: String
+    let cardColor: String
+    let monsterType: String?
+    let isCardAGod: Bool
+    
+    var body: some View {
+        HStack {
+            Text(monsterType ?? cardColor)
+                .font(.subheadline)
+                .fontWeight(.light)
+                .lineLimit(1)
+            
+            Spacer()
+            
+            if !isCardAGod {
+                Text(cardID)
+                    .font(.caption)
+                    .fontWeight(.thin)
+            }
+        }
+    }
+}
+
+private struct ListItemThirdRow: View {
+    let cardColor: String
+    let attribute: Attribute
+    let monsterAssociation: MonsterAssociation?
+    let showAllInfo: Bool
+    
+    var body: some View {
+        HStack {
+            CardColorIndicatorView(cardColor: cardColor, variant: .regular)
+                .equatable()
+            if showAllInfo {
+                MonsterAssociationView(monsterAssociation: monsterAssociation,
+                                       attribute: attribute,
+                                       variant: .listView,
+                                       iconVariant: .regular)
+                .equatable()
+            } else {
+                AttributeView(attribute: attribute, variant: .regular)
+                    .equatable()
+            }
+        }
     }
 }
 
 #Preview("Card Search Result") {
-    CardListItemView(card: Card(
+    CardListItemView(card: YGOCard(
         cardID: "40044918",
         cardName: "Elemental HERO Stratos",
         cardColor: "Effect",
@@ -77,7 +136,7 @@ extension CardListItemView {
 }
 
 #Preview("Card Search Result - IMG DNE") {
-    CardListItemView(card: Card(
+    CardListItemView(card: YGOCard(
         cardID: "40044918",
         cardName: "Elemental HERO Stratos",
         cardColor: "Effect",

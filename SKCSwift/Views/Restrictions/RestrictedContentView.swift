@@ -15,8 +15,7 @@ struct RestrictedContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
-                RestrictedCardsView(path: $path,
-                                    format: model.format,
+                RestrictedCardsView(format: model.format,
                                     restrictedCards: model.restrictedCards,
                                     scoreEntries: model.scoreEntries,
                                     timelineDTS: model.timelineDTS,
@@ -27,6 +26,15 @@ struct RestrictedContentView: View {
                                     contentCB: { await model.fetchRestrictedCards() }
                 )
                 .equatable()
+                .navigationTitle("Restrictions")
+                .modify {
+                    if #available(iOS 26.0, *) {
+                        $0.navigationSubtitle("\(model.format.rawValue) format")
+                    } else {
+                        $0
+                    }
+                }
+                .navigationBarTitleDisplayMode(.large)
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: mainSheetContentHeight)
                 }
@@ -70,10 +78,8 @@ private struct RestrictedCardsView: View, Equatable {
         && lhs.restrictedCards == rhs.restrictedCards
     }
     
-    @Binding var path: NavigationPath
-    
     let format: CardRestrictionFormat
-    let restrictedCards: [Card]
+    let restrictedCards: [YGOCard]
     let scoreEntries: [CardScoreEntry]
     
     let timelineDTS: DataTaskStatus
@@ -88,22 +94,20 @@ private struct RestrictedCardsView: View, Equatable {
     var body: some View {
         ScrollView {
             if timelineDTS == .done && (contentDTS == .done && contentDTS != .error) {
-                SectionView(header: "\(format.rawValue) Content",
-                            variant: .plain,
-                            content: {
+                VStack {
                     switch format {
                     case .md, .tcg:
-                        BannedContentView(path: $path, content: restrictedCards)
+                        CardListView(cards: restrictedCards)
                     case .genesys:
-                        CardScoresView(path: $path, content: scoreEntries)
+                        CardListView(cards: scoreEntries.map({ $0.card }), label: { ind in
+                            Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
+                        })
                     }
-                    
-                })
+                }
                 .modifier(.parentView)
-                .padding(.bottom, 0)
-                .ygoNavigationDestination()
             }
         }
+        .ygoNavigationDestination()
         .frame(maxWidth: .infinity)
         .scrollDisabled(DataTaskStatusParser.isDataPending(timelineDTS)
                         || DataTaskStatusParser.isDataPending(contentDTS)
@@ -129,57 +133,10 @@ private struct RestrictedCardsView: View, Equatable {
             }
         }
     }
-    
-    private struct BannedContentView: View {
-        @Binding var path: NavigationPath
-        let content: [Card]
-        
-        var body: some View {
-            LazyVStack {
-                ForEach(content, id: \.self.cardID) { card in
-                    Button {
-                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                    } label: {
-                        GroupBox {
-                            CardListItemView(card: card)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-        }
-    }
-    
-    private struct CardScoresView: View {
-        @Binding var path: NavigationPath
-        let content: [CardScoreEntry]
-        
-        var body: some View {
-            LazyVStack {
-                ForEach(content, id: \.self.card.cardID) { entry in
-                    let card = entry.card
-                    Button {
-                        path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                    } label: {
-                        GroupBox(label: Label("\(entry.score) points", systemImage: "medal.star.fill")) {
-                            CardListItemView(card: card)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-        }
-    }
 }
 
 #Preview("Timeline pending") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .pending,
@@ -191,9 +148,7 @@ private struct RestrictedCardsView: View, Equatable {
 }
 
 #Preview("Timeline content pending") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .done,
@@ -205,9 +160,7 @@ private struct RestrictedCardsView: View, Equatable {
 }
 
 #Preview("Timeline error") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .error,
@@ -219,9 +172,7 @@ private struct RestrictedCardsView: View, Equatable {
 }
 
 #Preview("Content error") {
-    @Previewable @State var path = NavigationPath()
-    RestrictedCardsView(path: $path,
-                        format: .md,
+    RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
                         timelineDTS: .done,

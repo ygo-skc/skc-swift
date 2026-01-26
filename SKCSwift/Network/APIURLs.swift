@@ -29,6 +29,7 @@ nonisolated struct RequestHelper {
     fileprivate static let SKC_SUGGESTION_ENGINE_BATCH_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support"
     fileprivate static let SKC_SUGGESTION_ENGINE_CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
     fileprivate static let SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support/%@"
+    fileprivate static let SKC_SUGGESTION_ENGINE_ARCHETYPE_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/archetype/%@"
     fileprivate static let SKC_SUGGESTION_ENGINE_PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
     fileprivate static let SKC_SUGGESTION_ENGINE_CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
     fileprivate static let SKC_SUGGESTION_ENGINE_TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
@@ -192,6 +193,14 @@ func cardSupportURL(cardID: String) -> URL {
     let components = baseURLComponents(
         host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
         path: RequestHelper.SKC_SUGGESTION_ENGINE_CARD_SUPPORT_ENDPOINT.description.replacingOccurrences(of: "%@", with: cardID),
+    )
+    return createURL(components: components)
+}
+
+func archetypeSuggestionsURL(archetype: String) -> URL {
+    let components = baseURLComponents(
+        host: RequestHelper.SKC_SUGGESTION_ENGINE_BASE_URL.description,
+        path: RequestHelper.SKC_SUGGESTION_ENGINE_ARCHETYPE_SUGGESTIONS_ENDPOINT.description.replacingOccurrences(of: "%@", with: archetype),
     )
     return createURL(components: components)
 }

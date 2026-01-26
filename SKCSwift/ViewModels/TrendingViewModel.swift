@@ -12,7 +12,7 @@ final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
     
     @ObservationIgnored
-    private(set) var cards: [TrendingMetric<Card>] = []
+    private(set) var cards: [TrendingMetric<YGOCard>] = []
     @ObservationIgnored
     private(set) var products: [TrendingMetric<Product>] = []
     
@@ -47,8 +47,8 @@ final class TrendingViewModel {
     }
     
     private func fetchTrendingCards(forceRefresh: Bool = false) async {
-        trendingCardsDTS = .pending
-        let res = await data(trendingUrl(resource: .card), resType: Trending<Card>.self)
+        (trendingCardsNE, trendingCardsDTS) = (nil, .pending)
+        let res = await data(trendingUrl(resource: .card), resType: Trending<YGOCard>.self)
         if case .success(let data) = res {
             cards = data.metrics
         }
@@ -56,7 +56,7 @@ final class TrendingViewModel {
     }
     
     private func fetchTrendingProducts(forceRefresh: Bool = false) async {
-        trendingProductsDTS = .pending
+        (trendingProductsNE, trendingProductsDTS) = (nil, .pending)
         let res = await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
         if case .success(let data) = res {
             products = data.metrics

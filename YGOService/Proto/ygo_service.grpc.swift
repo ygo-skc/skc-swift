@@ -16,13 +16,13 @@ import SwiftProtobuf
 
 /// Namespace containing generated types for the "ygo.CardService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-internal enum Ygo_CardService {
+internal enum Ygo_CardService: Sendable {
     /// Service descriptor for the "ygo.CardService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService")
     /// Namespace for method metadata.
-    internal enum Method {
+    internal enum Method: Sendable {
         /// Namespace for "GetCardColors" metadata.
-        internal enum GetCardColors {
+        internal enum GetCardColors: Sendable {
             /// Request type for "GetCardColors".
             internal typealias Input = SwiftProtobuf.Google_Protobuf_Empty
             /// Response type for "GetCardColors".
@@ -34,7 +34,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetCardByID" metadata.
-        internal enum GetCardByID {
+        internal enum GetCardByID: Sendable {
             /// Request type for "GetCardByID".
             internal typealias Input = Ygo_Common_ResourceID
             /// Response type for "GetCardByID".
@@ -46,7 +46,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetCardsByID" metadata.
-        internal enum GetCardsByID {
+        internal enum GetCardsByID: Sendable {
             /// Request type for "GetCardsByID".
             internal typealias Input = Ygo_Common_ResourceIDs
             /// Response type for "GetCardsByID".
@@ -58,7 +58,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetCardsByName" metadata.
-        internal enum GetCardsByName {
+        internal enum GetCardsByName: Sendable {
             /// Request type for "GetCardsByName".
             internal typealias Input = Ygo_Common_ResourceNames
             /// Response type for "GetCardsByName".
@@ -70,7 +70,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetCardsReferencingNameInEffect" metadata.
-        internal enum GetCardsReferencingNameInEffect {
+        internal enum GetCardsReferencingNameInEffect: Sendable {
             /// Request type for "GetCardsReferencingNameInEffect".
             internal typealias Input = Ygo_Common_ResourceNames
             /// Response type for "GetCardsReferencingNameInEffect".
@@ -82,7 +82,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetArchetypalCardsUsingCardName" metadata.
-        internal enum GetArchetypalCardsUsingCardName {
+        internal enum GetArchetypalCardsUsingCardName: Sendable {
             /// Request type for "GetArchetypalCardsUsingCardName".
             internal typealias Input = Ygo_Common_Archetype
             /// Response type for "GetArchetypalCardsUsingCardName".
@@ -94,7 +94,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetExplicitArchetypalInclusions" metadata.
-        internal enum GetExplicitArchetypalInclusions {
+        internal enum GetExplicitArchetypalInclusions: Sendable {
             /// Request type for "GetExplicitArchetypalInclusions".
             internal typealias Input = Ygo_Common_Archetype
             /// Response type for "GetExplicitArchetypalInclusions".
@@ -106,7 +106,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetExplicitArchetypalExclusions" metadata.
-        internal enum GetExplicitArchetypalExclusions {
+        internal enum GetExplicitArchetypalExclusions: Sendable {
             /// Request type for "GetExplicitArchetypalExclusions".
             internal typealias Input = Ygo_Common_Archetype
             /// Response type for "GetExplicitArchetypalExclusions".
@@ -118,7 +118,7 @@ internal enum Ygo_CardService {
             )
         }
         /// Namespace for "GetRandomCard" metadata.
-        internal enum GetRandomCard {
+        internal enum GetRandomCard: Sendable {
             /// Request type for "GetRandomCard".
             internal typealias Input = Ygo_Common_BlackListed
             /// Response type for "GetRandomCard".
@@ -1117,13 +1117,13 @@ extension Ygo_CardService.ClientProtocol {
 
 /// Namespace containing generated types for the "ygo.ProductService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-internal enum Ygo_ProductService {
+internal enum Ygo_ProductService: Sendable {
     /// Service descriptor for the "ygo.ProductService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService")
     /// Namespace for method metadata.
-    internal enum Method {
+    internal enum Method: Sendable {
         /// Namespace for "GetCardsByProductID" metadata.
-        internal enum GetCardsByProductID {
+        internal enum GetCardsByProductID: Sendable {
             /// Request type for "GetCardsByProductID".
             internal typealias Input = Ygo_Common_ResourceID
             /// Response type for "GetCardsByProductID".
@@ -1135,7 +1135,7 @@ internal enum Ygo_ProductService {
             )
         }
         /// Namespace for "GetProductSummaryByID" metadata.
-        internal enum GetProductSummaryByID {
+        internal enum GetProductSummaryByID: Sendable {
             /// Request type for "GetProductSummaryByID".
             internal typealias Input = Ygo_Common_ResourceID
             /// Response type for "GetProductSummaryByID".
@@ -1147,7 +1147,7 @@ internal enum Ygo_ProductService {
             )
         }
         /// Namespace for "GetProductsSummaryByID" metadata.
-        internal enum GetProductsSummaryByID {
+        internal enum GetProductsSummaryByID: Sendable {
             /// Request type for "GetProductsSummaryByID".
             internal typealias Input = Ygo_Common_ResourceIDs
             /// Response type for "GetProductsSummaryByID".
@@ -1522,13 +1522,13 @@ extension Ygo_ProductService.ClientProtocol {
 
 /// Namespace containing generated types for the "ygo.CardRestrictionService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-internal enum Ygo_CardRestrictionService {
+internal enum Ygo_CardRestrictionService: Sendable {
     /// Service descriptor for the "ygo.CardRestrictionService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardRestrictionService")
     /// Namespace for method metadata.
-    internal enum Method {
+    internal enum Method: Sendable {
         /// Namespace for "GetEffectiveTimelineForFormat" metadata.
-        internal enum GetEffectiveTimelineForFormat {
+        internal enum GetEffectiveTimelineForFormat: Sendable {
             /// Request type for "GetEffectiveTimelineForFormat".
             internal typealias Input = Ygo_Format
             /// Response type for "GetEffectiveTimelineForFormat".
@@ -1695,13 +1695,13 @@ extension Ygo_CardRestrictionService.ClientProtocol {
 
 /// Namespace containing generated types for the "ygo.ScoreService" service.
 @available(macOS 15.0, iOS 18.0, watchOS 11.0, tvOS 18.0, visionOS 2.0, *)
-internal enum Ygo_ScoreService {
+internal enum Ygo_ScoreService: Sendable {
     /// Service descriptor for the "ygo.ScoreService" service.
     internal static let descriptor = GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService")
     /// Namespace for method metadata.
-    internal enum Method {
+    internal enum Method: Sendable {
         /// Namespace for "GetScoresByFormatAndDate" metadata.
-        internal enum GetScoresByFormatAndDate {
+        internal enum GetScoresByFormatAndDate: Sendable {
             /// Request type for "GetScoresByFormatAndDate".
             internal typealias Input = Ygo_RestrictedContentRequest
             /// Response type for "GetScoresByFormatAndDate".
@@ -1713,7 +1713,7 @@ internal enum Ygo_ScoreService {
             )
         }
         /// Namespace for "GetCardScoreByID" metadata.
-        internal enum GetCardScoreByID {
+        internal enum GetCardScoreByID: Sendable {
             /// Request type for "GetCardScoreByID".
             internal typealias Input = Ygo_Common_ResourceID
             /// Response type for "GetCardScoreByID".
@@ -1725,7 +1725,7 @@ internal enum Ygo_ScoreService {
             )
         }
         /// Namespace for "GetCardScoresByIDs" metadata.
-        internal enum GetCardScoresByIDs {
+        internal enum GetCardScoresByIDs: Sendable {
             /// Request type for "GetCardScoresByIDs".
             internal typealias Input = Ygo_Common_ResourceIDs
             /// Response type for "GetCardScoresByIDs".

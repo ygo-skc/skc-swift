@@ -9,18 +9,24 @@ import SwiftUI
 
 struct SegmentedView<MainContent: View, SheetContent: View>: View {
     @Binding var mainSheetContentHeight: CGFloat
-    @ViewBuilder var mainContent: () -> MainContent
-    @ViewBuilder var sheetContent: () -> SheetContent
+    let mainContent: MainContent
+    let sheetContent: SheetContent
+    
+    init(mainSheetContentHeight: Binding<CGFloat>,
+         @ViewBuilder mainContent: () -> MainContent,
+         @ViewBuilder sheetContent: () -> SheetContent) {
+        self._mainSheetContentHeight = mainSheetContentHeight
+        self.mainContent = mainContent()
+        self.sheetContent = sheetContent()
+    }
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
             GeometryReader { reader in
                 let frame = reader.frame(in: .global)
-                
-                mainContent()
-                
+                mainContent
                 BottomSheet(frame: frame, mainSheetContentHeight: $mainSheetContentHeight) {
-                    sheetContent()
+                    sheetContent
                 }
             }
         }

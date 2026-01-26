@@ -23,10 +23,10 @@ struct SearchView: View {
                 case .done where searchModel.searchText.isEmpty,
                         .pending where searchModel.searchText.isEmpty:
                     if searchModel.isSearching {
-                        RecentlyViewedView(path: $path,
-                                           history: history,
+                        RecentlyViewedView(history: history,
                                            recentlyViewedCardDetails: recentlyViewedModel.recentlyViewedCardDetails,
                                            recentlyViewedSuggestions: recentlyViewedModel.recentlyViewedSuggestions,
+                                           recentlyViewedArchetypeSuggestions: recentlyViewedModel.recentlyViewedArchetypeSuggestions,
                                            dataTaskStatus: recentlyViewedModel.dataTaskStatus,
                                            requestError: recentlyViewedModel.requestError,
                                            loadDataCB: { await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history) })
@@ -50,7 +50,7 @@ struct SearchView: View {
             .ignoresSafeArea(.keyboard)
             .ygoNavigationDestination()
             .navigationTitle("Search & Trending")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
                 Task {
                     await searchModel.searchDB(oldValue: oldValue, newValue: newValue)
@@ -73,10 +73,10 @@ struct SearchView: View {
             && lhs.recentlyViewedCardDetails == rhs.recentlyViewedCardDetails
         }
         
-        @Binding var path: NavigationPath
         let history: [History]
-        let recentlyViewedCardDetails: [Card]
+        let recentlyViewedCardDetails: [YGOCard]
         let recentlyViewedSuggestions: [CardReference]
+        let recentlyViewedArchetypeSuggestions: Set<String>
         let dataTaskStatus: DataTaskStatus
         let requestError: NetworkError?
         let loadDataCB: () async -> Void
@@ -84,37 +84,28 @@ struct SearchView: View {
         var body: some View {
             ScrollView {
                 if !recentlyViewedCardDetails.isEmpty {
-                    SectionView(header: "History",
-                                variant: .plain,
-                                content: {
-                        LazyVStack(alignment: .leading) {
-                            if !recentlyViewedSuggestions.isEmpty {
-                                Label("Personalized suggestions", systemImage: "sparkles")
-                                    .font(.headline)
-                                    .fontWeight(.medium)
-                                SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
-                                    .padding(.bottom)
-                            }
-                            
-                            
-                            Label("Recently viewed", systemImage: "clock.arrow.circlepath")
+                    LazyVStack(alignment: .leading) {
+                        Text("History")
+                            .modifier(.headerText)
+                        if !recentlyViewedSuggestions.isEmpty {
+                            Label("Personalized suggestions", systemImage: "sparkles")
                                 .font(.headline)
                                 .fontWeight(.medium)
-                            
-                            ForEach(recentlyViewedCardDetails, id: \.cardID) { card in
-                                Button {
-                                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                                } label: {
-                                    GroupBox() {
-                                        CardListItemView(card: card)
-                                            .equatable()
-                                    }
-                                    .groupBoxStyle(.listItem)
-                                }
-                                .buttonStyle(.plain)
-                            }
+                            SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
+                                .padding(.bottom)
                         }
-                    })
+                        
+                        YGOArchetypesView(title: "Suggested archetypes (BETA)",
+                                              archetypes: recentlyViewedArchetypeSuggestions)
+                        .padding(.bottom)
+                        
+                        Label("Recently viewed", systemImage: "clock.arrow.circlepath")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                        
+                        CardListView(cards: recentlyViewedCardDetails)
+                            .equatable()
+                    }
                     .modifier(.parentView)
                 }
             }

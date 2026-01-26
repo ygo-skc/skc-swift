@@ -12,7 +12,7 @@ final class CardBrowseViewModel {
     var showFilters = false
     var filters = CardFilters()
     
-    private(set) var cards: [Card] = []
+    private(set) var cards: [YGOCard] = []
     
     private(set) var criteriaError: NetworkError?
     private(set) var criteriaStatus = DataTaskStatus.pending
@@ -71,7 +71,7 @@ final class CardBrowseViewModel {
     }
     
     @concurrent
-    private func fetchCards(filters: CardFilters) async -> ([Card], NetworkError?) {
+    private func fetchCards(filters: CardFilters) async -> ([YGOCard], NetworkError?) {
         let (attributes, colors, monsterTypes, levels, ranks, linkRatings) = await determineToggledFilters(filters)
         switch await data(cardBrowseURL(attributes: attributes, colors: colors, monsterTypes: monsterTypes,
                                         levels: levels, ranks: ranks, linkRatings: linkRatings), resType: CardBrowseResults.self) {

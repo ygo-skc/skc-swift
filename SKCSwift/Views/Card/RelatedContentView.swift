@@ -21,12 +21,12 @@ struct CardReleasesView: View {
     private let latestReleaseHeader: String?
     private let latestReleaseSubHeader: String?
     
-    init(card: Card) {
+    init(card: YGOCard, products: [Product]) {
         self.cardID = card.cardID
         self.cardName = card.cardName
         self.cardColor = card.cardColor
-        self.products = card.products
-        self.rarityDistribution = card.getRarityDistribution()
+        self.products = products
+        self.rarityDistribution = products.rarityDistribution()
         
         if !products.isEmpty {
             if products.count > 1 {
@@ -44,7 +44,7 @@ struct CardReleasesView: View {
             
             let elapsedDays = products.last!.productReleaseDate.timeIntervalSinceNow()
             if elapsedDays < 0 {
-                initialReleaseHeader = "\(elapsedDays.decimal) day(s)"
+                initialReleaseHeader = "\(abs(elapsedDays).decimal) day(s)"
                 initialReleaseSubHeader = "From card debuts"
             } else {
                 initialReleaseHeader = "\(elapsedDays.decimal) day(s)"
@@ -59,72 +59,65 @@ struct CardReleasesView: View {
     }
     
     var body: some View {
-        SectionView(header: "Releases",
-                    variant: .plain,
-                    content: {
-            VStack(alignment: .leading) {
-                if !products.isEmpty {
-                    Label("Rarities", systemImage: "star.square.on.square")
-                        .font(.headline)
-                    Text("All unique rarities \(cardName) was printed in")
-                        .font(.callout)
-                    OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
-                        .padding(.bottom)
-                }
-                
-                Label("Products", systemImage: "cart")
+        VStack(alignment: .leading) {
+            Text("Releases")
+                .modifier(.headerText)
+            if !products.isEmpty {
+                Label("Rarities", systemImage: "star.square.on.square")
                     .font(.headline)
-                    .padding(.bottom, 4)
-                if !products.isEmpty {
-                    RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
-                        RelatedContentsView(header: "Products",
-                                            subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
-                            LazyVStack {
-                                ForEach(products, id: \.id) { product in
-                                    GroupBox {
-                                        ProductListItemView(product: product)
-                                            .equatable()
-                                    }
-                                    .groupBoxStyle(.listItem)
+                Text("All unique rarities \(cardName) was printed in")
+                    .font(.callout)
+                OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
+                    .padding(.bottom)
+            }
+            
+            Label("Products", systemImage: "cart")
+                .font(.headline)
+                .padding(.bottom, 4)
+            if !products.isEmpty {
+                RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
+                    RelatedContentsView(header: "Products",
+                                        subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
+                        LazyVStack {
+                            ForEach(products, id: \.id) { product in
+                                GroupBox {
+                                    ProductListItemView(product: product)
+                                        .equatable()
                                 }
+                                .groupBoxStyle(.listItem)
                             }
                         }
                     }
-                    .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
                 }
-                
-                ScrollView(.horizontal) {
-                    HStack(spacing: 10) {
+                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
+            }
+            
+            ScrollView(.horizontal) {
+                HStack(spacing: 10) {
+                    CardView {
+                        Group {
+                            Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
+                                .font(.title3)
+                            Text(initialReleaseSubHeader)
+                                .font(.subheadline)
+                        }
+                    }
+                    if let latestReleaseHeader, let latestReleaseSubHeader {
                         CardView {
                             Group {
-                                Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
+                                Label(latestReleaseHeader, systemImage: "calendar")
                                     .font(.title3)
-                                Text(initialReleaseSubHeader)
+                                Text(latestReleaseSubHeader)
                                     .font(.subheadline)
-                            }
-                            .padding(.bottom, 2)
-                        }
-                        if let latestReleaseHeader, let latestReleaseSubHeader {
-                            CardView {
-                                Group {
-                                    Label(latestReleaseHeader, systemImage: "calendar")
-                                        .font(.title3)
-                                    Text(latestReleaseSubHeader)
-                                        .font(.subheadline)
-                                }
-                                .padding(.bottom, 2)
                             }
                         }
                     }
-                    .padding(.top)
-                    .padding(.bottom, 1)
-                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, -16)
-                .scrollIndicators(.hidden)
+                .padding(.bottom, 10)
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
-        })
+            .scrollIndicators(.hidden)
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 
@@ -137,60 +130,58 @@ struct CardRestrictionsView: View {
     let tcgBanLists: [BanList]
     let mdBanLists: [BanList]
     
-    init(card: Card, score: CardScore?) {
+    init(card: YGOCard, tcgBanList: [BanList], mdBanLists: [BanList], score: CardScore?) {
         self.cardID = card.cardID
         self.cardName = card.cardName
         self.cardColor = card.cardColor
         self.score = score
-        self.tcgBanLists = card.getBanList(format: .tcg)
-        self.mdBanLists =  card.getBanList(format: .md)
+        self.tcgBanLists = tcgBanList
+        self.mdBanLists =  mdBanLists
     }
     
     var body: some View {
-        SectionView(header: "Restrictions",
-                    variant: .plain,
-                    content: {
-            VStack(alignment: .leading) {
-                if let score {
-                    Label("Summary", systemImage: "list.bullet.rectangle")
-                        .font(.headline)
-                        .padding(.bottom, 4)
-                    ForEach(score.uniqueFormats, id: \.self) { format in
-                        if let cardScore = score.currentScoreByFormat[format] {
-                            CardView {
-                                Group {
-                                    Label("\(cardScore) points", systemImage: "medal.star.fill")
-                                        .font(.title3)
-                                        .padding(.bottom, 2)
-                                    Text("\(format) format")
-                                        .font(.subheadline)
-                                        .padding(.bottom, 2)
-                                }
+        VStack(alignment: .leading) {
+            Text("Restrictions")
+                .modifier(.headerText)
+            if let score {
+                Label("Summary", systemImage: "list.bullet.rectangle")
+                    .font(.headline)
+                    .padding(.bottom, 4)
+                ForEach(score.uniqueFormats, id: \.self) { format in
+                    if let cardScore = score.currentScoreByFormat[format] {
+                        CardView {
+                            Group {
+                                Label("\(cardScore) points", systemImage: "medal.star.fill")
+                                    .font(.title3)
+                                    .padding(.bottom, 2)
+                                Text("\(format) format")
+                                    .font(.subheadline)
+                                    .padding(.bottom, 2)
                             }
                         }
                     }
                 }
-                
-                Label("Historical", systemImage: "hourglass.circle")
-                    .font(.headline)
-                    .padding(.vertical, 4)
-                // TCG ban list deets
-                RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
-                    RelatedContentsView(header: "TCG F/L Hits",
-                                        subHeader: "\(cardName) was restricted at least \(tcgBanLists.count) times in the TCG format.", cardID: cardID) {
-                        BanListItemViewModel(banList: tcgBanLists)
-                    }
-                }
-                
-                // MD ban list deets
-                RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
-                    RelatedContentsView(header: "Master Duel F/L Hits",
-                                        subHeader: "\(cardName) was restricted at least \(mdBanLists.count) times in the Master Duel format.", cardID: cardID) {
-                        BanListItemViewModel(banList: mdBanLists)
-                    }
+            }
+            
+            Label("Historical", systemImage: "hourglass.circle")
+                .font(.headline)
+                .padding(.vertical, 4)
+            // TCG ban list deets
+            RelatedContentSheetButton(format: "TCG", contentCount: tcgBanLists.count, contentType: .banLists) {
+                RelatedContentsView(header: "TCG F/L Hits",
+                                    subHeader: "\(cardName) was restricted at least \(tcgBanLists.count) times in the TCG format.", cardID: cardID) {
+                    BanListItemViewModel(banList: tcgBanLists)
                 }
             }
-        })
+            
+            // MD ban list deets
+            RelatedContentSheetButton(format: "Master Duel", contentCount: mdBanLists.count, contentType: .banLists) {
+                RelatedContentsView(header: "Master Duel F/L Hits",
+                                    subHeader: "\(cardName) was restricted at least \(mdBanLists.count) times in the Master Duel format.", cardID: cardID) {
+                    BanListItemViewModel(banList: mdBanLists)
+                }
+            }
+        }
         .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
     }
 }
@@ -199,9 +190,21 @@ private struct RelatedContentSheetButton<Content: View>: View {
     let format: String
     let contentCount: Int
     let contentType: RelatedContentType
-    @ViewBuilder let content: () -> Content
+    let content: Content
     
     @State private var showSheet = false
+    
+    init(format: String,
+         contentCount: Int,
+         contentType: RelatedContentType,
+         @ViewBuilder content: () -> Content,
+         showSheet: Bool = false) {
+        self.format = format
+        self.contentCount = contentCount
+        self.contentType = contentType
+        self.content = content()
+        self.showSheet = showSheet
+    }
     
     var body: some View {
         Button {
@@ -220,7 +223,7 @@ private struct RelatedContentSheetButton<Content: View>: View {
         }
         .buttonStyle(.borderedProminent)
         .sheet(isPresented: $showSheet, onDismiss: {showSheet = false}) {
-            content()
+            content
         }
         .disabled(contentCount <= 0)
     }
@@ -230,7 +233,17 @@ private struct RelatedContentsView<Content: View>: View {
     let header: String
     let subHeader: String
     let cardID: String
-    @ViewBuilder let content: () -> Content
+    let content: Content
+    
+    init(header: String,
+         subHeader: String,
+         cardID: String,
+         @ViewBuilder content: () -> Content) {
+        self.header = header
+        self.subHeader = subHeader
+        self.cardID = cardID
+        self.content = content()
+    }
     
     var body: some View {
         ScrollView {
@@ -245,9 +258,9 @@ private struct RelatedContentsView<Content: View>: View {
                     .font(.callout)
                     .padding(.bottom)
                 
-                content()
+                content
             }
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
     }
 }

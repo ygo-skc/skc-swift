@@ -101,7 +101,7 @@ private struct SettingsView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading, spacing: 15) {
                 Text("Settings")
                     .font(.title)
                 SectionView(header: "Data",
@@ -135,7 +135,7 @@ private struct SettingsView: View {
                 })
             }
             .allowsHitTesting(!model.isDeleting)
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
         .task {
             await model.calculateDataUsage()
@@ -152,9 +152,21 @@ private struct SettingsView: View {
         let moduleHeader: String
         let moduleFootnote: String?
         let action: () async -> Void
-        @ViewBuilder let label: () -> Label
+        let label: Label
         
         @State private var isAlertOpen = false
+        
+        init(moduleHeader: String,
+             moduleFootnote: String?,
+             action: @escaping () async -> Void,
+             label: () -> Label,
+             isAlertOpen: Bool = false) {
+            self.moduleHeader = moduleHeader
+            self.moduleFootnote = moduleFootnote
+            self.action = action
+            self.label = label()
+            self.isAlertOpen = isAlertOpen
+        }
         
         var body: some View {
             VStack(alignment: .leading) {
@@ -165,7 +177,7 @@ private struct SettingsView: View {
                         .font(.footnote)
                 }
                 
-                Button { isAlertOpen.toggle() } label: { label() }
+                Button { isAlertOpen.toggle() } label: { label }
                     .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
                         Button("Cancel", role: .cancel) {}
                         Button("🫡", role: .destructive) {

@@ -43,8 +43,10 @@ struct NetworkErrorView: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
+            .fixedSize(horizontal: false, vertical: true)
         default:
             ContentUnavailableView {Label(description, systemImage: icon)}
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

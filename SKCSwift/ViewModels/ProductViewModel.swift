@@ -40,7 +40,7 @@ final class ProductViewModel {
     
     func fetchProductData(forceRefresh: Bool = false) async {
         if forceRefresh || product == nil {
-            productDTS = .pending
+            (productNE, productDTS) = (nil, .pending)
             let res = await data(productInfoURL(productID: productID), resType: Product.self)
             if case .success(let product) = res {
                 self.product = product
@@ -51,7 +51,7 @@ final class ProductViewModel {
     
     func fetchProductSuggestions(forceRefresh: Bool = false) async {
         if forceRefresh || suggestions == nil {
-            suggestionsDTS = .pending
+            (suggestionsNE, suggestionsDTS) = (nil, .pending)
             let res = await data(productSuggestionsURL(productID: productID), resType: ProductSuggestions.self)
             if case .success(let suggestions) = res {
                 self.suggestions = suggestions

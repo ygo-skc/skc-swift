@@ -27,7 +27,7 @@ struct BrowseView: View {
                     
                     switch (focusedResource) {
                     case .card:
-                        CardBrowseView(path: $path, filteredCards: cardBrowseViewModel.cards)
+                        CardListView(cards: cardBrowseViewModel.cards, showAllInfo: true)
                             .task(priority: .userInitiated) {
                                 await cardBrowseViewModel.fetchCardBrowseCriteria()
                             }
@@ -167,7 +167,7 @@ private struct ProductBrowseView: View {
         LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
             ForEach(filteredProducts.keys.sorted(by: >), id: \.self) { year in
                 if let filteredProducts = filteredProducts[year] {
-                    Section(header: HeaderView(header: "\(year) • \(filteredProducts.count) total")) {
+                    Section(header: SectionHeaderView(header: "\(year) • \(filteredProducts.count) total")) {
                         LazyVStack {
                             ForEach(filteredProducts, id: \.productId) { product in
                                 Button {
@@ -184,30 +184,6 @@ private struct ProductBrowseView: View {
                         }
                     }
                 }
-            }
-            .listStyle(.plain)
-            .ignoresSafeArea(.keyboard)
-        }
-    }
-}
-
-private struct CardBrowseView: View {
-    @Binding var path: NavigationPath
-    let filteredCards: [Card]
-    
-    var body: some View {
-        LazyVStack(alignment: .leading) {
-            ForEach(filteredCards, id: \.self.cardID) { card in
-                Button {
-                    path.append(CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName))
-                } label: {
-                    GroupBox {
-                        CardListItemView(card: card, showAllInfo: true)
-                            .equatable()
-                    }
-                    .groupBoxStyle(.listItem)
-                }
-                .buttonStyle(.plain)
             }
             .listStyle(.plain)
             .ignoresSafeArea(.keyboard)
@@ -237,7 +213,7 @@ private struct ProductFiltersView: View {
                                   filterImage: "2.circle",
                                   columns: Array(repeating: GridItem(.flexible()), count: 2))
             }
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
     }
 }
@@ -304,7 +280,7 @@ private struct CardFiltersView: View {
                         .fontWeight(.heavy)
                 }
             }
-            .modifier(.parentView)
+            .modifier(.sheetParentView)
         }
     }
 }
@@ -315,7 +291,9 @@ private struct CardFilterView<T: Equatable & Sendable, Content: View>: View {
     let gridItemCount: Int
     @ViewBuilder let content: (T) -> Content
     
-    init(filters: Binding<[FilteredItem<T>]>, filterInfo: String, gridItemCount: Int, content: @escaping (T) -> Content) {
+    init(filters: Binding<[FilteredItem<T>]>,
+         filterInfo: String,
+         gridItemCount: Int, @ViewBuilder content: @escaping (T) -> Content) {
         self._filters = filters
         self.filterInfo = filterInfo
         self.gridItemCount = gridItemCount
@@ -352,7 +330,12 @@ extension CardFilterView {
 
 private struct FilterButton<Content: View>: View {
     @Binding var showFilters: Bool
-    @ViewBuilder let content: () -> Content
+    let content: Content
+    
+    init(showFilters: Binding<Bool>, @ViewBuilder content: () -> Content) {
+        self._showFilters = showFilters
+        self.content = content()
+    }
     
     var body: some View {
         Button {
@@ -361,7 +344,7 @@ private struct FilterButton<Content: View>: View {
             Image(systemName: "line.3.horizontal.decrease")
         }
         .sheet(isPresented: $showFilters, onDismiss: { showFilters = false }) {
-            content()
+            content
         }
     }
 }
