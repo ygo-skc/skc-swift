@@ -54,13 +54,27 @@ struct ProductView: View {
         let productDTS: DataTaskStatus
         let productNE: NetworkError?
         let retryCB: () async -> Void
-        @ViewBuilder let stats: () -> Stats
+        let stats: Stats
+        
+        init(productID: String,
+             product: Product?,
+             productDTS: DataTaskStatus,
+             productNE: NetworkError?,
+             retryCB: @escaping () async -> Void,
+             @ViewBuilder stats: () -> Stats) {
+            self.productID = productID
+            self.product = product
+            self.productDTS = productDTS
+            self.productNE = productNE
+            self.retryCB = retryCB
+            self.stats = stats()
+        }
         
         var body: some View {
             ScrollView {
                 VStack{
                     if productNE == nil && productDTS == .done {
-                        stats()
+                        stats
                         
                         if let product = product, let productContents = product.productContent {
                             CardListView(cards: productContents.filter({ $0.card != nil }).map({ $0.card!.withQualifier(qualifier: $0.productPosition) })
@@ -311,18 +325,28 @@ private struct ProductSuggestionsButton: View {
 
 private struct ProductStatsView<Tags: View, Metrics: View, Suggestions: View>: View  {
     let productID: String
-    @ViewBuilder let tags: () -> Tags
-    @ViewBuilder let metrics: () -> Metrics
-    @ViewBuilder let suggestions: () -> Suggestions
+    let tags: Tags
+    let metrics: Metrics
+    let suggestions: Suggestions
+    
+    init(productID: String,
+         @ViewBuilder tags: () -> Tags,
+         @ViewBuilder metrics: () -> Metrics,
+         @ViewBuilder suggestions: () -> Suggestions) {
+        self.productID = productID
+        self.tags = tags()
+        self.metrics = metrics()
+        self.suggestions = suggestions()
+    }
     
     var body: some View {
         HStack(alignment: .top) {
             ProductImageView(width: 150, productID: productID, imgSize: .small)
             
             VStack(alignment: .leading) {
-                tags()
-                metrics()
-                suggestions()
+                tags
+                metrics
+                suggestions
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
