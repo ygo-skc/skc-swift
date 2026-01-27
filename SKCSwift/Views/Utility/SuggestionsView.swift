@@ -93,6 +93,7 @@ struct SuggestionCarouselView: View {
                 }
             }
             .frame(maxWidth: .infinity, minHeight: height)
+            .scrollTargetLayout()
         }
         .scrollTargetBehavior(.viewAligned(limitBehavior: .alwaysByFew))
         .scrollIndicators(.automatic)
