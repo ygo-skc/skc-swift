@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+fileprivate func isOverlayVisible(timelineDTS: DataTaskStatus,contentDTS: DataTaskStatus,
+                                  timelineNE: NetworkError?, contentNE: NetworkError?) -> Bool {
+    return DataTaskStatusParser.isDataPending(timelineDTS) || DataTaskStatusParser.isDataPending(contentDTS) || timelineNE != nil || contentNE != nil
+}
+
 struct RestrictedContentView: View {
     @State private var mainSheetContentHeight: CGFloat = 0
     @State private var path = NavigationPath()
@@ -18,32 +23,37 @@ struct RestrictedContentView: View {
                 RestrictedCardsView(format: model.format,
                                     restrictedCards: model.restrictedCards,
                                     scoreEntries: model.scoreEntries,
-                                    timelineDTS: model.timelineDTS,
-                                    contentDTS: model.contentDTS,
-                                    timelineNE: model.timelineNE,
-                                    contentNE: model.contentNE,
-                                    timelineCB: { await model.fetchTimelineData() },
-                                    contentCB: { await model.fetchRestrictedCards() }
-                )
-                .equatable()
-                .navigationTitle("Restrictions")
-                .modify {
-                    if #available(iOS 26.0, *) {
-                        $0.navigationSubtitle("\(model.format.rawValue) format")
-                    } else {
-                        $0
+                                    isOverlayVisible: isOverlayVisible(timelineDTS: model.timelineDTS,
+                                                                       contentDTS: model.contentDTS,
+                                                                       timelineNE: model.timelineNE,
+                                                                       contentNE: model.contentNE)) {
+                                        RestrictedCardsViewOverlay(timelineDTS: model.timelineDTS,
+                                contentDTS: model.contentDTS,
+                                timelineNE: model.timelineNE,
+                                contentNE: model.contentNE,
+                                timelineCB: { await model.fetchTimelineData() },
+                                contentCB: { await model.fetchRestrictedCards() })
+                    .equatable()
+                }.equatable()
+                    .navigationTitle("Restrictions")
+                    .modify {
+                        if #available(iOS 26.0, *) {
+                            $0.navigationSubtitle("\(model.format.rawValue) format")
+                        } else {
+                            $0
+                        }
                     }
-                }
-                .navigationBarTitleDisplayMode(.large)
-                .safeAreaInset(edge: .bottom) {
-                    Color.clear.frame(height: mainSheetContentHeight)
-                }
+                    .navigationBarTitleDisplayMode(.large)
+                    .safeAreaInset(edge: .bottom) {
+                        Color.clear.frame(height: mainSheetContentHeight)
+                    }
             } sheetContent: {
                 RestrictedContentNavigatorView(format: $model.format,
                                                dateRangeIndex: $model.dateRangeIndex,
                                                contentCategory: $model.chosenBannedContentCategory,
                                                dates: model.restrictionDates,
-                                               isDisabled: DataTaskStatusParser.isDataPending(model.timelineDTS) || DataTaskStatusParser.isDataPending(model.contentDTS))
+                                               isDisabled: DataTaskStatusParser.isDataPending(model.timelineDTS)
+                                               || DataTaskStatusParser.isDataPending(model.contentDTS))
             }
             .onChange(of: model.format) {
                 Task {
@@ -68,32 +78,35 @@ struct RestrictedContentView: View {
     RestrictedContentView()
 }
 
-private struct RestrictedCardsView: View, Equatable {
+private struct RestrictedCardsView<Overlay: View>: View, Equatable {
     static func == (lhs: RestrictedCardsView, rhs: RestrictedCardsView) -> Bool {
-        lhs.format == rhs.format
-        && lhs.timelineDTS == rhs.timelineDTS
-        && lhs.contentDTS == rhs.contentDTS
-        && lhs.timelineNE == rhs.timelineNE
-        && lhs.contentNE == rhs.contentNE
+        lhs.isOverlayVisible == rhs.isOverlayVisible
         && lhs.restrictedCards == rhs.restrictedCards
+        && lhs.scoreEntries == rhs.scoreEntries
     }
     
     let format: CardRestrictionFormat
     let restrictedCards: [YGOCard]
     let scoreEntries: [CardScoreEntry]
     
-    let timelineDTS: DataTaskStatus
-    let contentDTS: DataTaskStatus
+    let isOverlayVisible: Bool
+    let overlay: Overlay
     
-    let timelineNE: NetworkError?
-    let contentNE: NetworkError?
-    
-    let timelineCB: () async -> Void
-    let contentCB: () async -> Void
+    init(format: CardRestrictionFormat,
+         restrictedCards: [YGOCard],
+         scoreEntries: [CardScoreEntry],
+         isOverlayVisible: Bool,
+         @ViewBuilder overlay: () -> Overlay) {
+        self.format = format
+        self.restrictedCards = restrictedCards
+        self.scoreEntries = scoreEntries
+        self.isOverlayVisible = isOverlayVisible
+        self.overlay = overlay()
+    }
     
     var body: some View {
         ScrollView {
-            if timelineDTS == .done && (contentDTS == .done && contentDTS != .error) {
+            if !isOverlayVisible {
                 VStack {
                     switch format {
                     case .md, .tcg:
@@ -109,76 +122,124 @@ private struct RestrictedCardsView: View, Equatable {
         }
         .ygoNavigationDestination()
         .frame(maxWidth: .infinity)
-        .scrollDisabled(DataTaskStatusParser.isDataPending(timelineDTS)
-                        || DataTaskStatusParser.isDataPending(contentDTS)
-                        || timelineNE != nil
-                        || contentNE != nil)
+        .scrollDisabled(isOverlayVisible)
         .overlay {
-            if DataTaskStatusParser.isDataPending(timelineDTS)
-                || (timelineDTS != .error && DataTaskStatusParser.isDataPending(contentDTS)) {
-                ProgressView("Loading...")
-                    .controlSize(.large)
-            } else if let timelineNE {
-                NetworkErrorView(error: timelineNE) {
-                    Task {
-                        await timelineCB()
-                    }
+            overlay
+        }
+    }
+}
+
+private struct                     RestrictedCardsViewOverlay: View, Equatable {
+    static func == (lhs:                     RestrictedCardsViewOverlay, rhs:                     RestrictedCardsViewOverlay) -> Bool {
+        lhs.timelineDTS == rhs.timelineDTS
+        && lhs.contentDTS == rhs.contentDTS
+        && lhs.timelineNE == rhs.timelineNE
+        && lhs.contentNE == rhs.contentNE
+    }
+    
+    let timelineDTS: DataTaskStatus
+    let contentDTS: DataTaskStatus
+    
+    let timelineNE: NetworkError?
+    let contentNE: NetworkError?
+    
+    let timelineCB: () async -> Void
+    let contentCB: () async -> Void
+    
+    var body: some View {
+        if DataTaskStatusParser.isDataPending(timelineDTS)
+            || (timelineDTS != .error && DataTaskStatusParser.isDataPending(contentDTS)) {
+            ProgressView("Loading...")
+                .controlSize(.large)
+        } else if let timelineNE {
+            NetworkErrorView(error: timelineNE) {
+                Task {
+                    await timelineCB()
                 }
-            } else if let contentNE {
-                NetworkErrorView(error: contentNE) {
-                    Task {
-                        await contentCB()
-                    }
+            }
+        } else if let contentNE {
+            NetworkErrorView(error: contentNE) {
+                Task {
+                    await contentCB()
                 }
             }
         }
     }
 }
 
+
 #Preview("Timeline pending") {
+    let timelineDTS: DataTaskStatus = .pending
+    let contentDTS: DataTaskStatus = .pending
+    let timelineNE: NetworkError? = nil
+    let contentNE: NetworkError? = nil
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
-                        timelineDTS: .pending,
-                        contentDTS: .pending,
-                        timelineNE: nil,
-                        contentNE: nil,
-                        timelineCB: {},
-                        contentCB: {})
+                        isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
+                            RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
+                    contentDTS: contentDTS,
+                    timelineNE: timelineNE,
+                    contentNE: contentNE,
+                    timelineCB: {},
+                    contentCB: {})
+    }
 }
 
-#Preview("Timeline content pending") {
+#Preview("Content pending") {
+    let timelineDTS: DataTaskStatus = .done
+    let contentDTS: DataTaskStatus = .pending
+    let timelineNE: NetworkError? = nil
+    let contentNE: NetworkError? = nil
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
-                        timelineDTS: .done,
-                        contentDTS: .pending,
-                        timelineNE: nil,
-                        contentNE: nil,
-                        timelineCB: {},
-                        contentCB: {})
+                        isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
+                            RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
+                    contentDTS: contentDTS,
+                    timelineNE: timelineNE,
+                    contentNE: contentNE,
+                    timelineCB: {},
+                    contentCB: {})
+    }
 }
 
 #Preview("Timeline error") {
+    let timelineDTS: DataTaskStatus = .error
+    let contentDTS: DataTaskStatus = .pending
+    let timelineNE: NetworkError? = .timeout
+    let contentNE: NetworkError? = nil
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
-                        timelineDTS: .error,
-                        contentDTS: .pending,
-                        timelineNE: .timeout,
-                        contentNE: nil,
-                        timelineCB: {},
-                        contentCB: {})
+                        isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
+                            RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
+                    contentDTS: contentDTS,
+                    timelineNE: timelineNE,
+                    contentNE: contentNE,
+                    timelineCB: {},
+                    contentCB: {})
+    }
 }
 
 #Preview("Content error") {
+    let timelineDTS: DataTaskStatus = .done
+    let contentDTS: DataTaskStatus = .error
+    let timelineNE: NetworkError? = nil
+    let contentNE: NetworkError? = .timeout
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
-                        timelineDTS: .done,
-                        contentDTS: .error,
-                        timelineNE: nil,
-                        contentNE: .timeout,
-                        timelineCB: {},
-                        contentCB: {})
+                        isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
+                            RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
+                    contentDTS: contentDTS,
+                    timelineNE: timelineNE,
+                    contentNE: contentNE,
+                    timelineCB: {},
+                    contentCB: {})
+    }
 }
