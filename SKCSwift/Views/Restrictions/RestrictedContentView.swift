@@ -27,7 +27,11 @@ struct RestrictedContentView: View {
                                                                        contentDTS: model.contentDTS,
                                                                        timelineNE: model.timelineNE,
                                                                        contentNE: model.contentNE)) {
-                    RestrictedCategoryExplanationView(category: model.chosenBannedContentCategory)
+                    if model.format == .genesys {
+                        Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Missing cards in selected range allocate 0 points to your deck score. [More info](https://www.yugioh-card.com/en/genesys)", systemImage: "info.circle")
+                    } else {
+                        RestrictedCategoryExplanationView(category: model.chosenBannedContentCategory)
+                    }
                 } overlay: {
                     RestrictedCardsViewOverlay(timelineDTS: model.timelineDTS,
                                                contentDTS: model.contentDTS,
@@ -115,12 +119,17 @@ private struct RestrictedCardsView<CategoryExplanation: View, Overlay: View>: Vi
     var body: some View {
         ScrollView {
             if !isOverlayVisible {
-                VStack {
+                VStack(alignment: .leading) {
                     switch format {
                     case .md, .tcg:
                         categoryExplanation
+                            .font(.callout)
+                            .padding(.bottom)
                         CardListView(cards: restrictedCards)
                     case .genesys:
+                        categoryExplanation
+                            .font(.callout)
+                            .padding(.bottom)
                         CardListView(cards: scoreEntries.map({ $0.card }), label: { ind in
                             Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
                         })
@@ -205,8 +214,6 @@ private struct RestrictedCategoryExplanationView: View {
             Image(systemName: systemImage)
                 .foregroundColor(color)
         }
-        .font(.callout)
-        .padding(.bottom)
     }
 }
 
