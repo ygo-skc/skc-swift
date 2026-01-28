@@ -124,12 +124,10 @@ private struct RestrictedCardsView<CategoryExplanation: View, Overlay: View>: Vi
                     case .md, .tcg:
                         categoryExplanation
                             .font(.callout)
-                            .padding(.bottom)
                         CardListView(cards: restrictedCards)
                     case .genesys:
                         categoryExplanation
                             .font(.callout)
-                            .padding(.bottom)
                         CardListView(cards: scoreEntries.map({ $0.card }), label: { ind in
                             Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
                         })
