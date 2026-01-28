@@ -11,15 +11,11 @@ struct YGOArchetypesView: View {
     let archetypes: Set<String>
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Label(title, systemImage: "apple.books.pages")
-                .font(.headline)
-                .fontWeight(.medium)
-            
-            if archetypes.isEmpty {
-                Text("Nothing to suggested based on your recent browsing history…")
-                    .font(.subheadline)
-            } else {
+        if !archetypes.isEmpty {
+            VStack(alignment: .leading) {
+                Label(title, systemImage: "apple.books.pages")
+                    .font(.headline)
+                    .fontWeight(.medium)
                 ScrollView(.horizontal) {
                     HStack(spacing: 5) {
                         ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
