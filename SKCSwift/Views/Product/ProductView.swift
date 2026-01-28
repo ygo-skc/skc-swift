@@ -200,8 +200,11 @@ private struct ProductMetricsButton: View {
                 if let data = chartData {
                     ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
                 } else {
-                    ProgressView("Loading...")
-                        .controlSize(.large)
+                    VStack {
+                        ProgressView("Loading...")
+                            .controlSize(.large)
+                    }
+                    .modifier(.sheetParentView)
                 }
             }
         }
@@ -298,7 +301,7 @@ private struct ProductSuggestionsButton: View {
                                                       variant: .support)
                             }
                         }
-                        .modifier(.parentView)
+                        .modifier(.sheetParentView)
                         .padding(.top)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
