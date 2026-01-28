@@ -42,11 +42,11 @@ struct YGOArchetypeView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 40) {
+            VStack(alignment: .leading, spacing: 25) {
                 if model.dataDTS == .done {
                     Text("Cards tied to the **\(model.archetype)** archetype")
                         .font(.callout)
-                        .padding(.bottom, -20)
+                        .padding(.bottom, -10)
                     
                     YGOArchetypeSectionView(archetype: model.archetype, category: .byName, cards: model.data.usingName)
                     YGOArchetypeSectionView(archetype: model.archetype, category: .byText, cards: model.data.usingText)

@@ -24,9 +24,9 @@ struct CardInfoView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 30) {
+            VStack(spacing: 25) {
                 if model.cardDTS != .error {
-                    VStack(spacing: 30) {
+                    VStack(spacing: 25) {
                         YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
                             .equatable()
                         
