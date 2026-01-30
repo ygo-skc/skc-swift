@@ -153,19 +153,19 @@ private struct SuggestedCardView: View {
             if model.supportDTS == .done && model.suggestionsDTS == .done, let cardName = model.card?.cardName {
                 SuggestionSectionView(header: "Named Materials",
                                       subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
-                                      references: model.namedMaterials ?? [],
+                                      references: model.namedMaterials,
                                       variant: .suggestion)
                 SuggestionSectionView(header: "Named References",
                                       subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
-                                      references: model.namedReferences ?? [],
+                                      references: model.namedReferences,
                                       variant: .suggestion)
                 SuggestionSectionView(header: "Material For",
                                       subHeader: "ED cards that can be summoned using **\(cardName)** as material",
-                                      references: model.materialFor ?? [],
+                                      references: model.materialFor,
                                       variant: .support)
                 SuggestionSectionView(header: "Referenced By",
                                       subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
-                                      references: model.referencedBy ?? [],
+                                      references: model.referencedBy,
                                       variant: .support)
             }
         }
@@ -185,19 +185,19 @@ private struct SuggestedCardView: View {
             if model.supportDTS == .done && model.suggestionsDTS == .done, let cardName = model.card?.cardName {
                 SuggestionSectionView(header: "Named Materials",
                                       subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
-                                      references: model.namedMaterials ?? [],
+                                      references: model.namedMaterials,
                                       variant: .suggestion)
                 SuggestionSectionView(header: "Named References",
                                       subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
-                                      references: model.namedReferences ?? [],
+                                      references: model.namedReferences,
                                       variant: .suggestion)
                 SuggestionSectionView(header: "Material For",
                                       subHeader: "ED cards that can be summoned using **\(cardName)** as material",
-                                      references: model.materialFor ?? [],
+                                      references: model.materialFor,
                                       variant: .support)
                 SuggestionSectionView(header: "Referenced By",
                                       subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
-                                      references: model.referencedBy ?? [],
+                                      references: model.referencedBy,
                                       variant: .support)
             }
         }

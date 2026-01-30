@@ -8,7 +8,7 @@ import Foundation
 import YGOService
 import GRPCCore
 
-nonisolated struct YGOCardInfo: Codable, Equatable {
+private nonisolated struct YGOCardInfo: Codable, Equatable {
     let cardID: String
     let cardName: String
     let cardColor: String
@@ -79,13 +79,16 @@ final class CardViewModel {
     private(set) var score: CardScore?
     
     @ObservationIgnored
-    private(set) var namedMaterials: [CardReference]?
+    private(set) var namedMaterials: [CardReference] = []
     @ObservationIgnored
-    private(set) var namedReferences: [CardReference]?
+    private(set) var namedReferences: [CardReference] = []
     @ObservationIgnored
-    private(set) var referencedBy: [CardReference]?
+    private(set) var referencedBy: [CardReference] = []
     @ObservationIgnored
-    private(set) var materialFor: [CardReference]?
+    private(set) var materialFor: [CardReference] = []
+    
+    @ObservationIgnored
+    private(set) var archetypeSuggestions: Set<String> = []
     
     @ObservationIgnored
     var areSuggestionsLoaded: Bool { suggestionsDTS == .done && supportDTS == .done }
@@ -148,6 +151,7 @@ final class CardViewModel {
         if case .success(let suggestions) = res {
             namedMaterials = suggestions.namedMaterials
             namedReferences = suggestions.namedReferences
+            archetypeSuggestions = Set(suggestions.materialArchetypes + suggestions.referencedArchetypes)
         }
         (suggestionsNE, suggestionsDTS) = res.validate()
     }
@@ -163,10 +167,6 @@ final class CardViewModel {
     }
     
     func hasSuggestions() -> Bool {
-        if let namedMaterials, let namedReferences, let referencedBy, let materialFor,
-           namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty {
-            return false
-        }
-        return true
+        return !(namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty && archetypeSuggestions.isEmpty)
     }
 }
