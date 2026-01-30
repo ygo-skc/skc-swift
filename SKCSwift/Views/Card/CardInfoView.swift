@@ -26,19 +26,17 @@ struct CardInfoView: View {
         ScrollView {
             VStack(spacing: 25) {
                 if model.cardDTS != .error {
-                    VStack(spacing: 25) {
-                        YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
-                            .equatable()
-                        
-                        if let card = model.card, let products = model.products {
-                            CardReleasesView(card: card, products: products)
-                                .modifier(.parentView)
-                            CardRestrictionsView(card: card,
-                                                 tcgBanList: model.restrictions?.TCG ?? [],
-                                                 mdBanLists: model.restrictions?.MD ?? [],
-                                                 score: model.score)
+                    YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
+                        .equatable()
+                    
+                    if let card = model.card, let products = model.products {
+                        CardReleasesView(card: card, products: products)
                             .modifier(.parentView)
-                        }
+                        CardRestrictionsView(card: card,
+                                             tcgBanList: model.restrictions?.TCG ?? [],
+                                             mdBanLists: model.restrictions?.MD ?? [],
+                                             score: model.score)
+                        .modifier(.parentView)
                     }
                 }
                 
@@ -64,7 +62,7 @@ struct CardInfoView: View {
                                                   references: model.materialFor ?? [],
                                                   variant: .support)
                             SuggestionSectionView(header: "Referenced By",
-                                                  subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(model.card?.cardName ?? "")** as a summoning material.",
+                                                  subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
                                                   references: model.referencedBy ?? [],
                                                   variant: .support)
                         }
