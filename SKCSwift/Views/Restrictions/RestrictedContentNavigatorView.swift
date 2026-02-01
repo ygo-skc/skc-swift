@@ -37,7 +37,7 @@ struct RestrictedContentNavigatorView: View {
             HStack(spacing: 15) {
                 Text("Format")
                     .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .fontWeight(.regular)
                 
                 ForEach(RestrictedContentFormatsView.formats, id: \.rawValue) { format in
                     TabButton(selected: $format, value: format, animation: animation)
@@ -57,7 +57,7 @@ struct RestrictedContentNavigatorView: View {
             HStack(spacing: 15) {
                 Text("Category")
                     .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .fontWeight(.regular)
                 
                 ForEach(BannedContentCategoryView.categories, id: \.rawValue) { category in
                     TabButton(selected: $contentCategory, value: category, animation: animation)
@@ -80,7 +80,7 @@ struct RestrictedContentDatesView: View {
         HStack(spacing: 15)  {
             Text("Range")
                 .font(.subheadline)
-                .fontWeight(.semibold)
+                .fontWeight(.regular)
             
             Button() {
                 isSelectorSheetPresented.toggle()
