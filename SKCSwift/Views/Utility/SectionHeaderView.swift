@@ -21,9 +21,9 @@ struct SectionHeaderView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .modify {
             if #available(iOS 26.0, *) {
-                $0.glassEffect(.regular.tint(.orange.opacity(0.8)), in: Rectangle())
+                $0.glassEffect(.regular.tint(.orange), in: Rectangle())
             } else {
-                $0.background(.regularMaterial)
+                $0.background(.ultraThinMaterial).background(.orange)
             }
         }
         .cornerRadius(8)
