@@ -28,7 +28,7 @@ struct RestrictedContentView: View {
                                                                        timelineNE: model.timelineNE,
                                                                        contentNE: model.contentNE)) {
                     if model.format == .genesys {
-                        Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Missing cards in selected range allocate 0 points to your deck score. [More info](https://www.yugioh-card.com/en/genesys)", systemImage: "info.circle")
+                        Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)", systemImage: "info.circle")
                     } else {
                         RestrictedCategoryExplanationView(category: model.chosenBannedContentCategory)
                     }
@@ -124,10 +124,12 @@ private struct RestrictedCardsView<CategoryExplanation: View, Overlay: View>: Vi
                     case .md, .tcg:
                         categoryExplanation
                             .font(.callout)
+                            .padding(.bottom)
                         CardListView(cards: restrictedCards)
                     case .genesys:
                         categoryExplanation
                             .font(.callout)
+                            .padding(.bottom)
                         CardListView(cards: scoreEntries.map({ $0.card }), label: { ind in
                             Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
                         })
@@ -199,7 +201,7 @@ private struct RestrictedCategoryExplanationView: View {
             self.systemImage = "1.circle.fill"
             self.color = .yellow
         case .semiLimited:
-            self.label = "Only one copy of the below cards can be used in the main/side/extra decks"
+            self.label = "Only two copy of the below cards can be used in the main/side/extra decks"
             self.systemImage = "2.circle.fill"
             self.color = .green
         }
