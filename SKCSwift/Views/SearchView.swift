@@ -167,7 +167,6 @@ struct SearchView: View {
                     }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay {
                 if !DataTaskStatusParser.isDataPending(dataTaskStatus), let networkError = requestError {
                     if networkError == .notFound {

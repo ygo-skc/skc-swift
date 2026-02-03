@@ -43,7 +43,6 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
             }
         }
         .ignoresSafeArea(.keyboard)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -66,13 +65,18 @@ struct CardListItemView: View, Equatable {
                     .fontWeight(.bold)
                     .lineLimit(1)
                 
-                ListItemSecondRow(cardID: card.cardID, cardColor: card.cardColor, monsterType: card.cardType, isCardAGod: card.isGod)
-                ListItemThirdRow(cardColor: card.cardColor, attribute: card.attribute, monsterAssociation: card.monsterAssociation, showAllInfo: showAllInfo)
+                ListItemSecondRow(cardID: card.cardID,
+                                  cardColor: card.cardColor,
+                                  monsterType: card.cardType,
+                                  isCardAGod: card.isGod)
+                ListItemThirdRow(cardColor: card.cardColor,
+                                 attribute: card.attribute,
+                                 monsterAssociation: card.monsterAssociation,
+                                 showAllInfo: showAllInfo)
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         .dynamicTypeSize(...DynamicTypeSize.medium)
-        .frame(maxWidth: .infinity, alignment: .center)
+        .frame(maxWidth: .infinity)
     }
 }
 

@@ -70,7 +70,6 @@ struct CardOfTheDayView: View, Equatable {
             .if(!isDataLoaded) {
                 $0.redacted(reason: .placeholder)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
         }
     }

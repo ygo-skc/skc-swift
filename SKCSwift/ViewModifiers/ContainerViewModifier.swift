@@ -12,11 +12,7 @@ struct ParentViewModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: alignment
-            )
+            .frame(alignment: alignment)
             .safeAreaPadding(.horizontal)
     }
 }
@@ -26,11 +22,7 @@ struct SheetParentViewModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: alignment
-            )
+            .frame(alignment: alignment)
             .presentationDragIndicator(.visible)
             .safeAreaPadding(.horizontal)
             .safeAreaPadding(.top)

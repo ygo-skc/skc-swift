@@ -70,7 +70,6 @@ struct DBStatsView: View, Equatable {
                 }
                 Spacer()
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         
         private struct DBStatView: View {
