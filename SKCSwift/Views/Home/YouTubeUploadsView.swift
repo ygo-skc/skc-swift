@@ -9,7 +9,8 @@ import SwiftUI
 
 struct YouTubeUploadsView: View, Equatable {
     static func == (lhs: YouTubeUploadsView, rhs: YouTubeUploadsView) -> Bool {
-        lhs.ytUplaods == rhs.ytUplaods && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
+        lhs.ytUplaods == rhs.ytUplaods
+        && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
     
     let ytUplaods: [YouTubeVideos]
@@ -23,16 +24,15 @@ struct YouTubeUploadsView: View, Equatable {
                 .modifier(.headerText)
             if let networkError {
                 NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+            } else if dataTaskStatus == .done || !ytUplaods.isEmpty {
+                YouTubeUploadsContentView(ytUplaods: ytUplaods)
             } else {
-                if dataTaskStatus == .done || !ytUplaods.isEmpty {
-                    YouTubeUploadsContentView(ytUplaods: ytUplaods)
-                } else {
-                    HStack {
-                        ProgressView("Loading...")
-                            .controlSize(.large)
-                    }
-                    .frame(maxWidth: .infinity)
+                HStack {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 }
+                .padding(.top)
+                .frame(maxWidth: .infinity)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

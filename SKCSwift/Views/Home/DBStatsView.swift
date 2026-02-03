@@ -9,7 +9,8 @@ import SwiftUI
 
 struct DBStatsView: View, Equatable {
     static func == (lhs: DBStatsView, rhs: DBStatsView) -> Bool {
-        lhs.dbStats == rhs.dbStats && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
+        lhs.dbStats == rhs.dbStats
+        && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
     
     let dbStats: SKCDatabaseStats
@@ -20,17 +21,14 @@ struct DBStatsView: View, Equatable {
     var body: some View {
         SectionView(header: "Content",
                     content: {
-            VStack(alignment: .leading, spacing: 5) {
-                if let networkError {
-                    NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
-                } else {
-                    DBDataView(dbStats: dbStats, isDataLoaded: dataTaskStatus == .done)
-                    Divider()
-                        .padding(.vertical, 4)
-                    DataDisclosure()
-                }
+            if let networkError {
+                NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+            } else {
+                DBDataView(dbStats: dbStats, isDataLoaded: dataTaskStatus == .done)
+                Divider()
+                    .padding(.vertical, 4)
+                DataDisclosure()
             }
-            .frame(maxWidth: .infinity)
         })
     }
     

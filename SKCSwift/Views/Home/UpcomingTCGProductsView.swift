@@ -9,7 +9,8 @@ import SwiftUI
 
 struct UpcomingTCGProductsView: View, Equatable {
     static func == (lhs: UpcomingTCGProductsView, rhs: UpcomingTCGProductsView) -> Bool {
-        lhs.events == rhs.events && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
+        lhs.events == rhs.events
+        && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
     
     let events: [Event]
@@ -22,20 +23,17 @@ struct UpcomingTCGProductsView: View, Equatable {
             Text("Upcoming products")
                 .modifier(.headerText)
             
-            if dataTaskStatus == .done || !events.isEmpty {
+            if let networkError {
+                NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+            } else if dataTaskStatus == .done || !events.isEmpty {
                 UpcomingTCGProductsContentView(events: events)
             } else {
-                VStack {
-                    if let networkError {
-                        NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
-                    } else {
-                        HStack {
-                            ProgressView("Loading...")
-                                .controlSize(.large)
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
+                HStack {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 }
+                .padding(.top)
+                .frame(maxWidth: .infinity)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
