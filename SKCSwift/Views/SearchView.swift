@@ -84,27 +84,30 @@ struct SearchView: View {
         var body: some View {
             ScrollView {
                 if !recentlyViewedCardDetails.isEmpty {
-                    LazyVStack(alignment: .leading) {
+                    LazyVStack(alignment: .leading, spacing: 25) {
                         Text("History")
                             .modifier(.headerText)
+                            .padding(.bottom, -15)
+                        
                         if !recentlyViewedSuggestions.isEmpty {
-                            Label("Personalized suggestions", systemImage: "sparkles")
-                                .font(.headline)
-                                .fontWeight(.medium)
-                            SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
-                                .padding(.bottom)
+                            VStack(alignment: .leading) {
+                                Label("Suggestions", systemImage: "sparkles")
+                                    .font(.headline)
+                                    .fontWeight(.medium)
+                                SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
+                            }
                         }
                         
                         YGOArchetypesView(title: "Suggested archetypes (BETA)",
-                                              archetypes: recentlyViewedArchetypeSuggestions)
-                        .padding(.bottom)
+                                          archetypes: recentlyViewedArchetypeSuggestions)
                         
-                        Label("Recently viewed", systemImage: "clock.arrow.circlepath")
-                            .font(.headline)
-                            .fontWeight(.medium)
-                        
-                        CardListView(cards: recentlyViewedCardDetails)
-                            .equatable()
+                        VStack(alignment: .leading) {
+                            Label("Recently viewed", systemImage: "clock.arrow.circlepath")
+                                .font(.headline)
+                                .fontWeight(.medium)
+                            CardListView(cards: recentlyViewedCardDetails)
+                                .equatable()
+                        }
                     }
                     .modifier(.parentView)
                 }

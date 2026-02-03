@@ -15,8 +15,8 @@ struct CardListView<Label: View, Info: View>: View, Equatable {
     
     let cards: [YGOCard]
     let showAllInfo: Bool
-    @ViewBuilder let label: (Int) -> Label
-    @ViewBuilder let info: (Int) -> Info
+    let label: (Int) -> Label
+    let info: (Int) -> Info
     
     init(cards: [YGOCard],
          showAllInfo: Bool = false,

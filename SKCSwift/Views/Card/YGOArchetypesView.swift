@@ -11,15 +11,11 @@ struct YGOArchetypesView: View {
     let archetypes: Set<String>
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Label(title, systemImage: "apple.books.pages")
-                .font(.headline)
-                .fontWeight(.medium)
-            
-            if archetypes.isEmpty {
-                Text("Nothing to suggested based on your recent browsing history…")
-                    .font(.subheadline)
-            } else {
+        if !archetypes.isEmpty {
+            VStack(alignment: .leading) {
+                Label(title, systemImage: "apple.books.pages")
+                    .font(.headline)
+                    .fontWeight(.medium)
                 ScrollView(.horizontal) {
                     HStack(spacing: 5) {
                         ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
@@ -46,11 +42,11 @@ struct YGOArchetypeView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 40) {
+            VStack(alignment: .leading, spacing: 25) {
                 if model.dataDTS == .done {
                     Text("Cards tied to the **\(model.archetype)** archetype")
                         .font(.callout)
-                        .padding(.bottom, -20)
+                        .padding(.bottom, -10)
                     
                     YGOArchetypeSectionView(archetype: model.archetype, category: .byName, cards: model.data.usingName)
                     YGOArchetypeSectionView(archetype: model.archetype, category: .byText, cards: model.data.usingText)

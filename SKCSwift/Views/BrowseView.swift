@@ -289,11 +289,12 @@ private struct CardFilterView<T: Equatable & Sendable, Content: View>: View {
     @Binding var filters: [FilteredItem<T>]
     let filterInfo: String
     let gridItemCount: Int
-    @ViewBuilder let content: (T) -> Content
+    let content: (T) -> Content
     
     init(filters: Binding<[FilteredItem<T>]>,
          filterInfo: String,
-         gridItemCount: Int, @ViewBuilder content: @escaping (T) -> Content) {
+         gridItemCount: Int,
+         @ViewBuilder content: @escaping (T) -> Content) {
         self._filters = filters
         self.filterInfo = filterInfo
         self.gridItemCount = gridItemCount

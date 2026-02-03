@@ -24,21 +24,19 @@ struct CardInfoView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 30) {
+            VStack(spacing: 25) {
                 if model.cardDTS != .error {
-                    VStack(spacing: 30) {
-                        YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
-                            .equatable()
-                        
-                        if let card = model.card, let products = model.products {
-                            CardReleasesView(card: card, products: products)
-                                .modifier(.parentView)
-                            CardRestrictionsView(card: card,
-                                                 tcgBanList: model.restrictions?.TCG ?? [],
-                                                 mdBanLists: model.restrictions?.MD ?? [],
-                                                 score: model.score)
+                    YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
+                        .equatable()
+                    
+                    if let card = model.card, let products = model.products {
+                        CardReleasesView(card: card, products: products)
                             .modifier(.parentView)
-                        }
+                        CardRestrictionsView(card: card,
+                                             tcgBanList: model.restrictions?.TCG ?? [],
+                                             mdBanLists: model.restrictions?.MD ?? [],
+                                             score: model.score)
+                        .modifier(.parentView)
                     }
                 }
                 
@@ -51,21 +49,24 @@ struct CardInfoView: View {
                             }
                         
                         if model.areSuggestionsLoaded && model.suggestionsError == nil {
+                            YGOArchetypesView(title: "Suggested archetypes (BETA)",
+                                              archetypes: model.archetypeSuggestions)
+                            
                             SuggestionSectionView(header: "Named Materials",
                                                   subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
-                                                  references: model.namedMaterials ?? [],
+                                                  references: model.namedMaterials,
                                                   variant: .suggestion)
                             SuggestionSectionView(header: "Named References",
                                                   subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
-                                                  references: model.namedReferences ?? [],
+                                                  references: model.namedReferences,
                                                   variant: .suggestion)
                             SuggestionSectionView(header: "Material For",
                                                   subHeader: "ED cards that can be summoned using **\(cardName)** as material",
-                                                  references: model.materialFor ?? [],
+                                                  references: model.materialFor,
                                                   variant: .support)
                             SuggestionSectionView(header: "Referenced By",
-                                                  subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(model.card?.cardName ?? "")** as a summoning material.",
-                                                  references: model.referencedBy ?? [],
+                                                  subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
+                                                  references: model.referencedBy,
                                                   variant: .support)
                         }
                         
@@ -83,10 +84,10 @@ struct CardInfoView: View {
                 }
             }
         }
-        .frame(maxWidth:.infinity, maxHeight: .infinity)
-        .scrollDisabled(model.cardDTS == .error)
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.card?.cardName ?? "Loading…")
+        .frame(maxWidth:.infinity, maxHeight: .infinity)
+        .scrollDisabled(model.cardDTS == .error)
         .task {
             await model.fetchCardInfo()
         }

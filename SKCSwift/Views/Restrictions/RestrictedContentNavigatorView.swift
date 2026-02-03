@@ -37,7 +37,7 @@ struct RestrictedContentNavigatorView: View {
             HStack(spacing: 15) {
                 Text("Format")
                     .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .fontWeight(.regular)
                 
                 ForEach(RestrictedContentFormatsView.formats, id: \.rawValue) { format in
                     TabButton(selected: $format, value: format, animation: animation)
@@ -57,7 +57,7 @@ struct RestrictedContentNavigatorView: View {
             HStack(spacing: 15) {
                 Text("Category")
                     .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .fontWeight(.regular)
                 
                 ForEach(BannedContentCategoryView.categories, id: \.rawValue) { category in
                     TabButton(selected: $contentCategory, value: category, animation: animation)
@@ -80,7 +80,7 @@ struct RestrictedContentDatesView: View {
         HStack(spacing: 15)  {
             Text("Range")
                 .font(.subheadline)
-                .fontWeight(.semibold)
+                .fontWeight(.regular)
             
             Button() {
                 isSelectorSheetPresented.toggle()
@@ -164,19 +164,19 @@ private struct BanListDateRangePicker: View {
                     BanListYearPickerView(chosenYear: $chosenYear, name: "Older", years: olderYears)
                 }
                 
-                LazyVStack {
-                    ForEach(banListEffectiveDatesByYear[chosenYear]!, id: \.self) { year in
+                if let effectiveDatesForYear = banListEffectiveDatesByYear[chosenYear] {
+                    ForEach(effectiveDatesForYear, id: \.self) { effectiveDate in
                         Button() {
-                            dateRangeIndex = banListEffectiveDatesByInd[year]!
+                            dateRangeIndex = banListEffectiveDatesByInd[effectiveDate] ?? 0
                             showDateSelectorSheet = false
                         } label: {
                             HStack {
-                                BanListDateRangeView(fromDate: year,
-                                                     toDate: (banListEffectiveDatesByInd[year] == 0) ? nil : dates[banListEffectiveDatesByInd[year]! - 1].effectiveDate)
+                                BanListDateRangeView(fromDate: effectiveDate,
+                                                     toDate: (banListEffectiveDatesByInd[effectiveDate] == 0) ? nil : dates[banListEffectiveDatesByInd[effectiveDate]! - 1].effectiveDate)
                                 Spacer()
                                 Circle()
                                     .frame(width: 20, height: 20)
-                                    .if(dateRangeIndex == banListEffectiveDatesByInd[year]) {
+                                    .if(dateRangeIndex == banListEffectiveDatesByInd[effectiveDate]) {
                                         $0.foregroundColor(Color.accentColor)
                                     } else: {
                                         $0.foregroundColor(.secondary.opacity(0.7))
@@ -187,6 +187,9 @@ private struct BanListDateRangePicker: View {
                         }
                         .buttonStyle(.plain)
                     }
+                } else {
+                    ProgressView("Loading...")
+                        .controlSize(.large)
                 }
             }
             .presentationDetents([.medium])
