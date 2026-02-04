@@ -54,6 +54,7 @@ struct YGOArchetypeView: View {
                 }
             }
             .modifier(.parentView)
+            .frame(maxWidth: .infinity)
             .navigationTitle(model.archetype)
             .navigationBarTitleDisplayMode(.large)
             .task {

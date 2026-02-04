@@ -86,7 +86,6 @@ struct CardInfoView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.card?.cardName ?? "Loading…")
-        .frame(maxWidth:.infinity, maxHeight: .infinity)
         .scrollDisabled(model.cardDTS == .error)
         .task {
             await model.fetchCardInfo()

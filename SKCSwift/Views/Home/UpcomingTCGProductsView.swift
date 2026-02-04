@@ -47,7 +47,6 @@ struct UpcomingTCGProductsView: View, Equatable {
                 .frame(maxWidth: .infinity)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -64,16 +63,13 @@ private struct UpcomingTCGProductView: View {
                     .lineLimit(2)
                     .font(.headline)
                     .fontWeight(.bold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text(LocalizedStringKey(event.notes))
                     .font(.body)
                 
                 Divider()
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical, 5)
             }
         }
-        .frame(maxWidth: .infinity)
     }
 }
 

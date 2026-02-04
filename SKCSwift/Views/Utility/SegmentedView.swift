@@ -50,7 +50,7 @@ private struct BottomSheet<SheetContent: View>: View {
     }
     
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
+        VStack(alignment: .leading, spacing: 20) {
             VStack {
 //                Capsule()
 //                    .fill(.gray.opacity(0.7))
