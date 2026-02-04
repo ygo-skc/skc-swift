@@ -27,6 +27,15 @@ final class RestrictedCardsViewModel {
     private(set) var restrictionDates: [BanListDate] = []
     
     @ObservationIgnored
+    var chosenRestrictedContentDate: Date? {
+        if timelineDTS != .done || timelineNE != nil {
+            return nil
+        } else {
+            return Date.yyyyMMddLocal.date(from: restrictionDates[dateRangeIndex].effectiveDate) ?? nil
+        }
+    }
+    
+    @ObservationIgnored
     private var bannedContent: BannedContent?
     @ObservationIgnored
     var restrictedCards: [YGOCard] {

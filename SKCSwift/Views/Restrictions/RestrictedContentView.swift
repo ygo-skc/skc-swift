@@ -17,6 +17,27 @@ struct RestrictedContentView: View {
     @State private var path = NavigationPath()
     @State private var model = RestrictedCardsViewModel()
     
+    @ViewBuilder
+    private var contentHeader: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            if let chosenRestrictedContentDate = model.chosenRestrictedContentDate, chosenRestrictedContentDate > Date.now {
+                Label {
+                    Text("Selected range is effective in \(chosenRestrictedContentDate.timeIntervalSinceNow()) days")
+                } icon: {
+                    Image(systemName: "exclamationmark.circle")
+                        .foregroundColor(.orange)
+                }
+            }
+            
+            if model.format == .genesys {
+                Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
+                      systemImage: "info.circle")
+            } else {
+                RestrictedCategoryExplanationView(category: model.chosenBannedContentCategory)
+            }
+        }
+    }
+    
     var body: some View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
@@ -27,11 +48,7 @@ struct RestrictedContentView: View {
                                                                        contentDTS: model.contentDTS,
                                                                        timelineNE: model.timelineNE,
                                                                        contentNE: model.contentNE)) {
-                    if model.format == .genesys {
-                        Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)", systemImage: "info.circle")
-                    } else {
-                        RestrictedCategoryExplanationView(category: model.chosenBannedContentCategory)
-                    }
+                    contentHeader
                 } overlay: {
                     RestrictedCardsViewOverlay(timelineDTS: model.timelineDTS,
                                                contentDTS: model.contentDTS,

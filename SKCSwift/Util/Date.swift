@@ -26,30 +26,24 @@ nonisolated extension Date {
         return self.timeIntervalSinceNow(millisConversion: millisConversion) >= t
     }
     
-    static let yyyyMMddGMT = (formatter: gmtFormatter(format: "yyyy-MM-dd", abbreviation: "GMT"), calendar: gmtCalendar)
+    static let yyyyMMddLocal = Date.tzFormatter(format: "yyyy-MM-dd", identifier: TimeZone.current.identifier)
+    static let yyyyMMddGMT = (formatter: tzFormatter(format: "yyyy-MM-dd", identifier: "GMT"), calendar: gmtCalendar)
     static let isoChicago = (formatter: tzFormatter(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", identifier: "America/Chicago"), calendar: chicagoCalendar)
     
     /// Use this calendar object to work with Date objects without converting to devices Timezone. This would mean that the Date being used / retrieved from DB is also using GMT TimeZone.
-    static let gmtCalendar = {
+    private static let gmtCalendar = {
         var c = Calendar.current
         c.timeZone = TimeZone(abbreviation: "GMT")!
         return c
     }()
     
-    static let chicagoCalendar = {
+    private static let chicagoCalendar = {
         var c = Calendar.current
         c.timeZone = TimeZone(identifier: "America/Chicago")!
         return c
     }()
     
-    private static func gmtFormatter(format: String, abbreviation: String) -> DateFormatter {
-        let f = DateFormatter()
-        f.dateFormat = format
-        f.timeZone = TimeZone(abbreviation: abbreviation)
-        return f
-    }
-    
-    private static func tzFormatter(format: String, identifier: String) -> DateFormatter {
+    static func tzFormatter(format: String, identifier: String) -> DateFormatter {
         let f = DateFormatter()
         f.dateFormat = format
         f.timeZone = TimeZone(identifier: identifier)
