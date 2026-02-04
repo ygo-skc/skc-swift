@@ -29,7 +29,6 @@ struct YouTubeUploadsView: View, Equatable {
                     .equatable()
             }
         }
-        .frame(maxWidth: .infinity)
     }
     
     var body: some View {
@@ -49,7 +48,6 @@ struct YouTubeUploadsView: View, Equatable {
                 .frame(maxWidth: .infinity)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -72,14 +70,13 @@ private struct YouTubeUploadView: View, Equatable {
     private static let THUMBNAIL_URI_TEMPLATE = "https://img.youtube.com/vi/%@/mqdefault.jpg"
     
     var body: some View {
-        VStack {
-            HStack(spacing: 15)  {
+        VStack(alignment: .leading) {
+            HStack(alignment: .top, spacing: 15)  {
                 RoundedRectImage(width: YouTubeUploadView.UPLOAD_IMG_WIDTH, height: YouTubeUploadView.UPLOAD_IMG_HEIGHT, imageUrl: videoThumbnailUrl, cornerRadius: 8)
                     .equatable()
                 Text(videoTitle)
                     .font(.subheadline)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
             .onTapGesture {
                 if let url = URL(string: videoURI) {
@@ -87,10 +84,7 @@ private struct YouTubeUploadView: View, Equatable {
                 }
             }
             Divider()
-                .padding(.vertical, 2)
         }
-        .frame(height: YouTubeUploadView.UPLOAD_IMG_HEIGHT + 12)
-        .frame(maxWidth: .infinity)
         .buttonStyle(.plain)
     }
 }
