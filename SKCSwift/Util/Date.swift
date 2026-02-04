@@ -14,7 +14,7 @@ enum ConversionFromSeconds: Double {
 nonisolated extension Date {
     func timeIntervalSinceNow(millisConversion: ConversionFromSeconds = .days) -> Int {
         let elapsedInterval = Date().timeIntervalSince(self)
-        return Int(floor(elapsedInterval) / millisConversion.rawValue)
+        return Int(elapsedInterval / millisConversion.rawValue)
     }
     
     func getMonthDayAndYear(calendar: Calendar) -> (String, String, String){
@@ -53,7 +53,7 @@ nonisolated extension Date {
 
 extension String {
     func timeIntervalSinceNow(millisConversion: ConversionFromSeconds = .days) -> Int {
-        let referenceDate = Date.yyyyMMddGMT.formatter.date(from: self)!
+        let referenceDate = Date.yyyyMMddLocal.date(from: self)!
         return referenceDate.timeIntervalSinceNow(millisConversion: millisConversion)
     }
 }

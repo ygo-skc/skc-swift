@@ -22,7 +22,7 @@ struct RestrictedContentView: View {
         VStack(alignment: .leading, spacing: 5) {
             if let chosenRestrictedContentDate = model.chosenRestrictedContentDate, chosenRestrictedContentDate > Date.now {
                 Label {
-                    Text("Selected range is effective in \(chosenRestrictedContentDate.timeIntervalSinceNow()) days")
+                    Text("Selected range is effective in \(abs(chosenRestrictedContentDate.timeIntervalSinceNow()) + 1) day(s)")
                 } icon: {
                     Image(systemName: "exclamationmark.circle")
                         .foregroundColor(.orange)
