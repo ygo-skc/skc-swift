@@ -18,6 +18,17 @@ struct UpcomingTCGProductsView: View, Equatable {
     let networkError: NetworkError?
     let retryCB: () async -> Void
     
+    @ViewBuilder
+    private var upcomingTCGProducts: some View {
+        Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
+            .font(.callout)
+            .padding(.bottom)
+        
+        ForEach(events, id: \.name) { event in
+            UpcomingTCGProductView(event: event)
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text("Upcoming products")
@@ -26,7 +37,7 @@ struct UpcomingTCGProductsView: View, Equatable {
             if let networkError {
                 NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
             } else if dataTaskStatus == .done || !events.isEmpty {
-                UpcomingTCGProductsContentView(events: events)
+                upcomingTCGProducts
             } else {
                 HStack {
                     ProgressView("Loading...")
@@ -38,44 +49,31 @@ struct UpcomingTCGProductsView: View, Equatable {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
+}
+
+private struct UpcomingTCGProductView: View {
+    var event: Event
     
-    private struct UpcomingTCGProductsContentView: View, Equatable {
-        let events: [Event]
-        var body: some View {
-            Text("TCG products that have been announced by Konami and of which we know the tentative date of.")
-                .font(.callout)
-                .padding(.bottom)
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            DateBadgeView(date: event.eventDate, dateFormat: Date.isoChicago, variant: .condensed)
+                .equatable()
             
-            ForEach(events, id: \.name) { event in
-                UpcomingTCGProductView(event: event)
+            VStack(alignment: .leading, spacing: 8) {
+                Text(event.name)
+                    .lineLimit(2)
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(LocalizedStringKey(event.notes))
+                    .font(.body)
+                
+                Divider()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 5)
             }
         }
-        
-        private struct UpcomingTCGProductView: View {
-            var event: Event
-            
-            var body: some View {
-                HStack(alignment: .top, spacing: 10) {
-                    DateBadgeView(date: event.eventDate, dateFormat: Date.isoChicago, variant: .condensed)
-                        .equatable()
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(event.name)
-                            .lineLimit(2)
-                            .font(.headline)
-                            .fontWeight(.bold)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(LocalizedStringKey(event.notes))
-                            .font(.body)
-                        
-                        Divider()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.vertical, 5)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-            }
-        }
+        .frame(maxWidth: .infinity)
     }
 }
 

@@ -21,34 +21,11 @@ struct CardOfTheDayView: View, Equatable {
     
     private static let IMAGE_SIZE: CGFloat = 90
     
-    var body: some View {
-        SectionView(header: "Card of the day",
-                    content: {
-            if let networkError {
-                NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
-            } else {
-                Button {
-                    path.append(CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName))
-                } label: {
-                    CardOfTheDayContentsView(cotd: cotd, isDataLoaded: dataTaskStatus == .done)
-                }
-                .disabled(dataTaskStatus != .done && networkError == nil)
-                .buttonStyle(.plain)
-            }
-        }
-        )
-    }
-    
-    private struct CardOfTheDayContentsView: View {
-        let cotd: CardOfTheDay
-        let isDataLoaded: Bool
-        
-        init(cotd: CardOfTheDay, isDataLoaded: Bool) {
-            self.cotd = (cotd.date.isEmpty) ? CardOfTheDay(date: "1991-07-27", version: 0, card: .placeholder) : cotd
-            self.isDataLoaded = isDataLoaded
-        }
-        
-        var body: some View {
+    @ViewBuilder
+    private var content: some View {
+        Button {
+            path.append(CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName))
+        } label: {
             HStack(alignment: .top, spacing: 15) {
                 CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
                     .equatable()
@@ -67,11 +44,24 @@ struct CardOfTheDayView: View, Equatable {
                     
                 }
             }
-            .if(!isDataLoaded) {
+            .if(dataTaskStatus != .done) {
                 $0.redacted(reason: .placeholder)
             }
             .contentShape(Rectangle())
         }
+        .disabled(dataTaskStatus != .done && networkError == nil)
+        .buttonStyle(.plain)
+    }
+    
+    var body: some View {
+        SectionView(header: "Card of the day",
+                    content: {
+            if let networkError {
+                NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+            } else {
+                content
+            }}
+        )
     }
 }
 

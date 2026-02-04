@@ -18,82 +18,77 @@ struct DBStatsView: View, Equatable {
     let networkError: NetworkError?
     let retryCB: () async -> Void
     
+    @ViewBuilder
+    private var disclosure: some View {
+        Group {
+            Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
+            Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
+            if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+               let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+                Text("App Version \(appVersion)(\(build))")
+                    .italic()
+            }
+        }
+        .padding(.bottom, 2)
+        .font(.footnote)
+    }
+    
+    @ViewBuilder
+    private var stats: some View {
+        Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
+            .font(.callout)
+            .padding(.bottom)
+        
+        HStack {
+            Text("DB\nData")
+                .font(.headline)
+                .fontWeight(.regular)
+                .padding(.trailing)
+            Spacer()
+            FlowLayout(spacing: 15) {
+                DBStatView(count: dbStats.cardTotal, stat: "Cards", isDataLoaded: dataTaskStatus == .done)
+                DBStatView(count: dbStats.banListTotal, stat: "Ban Lists", isDataLoaded: dataTaskStatus == .done)
+                DBStatView(count: dbStats.productTotal, stat: "Products", isDataLoaded: dataTaskStatus == .done)
+            }
+            Spacer()
+        }
+    }
+    
     var body: some View {
         SectionView(header: "Content",
                     content: {
             if let networkError {
                 NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
             } else {
-                DBDataView(dbStats: dbStats, isDataLoaded: dataTaskStatus == .done)
+                stats
                 Divider()
                     .padding(.vertical, 4)
-                DataDisclosure()
+                disclosure
             }
         })
     }
+}
+
+private struct DBStatView: View {
+    let count: Int
+    let stat: String
+    let isDataLoaded: Bool
     
-    private struct DataDisclosure: View {
-        var body: some View {
-            Group {
-                Text("Konami owns all rights to Yu-Gi-Oh! and all card images used in this app.")
-                Text("This app is not affiliated with Konami and all assets are used under Fair Use.")
-                if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-                   let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-                    Text("App Version \(appVersion)(\(build))")
-                        .italic()
-                }
-            }
-            .padding(.bottom, 2)
-            .font(.footnote)
-        }
+    init(count: Int, stat: String, isDataLoaded: Bool) {
+        self.count = (!isDataLoaded) ? -999 : count
+        self.stat = stat
+        self.isDataLoaded = isDataLoaded
     }
     
-    private struct DBDataView: View {
-        let dbStats: SKCDatabaseStats
-        let isDataLoaded: Bool
-        
-        var body: some View {
-            Text("All data is provided by a collection of API's/DB's designed to provide the best Yu-Gi-Oh! information.")
-                .font(.callout)
-                .padding(.bottom)
-            
-            HStack {
-                Text("DB\nData")
-                    .font(.headline)
-                    .fontWeight(.regular)
-                    .padding(.trailing)
-                Spacer()
-                FlowLayout(spacing: 15) {
-                    DBStatView(count: dbStats.cardTotal, stat: "Cards", isDataLoaded: isDataLoaded)
-                    DBStatView(count: dbStats.banListTotal, stat: "Ban Lists", isDataLoaded: isDataLoaded)
-                    DBStatView(count: dbStats.productTotal, stat: "Products", isDataLoaded: isDataLoaded)
-                }
-                Spacer()
-            }
+    var body: some View {
+        VStack {
+            Text(count.decimal)
+            Text(stat)
+                .font(.subheadline)
+                .fontWeight(.semibold)
         }
-        
-        private struct DBStatView: View {
-            let count: Int
-            let stat: String
-            let isDataLoaded: Bool
-            
-            init(count: Int, stat: String, isDataLoaded: Bool) {
-                self.count = (!isDataLoaded) ? -999 : count
-                self.stat = stat
-                self.isDataLoaded = isDataLoaded
-            }
-            
-            var body: some View {
-                VStack {
-                    Text(count.decimal)
-                    Text(stat)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                }
-                .if(!isDataLoaded) {
-                    $0.redacted(reason: .placeholder)
-                }
-            }
+        .if(!isDataLoaded) {
+            $0.redacted(reason: .placeholder)
         }
     }
 }
