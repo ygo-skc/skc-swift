@@ -11,6 +11,24 @@ struct TrendingView: View {
     @Binding var path: NavigationPath
     @Binding var trendingModel: TrendingViewModel
     
+    var trendingProducts: some View {
+        VStack {
+            ForEach(Array(trendingModel.products.enumerated()), id: \.element.resource.productId) { position, m in
+                let product = m.resource
+                Button {
+                    path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
+                } label: {
+                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                        ProductListItemView(product: product)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -30,7 +48,7 @@ struct TrendingView: View {
                                             hits: trendingModel.cards[ind].occurrences)
                         })
                     case .product:
-                        TrendingProductsView(path: $path, trendingProducts: trendingModel.products)
+                        trendingProducts
                     }
                 }
             }
@@ -52,29 +70,6 @@ struct TrendingView: View {
             } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
                 ProgressView("Loading...")
                     .controlSize(.large)
-            }
-        }
-    }
-    
-    private struct TrendingProductsView: View {
-        @Binding var path: NavigationPath
-        let trendingProducts: [TrendingMetric<Product>]
-        
-        var body: some View {
-            VStack {
-                ForEach(Array(trendingProducts.enumerated()), id: \.element.resource.productId) { position, m in
-                    let product = m.resource
-                    Button {
-                        path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
-                    } label: {
-                        GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
-                            ProductListItemView(product: product)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
-                }
             }
         }
     }
