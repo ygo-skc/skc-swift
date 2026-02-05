@@ -59,7 +59,7 @@ nonisolated fileprivate func baseRequest(url: URL, httpMethod: String, reqBody: 
     return request
 }
 
-nonisolated fileprivate func validateResponse(response: URLResponse?) async throws {
+nonisolated fileprivate func validateResponse(response: URLResponse?) throws {
     if let httpResponse = response as? HTTPURLResponse {
         let code = httpResponse.statusCode
         switch code {
@@ -89,13 +89,14 @@ nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, http
     await dataTask(url, reqBody: reqBody, resType: resType, httpMethod: httpMethod)
 }
 
+@concurrent
 fileprivate nonisolated func dataTask<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
         let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
         try Task.checkCancellation()
         let (body, response) = try await customSession.data(for: baseRequest(url: url, httpMethod: httpMethod, reqBody: bodyData))
         try Task.checkCancellation()
-        try await validateResponse(response: response)
+        try validateResponse(response: response)
         return .success(try JSONDecoder().decode(resType, from: body))
     } catch let networkError as NetworkError {
         print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")
