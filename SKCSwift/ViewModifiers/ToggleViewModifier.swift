@@ -11,7 +11,6 @@ struct ButtonToggleViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .toggleStyle(.button)
-            .frame(maxWidth: .infinity)
             .tint(.primary)
     }
 }
