@@ -48,29 +48,29 @@ struct Ygo_Card: Sendable {
   var effect: String = String()
 
   var monsterType: SwiftProtobuf.Google_Protobuf_StringValue {
-    get {return _monsterType ?? SwiftProtobuf.Google_Protobuf_StringValue()}
+    get {_monsterType ?? SwiftProtobuf.Google_Protobuf_StringValue()}
     set {_monsterType = newValue}
   }
   /// Returns true if `monsterType` has been explicitly set.
-  var hasMonsterType: Bool {return self._monsterType != nil}
+  var hasMonsterType: Bool {self._monsterType != nil}
   /// Clears the value of `monsterType`. Subsequent reads from it will return its default value.
   mutating func clearMonsterType() {self._monsterType = nil}
 
   var attack: SwiftProtobuf.Google_Protobuf_UInt32Value {
-    get {return _attack ?? SwiftProtobuf.Google_Protobuf_UInt32Value()}
+    get {_attack ?? SwiftProtobuf.Google_Protobuf_UInt32Value()}
     set {_attack = newValue}
   }
   /// Returns true if `attack` has been explicitly set.
-  var hasAttack: Bool {return self._attack != nil}
+  var hasAttack: Bool {self._attack != nil}
   /// Clears the value of `attack`. Subsequent reads from it will return its default value.
   mutating func clearAttack() {self._attack = nil}
 
   var defense: SwiftProtobuf.Google_Protobuf_UInt32Value {
-    get {return _defense ?? SwiftProtobuf.Google_Protobuf_UInt32Value()}
+    get {_defense ?? SwiftProtobuf.Google_Protobuf_UInt32Value()}
     set {_defense = newValue}
   }
   /// Returns true if `defense` has been explicitly set.
-  var hasDefense: Bool {return self._defense != nil}
+  var hasDefense: Bool {self._defense != nil}
   /// Clears the value of `defense`. Subsequent reads from it will return its default value.
   mutating func clearDefense() {self._defense = nil}
 
@@ -143,11 +143,11 @@ struct Ygo_ProductItem: Sendable {
   // methods supported on all messages.
 
   var card: Ygo_Card {
-    get {return _card ?? Ygo_Card()}
+    get {_card ?? Ygo_Card()}
     set {_card = newValue}
   }
   /// Returns true if `card` has been explicitly set.
-  var hasCard: Bool {return self._card != nil}
+  var hasCard: Bool {self._card != nil}
   /// Clears the value of `card`. Subsequent reads from it will return its default value.
   mutating func clearCard() {self._card = nil}
 
@@ -238,20 +238,20 @@ struct Ygo_ScoresForFormatAndDate: Sendable {
   var effectiveDate: String = String()
 
   var nextFormatDate: SwiftProtobuf.Google_Protobuf_StringValue {
-    get {return _nextFormatDate ?? SwiftProtobuf.Google_Protobuf_StringValue()}
+    get {_nextFormatDate ?? SwiftProtobuf.Google_Protobuf_StringValue()}
     set {_nextFormatDate = newValue}
   }
   /// Returns true if `nextFormatDate` has been explicitly set.
-  var hasNextFormatDate: Bool {return self._nextFormatDate != nil}
+  var hasNextFormatDate: Bool {self._nextFormatDate != nil}
   /// Clears the value of `nextFormatDate`. Subsequent reads from it will return its default value.
   mutating func clearNextFormatDate() {self._nextFormatDate = nil}
 
   var previousFormatDate: SwiftProtobuf.Google_Protobuf_StringValue {
-    get {return _previousFormatDate ?? SwiftProtobuf.Google_Protobuf_StringValue()}
+    get {_previousFormatDate ?? SwiftProtobuf.Google_Protobuf_StringValue()}
     set {_previousFormatDate = newValue}
   }
   /// Returns true if `previousFormatDate` has been explicitly set.
-  var hasPreviousFormatDate: Bool {return self._previousFormatDate != nil}
+  var hasPreviousFormatDate: Bool {self._previousFormatDate != nil}
   /// Clears the value of `previousFormatDate`. Subsequent reads from it will return its default value.
   mutating func clearPreviousFormatDate() {self._previousFormatDate = nil}
 
@@ -273,11 +273,11 @@ struct Ygo_CardScoreEntry: Sendable {
   // methods supported on all messages.
 
   var card: Ygo_Card {
-    get {return _card ?? Ygo_Card()}
+    get {_card ?? Ygo_Card()}
     set {_card = newValue}
   }
   /// Returns true if `card` has been explicitly set.
-  var hasCard: Bool {return self._card != nil}
+  var hasCard: Bool {self._card != nil}
   /// Clears the value of `card`. Subsequent reads from it will return its default value.
   mutating func clearCard() {self._card = nil}
 
