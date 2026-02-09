@@ -31,7 +31,7 @@ final class RestrictedCardsViewModel {
         if timelineDTS != .done || timelineNE != nil {
             return nil
         } else {
-            return Date.yyyyMMddLocal.date(from: restrictionDates[dateRangeIndex].effectiveDate) ?? nil
+            return Date.yyyyMMddLocalFormatter.date(from: restrictionDates[dateRangeIndex].effectiveDate) ?? nil
         }
     }
     

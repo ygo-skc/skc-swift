@@ -26,11 +26,19 @@ nonisolated extension Date {
         return self.timeIntervalSinceNow(millisConversion: millisConversion) >= t
     }
     
-    static let yyyyMMddLocal = Date.tzFormatter(format: "yyyy-MM-dd", identifier: TimeZone.current.identifier)
+    static let yyyyMMddLocalFormatter = Date.tzFormatter(format: "yyyy-MM-dd", identifier: TimeZone.current.identifier)
+    
+    static let yyyyMMddLocal = (formatter: yyyyMMddLocalFormatter, calendar: localCalendar)
     static let yyyyMMddGMT = (formatter: tzFormatter(format: "yyyy-MM-dd", identifier: "GMT"), calendar: gmtCalendar)
     static let isoChicago = (formatter: tzFormatter(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", identifier: "America/Chicago"), calendar: chicagoCalendar)
     
     /// Use this calendar object to work with Date objects without converting to devices Timezone. This would mean that the Date being used / retrieved from DB is also using GMT TimeZone.
+    private static let localCalendar = {
+        var c = Calendar.current
+        c.timeZone = TimeZone.current
+        return c
+    }()
+    
     private static let gmtCalendar = {
         var c = Calendar.current
         c.timeZone = TimeZone(abbreviation: "GMT")!
@@ -53,7 +61,7 @@ nonisolated extension Date {
 
 extension String {
     func timeIntervalSinceNow(millisConversion: ConversionFromSeconds = .days) -> Int {
-        let referenceDate = Date.yyyyMMddLocal.date(from: self)!
+        let referenceDate = Date.yyyyMMddLocalFormatter.date(from: self)!
         return referenceDate.timeIntervalSinceNow(millisConversion: millisConversion)
     }
 }

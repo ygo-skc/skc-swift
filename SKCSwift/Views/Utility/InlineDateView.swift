@@ -12,8 +12,12 @@ struct InlineDateView: View, Equatable {
     private let day: String
     private let year: String
     
-    init(date: String, dateFormat: (formatter: DateFormatter, calendar: Calendar) = Date.yyyyMMddGMT) {
+    init(date: String, dateFormat: (formatter: DateFormatter, calendar: Calendar) = Date.yyyyMMddLocal) {
         let date = dateFormat.formatter.date(from: date)!
+        (self.month, self.day, self.year) = date.getMonthDayAndYear(calendar: dateFormat.calendar)
+    }
+    
+    init(date: Date, dateFormat: (formatter: DateFormatter, calendar: Calendar) = Date.yyyyMMddLocal) {
         (self.month, self.day, self.year) = date.getMonthDayAndYear(calendar: dateFormat.calendar)
     }
     
