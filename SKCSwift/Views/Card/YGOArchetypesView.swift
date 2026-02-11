@@ -54,6 +54,7 @@ struct YGOArchetypeView: View {
                 }
             }
             .modifier(.parentView)
+            .frame(maxWidth: .infinity)
             .navigationTitle(model.archetype)
             .navigationBarTitleDisplayMode(.large)
             .task {
@@ -84,6 +85,7 @@ struct YGOArchetypeView: View {
         let category: YGOArchetypeCategory
         let categorySystemImage: String
         let cards: [YGOCard]
+        let numCards: Int
         
         init(archetype: String, category: YGOArchetypeCategory, cards: [YGOCard]) {
             self.archetype = archetype
@@ -94,25 +96,36 @@ struct YGOArchetypeView: View {
             case .exclusions: "xmark.circle"
             }
             self.cards = cards
+            self.numCards = self.cards.count
         }
+        
+        private static let max: Int = 5
         
         var body: some View {
             if !cards.isEmpty {
                 VStack(alignment: .leading) {
-                    NavigationLink(value: YGOArchetypeCategoryLinkDestinationValue(archetype: archetype, category: category, cards: cards)) {
-                        HStack {
-                            Label("\(category.rawValue) • \(cards.count)", systemImage: categorySystemImage)
-                                .font(.headline)
-                            Spacer()
-                            Image(systemName: "chevron.forward")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                    if numCards > YGOArchetypeSectionView.max {
+                        NavigationLink(value: YGOArchetypeCategoryLinkDestinationValue(archetype: archetype, category: category, cards: cards)) {
+                            HStack {
+                                Label("\(category.rawValue) • \(numCards)", systemImage: categorySystemImage)
+                                    .font(.headline)
+                                Spacer()
+                                Text("More")
+                                    .font(.headline)
+                                    .fontWeight(.ultraLight)
+                                Image(systemName: "chevron.forward")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .contentShape(Rectangle())
                         }
-                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
+                    } else {
+                        Label("\(category.rawValue) • \(numCards)", systemImage: categorySystemImage)
+                            .font(.headline)
                     }
-                    .buttonStyle(.plain)
                     
-                    CardListView(cards: Array(cards.prefix(5)))
+                    CardListView(cards: Array(cards.prefix(YGOArchetypeSectionView.max)))
                 }
             }
         }

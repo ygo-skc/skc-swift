@@ -27,7 +27,6 @@ struct SectionView<Content: View>: View {
             }
             .groupBoxStyle(.sectionContent)
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 

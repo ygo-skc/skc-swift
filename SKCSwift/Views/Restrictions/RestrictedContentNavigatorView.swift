@@ -43,7 +43,6 @@ struct RestrictedContentNavigatorView: View {
                     TabButton(selected: $format, value: format, animation: animation)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
     }
     
@@ -63,7 +62,6 @@ struct RestrictedContentNavigatorView: View {
                     TabButton(selected: $contentCategory, value: category, animation: animation)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
     }
 }
@@ -104,7 +102,6 @@ struct RestrictedContentDatesView: View {
                 .navigationTransition(.zoom(sourceID: "dates", in: animation))
             }
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 }
 

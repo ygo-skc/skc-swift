@@ -27,7 +27,7 @@ final class HomeViewModel {
     @ObservationIgnored
     private(set) var dbStats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
     @ObservationIgnored
-    private(set) var cardOfTheDay = CardOfTheDay(date: "", version: 1, card: .placeholder)
+    private(set) var cardOfTheDay = CardOfTheDay(date: "1993-07-27", version: 1, card: .placeholder)
     @ObservationIgnored
     private(set) var upcomingTCGProducts = [Event]()
     @ObservationIgnored

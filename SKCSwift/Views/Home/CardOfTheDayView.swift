@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CardOfTheDayView: View, Equatable {
     static func == (lhs: CardOfTheDayView, rhs: CardOfTheDayView) -> Bool {
-        lhs.cotd == rhs.cotd && lhs.dataTaskStatus == rhs.dataTaskStatus && lhs.networkError == rhs.networkError
+        lhs.cotd == rhs.cotd
+        && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
     
     @Binding var path: NavigationPath
@@ -20,34 +21,12 @@ struct CardOfTheDayView: View, Equatable {
     
     private static let IMAGE_SIZE: CGFloat = 90
     
-    var body: some View {
-        SectionView(
-            header: "Card of the day",
-            content: {
-                if let networkError {
-                    NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
-                } else {
-                    Button {
-                        path.append(CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName))
-                    } label: { CardOfTheDayContentsView(cotd: cotd, isDataLoaded: dataTaskStatus == .done) }
-                        .disabled(dataTaskStatus != .done && networkError == nil)
-                        .buttonStyle(.plain)
-                }
-            }
-        )
-    }
-    
-    private struct CardOfTheDayContentsView: View {
-        let cotd: CardOfTheDay
-        let isDataLoaded: Bool
-        
-        init(cotd: CardOfTheDay, isDataLoaded: Bool) {
-            self.cotd = (cotd.date.isEmpty) ? CardOfTheDay(date: "1991-07-27", version: 0, card: .placeholder) : cotd
-            self.isDataLoaded = isDataLoaded
-        }
-        
-        var body: some View {
-            HStack(alignment: .top, spacing: 20) {
+    @ViewBuilder
+    private var content: some View {
+        Button {
+            path.append(CardLinkDestinationValue(cardID: cotd.card.cardID, cardName: cotd.card.cardName))
+        } label: {
+            HStack(alignment: .top, spacing: 15) {
                 CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
                     .equatable()
                 VStack(alignment: .leading, spacing: 5) {
@@ -65,12 +44,24 @@ struct CardOfTheDayView: View, Equatable {
                     
                 }
             }
-            .if(!isDataLoaded) {
+            .if(dataTaskStatus != .done) {
                 $0.redacted(reason: .placeholder)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
         }
+        .disabled(dataTaskStatus != .done && networkError == nil)
+        .buttonStyle(.plain)
+    }
+    
+    var body: some View {
+        SectionView(header: "Card of the day",
+                    content: {
+            if let networkError {
+                NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
+            } else {
+                content
+            }}
+        )
     }
 }
 
@@ -82,10 +73,10 @@ struct CardOfTheDayView: View, Equatable {
                          cotd: CardOfTheDay(date: "2025-02-24",
                                             version: 1,
                                             card: YGOCard(cardID: "68762510",
-                                                       cardName: "Lucky Pied Piper",
-                                                       cardColor: "Effect",
-                                                       cardAttribute: "Wind" ,
-                                                       cardEffect: "")),
+                                                          cardName: "Lucky Pied Piper",
+                                                          cardColor: "Effect",
+                                                          cardAttribute: "Wind" ,
+                                                          cardEffect: "")),
                          dataTaskStatus: .done, networkError: nil, retryCB: {})
         .padding(.horizontal)
     }
@@ -99,10 +90,10 @@ struct CardOfTheDayView: View, Equatable {
                          cotd: CardOfTheDay(date: "2025-02-24",
                                             version: 1,
                                             card: YGOCard(cardID: "68762510",
-                                                       cardName: "Lucky Pied Piper",
-                                                       cardColor: "Effect",
-                                                       cardAttribute: "Wind" ,
-                                                       cardEffect: "")),
+                                                          cardName: "Lucky Pied Piper",
+                                                          cardColor: "Effect",
+                                                          cardAttribute: "Wind" ,
+                                                          cardEffect: "")),
                          dataTaskStatus: .pending, networkError: nil, retryCB: {})
         .padding(.horizontal)
     }
@@ -116,10 +107,10 @@ struct CardOfTheDayView: View, Equatable {
                          cotd: CardOfTheDay(date: "2025-02-24",
                                             version: 1,
                                             card: YGOCard(cardID: "68762510",
-                                                       cardName: "Lucky Pied Piper",
-                                                       cardColor: "Effect",
-                                                       cardAttribute: "Wind" ,
-                                                       cardEffect: "")),
+                                                          cardName: "Lucky Pied Piper",
+                                                          cardColor: "Effect",
+                                                          cardAttribute: "Wind" ,
+                                                          cardEffect: "")),
                          dataTaskStatus: .error, networkError: .timeout, retryCB: {})
         .padding(.horizontal)
     }

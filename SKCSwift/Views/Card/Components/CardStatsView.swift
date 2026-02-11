@@ -20,6 +20,32 @@ struct CardStatsView: View, Equatable {
         self.attribute = self.card.attribute
     }
     
+    @ViewBuilder
+    private var passwordAndStats: some View {
+        HStack {
+            if !card.isGod {
+                Text(card.cardID)
+                    .modifier(CardIdModifier(variant: variant))
+            }
+            
+            Spacer()
+            
+            HStack(spacing: 15) {
+                Text(card.atk)
+                    .modifier(MonsterAttackDefenseModifier(variant: variant))
+                    .foregroundColor(.red)
+                Text(card.def)
+                    .modifier(MonsterAttackDefenseModifier(variant: variant))
+                    .foregroundColor(.blue)
+            }
+            .modifier(MonsterAttackDefenseContainerModifier(variant: variant))
+            .if(card.cardColor == "Spell" || card.cardColor == "Trap" ) {
+                $0.hidden()
+            }
+        }
+        .padding(.top, 1)
+    }
+    
     var body: some View {
         VStack(spacing: 5)  {
             Text(card.cardName)
@@ -37,29 +63,8 @@ struct CardStatsView: View, Equatable {
                 
                 Text(replaceHTMLEntities(subject: card.cardEffect))
                     .modifier(CardEffectModifier(variant: variant))
+                passwordAndStats
                 
-                HStack {
-                    if !card.isGod {
-                        Text(card.cardID)
-                            .modifier(CardIdModifier(variant: variant))
-                    }
-                    
-                    Spacer()
-                    
-                    HStack(spacing: 15) {
-                        Text(card.atk)
-                            .modifier(MonsterAttackDefenseModifier(variant: variant))
-                            .foregroundColor(.red)
-                        Text(card.def)
-                            .modifier(MonsterAttackDefenseModifier(variant: variant))
-                            .foregroundColor(.blue)
-                    }
-                    .modifier(MonsterAttackDefenseContainerModifier(variant: variant))
-                    .if(card.cardColor == "Spell" || card.cardColor == "Trap" ) {
-                        $0.hidden()
-                    }
-                }
-                .padding(.top, 1)
             }
             .padding(.all, (variant == .normal) ? 10 : 6)
             .background(.regularMaterial)
@@ -75,134 +80,8 @@ struct CardStatsView: View, Equatable {
             $0.redacted(reason: .placeholder)
         }
         .cornerRadius((variant == .normal) ? 10 : 7)
-        .frame(
-            maxWidth: .infinity,
-            alignment: .topLeading
-        )
+        .frame(maxWidth: .infinity)
         .dynamicTypeSize(...DynamicTypeSize.xLarge)
-    }
-    
-    private struct CardNameModifier: ViewModifier {
-        var variant: YGOCardViewVariant
-        
-        func body(content: Content) -> some View {
-            switch(variant) {
-            case .normal:
-                content
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .lineLimit(1)
-            case .condensed, .listView:
-                content
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .lineLimit(1)
-                    .padding(.vertical, -1)
-            }
-        }
-    }
-
-    private struct MonsterTypeModifier: ViewModifier {
-        var variant: YGOCardViewVariant
-        
-        func body(content: Content) -> some View {
-            switch(variant) {
-            case .normal:
-                content
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .multilineTextAlignment(.leading)
-                    .padding(.bottom, 1.0)
-            case .condensed, .listView:
-                content
-                    .font(.footnote)
-                    .fontWeight(.medium)
-                    .multilineTextAlignment(.leading)
-                    .padding(.bottom, 1.0)
-            }
-        }
-    }
-
-    private struct CardEffectModifier: ViewModifier {
-        var variant: YGOCardViewVariant
-        
-        func body(content: Content) -> some View {
-            switch(variant) {
-            case .normal:
-                content
-                    .font(.body)
-                    .fontWeight(.light)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-            case .condensed:
-                content
-                    .font(.footnote)
-                    .fontWeight(.light)
-                    .lineLimit(3, reservesSpace: true)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-            case .listView:
-                content
-                    .font(.footnote)
-                    .fontWeight(.light)
-                    .lineLimit(3, reservesSpace: true)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-            }
-        }
-    }
-
-    private struct CardIdModifier: ViewModifier {
-        var variant: YGOCardViewVariant
-        
-        func body(content: Content) -> some View {
-            switch(variant) {
-            case .normal:
-                content
-                    .font(.callout)
-                    .fontWeight(.light)
-            case .condensed, .listView:
-                content
-                    .font(.caption)
-                    .fontWeight(.light)
-            }
-        }
-    }
-
-    private struct MonsterAttackDefenseModifier: ViewModifier {
-        var variant: YGOCardViewVariant
-        
-        func body(content: Content) -> some View {
-            switch(variant) {
-            case .normal:
-                content
-                    .font(.callout)
-                    .fontWeight(.bold)
-            case .condensed, .listView:
-                content
-                    .font(.caption)
-                    .fontWeight(.bold)
-            }
-        }
-    }
-
-    private struct MonsterAttackDefenseContainerModifier: ViewModifier {
-        var variant: YGOCardViewVariant
-        
-        func body(content: Content) -> some View {
-            switch(variant) {
-            case .normal:
-                content
-                    .padding(.all, 5)
-                    .background(.regularMaterial)
-                    .cornerRadius(10)
-            case .condensed, .listView:
-                content
-                    .padding(.all, 4)
-                    .background(.regularMaterial)
-                    .cornerRadius(8)
-            }
-        }
     }
 }
 
@@ -220,6 +99,126 @@ struct CardStatsView: View, Equatable {
             monsterDefense: 2500
         )
     )
+}
+
+private struct CardNameModifier: ViewModifier {
+    var variant: YGOCardViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .font(.title3)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+        case .condensed, .listView:
+            content
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .lineLimit(1)
+                .padding(.vertical, -1)
+        }
+    }
+}
+
+private struct MonsterTypeModifier: ViewModifier {
+    var variant: YGOCardViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .font(.body)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.leading)
+                .padding(.bottom, 1.0)
+        case .condensed, .listView:
+            content
+                .font(.footnote)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.leading)
+                .padding(.bottom, 1.0)
+        }
+    }
+}
+
+private struct CardEffectModifier: ViewModifier {
+    var variant: YGOCardViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .font(.body)
+                .fontWeight(.light)
+                .multilineTextAlignment(.leading)
+        case .condensed:
+            content
+                .font(.footnote)
+                .fontWeight(.light)
+                .lineLimit(3, reservesSpace: true)
+                .multilineTextAlignment(.leading)
+        case .listView:
+            content
+                .font(.footnote)
+                .fontWeight(.light)
+                .lineLimit(3, reservesSpace: true)
+                .multilineTextAlignment(.leading)
+        }
+    }
+}
+
+private struct CardIdModifier: ViewModifier {
+    var variant: YGOCardViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .font(.callout)
+                .fontWeight(.light)
+        case .condensed, .listView:
+            content
+                .font(.caption)
+                .fontWeight(.light)
+        }
+    }
+}
+
+private struct MonsterAttackDefenseModifier: ViewModifier {
+    var variant: YGOCardViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .font(.callout)
+                .fontWeight(.bold)
+        case .condensed, .listView:
+            content
+                .font(.caption)
+                .fontWeight(.bold)
+        }
+    }
+}
+
+private struct MonsterAttackDefenseContainerModifier: ViewModifier {
+    var variant: YGOCardViewVariant
+    
+    func body(content: Content) -> some View {
+        switch(variant) {
+        case .normal:
+            content
+                .padding(.all, 5)
+                .background(.regularMaterial)
+                .cornerRadius(10)
+        case .condensed, .listView:
+            content
+                .padding(.all, 4)
+                .background(.regularMaterial)
+                .cornerRadius(8)
+        }
+    }
 }
 
 #Preview("Card Stats - Condensed") {

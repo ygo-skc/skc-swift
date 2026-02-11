@@ -58,7 +58,6 @@ struct SuggestionSectionView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 SuggestionCarouselView(references: references, variant: variant)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
