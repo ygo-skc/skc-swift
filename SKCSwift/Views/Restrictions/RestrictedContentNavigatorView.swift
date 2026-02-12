@@ -15,58 +15,51 @@ struct RestrictedContentNavigatorView: View {
     let dates: [BanListDate]
     let isDisabled: Bool    // bubbling up since disabling the parent causes issues w/ popover in iOS 18
     
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            RestrictedContentFormatsView(format: $format)
-                .disabled(isDisabled)
-            RestrictedContentDatesView(dateRangeIndex: $dateRangeIndex, dates: dates, isDisabled: isDisabled)
-            if format == .tcg || format == .md {
-                BannedContentCategoryView(contentCategory: $contentCategory)
-                    .disabled(isDisabled)
+    @Namespace private var formatAnimation
+    @Namespace private var categoryAnimation
+    
+    private static let categories: [BannedContentCategory] = [.forbidden, .limited, .semiLimited]
+    private static let formats: [CardRestrictionFormat] = [.tcg, .md, .genesys]
+    
+    @ViewBuilder
+    private var formatView: some View {
+        HStack(spacing: 15) {
+            Text("Format")
+                .font(.subheadline)
+                .fontWeight(.regular)
+            
+            ForEach(RestrictedContentNavigatorView.formats, id: \.rawValue) { format in
+                TabButton(selected: $format, value: format, animation: formatAnimation)
             }
         }
+        .disabled(isDisabled)
     }
     
-    private struct RestrictedContentFormatsView: View {
-        @Binding var format: CardRestrictionFormat
-        @Namespace private var animation
-        
-        private static let formats: [CardRestrictionFormat] = [.tcg, .md, .genesys]
-        
-        var body: some View {
-            HStack(spacing: 15) {
-                Text("Format")
-                    .font(.subheadline)
-                    .fontWeight(.regular)
-                
-                ForEach(RestrictedContentFormatsView.formats, id: \.rawValue) { format in
-                    TabButton(selected: $format, value: format, animation: animation)
-                }
-            }
-        }
-    }
-    
-    private struct BannedContentCategoryView: View {
-        @Binding var contentCategory: BannedContentCategory
-        @Namespace private var animation
-        
-        private static let categories: [BannedContentCategory] = [.forbidden, .limited, .semiLimited]
-        
-        var body: some View {
+    @ViewBuilder
+    private var category: some View {
+        if format == .tcg || format == .md {
             HStack(spacing: 15) {
                 Text("Category")
                     .font(.subheadline)
                     .fontWeight(.regular)
                 
-                ForEach(BannedContentCategoryView.categories, id: \.rawValue) { category in
-                    TabButton(selected: $contentCategory, value: category, animation: animation)
+                ForEach(RestrictedContentNavigatorView.categories, id: \.rawValue) { category in
+                    TabButton(selected: $contentCategory, value: category, animation: categoryAnimation)
                 }
             }
         }
     }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            formatView
+            RestrictedContentDatesView(dateRangeIndex: $dateRangeIndex, dates: dates, isDisabled: isDisabled)
+            category
+        }
+    }
 }
 
-struct RestrictedContentDatesView: View {
+private struct RestrictedContentDatesView: View {
     @Binding var dateRangeIndex: Int
     let dates: [BanListDate]
     let isDisabled: Bool
@@ -105,10 +98,6 @@ struct RestrictedContentDatesView: View {
     }
 }
 
-private func getYear(banListDate: String) -> String {
-    return String(banListDate.split(separator: "-", maxSplits: 1)[0])
-}
-
 private struct BanListDateRangePicker: View {
     @State private var chosenYear: String
     @Binding private var dateRangeIndex: Int
@@ -125,7 +114,7 @@ private struct BanListDateRangePicker: View {
     init(chosenDateRange: Binding<Int>,
          showDateSelectorSheet: Binding<Bool>,
          banListDates: [BanListDate]) {
-        _chosenYear = State(initialValue: getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate))
+        _chosenYear = State(initialValue: BanListDateRangePicker.getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate))
         self._dateRangeIndex = chosenDateRange
         self._showDateSelectorSheet = showDateSelectorSheet
         self.dates = banListDates
@@ -133,7 +122,7 @@ private struct BanListDateRangePicker: View {
         for (ind, banList) in banListDates.enumerated() {
             let banListDate = banList.effectiveDate
             banListEffectiveDatesByInd[banListDate] = ind
-            banListEffectiveDatesByYear[getYear(banListDate: banListDate), default: [String]()].append(banListDate)
+            banListEffectiveDatesByYear[BanListDateRangePicker.getYear(banListDate: banListDate), default: [String]()].append(banListDate)
         }
         
         let yearsSortedDesc = Array(banListEffectiveDatesByYear.keys).sorted(by: >)
@@ -146,6 +135,10 @@ private struct BanListDateRangePicker: View {
         } else {
             olderYears = nil
         }
+    }
+    
+    private static func getYear(banListDate: String) -> String {
+        return String(banListDate.split(separator: "-", maxSplits: 1)[0])
     }
     
     var body: some View {
