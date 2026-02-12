@@ -32,6 +32,8 @@ struct RestrictedContentView: View {
             if model.format == .genesys {
                 Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
                       systemImage: "info.circle")
+                .font(.callout)
+                .padding(.bottom)
             } else {
                 contentExplainer
             }
@@ -62,6 +64,8 @@ struct RestrictedContentView: View {
                     .foregroundColor(.green)
             }
         }
+        .font(.callout)
+        .padding(.bottom)
     }
     
     var body: some View {
