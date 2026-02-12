@@ -33,7 +33,33 @@ struct RestrictedContentView: View {
                 Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
                       systemImage: "info.circle")
             } else {
-                RestrictedCategoryExplanationView(category: model.chosenBannedContentCategory)
+                contentExplainer
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var contentExplainer: some View {
+        Label {
+            switch(model.chosenBannedContentCategory) {
+            case .forbidden:
+                Text("Below cards cannot be used in the main/side/extra decks")
+            case .limited:
+                Text("Only one copy of the below cards can be used in the main/side/extra decks")
+            case .semiLimited:
+                Text("Only two copy of the below cards can be used in the main/side/extra decks")
+            }
+        } icon: {
+            switch(model.chosenBannedContentCategory) {
+            case .forbidden:
+                Image(systemName: "x.circle.fill")
+                    .foregroundColor(.red)
+            case .limited:
+                Image(systemName: "1.circle.fill")
+                    .foregroundColor(.yellow)
+            case .semiLimited:
+                Image(systemName: "2.circle.fill")
+                    .foregroundColor(.green)
             }
         }
     }
@@ -101,7 +127,7 @@ struct RestrictedContentView: View {
     RestrictedContentView()
 }
 
-private struct RestrictedCardsView<CategoryExplanation: View, Overlay: View>: View, Equatable {
+private struct RestrictedCardsView<Header: View, Overlay: View>: View, Equatable {
     static func == (lhs: RestrictedCardsView, rhs: RestrictedCardsView) -> Bool {
         lhs.isOverlayVisible == rhs.isOverlayVisible
         && lhs.restrictedCards == rhs.restrictedCards
@@ -114,14 +140,14 @@ private struct RestrictedCardsView<CategoryExplanation: View, Overlay: View>: Vi
     
     let isOverlayVisible: Bool
     
-    let categoryExplanation: CategoryExplanation
+    let header: Header
     let overlay: Overlay
     
     init(format: CardRestrictionFormat,
          restrictedCards: [YGOCard],
          scoreEntries: [CardScoreEntry],
          isOverlayVisible: Bool,
-         @ViewBuilder categoryExplanation: () -> CategoryExplanation,
+         @ViewBuilder header: () -> Header,
          @ViewBuilder overlay: () -> Overlay) {
         self.format = format
         self.restrictedCards = restrictedCards
@@ -129,7 +155,7 @@ private struct RestrictedCardsView<CategoryExplanation: View, Overlay: View>: Vi
         
         self.isOverlayVisible = isOverlayVisible
         
-        self.categoryExplanation = categoryExplanation()
+        self.header = header()
         self.overlay = overlay()
     }
     
@@ -137,16 +163,11 @@ private struct RestrictedCardsView<CategoryExplanation: View, Overlay: View>: Vi
         ScrollView {
             if !isOverlayVisible {
                 VStack(alignment: .leading) {
+                    header
                     switch format {
                     case .md, .tcg:
-                        categoryExplanation
-                            .font(.callout)
-                            .padding(.bottom)
                         CardListView(cards: restrictedCards)
                     case .genesys:
-                        categoryExplanation
-                            .font(.callout)
-                            .padding(.bottom)
                         CardListView(cards: scoreEntries.map({ $0.card }), label: { ind in
                             Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
                         })
@@ -202,38 +223,6 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     }
 }
 
-private struct RestrictedCategoryExplanationView: View {
-    private let label: String
-    private let systemImage: String
-    private let color: Color
-    
-    init(category: BannedContentCategory) {
-        switch(category) {
-        case .forbidden:
-            self.label = "Below cards cannot be used in the main/side/extra decks"
-            self.systemImage = "x.circle.fill"
-            self.color = .dateRed
-        case .limited:
-            self.label = "Only one copy of the below cards can be used in the main/side/extra decks"
-            self.systemImage = "1.circle.fill"
-            self.color = .yellow
-        case .semiLimited:
-            self.label = "Only two copy of the below cards can be used in the main/side/extra decks"
-            self.systemImage = "2.circle.fill"
-            self.color = .green
-        }
-    }
-    
-    var body: some View {
-        Label {
-            Text(label)
-        } icon: {
-            Image(systemName: systemImage)
-                .foregroundColor(color)
-        }
-    }
-}
-
 
 #Preview("Timeline pending") {
     let timelineDTS: DataTaskStatus = .pending
@@ -245,7 +234,7 @@ private struct RestrictedCategoryExplanationView: View {
                         restrictedCards: [],
                         scoreEntries: [],
                         isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
-        RestrictedCategoryExplanationView(category: .forbidden)
+        EmptyView()
     } overlay: {
         RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
                                    contentDTS: contentDTS,
@@ -266,7 +255,7 @@ private struct RestrictedCategoryExplanationView: View {
                         restrictedCards: [],
                         scoreEntries: [],
                         isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
-        RestrictedCategoryExplanationView(category: .forbidden)
+        EmptyView()
     } overlay: {
         RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
                                    contentDTS: contentDTS,
@@ -287,7 +276,7 @@ private struct RestrictedCategoryExplanationView: View {
                         restrictedCards: [],
                         scoreEntries: [],
                         isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
-        RestrictedCategoryExplanationView(category: .forbidden)
+        EmptyView()
     } overlay: {
         RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
                                    contentDTS: contentDTS,
@@ -308,7 +297,7 @@ private struct RestrictedCategoryExplanationView: View {
                         restrictedCards: [],
                         scoreEntries: [],
                         isOverlayVisible: isOverlayVisible(timelineDTS: timelineDTS, contentDTS: contentDTS, timelineNE: timelineNE, contentNE: contentNE)) {
-        RestrictedCategoryExplanationView(category: .forbidden)
+        EmptyView()
     } overlay: {
         RestrictedCardsViewOverlay(timelineDTS: timelineDTS,
                                    contentDTS: contentDTS,
