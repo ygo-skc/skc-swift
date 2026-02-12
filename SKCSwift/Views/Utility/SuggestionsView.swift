@@ -134,7 +134,6 @@ private struct SuggestedCardView: View {
                     Text("\(occurrence) Reference(s)")
                         .font(.subheadline)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 CardStatsView(card: card, variant: .condensed)
                     .equatable()
