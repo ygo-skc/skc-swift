@@ -9,7 +9,7 @@ import SwiftUI
 
 fileprivate struct GroupBoxStyleConstants {
     static let CORNER_RADIUS: CGFloat = 12
-    static let PADDING: CGFloat = 10
+    static let PADDING: CGFloat = 9
 }
 
 struct ListItemGroupBoxStyle: GroupBoxStyle {

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct CardListView<Label: View, Info: View>: View, Equatable {
     static func == (lhs: CardListView, rhs: CardListView) -> Bool {
         lhs.showAllInfo == rhs.showAllInfo && lhs.cards == rhs.cards
@@ -76,7 +75,6 @@ struct CardListItemView: View, Equatable {
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.medium)
-        .frame(maxWidth: .infinity)
     }
 }
 

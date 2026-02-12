@@ -96,6 +96,7 @@ struct CardInfoView: View {
                 newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
             }
         }
+        .frame(maxWidth: .infinity) // this is needed as overlay below needs a width
         .overlay {
             if let networkError = model.cardNE {
                 switch networkError {

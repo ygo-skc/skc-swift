@@ -19,7 +19,6 @@ struct CardView<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading) {
             content
-                .frame(alignment: .topLeading)
         }
         .padding()
         .modifier(.card)
