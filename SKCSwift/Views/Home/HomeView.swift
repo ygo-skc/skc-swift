@@ -13,7 +13,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack(path: $model.path) {
             ScrollView {
-                LazyVStack(spacing: 35) {
+                LazyVStack(alignment: .leading, spacing: 35) {
                     DBStatsView(dbStats: model.dbStats,
                                 dataTaskStatus: model.dbStatsDTS,
                                 networkError: model.dbStatsNE,
