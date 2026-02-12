@@ -15,15 +15,15 @@ struct IconViewModifier: ViewModifier {
         case .small:
             content
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 16)
+                .frame(width: 16, height: 16)
         case .regular:
             content
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 23)
+                .frame(width: 23, height: 23)
         case .large:
             content
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 30)
+                .frame(width: 30, height: 30)
         }
     }
 }
