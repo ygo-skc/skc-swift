@@ -77,7 +77,7 @@ private struct RestrictedContentDatesView: View {
                 isSelectorSheetPresented.toggle()
             } label: {
                 if !dates.isEmpty {
-                    BanListDateRangeView(fromDate: dates[dateRangeIndex].effectiveDate,
+                    RestrictedContentDateRangeView(fromDate: dates[dateRangeIndex].effectiveDate,
                                          toDate: (dateRangeIndex == 0) ? nil : dates[dateRangeIndex - 1].effectiveDate)
                 }
             }
@@ -87,10 +87,10 @@ private struct RestrictedContentDatesView: View {
             .foregroundColor(.black)
             .matchedTransitionSource(id: "dates", in: animation)
             .popover(isPresented: $isSelectorSheetPresented) {
-                BanListDateRangePicker(
+                RestrictedContentDateRangePicker(
                     chosenDateRange: $dateRangeIndex,
                     showDateSelectorSheet: $isSelectorSheetPresented,
-                    banListDates: dates
+                    dates: dates
                 )
                 .navigationTransition(.zoom(sourceID: "dates", in: animation))
             }
@@ -98,34 +98,34 @@ private struct RestrictedContentDatesView: View {
     }
 }
 
-private struct BanListDateRangePicker: View {
+private struct RestrictedContentDateRangePicker: View {
     @State private var chosenYear: String
     @Binding private var dateRangeIndex: Int
     @Binding private var showDateSelectorSheet: Bool
     
     private let dates: [BanListDate]
     
-    private var banListEffectiveDatesByYear = [String:[String]]()
-    private var banListEffectiveDatesByInd = [String:Int]()
+    private var effectiveDatesByYear = [String:[String]]()
+    private var effectiveDatesByInd = [String:Int]()
     private let recentYears: [String]
     private let olderYears: [String]?
     private let numYears: Int
     
     init(chosenDateRange: Binding<Int>,
          showDateSelectorSheet: Binding<Bool>,
-         banListDates: [BanListDate]) {
-        _chosenYear = State(initialValue: BanListDateRangePicker.getYear(banListDate: banListDates[chosenDateRange.wrappedValue].effectiveDate))
+         dates: [BanListDate]) {
+        _chosenYear = State(initialValue: RestrictedContentDateRangePicker.getYear(date: dates[chosenDateRange.wrappedValue].effectiveDate))
         self._dateRangeIndex = chosenDateRange
         self._showDateSelectorSheet = showDateSelectorSheet
-        self.dates = banListDates
+        self.dates = dates
         
-        for (ind, banList) in banListDates.enumerated() {
-            let banListDate = banList.effectiveDate
-            banListEffectiveDatesByInd[banListDate] = ind
-            banListEffectiveDatesByYear[BanListDateRangePicker.getYear(banListDate: banListDate), default: [String]()].append(banListDate)
+        for (ind, restriction) in dates.enumerated() {
+            let date = restriction.effectiveDate
+            effectiveDatesByInd[date] = ind
+            effectiveDatesByYear[RestrictedContentDateRangePicker.getYear(date: date), default: [String]()].append(date)
         }
         
-        let yearsSortedDesc = Array(banListEffectiveDatesByYear.keys).sorted(by: >)
+        let yearsSortedDesc = Array(effectiveDatesByYear.keys).sorted(by: >)
         numYears = yearsSortedDesc.count
         
         let initialOffset = numYears > 5 ? 5 : numYears - 1
@@ -137,36 +137,36 @@ private struct BanListDateRangePicker: View {
         }
     }
     
-    private static func getYear(banListDate: String) -> String {
-        return String(banListDate.split(separator: "-", maxSplits: 1)[0])
+    private static func getYear(date: String) -> String {
+        return String(date.split(separator: "-", maxSplits: 1)[0])
     }
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 15) {
-                Text("Choose Ban List")
+                Text("Choose Restriction Range")
                     .font(.title2)
                     .bold()
                     .padding(.top)
                 
-                BanListYearPickerView(chosenYear: $chosenYear, name: "Recent", years: recentYears)
+                RestrictedContentYearPicker(chosenYear: $chosenYear, name: "Recent", years: recentYears)
                 if let olderYears {
-                    BanListYearPickerView(chosenYear: $chosenYear, name: "Older", years: olderYears)
+                    RestrictedContentYearPicker(chosenYear: $chosenYear, name: "Older", years: olderYears)
                 }
                 
-                if let effectiveDatesForYear = banListEffectiveDatesByYear[chosenYear] {
+                if let effectiveDatesForYear = effectiveDatesByYear[chosenYear] {
                     ForEach(effectiveDatesForYear, id: \.self) { effectiveDate in
                         Button() {
-                            dateRangeIndex = banListEffectiveDatesByInd[effectiveDate] ?? 0
+                            dateRangeIndex = effectiveDatesByInd[effectiveDate] ?? 0
                             showDateSelectorSheet = false
                         } label: {
                             HStack {
-                                BanListDateRangeView(fromDate: effectiveDate,
-                                                     toDate: (banListEffectiveDatesByInd[effectiveDate] == 0) ? nil : dates[banListEffectiveDatesByInd[effectiveDate]! - 1].effectiveDate)
+                                RestrictedContentDateRangeView(fromDate: effectiveDate,
+                                                     toDate: (effectiveDatesByInd[effectiveDate] == 0) ? nil : dates[effectiveDatesByInd[effectiveDate]! - 1].effectiveDate)
                                 Spacer()
                                 Circle()
                                     .frame(width: 20, height: 20)
-                                    .if(dateRangeIndex == banListEffectiveDatesByInd[effectiveDate]) {
+                                    .if(dateRangeIndex == effectiveDatesByInd[effectiveDate]) {
                                         $0.foregroundColor(Color.accentColor)
                                     } else: {
                                         $0.foregroundColor(.secondary.opacity(0.7))
@@ -187,7 +187,7 @@ private struct BanListDateRangePicker: View {
         }
     }
     
-    private struct BanListYearPickerView: View {
+    private struct RestrictedContentYearPicker: View {
         @Binding var chosenYear: String
         let name: String
         let years: [String]
@@ -207,32 +207,36 @@ private struct BanListDateRangePicker: View {
     }
 }
 
-private struct BanListDateRangeView: View {
-    let fromDate: String
+private struct RestrictedContentDateRangeView: View {
+    let fromDate: Date
     let toDate: String?
     
-    var body: some View {
-        HStack(spacing: 10) {
-            ChosenBanListDateView(date: fromDate)
-            Image(systemName: "arrowshape.right.fill")
-                .foregroundColor(.accent)
-            ChosenBanListDateView(date: toDate)
-        }
+    init(fromDate: String, toDate: String?) {
+        let formatter = Date.yyyyMMddLocalFormatter
+        self.fromDate = formatter.date(from: fromDate)!
+        self.toDate = toDate
     }
-}
-
-private struct ChosenBanListDateView: View {
-    let date: String?
     
-    var body: some View {
-        if date != nil {
-            InlineDateView(date: date!)
+    @ViewBuilder
+    private var toDateView: some View {
+        if toDate != nil {
+            InlineDateView(date: toDate!)
                 .equatable()
         } else {
-            Text("Present")
+            Text((fromDate > Date.now) ? "Unspecified" : "Present")
                 .font(.caption)
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
+        }
+    }
+    
+    var body: some View {
+        HStack(spacing: 10) {
+            InlineDateView(date: fromDate)
+                .equatable()
+            Image(systemName: "arrowshape.right.fill")
+                .foregroundColor(.accent)
+            toDateView
         }
     }
 }
