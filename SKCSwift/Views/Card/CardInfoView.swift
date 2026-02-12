@@ -85,7 +85,7 @@ struct CardInfoView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(model.card?.cardName ?? "Loading…")
+        .navigationTitle((model.cardDTS == .pending) ? "Loading…" : model.card?.cardName ?? "")
         .scrollDisabled(model.cardDTS == .error)
         .task {
             await model.fetchCardInfo()
