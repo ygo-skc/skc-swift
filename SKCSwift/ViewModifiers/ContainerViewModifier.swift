@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+struct ContainerConstants {
+    static let CORNER_RADIUS: CGFloat = 12
+}
+
 struct ParentViewModifier: ViewModifier {
     let alignment: Alignment
     
@@ -35,11 +39,11 @@ struct CardViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: ContainerConstants.CORNER_RADIUS)
                     .fill(Color(.systemGray6))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: ContainerConstants.CORNER_RADIUS)
                     .stroke(Color(UIColor.systemGray5), lineWidth: 1)
             )
             .clipped()
