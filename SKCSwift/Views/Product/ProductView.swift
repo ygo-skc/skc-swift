@@ -98,7 +98,7 @@ struct ProductView: View {
             .frame(maxWidth:.infinity, maxHeight: .infinity)
             .overlay {
                 if DataTaskStatusParser.isDataPending(productDTS) {
-                    ProgressView("Loading...")
+                    ProgressView("Loading…")
                         .controlSize(.large)
                 } else if let productNE {
                     NetworkErrorView(error: productNE, action: {
@@ -201,7 +201,7 @@ private struct ProductMetricsButton: View {
                     ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
                 } else {
                     VStack {
-                        ProgressView("Loading...")
+                        ProgressView("Loading…")
                             .controlSize(.large)
                     }
                     .modifier(.sheetParentView)

@@ -40,7 +40,7 @@ struct UpcomingTCGProductsView: View, Equatable {
                 upcomingTCGProducts
             } else {
                 HStack {
-                    ProgressView("Loading...")
+                    ProgressView("Loading…")
                         .controlSize(.large)
                 }
                 .padding(.top)

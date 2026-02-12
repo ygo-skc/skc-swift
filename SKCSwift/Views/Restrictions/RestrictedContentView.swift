@@ -184,7 +184,7 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     var body: some View {
         if DataTaskStatusParser.isDataPending(timelineDTS)
             || (timelineDTS != .error && DataTaskStatusParser.isDataPending(contentDTS)) {
-            ProgressView("Loading...")
+            ProgressView("Loading…")
                 .controlSize(.large)
         } else if let timelineNE {
             NetworkErrorView(error: timelineNE) {

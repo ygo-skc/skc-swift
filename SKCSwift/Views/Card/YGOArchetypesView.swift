@@ -63,7 +63,7 @@ struct YGOArchetypeView: View {
         }
         .overlay {
             if model.dataDTS == .pending {
-                ProgressView("Loading...")
+                ProgressView("Loading…")
                     .controlSize(.large)
             } else if let networkError = model.dataNE {
                 if networkError == .notFound {

@@ -41,7 +41,7 @@ struct YouTubeUploadsView: View, Equatable {
                 youtubeUploads
             } else {
                 HStack {
-                    ProgressView("Loading...")
+                    ProgressView("Loading…")
                         .controlSize(.large)
                 }
                 .padding(.top)

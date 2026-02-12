@@ -185,7 +185,7 @@ private struct BanListDateRangePicker: View {
                         .buttonStyle(.plain)
                     }
                 } else {
-                    ProgressView("Loading...")
+                    ProgressView("Loading…")
                         .controlSize(.large)
                 }
             }
