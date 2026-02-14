@@ -221,7 +221,7 @@ struct Ygo_RestrictedContentRequest: Sendable {
 
   var effectiveDate: String = String()
 
-  var sortOrder: Ygo_Common_CardRestrictionSortOrder = .cardName
+  var sortOrder: Ygo_Common_CardRestrictionSortOrder = .cardColorAscCardNameAsc
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -770,7 +770,7 @@ extension Ygo_RestrictedContentRequest: SwiftProtobuf.Message, SwiftProtobuf._Me
     if !self.effectiveDate.isEmpty {
       try visitor.visitSingularStringField(value: self.effectiveDate, fieldNumber: 2)
     }
-    if self.sortOrder != .cardName {
+    if self.sortOrder != .cardColorAscCardNameAsc {
       try visitor.visitSingularEnumField(value: self.sortOrder, fieldNumber: 3)
     }
     try unknownFields.traverse(visitor: &visitor)
