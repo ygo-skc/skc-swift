@@ -47,6 +47,7 @@ struct CardOfTheDayView: View, Equatable {
             .if(dataTaskStatus != .done) {
                 $0.redacted(reason: .placeholder)
             }
+            .frame(maxWidth: .infinity, alignment: .leading) // needed so button can be clicked everywhere
             .contentShape(Rectangle())
         }
         .disabled(dataTaskStatus != .done && networkError == nil)
