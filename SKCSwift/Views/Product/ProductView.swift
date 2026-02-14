@@ -95,7 +95,7 @@ struct ProductView: View {
                 .padding(.bottom, 40)
             }
             .scrollDisabled(productDTS != .done)
-            .frame(maxWidth:.infinity, maxHeight: .infinity)
+            .frame(maxWidth:.infinity)
             .overlay {
                 if DataTaskStatusParser.isDataPending(productDTS) {
                     ProgressView("Loading…")
@@ -304,7 +304,7 @@ private struct ProductSuggestionsButton: View {
                         .modifier(.sheetParentView)
                         .padding(.top)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity)
                     .overlay {
                         SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
                                               noSuggestionsFound: !model.hasSuggestions,

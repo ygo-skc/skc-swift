@@ -54,7 +54,7 @@ struct YGOArchetypeView: View {
                 }
             }
             .modifier(.parentView)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity) // needed by overlay
             .navigationTitle(model.archetype)
             .navigationBarTitleDisplayMode(.large)
             .task {
