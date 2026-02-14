@@ -9,11 +9,35 @@ import Foundation
 import YGOService
 import GRPCCore
 
+enum RestrictedContentSortOrder: Int, CaseIterable {
+    case cardNameAsc = 0, cardScoreDesc = 1
+    
+    var title: String {
+        switch self {
+        case .cardNameAsc:
+            return "Card Name"
+        case .cardScoreDesc:
+            return "Card Score"
+        }
+    }
+    
+    var subtitle: String {
+        switch self {
+        case .cardNameAsc:
+            return "A-Z"
+        case .cardScoreDesc:
+            return "9-0"
+        }
+    }
+}
+
 @Observable
 final class RestrictedCardsViewModel {
     var format = CardRestrictionFormat.tcg
     var dateRangeIndex: Int = 0
     var chosenBannedContentCategory = BannedContentCategory.forbidden
+    
+    var sort = RestrictedContentSortOrder.cardNameAsc
     
     private(set) var timelineDTS: DataTaskStatus = .pending
     private(set) var contentDTS: DataTaskStatus = .pending
@@ -60,10 +84,19 @@ final class RestrictedCardsViewModel {
         (timelineNE, timelineDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
-            await fetchBannedContentTimeline()
+            let res = await data(banListDatesURL(format: format), resType: BanListDates.self)
+            if case .success(let data) = res {
+                restrictionDates = data.banListDates
+            }
+            (timelineNE, timelineDTS) = res.validate()
+            
             chosenBannedContentCategory = .forbidden
         case .genesys:
-            await fetchCardScoreTimeline()
+            let res = await YGOService.getRestrictionDates(format: format.rawValue)
+            if case .success(let data) = res {
+                restrictionDates = data.map({BanListDate(effectiveDate: $0)})
+            }
+            (timelineNE, timelineDTS) = res.validate(method: "Card Score Timeline")
         }
         dateRangeIndex = 0
         await fetchRestrictedCards()
@@ -75,47 +108,24 @@ final class RestrictedCardsViewModel {
         (contentNE, contentDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
-            await fetchBannedContent()
+            let res = await data(bannedContentURL(format: format,
+                                                  listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
+                                                  saveBandwidth: false,
+                                                  allInfo: false),
+                                 resType: BannedContent.self)
+            if case .success(let bannedContent) = res {
+                self.bannedContent = bannedContent
+            }
+            (contentNE, contentDTS) = res.validate()
         case .genesys:
-            await fetchScoresByFormatAndDate()
+            let res = await YGOService.getScoresByFormatAndDate(format: format.rawValue,
+                                                                date: restrictionDates[dateRangeIndex].effectiveDate,
+                                                                sort: sort.rawValue,
+                                                                mapper: CardScoreEntry.fromRPC)
+            if case .success(let cardScores) = res {
+                self.cardScores = CardScores(entries: cardScores)
+            }
+            (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
         }
-    }
-    
-    private func fetchBannedContentTimeline() async {
-        let res = await data(banListDatesURL(format: format), resType: BanListDates.self)
-        if case .success(let data) = res {
-            restrictionDates = data.banListDates
-        }
-        (timelineNE, timelineDTS) = res.validate()
-    }
-    
-    private func fetchCardScoreTimeline() async {
-        let res = await YGOService.getRestrictionDates(format: format.rawValue)
-        if case .success(let data) = res {
-            restrictionDates = data.map({BanListDate(effectiveDate: $0)})
-        }
-        (timelineNE, timelineDTS) = res.validate(method: "Card Score Timeline")
-    }
-    
-    private func fetchBannedContent() async {
-        let res = await data(bannedContentURL(format: format,
-                                              listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
-                                              saveBandwidth: false,
-                                              allInfo: false),
-                             resType: BannedContent.self)
-        if case .success(let bannedContent) = res {
-            self.bannedContent = bannedContent
-        }
-        (contentNE, contentDTS) = res.validate()
-    }
-    
-    private func fetchScoresByFormatAndDate() async {
-        let res = await YGOService.getScoresByFormatAndDate(format: format.rawValue,
-                                                            date: restrictionDates[dateRangeIndex].effectiveDate,
-                                                            mapper: CardScoreEntry.fromRPC)
-        if case .success(let cardScores) = res {
-            self.cardScores = CardScores(entries: cardScores)
-        }
-        (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
     }
 }

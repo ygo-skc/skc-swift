@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import YGOService
 
 private func isOverlayVisible(timelineDTS: DataTaskStatus,contentDTS: DataTaskStatus,
                               timelineNE: NetworkError?, contentNE: NetworkError?) -> Bool {
@@ -16,6 +17,36 @@ struct RestrictedContentView: View {
     @State private var mainSheetContentHeight: CGFloat = 0
     @State private var path = NavigationPath()
     @State private var model = RestrictedCardsViewModel()
+    
+    @State private var isSettingsSheetPresented = false
+    @Namespace private var animation
+    
+    private var sort: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                ForEach(RestrictedContentSortOrder.allCases, id: \.self) { sortOption in
+                    Button(action: {model.sort = sortOption}) {
+                        if model.sort == sortOption {
+                            Image(systemName: "checkmark")
+                        }
+                        Text(sortOption.title)
+                        if model.sort == sortOption {
+                            Text(sortOption.subtitle)
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "arrow.up.arrow.down")
+            }
+        }
+        .modify {
+            if #available(iOS 26.0, *) {
+                $0.matchedTransitionSource(id: "genesysToolbar", in: animation)
+            } else {
+                $0
+            }
+        }
+    }
     
     @ViewBuilder
     private var contentHeader: some View {
@@ -100,6 +131,14 @@ struct RestrictedContentView: View {
                     .safeAreaInset(edge: .bottom) {
                         Color.clear.frame(height: mainSheetContentHeight)
                     }
+                    .toolbar {
+                        if model.format == .genesys && !isOverlayVisible(timelineDTS: model.timelineDTS,
+                                                                         contentDTS: model.contentDTS,
+                                                                         timelineNE: model.timelineNE,
+                                                                         contentNE: model.contentNE) {
+                            sort
+                        }
+                    }
             } sheetContent: {
                 RestrictedContentNavigatorView(format: $model.format,
                                                dateRangeIndex: $model.dateRangeIndex,
@@ -114,6 +153,11 @@ struct RestrictedContentView: View {
                 }
             }
             .onChange(of: model.dateRangeIndex) {
+                Task {
+                    await model.fetchRestrictedCards()
+                }
+            }
+            .onChange(of: model.sort) {
                 Task {
                     await model.fetchRestrictedCards()
                 }
@@ -181,7 +225,7 @@ private struct RestrictedCardsView<Header: View, Overlay: View>: View, Equatable
             }
         }
         .ygoNavigationDestination()
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity) // needed by overlay
         .scrollDisabled(isOverlayVisible)
         .overlay {
             overlay
