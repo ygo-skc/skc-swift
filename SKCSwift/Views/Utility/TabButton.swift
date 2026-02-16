@@ -9,20 +9,19 @@ import SwiftUI
 
 struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
     @Binding var selected: T
-    var value: T
-    var animation: Namespace.ID
+    let value: T
+    let animation: Namespace.ID
     
     var body: some View {
         Button(action: {
-            withAnimation(.spring(response: 0.2)) {selected = value}
+            withAnimation(.spring(response: 0.15)) {selected = value}
         })
         {
             Text(value.rawValue)
                 .font(.caption)
-                .fontWeight(.semibold)
                 .foregroundColor(selected == value ? .white : .primary)
-                .padding(.vertical, 7)
-                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .padding(.horizontal, 8)
                 .if(selected == value) {
                     $0.background {
                         Color.accentColor
@@ -33,7 +32,7 @@ struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
                         Color.gray.opacity(0.3)
                     }
                 }
-                .cornerRadius(7)
+                .cornerRadius(8)
         }
     }
 }
