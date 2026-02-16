@@ -87,6 +87,10 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
         (monsterType != nil) ? monsterType! : cardAttribute ?? ""
     }
     
+    var monsterTypeE: MonsterType {
+        (monsterType != nil) ? MonsterType(rawValue: String(monsterType?.split(separator: "/").first ?? "")) ?? .unknown : .unknown
+    }
+    
     var atk: String {
         (monsterAttack == nil) ? YGOCard.nilStat.description : String(monsterAttack!)
     }
