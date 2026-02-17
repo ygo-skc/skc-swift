@@ -48,7 +48,7 @@ struct MonsterAssociationView: View, Equatable {
 }
 
 private struct MonsterAssociationViewModifier: ViewModifier {
-    var variant: YGOCardViewVariant
+    let variant: YGOCardViewVariant
     
     func body(content: Content) -> some View {
         switch(variant) {
@@ -65,8 +65,8 @@ private struct MonsterAssociationViewModifier: ViewModifier {
 }
 
 struct LevelAssociationView: View, Equatable {
-    var level: UInt8
-    var variant: IconVariant
+    let level: UInt8
+    let variant: IconVariant
     
     init(level: UInt8, variant: IconVariant = .large) {
         self.level = level
@@ -78,15 +78,15 @@ struct LevelAssociationView: View, Equatable {
             Image(.level)
                 .resizable()
                 .modifier(IconViewModifier(variant: variant))
-            Text("x\(level)")
-                .fontWeight(.semibold)
+            Text("\(level)")
+                .fontWeight(.medium)
         }
     }
 }
 
 private struct PendulumAssociationView: View, Equatable {
-    var pendScale: UInt8
-    var variant: IconVariant
+    let pendScale: UInt8
+    let variant: IconVariant
     
     init(pendScale: UInt8, variant: IconVariant = .large) {
         self.pendScale = pendScale
@@ -98,15 +98,15 @@ private struct PendulumAssociationView: View, Equatable {
             Image(.pendScale)
                 .resizable()
                 .modifier(IconViewModifier(variant: variant))
-            Text("x\(pendScale)")
-                .fontWeight(.semibold)
+            Text("\(pendScale)")
+                .fontWeight(.medium)
         }
     }
 }
 
 struct RankAssociationView: View, Equatable {
-    var rank: UInt8
-    var variant: IconVariant
+    let rank: UInt8
+    let variant: IconVariant
     
     init(rank: UInt8, variant: IconVariant = .large) {
         self.rank = rank
@@ -118,15 +118,15 @@ struct RankAssociationView: View, Equatable {
             Image(.rank)
                 .resizable()
                 .modifier(IconViewModifier(variant: variant))
-            Text("x\(rank)")
-                .fontWeight(.semibold)
+            Text("\(rank)")
+                .fontWeight(.medium)
         }
     }
 }
 
 private struct LinkAssociationView: View, Equatable {
-    var linkRating: UInt8
-    var linkArrows: String
+    let linkRating: UInt8
+    let linkArrows: String
     
     init(linkRating: UInt8, linkArrows: [String]) {
         self.linkRating = linkRating
@@ -135,8 +135,8 @@ private struct LinkAssociationView: View, Equatable {
     
     var body: some View {
         HStack {
-            Text("L\(linkRating): \(linkArrows)")
-                .fontWeight(.bold)
+            Text("\(linkArrows)")
+                .fontWeight(.medium)
                 .lineLimit(1)
         }
     }

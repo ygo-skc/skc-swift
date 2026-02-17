@@ -22,34 +22,34 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
 
 enum Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf.Enum, Swift.CaseIterable {
   typealias RawValue = Int
-  case cardName // = 0
-  case scoreThenColor // = 1
+  case cardColorAscCardNameAsc // = 0
+  case scoreDescCardColorAscCardNameAsc // = 1
   case UNRECOGNIZED(Int)
 
   init() {
-    self = .cardName
+    self = .cardColorAscCardNameAsc
   }
 
   init?(rawValue: Int) {
     switch rawValue {
-    case 0: self = .cardName
-    case 1: self = .scoreThenColor
+    case 0: self = .cardColorAscCardNameAsc
+    case 1: self = .scoreDescCardColorAscCardNameAsc
     default: self = .UNRECOGNIZED(rawValue)
     }
   }
 
   var rawValue: Int {
     switch self {
-    case .cardName: return 0
-    case .scoreThenColor: return 1
+    case .cardColorAscCardNameAsc: return 0
+    case .scoreDescCardColorAscCardNameAsc: return 1
     case .UNRECOGNIZED(let i): return i
     }
   }
 
   // The compiler won't synthesize support with the UNRECOGNIZED case.
   static let allCases: [Ygo_Common_CardRestrictionSortOrder] = [
-    .cardName,
-    .scoreThenColor,
+    .cardColorAscCardNameAsc,
+    .scoreDescCardColorAscCardNameAsc,
   ]
 
 }
@@ -161,7 +161,7 @@ struct Ygo_Common_EffectiveTimeline: Sendable {
 fileprivate let _protobuf_package = "ygo.common"
 
 extension Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0CARD_NAME\0\u{1}SCORE_THEN_COLOR\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0CARD_COLOR_ASC_CARD_NAME_ASC\0\u{1}SCORE_DESC_CARD_COLOR_ASC_CARD_NAME_ASC\0")
 }
 
 extension Ygo_Common_ResourceID: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {

@@ -9,11 +9,41 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var model = HomeViewModel()
+    @State private var isSettingsSheetPresented = false
+    @Namespace private var animation
+    
+    private var settings: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                isSettingsSheetPresented = true
+            } label: {
+                Image(systemName: "gear")
+            }
+            .sheet(isPresented: $isSettingsSheetPresented) {
+                SettingsView()
+                    .presentationDetents([.medium, .large])
+                    .modify {
+                        if #available(iOS 26.0, *) {
+                            $0.navigationTransition(.zoom(sourceID: "settings", in: animation))
+                        } else {
+                            $0
+                        }
+                    }
+            }
+        }
+        .modify {
+            if #available(iOS 26.0, *) {
+                $0.matchedTransitionSource(id: "settings", in: animation)
+            } else {
+                $0
+            }
+        }
+    }
     
     var body: some View {
         NavigationStack(path: $model.path) {
             ScrollView {
-                LazyVStack(spacing: 35) {
+                LazyVStack(alignment: .leading, spacing: 35) {
                     DBStatsView(dbStats: model.dbStats,
                                 dataTaskStatus: model.dbStatsDTS,
                                 networkError: model.dbStatsNE,
@@ -41,7 +71,7 @@ struct HomeView: View {
                     }
                 }
                 .toolbar {
-                    HomeViewToolbar()
+                    settings
                 }
                 .ygoNavigationDestination()
                 .modifier(.parentView)
@@ -57,39 +87,6 @@ struct HomeView: View {
             }
             .task(priority: .userInitiated) {
                 await model.fetchData(forceRefresh: false)
-            }
-        }
-    }
-    
-    private struct HomeViewToolbar: ToolbarContent {
-        @State private var isSettingsSheetPresented = false
-        @Namespace private var animation
-        
-        var body: some ToolbarContent {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    isSettingsSheetPresented = true
-                } label: {
-                    Image(systemName: "gear")
-                }
-                .sheet(isPresented: $isSettingsSheetPresented) {
-                    SettingsView()
-                        .presentationDetents([.medium, .large])
-                        .modify {
-                            if #available(iOS 26.0, *) {
-                                $0.navigationTransition(.zoom(sourceID: "settings", in: animation))
-                            } else {
-                                $0
-                            }
-                        }
-                }
-            }
-            .modify {
-                if #available(iOS 26.0, *) {
-                    $0.matchedTransitionSource(id: "settings", in: animation)
-                } else {
-                    $0
-                }
             }
         }
     }
@@ -142,7 +139,7 @@ private struct SettingsView: View {
         }
         .overlay {
             if model.isDeleting {
-                ProgressView("Deleting...")
+                ProgressView("Deleting…")
                     .controlSize(.large)
             }
         }

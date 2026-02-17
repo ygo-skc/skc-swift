@@ -27,7 +27,7 @@ struct SuggestionOverlayView: View, Equatable {
             ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
         } else if !areSuggestionsLoaded {
             HStack {
-                ProgressView("Loading...")
+                ProgressView("Loading…")
                     .controlSize(.large)
             }
             .frame(maxWidth: .infinity)
@@ -134,7 +134,6 @@ private struct SuggestedCardView: View {
                     Text("\(occurrence) Reference(s)")
                         .font(.subheadline)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 CardStatsView(card: card, variant: .condensed)
                     .equatable()

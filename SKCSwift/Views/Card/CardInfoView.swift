@@ -85,7 +85,7 @@ struct CardInfoView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(model.card?.cardName ?? "Loading…")
+        .navigationTitle((model.cardDTS == .pending) ? "Loading…" : model.card?.cardName ?? "")
         .scrollDisabled(model.cardDTS == .error)
         .task {
             await model.fetchCardInfo()
@@ -96,6 +96,7 @@ struct CardInfoView: View {
                 newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
             }
         }
+        .frame(maxWidth: .infinity) // needed by overlay
         .overlay {
             if let networkError = model.cardNE {
                 switch networkError {

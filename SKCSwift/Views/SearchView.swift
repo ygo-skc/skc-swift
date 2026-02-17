@@ -35,7 +35,7 @@ struct SearchView: View {
                         TrendingView(path: $path, trendingModel: $trendingModel)
                     }
                 case .pending where searchModel.isSearchSlow:
-                    ProgressView("Loading...")
+                    ProgressView("Loading…")
                         .controlSize(.large)
                 case .done, .pending, .error:
                     SearchResultsView(
@@ -61,7 +61,7 @@ struct SearchView: View {
             .searchable(text: $searchModel.searchText,
                         isPresented: $searchModel.isSearching,
                         placement: .toolbar,
-                        prompt: "Search for card...")
+                        prompt: "Search for card…")
         }
     }
     
@@ -116,7 +116,7 @@ struct SearchView: View {
                 await loadDataCB()
             }
             .dynamicTypeSize(...DynamicTypeSize.medium)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity) // needed by overlay
             .overlay {
                 if let requestError = requestError {
                     NetworkErrorView(error: requestError, action: {
@@ -125,7 +125,7 @@ struct SearchView: View {
                         }
                     })
                 } else if DataTaskStatusParser.isDataPending(dataTaskStatus) {
-                    ProgressView("Loading...")
+                    ProgressView("Loading…")
                         .controlSize(.large)
                 } else if dataTaskStatus == .done && history.isEmpty {
                     ContentUnavailableView {
@@ -167,6 +167,7 @@ struct SearchView: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)   // needed by overlay
             .overlay {
                 if !DataTaskStatusParser.isDataPending(dataTaskStatus), let networkError = requestError {
                     if networkError == .notFound {

@@ -59,7 +59,7 @@ struct TrendingView: View {
         }
         .dynamicTypeSize(...DynamicTypeSize.medium)
         .scrollDisabled(trendingModel.focusedTrendNE != nil)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity) // needed by overlay
         .overlay {
             if trendingModel.focusedTrendDTS == .error, let networkError = trendingModel.focusedTrendNE {
                 NetworkErrorView(error: networkError, action: {
@@ -68,7 +68,7 @@ struct TrendingView: View {
                     }
                 })
             } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
-                ProgressView("Loading...")
+                ProgressView("Loading…")
                     .controlSize(.large)
             }
         }

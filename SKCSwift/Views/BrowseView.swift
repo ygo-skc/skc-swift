@@ -110,7 +110,7 @@ private struct CardBrowseCriteriaOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading...")
+            ProgressView("Loading…")
                 .controlSize(.large)
         case .done, .error:
             if let networkError = dataRequestError {
@@ -129,7 +129,7 @@ private struct CardBrowseDataOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading...")
+            ProgressView("Loading…")
                 .controlSize(.large)
         case .done, .error:
             if let networkError = dataRequestError {
@@ -149,7 +149,7 @@ private struct ProductBrowseOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading...")
+            ProgressView("Loading…")
                 .controlSize(.large)
         case .done, .error:
             if let networkError = dataRequestError {

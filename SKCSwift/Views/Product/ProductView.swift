@@ -95,10 +95,10 @@ struct ProductView: View {
                 .padding(.bottom, 40)
             }
             .scrollDisabled(productDTS != .done)
-            .frame(maxWidth:.infinity, maxHeight: .infinity)
+            .frame(maxWidth:.infinity)
             .overlay {
                 if DataTaskStatusParser.isDataPending(productDTS) {
-                    ProgressView("Loading...")
+                    ProgressView("Loading…")
                         .controlSize(.large)
                 } else if let productNE {
                     NetworkErrorView(error: productNE, action: {
@@ -201,7 +201,7 @@ private struct ProductMetricsButton: View {
                     ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
                 } else {
                     VStack {
-                        ProgressView("Loading...")
+                        ProgressView("Loading…")
                             .controlSize(.large)
                     }
                     .modifier(.sheetParentView)
@@ -304,7 +304,7 @@ private struct ProductSuggestionsButton: View {
                         .modifier(.sheetParentView)
                         .padding(.top)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity)
                     .overlay {
                         SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
                                               noSuggestionsFound: !model.hasSuggestions,
