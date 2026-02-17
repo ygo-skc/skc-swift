@@ -92,7 +92,7 @@ struct CardInfoView: View {
         }
         .onChange(of: model.card) {
             Task {
-                let newItem = History(resource: .card, id: model.cardID, timesAccessed: 1)
+                let newItem = History(resource: .card, id: model.cardID, lastAccessDate: Date(), timesAccessed: 1)
                 newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
             }
         }

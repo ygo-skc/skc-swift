@@ -8,10 +8,7 @@
 import Foundation
 
 nonisolated struct MonsterAssociation: Codable, Equatable, Hashable {
-    let level: UInt8?
-    let rank: UInt8?
-    let scaleRating: UInt8?
-    let linkRating: UInt8?
+    let level, rank, scaleRating, linkRating: UInt8?
     let linkArrows: [String]?
     
     init(level: UInt8? = nil, rank: UInt8? = nil, scaleRating: UInt8? = nil, linkRating: UInt8? = nil, linkArrows: [String]? = nil) {
@@ -120,18 +117,12 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
 
 // used as convenience when working with NavigationDestination
 struct CardLinkDestinationValue: Hashable {
-    let cardID: String
-    let cardName: String
+    let cardID, cardName: String
 }
 
 nonisolated struct CardBrowseCriteria: Codable {
-    let cardColors: [String]
-    let attributes: [String]
-    let monsterTypes: [String]
-    let monsterSubTypes: [String]
-    let levels: [UInt8]
-    let ranks: [UInt8]
-    let linkRatings: [UInt8]
+    let cardColors, attributes, monsterTypes, monsterSubTypes: [String]
+    let levels, ranks, linkRatings: [UInt8]
 }
 
 nonisolated struct CardBrowseResults: Codable {
@@ -256,9 +247,7 @@ struct SearchResults: Identifiable, Equatable {
 }
 
 struct SKCDatabaseStats: Codable, Equatable {
-    let productTotal: Int
-    let cardTotal: Int
-    let banListTotal: Int
+    let productTotal, cardTotal, banListTotal: Int
 }
 
 /*
@@ -345,9 +334,7 @@ struct BatchSupport: Codable {
 }
 
 struct YGOArchetypeData: Codable {
-    let usingName: [YGOCard]
-    let usingText: [YGOCard]
-    let exclusions: [YGOCard]
+    let usingName, usingText, exclusions: [YGOCard]
 }
 
 struct YGOArchetypeLinkDestinationValue: Hashable {
