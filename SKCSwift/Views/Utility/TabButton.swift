@@ -15,8 +15,7 @@ struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
     var body: some View {
         Button(action: {
             withAnimation(.spring(response: 0.15)) {selected = value}
-        })
-        {
+        }) {
             Text(value.rawValue)
                 .font(.caption)
                 .foregroundColor(selected == value ? .white : .primary)

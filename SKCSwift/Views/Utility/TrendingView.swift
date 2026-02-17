@@ -11,6 +11,7 @@ struct TrendingView: View {
     @Binding var path: NavigationPath
     @Binding var trendingModel: TrendingViewModel
     
+    @ViewBuilder
     var trendingProducts: some View {
         VStack {
             ForEach(Array(trendingModel.products.enumerated()), id: \.element.resource.productId) { position, m in

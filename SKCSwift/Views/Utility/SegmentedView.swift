@@ -37,16 +37,16 @@ private struct BottomSheet<SheetContent: View>: View {
     let frameHeight: CGFloat
     let frameMidX: CGFloat
     @Binding var mainSheetContentHeight: CGFloat
-    let content: () -> SheetContent
+    let content: SheetContent
     
     @State private var offset: CGFloat = 0
     @State private var bottomSheetHeight: CGFloat = 0
     
-    init(frame: CGRect, mainSheetContentHeight: Binding<CGFloat>, ViewBuilder content: @escaping () -> SheetContent) {
+    init(frame: CGRect, mainSheetContentHeight: Binding<CGFloat>, @ViewBuilder content: () -> SheetContent) {
         self.frameHeight = frame.height
         self.frameMidX = frame.midX
         self._mainSheetContentHeight = mainSheetContentHeight
-        self.content = content
+        self.content = content()
     }
     
     var body: some View {
@@ -56,7 +56,7 @@ private struct BottomSheet<SheetContent: View>: View {
 //                    .fill(.gray.opacity(0.7))
 //                    .frame(width: 40, height: 5)
 //                    .padding([.top, .bottom], 5)
-                content()
+                content
                     .padding([.top, .bottom])
             }
             .background(GeometryReader { geometry in
