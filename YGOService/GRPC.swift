@@ -31,18 +31,18 @@ fileprivate struct YGOClients {
                         )
                         
                         config.backoff = .init(
-                            initial: .milliseconds(200),
-                            max: .seconds(5),
-                            multiplier: 1.3,
-                            jitter: 0.2
+                            initial: .milliseconds(500),
+                            max: .seconds(6),
+                            multiplier: 1.4,
+                            jitter: 0.25
                         )
                         
                         config.connection = .init(
-                            maxIdleTime: .seconds(2 * 60),
+                            maxIdleTime: .seconds(60),
                             keepalive: .init(
-                                time: .seconds(30),
-                                timeout: .seconds(5),
-                                allowWithoutCalls: true
+                                time: .seconds(20),
+                                timeout: .seconds(3),
+                                allowWithoutCalls: false
                             )
                         )
                         
@@ -52,15 +52,15 @@ fileprivate struct YGOClients {
                         methodConfig: [
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
-                                waitForReady: true,
-                                timeout: .seconds(8),
+                                waitForReady: false,
+                                timeout: .seconds(6),
                                 executionPolicy: .retry(
                                     .init(
                                         maxAttempts: 2,
                                         initialBackoff: .milliseconds(150),
-                                        maxBackoff: .seconds(3),
-                                        backoffMultiplier: 1.5,
-                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
+                                        maxBackoff: .milliseconds(700),
+                                        backoffMultiplier: 1.2,
+                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable, .cancelled]))
                             )
                         ]
                     )
