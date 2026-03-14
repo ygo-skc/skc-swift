@@ -31,8 +31,8 @@ fileprivate struct YGOClients {
                         )
                         
                         config.backoff = .init(
-                            initial: .milliseconds(500),
-                            max: .seconds(6),
+                            initial: .milliseconds(80),
+                            max: .seconds(1),
                             multiplier: 1.4,
                             jitter: 0.25
                         )
@@ -46,7 +46,7 @@ fileprivate struct YGOClients {
                             )
                         )
                         
-                        config.http2 = .init(maxFrameSize: 2 * 1024, targetWindowSize: 24 * 1024, authority: nil)
+                        config.http2 = .init(maxFrameSize: 15 * 1024, targetWindowSize: 75 * 1024, authority: nil)
                     },
                     serviceConfig: .init(
                         methodConfig: [
@@ -56,11 +56,11 @@ fileprivate struct YGOClients {
                                 timeout: .seconds(6),
                                 executionPolicy: .retry(
                                     .init(
-                                        maxAttempts: 2,
+                                        maxAttempts: 3,
                                         initialBackoff: .milliseconds(150),
-                                        maxBackoff: .milliseconds(700),
+                                        maxBackoff: .milliseconds(500),
                                         backoffMultiplier: 1.2,
-                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable, .cancelled]))
+                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
                             )
                         ]
                     )
