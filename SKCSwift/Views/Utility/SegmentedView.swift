@@ -54,12 +54,12 @@ private struct BottomSheet<SheetContent: View>: View {
                 }
         }
         .padding(.horizontal)
-        .frame(maxWidth: .infinity, minHeight: mainSheetContentHeight + 50, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: mainSheetContentHeight + 100, alignment: .topLeading)
         .background(BlurView(style: .systemMaterial))
         .cornerRadius(12)
         .shadow(radius: 4)
         .ignoresSafeArea(.all, edges: .bottom)
-        .offset(y: 50)
+        .offset(y: 100)
     }
 }
 
