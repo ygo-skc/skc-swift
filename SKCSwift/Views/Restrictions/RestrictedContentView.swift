@@ -23,7 +23,7 @@ struct RestrictedContentView: View {
     @State private var isSettingsSheetPresented = false
     @Namespace private var animation
     
-    private var sort: some ToolbarContent {
+    private var sortToolbarItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
                 ForEach(RestrictedContentSortOrder.allCases, id: \.self) { sortOption in
@@ -133,11 +133,10 @@ struct RestrictedContentView: View {
                         Color.clear.frame(height: mainSheetContentHeight)
                     }
                     .toolbar {
-                        if model.format == .genesys && !isOverlayVisible(timelineDTS: model.timelineDTS,
-                                                                         contentDTS: model.contentDTS,
-                                                                         timelineNE: model.timelineNE,
-                                                                         contentNE: model.contentNE) {
-                            sort
+                        if model.format == .genesys
+                            && !isOverlayVisible(timelineDTS: model.timelineDTS, contentDTS: model.contentDTS,
+                                                 timelineNE: model.timelineNE, contentNE: model.contentNE) {
+                            sortToolbarItem
                         }
                     }
             } sheetContent: {
