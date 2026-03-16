@@ -53,7 +53,7 @@ fileprivate struct YGOClients {
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
                                 waitForReady: false,
-                                timeout: .seconds(6),
+                                timeout: .seconds(8),
                                 executionPolicy: .retry(
                                     .init(
                                         maxAttempts: 3,
