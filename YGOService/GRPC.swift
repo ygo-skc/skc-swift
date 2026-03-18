@@ -93,7 +93,7 @@ nonisolated public func getScoresByFormatAndDate<T, U>(
     format: String,
     date: String,
     sort: Int,
-    scoreMapper: ([U]) -> T,
+    scoreMapper: (String, String, [U], UInt32) -> T,
     entryMapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U
 ) async -> Result<T, any Error> where T: Decodable {
     do {
@@ -124,7 +124,7 @@ nonisolated public func getScoresByFormatAndDate<T, U>(
                 $0.score
             )
         })
-        return .success(scoreMapper(values))
+        return .success(scoreMapper(format, date, values, scores.totalEntries))
     } catch {
         return .failure(error)
     }

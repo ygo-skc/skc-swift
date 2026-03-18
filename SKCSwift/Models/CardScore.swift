@@ -19,10 +19,12 @@ nonisolated struct CardScore: Codable, Equatable {
 }
 
 nonisolated struct CardScores: Codable, Equatable {
+    let format, effectiveDate: String
     let entries: [CardScoreEntry]
+    let totalEntries: UInt32
     
-    nonisolated static func fromRPC(entries: [CardScoreEntry]) -> Self {
-        return .init(entries: entries)
+    nonisolated static func fromRPC(format: String, effectiveDate: String, entries: [CardScoreEntry], totalEntries: UInt32) -> Self {
+        return .init(format: format, effectiveDate: effectiveDate, entries: entries, totalEntries: totalEntries)
     }
 }
 
