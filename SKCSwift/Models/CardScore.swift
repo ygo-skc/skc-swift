@@ -20,6 +20,10 @@ nonisolated struct CardScore: Codable, Equatable {
 
 nonisolated struct CardScores: Codable, Equatable {
     let entries: [CardScoreEntry]
+    
+    nonisolated static func fromRPC(entries: [CardScoreEntry]) -> Self {
+        return .init(entries: entries)
+    }
 }
 
 nonisolated struct CardScoreEntry: Codable, Equatable {

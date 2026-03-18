@@ -89,28 +89,30 @@ nonisolated public func getRestrictionDates(format: String) async -> Result<[Str
 }
 
 @concurrent
-nonisolated public func getScoresByFormatAndDate<T>(
+nonisolated public func getScoresByFormatAndDate<T, U>(
     format: String,
     date: String,
     sort: Int,
-    mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> T
-) async -> Result<[T], any Error> where T: Decodable {
+    scoreMapper: ([U]) -> T,
+    entryMapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U
+) async -> Result<T, any Error> where T: Decodable {
     do {
-        let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(.with {
-            $0.format = format
-            $0.effectiveDate = date
-            switch(sort) {
-            case 0:
-                $0.sortOrder = .cardColorAscCardNameAsc
-            case 1:
-                $0.sortOrder = .scoreDescCardColorAscCardNameAsc
-            default:
-                $0.sortOrder = .cardColorAscCardNameAsc
-            }
-        })
+        let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(
+            .with {
+                $0.format = format
+                $0.effectiveDate = date
+                switch(sort) {
+                case 0:
+                    $0.sortOrder = .cardColorAscCardNameAsc
+                case 1:
+                    $0.sortOrder = .scoreDescCardColorAscCardNameAsc
+                default:
+                    $0.sortOrder = .cardColorAscCardNameAsc
+                }
+            })
         let values = scores.entries.map({
             let card = $0.card
-            return mapper(
+            return entryMapper(
                 card.id,
                 card.name,
                 card.color,
@@ -122,7 +124,7 @@ nonisolated public func getScoresByFormatAndDate<T>(
                 $0.score
             )
         })
-        return .success(values)
+        return .success(scoreMapper(values))
     } catch {
         return .failure(error)
     }
