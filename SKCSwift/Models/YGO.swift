@@ -151,8 +151,8 @@ nonisolated struct BanListDate: Codable, Hashable {
 }
 
 nonisolated struct BannedContent: Codable, Equatable {
-    let numForbidden, numLimited, numSemiLimited, numLimitedOne, numLimitedTwo, numLimitedThree: UInt8
     let forbidden, limited, semiLimited: [YGOCard]
+    let numForbidden, numLimited, numSemiLimited, numLimitedOne, numLimitedTwo, numLimitedThree: UInt8
 }
 
 /*
