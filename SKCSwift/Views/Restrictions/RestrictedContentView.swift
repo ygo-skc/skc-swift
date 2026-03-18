@@ -66,15 +66,18 @@ struct RestrictedContentView: View {
                 Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
                       systemImage: "info.circle")
                 .font(.callout)
-                .padding(.bottom)
             } else {
-                contentExplainer
+                nonGenesysContentExplainer
             }
+            Label("Total cards: \(model.totalEntries)",
+                  systemImage: "sum")
+            .font(.callout)
         }
+        .padding(.bottom, 3)
     }
     
     @ViewBuilder
-    private var contentExplainer: some View {
+    private var nonGenesysContentExplainer: some View {
         Label {
             switch(model.chosenBannedContentCategory) {
             case .forbidden:
@@ -98,7 +101,6 @@ struct RestrictedContentView: View {
             }
         }
         .font(.callout)
-        .padding(.bottom)
     }
     
     var body: some View {

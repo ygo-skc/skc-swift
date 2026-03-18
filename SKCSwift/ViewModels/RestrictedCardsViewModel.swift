@@ -80,6 +80,15 @@ final class RestrictedCardsViewModel {
         return cardScores?.entries ?? []
     }
     
+    
+    @ObservationIgnored
+    var totalEntries: UInt32 {
+        if format == .genesys {
+            return cardScores?.totalEntries ?? 0
+        }
+        return UInt32(bannedContent?.numForbidden ?? 0 ) + UInt32(bannedContent?.numLimited ?? 0) + UInt32(bannedContent?.numSemiLimited ?? 0)
+    }
+    
     func fetchTimelineData() async {
         (timelineNE, timelineDTS) = (nil, .pending)
         switch format {
@@ -108,22 +117,26 @@ final class RestrictedCardsViewModel {
         (contentNE, contentDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
-            let res = await data(bannedContentURL(format: format,
-                                                  listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
-                                                  saveBandwidth: false,
-                                                  allInfo: false),
-                                 resType: BannedContent.self)
+            let res = await data(
+                bannedContentURL(
+                    format: format,
+                    listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
+                    saveBandwidth: false,
+                    allInfo: false),
+                resType: BannedContent.self)
             if case .success(let bannedContent) = res {
                 self.bannedContent = bannedContent
             }
             (contentNE, contentDTS) = res.validate()
         case .genesys:
-            let res = await YGOService.getScoresByFormatAndDate(format: format.rawValue,
-                                                                date: restrictionDates[dateRangeIndex].effectiveDate,
-                                                                sort: sort.rawValue,
-                                                                mapper: CardScoreEntry.fromRPC)
-            if case .success(let cardScores) = res {
-                self.cardScores = CardScores(entries: cardScores)
+            let res = await YGOService.getScoresByFormatAndDate(
+                format: format.rawValue,
+                date: restrictionDates[dateRangeIndex].effectiveDate,
+                sort: sort.rawValue,
+                scoreMapper: CardScores.fromRPC,
+                entryMapper: CardScoreEntry.fromRPC)
+            if case .success(let c) = res {
+                self.cardScores = c
             }
             (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
         }
