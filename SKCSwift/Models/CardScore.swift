@@ -10,13 +10,12 @@ nonisolated struct CardScore: Codable, Equatable {
     let uniqueFormats: [String]
     let scheduledChanges: [String]
     
-    nonisolated static func fromRPC(currentScoreByFormat: [String: UInt32],
-                                    uniqueFormats: [String],
-                                    scheduledChanges: [String]) -> Self {
-        return .init(currentScoreByFormat: currentScoreByFormat,
-                     uniqueFormats: uniqueFormats,
-                     scheduledChanges: scheduledChanges)
-    }
+    nonisolated static func fromRPC(
+        currentScoreByFormat: [String: UInt32],
+        uniqueFormats: [String],
+        scheduledChanges: [String]) -> Self {
+            return .init(currentScoreByFormat: currentScoreByFormat, uniqueFormats: uniqueFormats, scheduledChanges: scheduledChanges)
+        }
 }
 
 nonisolated struct CardScores: Codable, Equatable {
@@ -27,23 +26,18 @@ nonisolated struct CardScoreEntry: Codable, Equatable {
     let card: YGOCard
     let score: UInt32
     
-    nonisolated static func fromRPC(cardID: String,
-                                    cardName: String,
-                                    cardColor: String,
-                                    cardAttribute: String?,
-                                    cardEffect: String,
-                                    monsterType: String? = nil,
-                                    monsterAttack: Int? = nil,
-                                    monsterDefense: Int? = nil,
-                                    score: UInt32) -> Self {
-        return .init(card: YGOCard(cardID: cardID,
-                                   cardName: cardName,
-                                   cardColor: cardColor,
-                                   cardAttribute: cardAttribute,
-                                   cardEffect: cardEffect,
-                                   monsterType: monsterType,
-                                   monsterAttack: monsterAttack,
-                                   monsterDefense: monsterDefense),
-                     score: score)
-    }
+    nonisolated static func fromRPC(
+        cardID: String,
+        cardName: String,
+        cardColor: String,
+        cardAttribute: String?,
+        cardEffect: String,
+        monsterType: String? = nil,
+        monsterAttack: Int? = nil,
+        monsterDefense: Int? = nil,
+        score: UInt32) -> Self {
+            return .init(card: YGOCard(cardID: cardID, cardName: cardName, cardColor: cardColor, cardAttribute: cardAttribute, cardEffect: cardEffect,
+                                       monsterType: monsterType, monsterAttack: monsterAttack, monsterDefense: monsterDefense),
+                         score: score)
+        }
 }
