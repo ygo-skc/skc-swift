@@ -31,35 +31,35 @@ fileprivate struct YGOClients {
                         )
                         
                         config.backoff = .init(
-                            initial: .milliseconds(200),
-                            max: .seconds(5),
-                            multiplier: 1.3,
-                            jitter: 0.2
+                            initial: .milliseconds(80),
+                            max: .seconds(1),
+                            multiplier: 1.4,
+                            jitter: 0.25
                         )
                         
                         config.connection = .init(
-                            maxIdleTime: .seconds(2 * 60),
+                            maxIdleTime: .seconds(60),
                             keepalive: .init(
-                                time: .seconds(30),
-                                timeout: .seconds(5),
-                                allowWithoutCalls: true
+                                time: .seconds(20),
+                                timeout: .seconds(3),
+                                allowWithoutCalls: false
                             )
                         )
                         
-                        config.http2 = .init(maxFrameSize: 2 * 1024, targetWindowSize: 24 * 1024, authority: nil)
+                        config.http2 = .init(maxFrameSize: 15 * 1024, targetWindowSize: 75 * 1024, authority: nil)
                     },
                     serviceConfig: .init(
                         methodConfig: [
                             .init(
                                 names: [.init(service: "", method: "")],  // Empty service means all methods
-                                waitForReady: true,
+                                waitForReady: false,
                                 timeout: .seconds(8),
                                 executionPolicy: .retry(
                                     .init(
-                                        maxAttempts: 2,
+                                        maxAttempts: 3,
                                         initialBackoff: .milliseconds(150),
-                                        maxBackoff: .seconds(3),
-                                        backoffMultiplier: 1.5,
+                                        maxBackoff: .milliseconds(500),
+                                        backoffMultiplier: 1.2,
                                         retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
                             )
                         ]

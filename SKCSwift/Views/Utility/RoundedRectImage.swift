@@ -9,10 +9,17 @@ import SwiftUI
 import Kingfisher
 
 struct RoundedRectImage: View, Equatable {
-    let width: CGFloat
-    let height: CGFloat
-    let imageUrl: URL
-    var cornerRadius = 50.0
+    private let width: CGFloat
+    private let height: CGFloat
+    private let imageUrl: URL
+    private let cornerRadius: CGFloat
+    
+    init(width: CGFloat, height: CGFloat, imageUrl: URL, cornerRadius: CGFloat? = nil) {
+        self.width = width
+        self.height = height
+        self.imageUrl = imageUrl
+        self.cornerRadius = cornerRadius ?? 50.0
+    }
     
     var body: some View {
         KFImage(imageUrl)

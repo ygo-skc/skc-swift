@@ -42,7 +42,7 @@ struct ProductView: View {
                            }
                            .onChange(of: model.product) {
                                Task {
-                                   let newItem = History(resource: .product, id: model.productID, timesAccessed: 1)
+                                   let newItem = History(resource: .product, id: model.productID, lastAccessDate: Date(), timesAccessed: 1)
                                    newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
                                }
                            }

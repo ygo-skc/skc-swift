@@ -15,7 +15,7 @@ struct DataTaskStatusParser {
 
 nonisolated fileprivate struct NilReqBody: Encodable {}
 
-fileprivate nonisolated let customSession: URLSession = {
+nonisolated fileprivate let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
     
     configuration.timeoutIntervalForRequest = 5
@@ -90,7 +90,7 @@ nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, http
 }
 
 @concurrent
-fileprivate nonisolated func dataTask<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
+nonisolated fileprivate func dataTask<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
         let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
         try Task.checkCancellation()

@@ -8,8 +8,10 @@
 import SwiftUI
 import YGOService
 
-private func isOverlayVisible(timelineDTS: DataTaskStatus,contentDTS: DataTaskStatus,
-                              timelineNE: NetworkError?, contentNE: NetworkError?) -> Bool {
+private func isOverlayVisible(timelineDTS: DataTaskStatus,
+                              contentDTS: DataTaskStatus,
+                              timelineNE: NetworkError?,
+                              contentNE: NetworkError?) -> Bool {
     return DataTaskStatusParser.isDataPending(timelineDTS) || DataTaskStatusParser.isDataPending(contentDTS) || timelineNE != nil || contentNE != nil
 }
 
@@ -21,7 +23,7 @@ struct RestrictedContentView: View {
     @State private var isSettingsSheetPresented = false
     @Namespace private var animation
     
-    private var sort: some ToolbarContent {
+    private var sortToolbarItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
                 ForEach(RestrictedContentSortOrder.allCases, id: \.self) { sortOption in
@@ -49,7 +51,7 @@ struct RestrictedContentView: View {
     }
     
     @ViewBuilder
-    private var contentHeader: some View {
+    private var contentHeader: some View{
         VStack(alignment: .leading, spacing: 5) {
             if let chosenRestrictedContentDate = model.chosenRestrictedContentDate, chosenRestrictedContentDate > Date.now {
                 Label {
@@ -117,7 +119,6 @@ struct RestrictedContentView: View {
                                                contentNE: model.contentNE,
                                                timelineCB: { await model.fetchTimelineData() },
                                                contentCB: { await model.fetchRestrictedCards() })
-                    .equatable()
                 }.equatable()
                     .navigationTitle("Restrictions")
                     .modify {
@@ -132,11 +133,10 @@ struct RestrictedContentView: View {
                         Color.clear.frame(height: mainSheetContentHeight)
                     }
                     .toolbar {
-                        if model.format == .genesys && !isOverlayVisible(timelineDTS: model.timelineDTS,
-                                                                         contentDTS: model.contentDTS,
-                                                                         timelineNE: model.timelineNE,
-                                                                         contentNE: model.contentNE) {
-                            sort
+                        if model.format == .genesys
+                            && !isOverlayVisible(timelineDTS: model.timelineDTS, contentDTS: model.contentDTS,
+                                                 timelineNE: model.timelineNE, contentNE: model.contentNE) {
+                            sortToolbarItem
                         }
                     }
             } sheetContent: {
@@ -175,11 +175,12 @@ struct RestrictedContentView: View {
     RestrictedContentView()
 }
 
-private struct RestrictedCardsView<Header: View, Overlay: View>: View, Equatable {
+private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: View, Equatable {
     static func == (lhs: RestrictedCardsView, rhs: RestrictedCardsView) -> Bool {
         lhs.isOverlayVisible == rhs.isOverlayVisible
         && lhs.restrictedCards == rhs.restrictedCards
         && lhs.scoreEntries == rhs.scoreEntries
+        && lhs.overlay == rhs.overlay
     }
     
     let format: CardRestrictionFormat
@@ -237,8 +238,6 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     static func == (lhs: RestrictedCardsViewOverlay, rhs: RestrictedCardsViewOverlay) -> Bool {
         lhs.timelineDTS == rhs.timelineDTS
         && lhs.contentDTS == rhs.contentDTS
-        && lhs.timelineNE == rhs.timelineNE
-        && lhs.contentNE == rhs.contentNE
     }
     
     let timelineDTS: DataTaskStatus

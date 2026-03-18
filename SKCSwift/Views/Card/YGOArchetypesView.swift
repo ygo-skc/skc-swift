@@ -112,7 +112,7 @@ struct YGOArchetypeView: View {
                                 Spacer()
                                 Text("More")
                                     .font(.headline)
-                                    .fontWeight(.ultraLight)
+                                    .fontWeight(.light)
                                 Image(systemName: "chevron.forward")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)

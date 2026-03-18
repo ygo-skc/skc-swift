@@ -82,12 +82,3 @@ enum NetworkError: Error {
         }
     }
 }
-
-func handleRPCError(method: String, error: RPCError) {
-    switch error.code {
-    case .notFound:
-        print("RPC \(method) call resulted in not found error. Message: \(error.message)")
-    default:
-        print("RPC error \(error.message)")
-    }
-}

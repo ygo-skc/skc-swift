@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct ArchiveContainer {
+final class ArchiveContainer {
     static let archiveModelContainer: ModelContainer = {
         let config = ModelConfiguration(cloudKitDatabase: .private("iCloud.com.skc.app.Archive"))
         return try! ModelContainer(for: Schema([Favorite.self, History.self]), configurations: config)

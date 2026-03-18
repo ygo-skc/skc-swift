@@ -121,8 +121,8 @@ private struct CarouselItemViewModifier: ViewModifier {
 }
 
 private struct SuggestedCardView: View {
-    var card: YGOCard
-    var occurrence: Int
+    let card: YGOCard
+    let occurrence: Int
     
     var body: some View {
         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {

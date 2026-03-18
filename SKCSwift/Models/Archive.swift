@@ -16,13 +16,11 @@ enum ArchiveResource: String, Codable {
 
 @Model
 class Favorite {
-    //    #Unique<Favorite>([\.type, \.id])
+    private(set) var type: String = "favorites"
+    private(set) var resource: ArchiveResource = ArchiveResource.card
+    private(set) var id: String = ""
     
-    var type: String = "favorites"
-    var resource: ArchiveResource = ArchiveResource.card
-    var id: String = ""
-    
-    init(type: String = "favorites", resource: ArchiveResource, id: String) {
+    init(type: String, resource: ArchiveResource, id: String) {
         self.type = type
         self.resource = resource
         self.id = id
@@ -37,7 +35,7 @@ final class History {
     private(set) var lastAccessDate: Date = Date()
     private(set) var timesAccessed: Int = 0
     
-    init(resource: ArchiveResource, id: String, lastAccessDate: Date = Date(), timesAccessed: Int = 0) {
+    init(resource: ArchiveResource, id: String, lastAccessDate: Date, timesAccessed: Int) {
         self.resource = resource.rawValue
         self.id = id
         self.lastAccessDate = lastAccessDate
