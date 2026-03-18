@@ -89,11 +89,12 @@ nonisolated public func getRestrictionDates(format: String) async -> Result<[Str
 }
 
 @concurrent
-nonisolated public func getScoresByFormatAndDate<U>(format: String,
-                                                    date: String,
-                                                    sort: Int,
-                                                    mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
-async -> Result<[U], any Error> where U: Decodable {
+nonisolated public func getScoresByFormatAndDate<T>(
+    format: String,
+    date: String,
+    sort: Int,
+    mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> T
+) async -> Result<[T], any Error> where T: Decodable {
     do {
         let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(.with {
             $0.format = format
@@ -128,9 +129,10 @@ async -> Result<[U], any Error> where U: Decodable {
 }
 
 @concurrent
-nonisolated public func getCardScore<U>(cardID: String,
-                                        mapper: ([String: UInt32], [String], [String]) -> U
-) async -> Result<U, any Error> where U: Decodable {
+nonisolated public func getCardScore<T>(
+    cardID: String,
+    mapper: ([String: UInt32], [String], [String]) -> T
+) async -> Result<T, any Error> where T: Decodable {
     do {
         let cardScore = try await GRPCManager.ygoClients.score.getCardScoreByID(.with { $0.id = cardID })
         return .success(mapper(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
