@@ -23,86 +23,6 @@ struct RestrictedContentView: View {
     @State private var isSettingsSheetPresented = false
     @Namespace private var animation
     
-    private var sortToolbarItem: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                ForEach(RestrictedContentSortOrder.allCases, id: \.self) { sortOption in
-                    Button(action: {model.sort = sortOption}) {
-                        if model.sort == sortOption {
-                            Image(systemName: "checkmark")
-                        }
-                        Text(sortOption.title)
-                        if model.sort == sortOption {
-                            Text(sortOption.subtitle)
-                        }
-                    }
-                }
-            } label: {
-                Image(systemName: "arrow.up.arrow.down")
-            }
-        }
-        .modify {
-            if #available(iOS 26.0, *) {
-                $0.matchedTransitionSource(id: "genesysToolbar", in: animation)
-            } else {
-                $0
-            }
-        }
-    }
-    
-    @ViewBuilder
-    private var contentHeader: some View{
-        VStack(alignment: .leading, spacing: 5) {
-            if let chosenRestrictedContentDate = model.chosenRestrictedContentDate, chosenRestrictedContentDate > Date.now {
-                Label {
-                    Text("Selected range is effective in \(abs(chosenRestrictedContentDate.timeIntervalSinceNow()) + 1) day(s)")
-                } icon: {
-                    Image(systemName: "exclamationmark.circle")
-                        .foregroundColor(.orange)
-                }
-            }
-            
-            if model.format == .genesys {
-                Label(
-                    "Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
-                    systemImage: "info.circle")
-                .font(.callout)
-            } else {
-                nonGenesysContentExplainer
-            }
-            Label("\(model.totalEntries) entries", systemImage: "sum")
-                .font(.callout)
-        }
-        .padding(.bottom, 4)
-    }
-    
-    @ViewBuilder
-    private var nonGenesysContentExplainer: some View {
-        Label {
-            switch(model.chosenBannedContentCategory) {
-            case .forbidden:
-                Text("Below cards cannot be used in the main/side/extra decks")
-            case .limited:
-                Text("Only one copy of the below cards can be used in the main/side/extra decks")
-            case .semiLimited:
-                Text("Only two copy of the below cards can be used in the main/side/extra decks")
-            }
-        } icon: {
-            switch(model.chosenBannedContentCategory) {
-            case .forbidden:
-                Image(systemName: "x.circle.fill")
-                    .foregroundColor(.red)
-            case .limited:
-                Image(systemName: "1.circle.fill")
-                    .foregroundColor(.yellow)
-            case .semiLimited:
-                Image(systemName: "2.circle.fill")
-                    .foregroundColor(.green)
-            }
-        }
-        .font(.callout)
-    }
-    
     var body: some View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
@@ -116,6 +36,7 @@ struct RestrictedContentView: View {
                         timelineNE: model.timelineNE,
                         contentNE: model.contentNE)) {
                             contentHeader
+                                .padding(.bottom)
                         } overlay: {
                             RestrictedCardsViewOverlay(
                                 timelineDTS: model.timelineDTS,
@@ -173,6 +94,134 @@ struct RestrictedContentView: View {
                     await model.fetchTimelineData()
                 }
             }
+        }
+    }
+    
+    private var sortToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                ForEach(RestrictedContentSortOrder.allCases, id: \.self) { sortOption in
+                    Button(action: {model.sort = sortOption}) {
+                        if model.sort == sortOption {
+                            Image(systemName: "checkmark")
+                        }
+                        Text(sortOption.title)
+                        if model.sort == sortOption {
+                            Text(sortOption.subtitle)
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "arrow.up.arrow.down")
+            }
+        }
+        .modify {
+            if #available(iOS 26.0, *) {
+                $0.matchedTransitionSource(id: "genesysToolbar", in: animation)
+            } else {
+                $0
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var contentHeader: some View{
+        VStack(alignment: .leading, spacing: 15) {
+            CardView(maxWidth: .infinity) {
+                HStack(spacing: 10) {
+                    VStack(alignment: .leading) {
+                        Text("\(model.totalEntries)")
+                            .font(.title2)
+                            .fontWeight(.black)
+                        Text("Entries")
+                            .font(.subheadline)
+                            .fontWeight(.regular)
+                    }
+                    
+                    Spacer()
+                    
+                    if model.format != .genesys {
+                        BannedCategoryTotalView(total: model.totalForbidden, category: .forbidden)
+                        BannedCategoryTotalView(total: model.totalLimited, category: .limited)
+                        BannedCategoryTotalView(total: model.totalSemiLimited, category: .semiLimited)
+                    }
+                }
+                
+                Divider()
+                    .padding(.vertical, 5)
+                contentSubHeader
+            }
+        }
+        .padding(.bottom, 4)
+    }
+    
+    @ViewBuilder
+    private var contentSubHeader: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            if let chosenRestrictedContentDate = model.chosenRestrictedContentDate, chosenRestrictedContentDate > Date.now {
+                Label {
+                    Text("Selected range is effective in \(abs(chosenRestrictedContentDate.timeIntervalSinceNow()) + 1) day(s)")
+                } icon: {
+                    Image(systemName: "exclamationmark.circle")
+                        .foregroundColor(.orange)
+                }
+            }
+            
+            if model.format == .genesys {
+                Label(
+                    "Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
+                    systemImage: "info.circle")
+                .font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
+            } else {
+                nonGenesysContentExplainer
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    @ViewBuilder
+    private var nonGenesysContentExplainer: some View {
+        Label {
+            switch(model.chosenBannedContentCategory) {
+            case .forbidden:
+                Text("Below cards cannot be used in the main/side/extra decks")
+            case .limited:
+                Text("Only one copy of the below cards can be used in the main/side/extra decks")
+            case .semiLimited:
+                Text("Only two copy of the below cards can be used in the main/side/extra decks")
+            }
+        } icon: {
+            switch(model.chosenBannedContentCategory) {
+            case .forbidden:
+                Image(systemName: "x.circle.fill")
+                    .foregroundColor(.red)
+            case .limited:
+                Image(systemName: "1.circle.fill")
+                    .foregroundColor(.yellow)
+            case .semiLimited:
+                Image(systemName: "2.circle.fill")
+                    .foregroundColor(.green)
+            }
+        }
+        .font(.callout)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    private struct BannedCategoryTotalView: View {
+        let total: UInt8
+        let category: BannedContentCategory
+        
+        var body: some View {
+            VStack() {
+                Text("\(total)")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                Text(category.rawValue)
+                    .font(.caption2)
+                    .fontWeight(.regular)
+            }
+            Spacer()
         }
     }
 }
