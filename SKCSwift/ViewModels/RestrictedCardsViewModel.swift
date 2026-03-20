@@ -80,13 +80,27 @@ final class RestrictedCardsViewModel {
         return cardScores?.entries ?? []
     }
     
-    
     @ObservationIgnored
     var totalEntries: UInt32 {
         if format == .genesys {
             return cardScores?.totalEntries ?? 0
         }
         return UInt32(bannedContent?.numForbidden ?? 0 ) + UInt32(bannedContent?.numLimited ?? 0) + UInt32(bannedContent?.numSemiLimited ?? 0)
+    }
+    
+    @ObservationIgnored
+    var totalForbidden: UInt8 {
+        return bannedContent?.numForbidden ?? 0
+    }
+    
+    @ObservationIgnored
+    var totalLimited: UInt8 {
+        return bannedContent?.numLimited ?? 0
+    }
+    
+    @ObservationIgnored
+    var totalSemiLimited: UInt8 {
+        return bannedContent?.numSemiLimited ?? 0
     }
     
     func fetchTimelineData() async {
