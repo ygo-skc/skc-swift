@@ -30,7 +30,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetCardColors".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetCardColors"
+                method: "GetCardColors",
+                type: .unary
             )
         }
         /// Namespace for "GetCardByID" metadata.
@@ -42,7 +43,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetCardByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetCardByID"
+                method: "GetCardByID",
+                type: .unary
             )
         }
         /// Namespace for "GetCardsByID" metadata.
@@ -54,7 +56,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetCardsByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetCardsByID"
+                method: "GetCardsByID",
+                type: .unary
             )
         }
         /// Namespace for "GetCardsByName" metadata.
@@ -66,7 +69,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetCardsByName".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetCardsByName"
+                method: "GetCardsByName",
+                type: .unary
             )
         }
         /// Namespace for "GetCardsReferencingNameInEffect" metadata.
@@ -78,7 +82,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetCardsReferencingNameInEffect".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetCardsReferencingNameInEffect"
+                method: "GetCardsReferencingNameInEffect",
+                type: .unary
             )
         }
         /// Namespace for "GetArchetypalCardsUsingCardName" metadata.
@@ -90,7 +95,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetArchetypalCardsUsingCardName".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetArchetypalCardsUsingCardName"
+                method: "GetArchetypalCardsUsingCardName",
+                type: .unary
             )
         }
         /// Namespace for "GetExplicitArchetypalInclusions" metadata.
@@ -102,7 +108,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetExplicitArchetypalInclusions".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetExplicitArchetypalInclusions"
+                method: "GetExplicitArchetypalInclusions",
+                type: .unary
             )
         }
         /// Namespace for "GetExplicitArchetypalExclusions" metadata.
@@ -114,7 +121,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetExplicitArchetypalExclusions".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetExplicitArchetypalExclusions"
+                method: "GetExplicitArchetypalExclusions",
+                type: .unary
             )
         }
         /// Namespace for "GetRandomCard" metadata.
@@ -126,7 +134,8 @@ internal enum Ygo_CardService: Sendable {
             /// Descriptor for "GetRandomCard".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
-                method: "GetRandomCard"
+                method: "GetRandomCard",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "ygo.CardService" service.
@@ -1131,7 +1140,8 @@ internal enum Ygo_ProductService: Sendable {
             /// Descriptor for "GetCardsByProductID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService"),
-                method: "GetCardsByProductID"
+                method: "GetCardsByProductID",
+                type: .unary
             )
         }
         /// Namespace for "GetProductSummaryByID" metadata.
@@ -1143,7 +1153,8 @@ internal enum Ygo_ProductService: Sendable {
             /// Descriptor for "GetProductSummaryByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService"),
-                method: "GetProductSummaryByID"
+                method: "GetProductSummaryByID",
+                type: .unary
             )
         }
         /// Namespace for "GetProductsSummaryByID" metadata.
@@ -1155,7 +1166,8 @@ internal enum Ygo_ProductService: Sendable {
             /// Descriptor for "GetProductsSummaryByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService"),
-                method: "GetProductsSummaryByID"
+                method: "GetProductsSummaryByID",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "ygo.ProductService" service.
@@ -1536,7 +1548,8 @@ internal enum Ygo_CardRestrictionService: Sendable {
             /// Descriptor for "GetEffectiveTimelineForFormat".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardRestrictionService"),
-                method: "GetEffectiveTimelineForFormat"
+                method: "GetEffectiveTimelineForFormat",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "ygo.CardRestrictionService" service.
@@ -1709,7 +1722,8 @@ internal enum Ygo_ScoreService: Sendable {
             /// Descriptor for "GetScoresByFormatAndDate".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService"),
-                method: "GetScoresByFormatAndDate"
+                method: "GetScoresByFormatAndDate",
+                type: .unary
             )
         }
         /// Namespace for "GetCardScoreByID" metadata.
@@ -1721,7 +1735,8 @@ internal enum Ygo_ScoreService: Sendable {
             /// Descriptor for "GetCardScoreByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService"),
-                method: "GetCardScoreByID"
+                method: "GetCardScoreByID",
+                type: .unary
             )
         }
         /// Namespace for "GetCardScoresByIDs" metadata.
@@ -1733,7 +1748,8 @@ internal enum Ygo_ScoreService: Sendable {
             /// Descriptor for "GetCardScoresByIDs".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService"),
-                method: "GetCardScoresByIDs"
+                method: "GetCardScoresByIDs",
+                type: .unary
             )
         }
         /// Descriptors for all methods in the "ygo.ScoreService" service.
