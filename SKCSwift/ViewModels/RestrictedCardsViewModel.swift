@@ -9,28 +9,6 @@ import Foundation
 import YGOService
 import GRPCCore
 
-enum RestrictedContentSortOrder: Int, CaseIterable {
-    case cardNameAsc = 0, cardScoreDesc = 1
-    
-    var title: String {
-        switch self {
-        case .cardNameAsc:
-            return "Card Name"
-        case .cardScoreDesc:
-            return "Card Score"
-        }
-    }
-    
-    var subtitle: String {
-        switch self {
-        case .cardNameAsc:
-            return "A-Z"
-        case .cardScoreDesc:
-            return "9-0"
-        }
-    }
-}
-
 @Observable
 final class RestrictedCardsViewModel {
     var format = CardRestrictionFormat.tcg
@@ -81,26 +59,44 @@ final class RestrictedCardsViewModel {
     }
     
     @ObservationIgnored
-    var totalEntries: UInt32 {
+    var totalEntries: UInt16 {
         if format == .genesys {
-            return cardScores?.totalEntries ?? 0
+            return UInt16(cardScores?.totalEntries ?? 0)
         }
-        return UInt32(bannedContent?.numForbidden ?? 0 ) + UInt32(bannedContent?.numLimited ?? 0) + UInt32(bannedContent?.numSemiLimited ?? 0)
+        return (bannedContent?.numForbidden ?? 0 ) + (bannedContent?.numLimited ?? 0) + (bannedContent?.numSemiLimited ?? 0)
     }
     
     @ObservationIgnored
-    var totalForbidden: UInt8 {
+    var totalForbidden: UInt16 {
         return bannedContent?.numForbidden ?? 0
     }
     
     @ObservationIgnored
-    var totalLimited: UInt8 {
+    var totalLimited: UInt16 {
         return bannedContent?.numLimited ?? 0
     }
     
     @ObservationIgnored
-    var totalSemiLimited: UInt8 {
+    var totalSemiLimited: UInt16 {
         return bannedContent?.numSemiLimited ?? 0
+    }
+    
+    @ObservationIgnored
+    var genesysTotalRange1: UInt16 {
+        let entries = (cardScores?.entries ?? []).filter({$0.score <= 30})
+        return UInt16(entries.count)
+    }
+    
+    @ObservationIgnored
+    var genesysTotalRange2: UInt16 {
+        let entries = (cardScores?.entries ?? []).filter({$0.score > 30 && $0.score <= 70})
+        return UInt16(entries.count)
+    }
+    
+    @ObservationIgnored
+    var genesysTotalRange3: UInt16 {
+        let entries = (cardScores?.entries ?? []).filter({$0.score > 70})
+        return UInt16(entries.count)
     }
     
     func fetchTimelineData() async {
@@ -153,6 +149,28 @@ final class RestrictedCardsViewModel {
                 self.cardScores = c
             }
             (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
+        }
+    }
+}
+
+enum RestrictedContentSortOrder: Int, CaseIterable {
+    case cardNameAsc = 0, cardScoreDesc = 1
+    
+    var title: String {
+        switch self {
+        case .cardNameAsc:
+            return "Card Name"
+        case .cardScoreDesc:
+            return "Card Score"
+        }
+    }
+    
+    var subtitle: String {
+        switch self {
+        case .cardNameAsc:
+            return "A-Z"
+        case .cardScoreDesc:
+            return "9-0"
         }
     }
 }

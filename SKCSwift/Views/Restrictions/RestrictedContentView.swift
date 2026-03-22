@@ -19,10 +19,10 @@ struct RestrictedContentView: View {
     @State private var mainSheetContentHeight: CGFloat = 0
     @State private var path = NavigationPath()
     @State private var model = RestrictedCardsViewModel()
-
+    
     @State private var isSettingsSheetPresented = false
     @Namespace private var animation
-
+    
     var body: some View {
         NavigationStack(path: $path) {
             SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
@@ -96,7 +96,7 @@ struct RestrictedContentView: View {
             }
         }
     }
-
+    
     private var sortToolbarItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
@@ -123,7 +123,7 @@ struct RestrictedContentView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private var contentHeader: some View{
         VStack(alignment: .leading, spacing: 15) {
@@ -136,7 +136,7 @@ struct RestrictedContentView: View {
         }
         .padding(.bottom, 4)
     }
-
+    
     @ViewBuilder
     private var formatSummary: some View {
         HStack(spacing: 10) {
@@ -148,9 +148,9 @@ struct RestrictedContentView: View {
                     .font(.subheadline)
                     .fontWeight(.regular)
             }
-
+            
             Spacer()
-
+            
             if model.format != .genesys {
                 BannedCategoryTotalView(
                     total: model.totalForbidden,
@@ -164,10 +164,14 @@ struct RestrictedContentView: View {
                     total: model.totalSemiLimited,
                     category: .semiLimited,
                     color: (model.chosenBannedContentCategory == .semiLimited) ? .green : .primary)
+            } else {
+                ScoreRangeTotalView(total: model.genesysTotalRange1, description: "0-30 pts", color: .primary)
+                ScoreRangeTotalView(total: model.genesysTotalRange2, description: "31-70 pts", color: .primary)
+                ScoreRangeTotalView(total: model.genesysTotalRange3, description: "71+ pts", color: .primary)
             }
         }
     }
-
+    
     @ViewBuilder
     private var contentDescription: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -179,7 +183,7 @@ struct RestrictedContentView: View {
                         .foregroundColor(.orange)
                 }
             }
-
+            
             if model.format == .genesys {
                 Label(
                     "Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
@@ -192,7 +196,7 @@ struct RestrictedContentView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-
+    
     @ViewBuilder
     private var nonGenesysDescription: some View {
         Label {
@@ -220,12 +224,12 @@ struct RestrictedContentView: View {
         .font(.callout)
         .fixedSize(horizontal: false, vertical: true)
     }
-
+    
     private struct BannedCategoryTotalView: View {
-        let total: UInt8
+        let total: UInt16
         let category: BannedContentCategory
         let color: Color
-
+        
         var body: some View {
             VStack() {
                 Text("\(total)")
@@ -233,6 +237,25 @@ struct RestrictedContentView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(color)
                 Text(category.rawValue)
+                    .font(.caption2)
+                    .fontWeight(.regular)
+            }
+            Spacer()
+        }
+    }
+    
+    private struct ScoreRangeTotalView: View {
+        let total: UInt16
+        let description: String
+        let color: Color
+        
+        var body: some View {
+            VStack() {
+                Text("\(total)")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(color)
+                Text(description)
                     .font(.caption2)
                     .fontWeight(.regular)
             }
@@ -252,16 +275,16 @@ private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: Vie
         && lhs.scoreEntries == rhs.scoreEntries
         && lhs.overlay == rhs.overlay
     }
-
+    
     let format: CardRestrictionFormat
     let restrictedCards: [YGOCard]
     let scoreEntries: [CardScoreEntry]
-
+    
     let isOverlayVisible: Bool
-
+    
     let header: Header
     let overlay: Overlay
-
+    
     init(
         format: CardRestrictionFormat,
         restrictedCards: [YGOCard],
@@ -272,13 +295,13 @@ private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: Vie
             self.format = format
             self.restrictedCards = restrictedCards
             self.scoreEntries = scoreEntries
-
+            
             self.isOverlayVisible = isOverlayVisible
-
+            
             self.header = header()
             self.overlay = overlay()
         }
-
+    
     var body: some View {
         ScrollView {
             if !isOverlayVisible {
@@ -310,16 +333,16 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
         lhs.timelineDTS == rhs.timelineDTS
         && lhs.contentDTS == rhs.contentDTS
     }
-
+    
     let timelineDTS: DataTaskStatus
     let contentDTS: DataTaskStatus
-
+    
     let timelineNE: NetworkError?
     let contentNE: NetworkError?
-
+    
     let timelineCB: () async -> Void
     let contentCB: () async -> Void
-
+    
     var body: some View {
         if DataTaskStatusParser.isDataPending(timelineDTS)
             || (timelineDTS != .error && DataTaskStatusParser.isDataPending(contentDTS)) {
@@ -347,7 +370,7 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     let contentDTS: DataTaskStatus = .pending
     let timelineNE: NetworkError? = nil
     let contentNE: NetworkError? = nil
-
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
@@ -368,7 +391,7 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     let contentDTS: DataTaskStatus = .pending
     let timelineNE: NetworkError? = nil
     let contentNE: NetworkError? = nil
-
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
@@ -389,7 +412,7 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     let contentDTS: DataTaskStatus = .pending
     let timelineNE: NetworkError? = .timeout
     let contentNE: NetworkError? = nil
-
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
@@ -410,7 +433,7 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     let contentDTS: DataTaskStatus = .error
     let timelineNE: NetworkError? = nil
     let contentNE: NetworkError? = .timeout
-
+    
     RestrictedCardsView(format: .md,
                         restrictedCards: [],
                         scoreEntries: [],
