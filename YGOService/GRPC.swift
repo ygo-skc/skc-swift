@@ -46,7 +46,7 @@ fileprivate struct YGOClients {
                             )
                         )
                         
-                        config.http2 = .init(maxFrameSize: 15 * 1024, targetWindowSize: 75 * 1024, authority: nil)
+                        config.http2 = .init(maxFrameSize: 14 << 10, targetWindowSize: 140 << 10, authority: nil)
                     },
                     serviceConfig: .init(
                         methodConfig: [
