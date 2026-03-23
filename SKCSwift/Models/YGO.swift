@@ -28,8 +28,8 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     let cardEffect: String
     private let monsterType: String?
     let monsterAssociation: MonsterAssociation?
-    private let monsterAttack: Int?
-    private let monsterDefense: Int?
+    private let monsterAttack: UInt32?
+    private let monsterDefense: UInt32?
     private let qualifier: String?
     
     init(cardID: String,
@@ -39,8 +39,8 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
          cardEffect: String,
          monsterType: String? = nil,
          monsterAssociation: MonsterAssociation? = nil,
-         monsterAttack: Int? = nil,
-         monsterDefense: Int? = nil,
+         monsterAttack: UInt32? = nil,
+         monsterDefense: UInt32? = nil,
          qualifier: String? = "") {
         self.cardID = cardID
         self.cardName = cardName
@@ -56,15 +56,15 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     
     func withQualifier(qualifier: String) -> YGOCard {
         .init(cardID: cardID,
-                    cardName: cardName,
-                    cardColor: cardColor,
-                    cardAttribute: cardAttribute,
-                    cardEffect: cardEffect,
-                    monsterType: monsterType,
-                    monsterAssociation: monsterAssociation,
-                    monsterAttack: monsterAttack,
-                    monsterDefense: monsterDefense,
-                    qualifier: qualifier)
+              cardName: cardName,
+              cardColor: cardColor,
+              cardAttribute: cardAttribute,
+              cardEffect: cardEffect,
+              monsterType: monsterType,
+              monsterAssociation: monsterAssociation,
+              monsterAttack: monsterAttack,
+              monsterDefense: monsterDefense,
+              qualifier: qualifier)
     }
     
     /// this ID attribute can be customized to avoid List key issues in case List has multiple cards w/ same ID

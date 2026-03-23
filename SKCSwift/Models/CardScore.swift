@@ -42,8 +42,11 @@ nonisolated struct CardScoreEntry: Codable, Equatable {
         monsterAttack: Int? = nil,
         monsterDefense: Int? = nil,
         score: UInt32) -> Self {
-            return .init(card: YGOCard(cardID: cardID, cardName: cardName, cardColor: cardColor, cardAttribute: cardAttribute, cardEffect: cardEffect,
-                                       monsterType: monsterType, monsterAttack: monsterAttack, monsterDefense: monsterDefense),
-                         score: score)
+            return .init(
+                card: YGOCard(cardID: cardID, cardName: cardName, cardColor: cardColor, cardAttribute: cardAttribute,
+                              cardEffect: cardEffect, monsterType: monsterType,
+                              monsterAttack: (monsterAttack == nil) ? nil : UInt32(monsterAttack!),
+                              monsterDefense: (monsterDefense == nil) ? nil : UInt32(monsterDefense!)),
+                score: score)
         }
 }
