@@ -23,6 +23,80 @@ struct RestrictedContentView: View {
     @State private var isSettingsSheetPresented = false
     @Namespace private var animation
     
+    var body: some View {
+        NavigationStack(path: $path) {
+            SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
+                RestrictedCardsView(
+                    format: model.format,
+                    restrictedCards: model.restrictedCards,
+                    scoreEntries: model.scoreEntries,
+                    isOverlayVisible: isOverlayVisible(
+                        timelineDTS: model.timelineDTS,
+                        contentDTS: model.contentDTS,
+                        timelineNE: model.timelineNE,
+                        contentNE: model.contentNE)) {
+                            contentHeader
+                                .padding(.bottom)
+                        } overlay: {
+                            RestrictedCardsViewOverlay(
+                                timelineDTS: model.timelineDTS,
+                                contentDTS: model.contentDTS,
+                                timelineNE: model.timelineNE,
+                                contentNE: model.contentNE,
+                                timelineCB: { await model.fetchTimelineData() },
+                                contentCB: { await model.fetchRestrictedCards() })
+                        }
+                        .equatable()
+                        .navigationTitle("Restrictions")
+                        .modify {
+                            if #available(iOS 26.0, *) {
+                                $0.navigationSubtitle("\(model.format.rawValue) format")
+                            } else {
+                                $0
+                            }
+                        }
+                        .navigationBarTitleDisplayMode(.large)
+                        .safeAreaInset(edge: .bottom) {
+                            Color.clear.frame(height: mainSheetContentHeight)
+                        }
+                        .toolbar {
+                            if model.format == .genesys
+                                && !isOverlayVisible(timelineDTS: model.timelineDTS, contentDTS: model.contentDTS,
+                                                     timelineNE: model.timelineNE, contentNE: model.contentNE) {
+                                sortToolbarItem
+                            }
+                        }
+            } sheetContent: {
+                RestrictedContentNavigatorView(
+                    format: $model.format,
+                    dateRangeIndex: $model.dateRangeIndex,
+                    contentCategory: $model.chosenBannedContentCategory,
+                    dates: model.restrictionDates,
+                    isDisabled: DataTaskStatusParser.isDataPending(model.timelineDTS) || DataTaskStatusParser.isDataPending(model.contentDTS))
+            }
+            .onChange(of: model.format) {
+                Task {
+                    await model.fetchTimelineData()
+                }
+            }
+            .onChange(of: model.dateRangeIndex) {
+                Task {
+                    await model.fetchRestrictedCards()
+                }
+            }
+            .onChange(of: model.sort) {
+                Task {
+                    await model.fetchRestrictedCards()
+                }
+            }
+            .task {
+                if DataTaskStatusParser.isDataPending(model.timelineDTS) {
+                    await model.fetchTimelineData()
+                }
+            }
+        }
+    }
+    
     private var sortToolbarItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
@@ -52,6 +126,54 @@ struct RestrictedContentView: View {
     
     @ViewBuilder
     private var contentHeader: some View{
+        VStack(alignment: .leading, spacing: 15) {
+            CardView(maxWidth: .infinity) {
+                formatSummary
+                Divider()
+                    .padding(.vertical, 5)
+                contentDescription
+            }
+        }
+        .padding(.bottom, 4)
+    }
+    
+    @ViewBuilder
+    private var formatSummary: some View {
+        HStack(spacing: 10) {
+            VStack(alignment: .leading) {
+                Text("\(model.totalEntries)")
+                    .font(.title2)
+                    .fontWeight(.black)
+                Text("Entries")
+                    .font(.subheadline)
+                    .fontWeight(.regular)
+            }
+            
+            Spacer()
+            
+            if model.format != .genesys {
+                BannedCategoryTotalView(
+                    total: model.totalForbidden,
+                    category: .forbidden,
+                    color: (model.chosenBannedContentCategory == .forbidden) ? .red : .primary)
+                BannedCategoryTotalView(
+                    total: model.totalLimited,
+                    category: .limited,
+                    color: (model.chosenBannedContentCategory == .limited) ? .yellow : .primary)
+                BannedCategoryTotalView(
+                    total: model.totalSemiLimited,
+                    category: .semiLimited,
+                    color: (model.chosenBannedContentCategory == .semiLimited) ? .green : .primary)
+            } else {
+                ScoreRangeTotalView(total: model.genesysTotalRange1, description: "0-30 pts", color: .primary)
+                ScoreRangeTotalView(total: model.genesysTotalRange2, description: "31-70 pts", color: .primary)
+                ScoreRangeTotalView(total: model.genesysTotalRange3, description: "71+ pts", color: .primary)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var contentDescription: some View {
         VStack(alignment: .leading, spacing: 5) {
             if let chosenRestrictedContentDate = model.chosenRestrictedContentDate, chosenRestrictedContentDate > Date.now {
                 Label {
@@ -63,18 +185,20 @@ struct RestrictedContentView: View {
             }
             
             if model.format == .genesys {
-                Label("Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
-                      systemImage: "info.circle")
+                Label(
+                    "Each card in **Genesys** is given a point/score. Utilize below list to see scores for given date range. Cards not explicitly on list cost 0 points. [More info](https://www.yugioh-card.com/en/genesys)",
+                    systemImage: "info.circle")
                 .font(.callout)
-                .padding(.bottom)
+                .fixedSize(horizontal: false, vertical: true)
             } else {
-                contentExplainer
+                nonGenesysDescription
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     @ViewBuilder
-    private var contentExplainer: some View {
+    private var nonGenesysDescription: some View {
         Label {
             switch(model.chosenBannedContentCategory) {
             case .forbidden:
@@ -98,75 +222,44 @@ struct RestrictedContentView: View {
             }
         }
         .font(.callout)
-        .padding(.bottom)
+        .fixedSize(horizontal: false, vertical: true)
     }
     
-    var body: some View {
-        NavigationStack(path: $path) {
-            SegmentedView(mainSheetContentHeight: $mainSheetContentHeight) {
-                RestrictedCardsView(format: model.format,
-                                    restrictedCards: model.restrictedCards,
-                                    scoreEntries: model.scoreEntries,
-                                    isOverlayVisible: isOverlayVisible(timelineDTS: model.timelineDTS,
-                                                                       contentDTS: model.contentDTS,
-                                                                       timelineNE: model.timelineNE,
-                                                                       contentNE: model.contentNE)) {
-                    contentHeader
-                } overlay: {
-                    RestrictedCardsViewOverlay(timelineDTS: model.timelineDTS,
-                                               contentDTS: model.contentDTS,
-                                               timelineNE: model.timelineNE,
-                                               contentNE: model.contentNE,
-                                               timelineCB: { await model.fetchTimelineData() },
-                                               contentCB: { await model.fetchRestrictedCards() })
-                }.equatable()
-                    .navigationTitle("Restrictions")
-                    .modify {
-                        if #available(iOS 26.0, *) {
-                            $0.navigationSubtitle("\(model.format.rawValue) format")
-                        } else {
-                            $0
-                        }
-                    }
-                    .navigationBarTitleDisplayMode(.large)
-                    .safeAreaInset(edge: .bottom) {
-                        Color.clear.frame(height: mainSheetContentHeight)
-                    }
-                    .toolbar {
-                        if model.format == .genesys
-                            && !isOverlayVisible(timelineDTS: model.timelineDTS, contentDTS: model.contentDTS,
-                                                 timelineNE: model.timelineNE, contentNE: model.contentNE) {
-                            sortToolbarItem
-                        }
-                    }
-            } sheetContent: {
-                RestrictedContentNavigatorView(format: $model.format,
-                                               dateRangeIndex: $model.dateRangeIndex,
-                                               contentCategory: $model.chosenBannedContentCategory,
-                                               dates: model.restrictionDates,
-                                               isDisabled: DataTaskStatusParser.isDataPending(model.timelineDTS)
-                                               || DataTaskStatusParser.isDataPending(model.contentDTS))
+    private struct BannedCategoryTotalView: View {
+        let total: UInt16
+        let category: BannedContentCategory
+        let color: Color
+        
+        var body: some View {
+            VStack() {
+                Text("\(total)")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(color)
+                Text(category.rawValue)
+                    .font(.caption2)
+                    .fontWeight(.regular)
             }
-            .onChange(of: model.format) {
-                Task {
-                    await model.fetchTimelineData()
-                }
+            Spacer()
+        }
+    }
+    
+    private struct ScoreRangeTotalView: View {
+        let total: UInt16
+        let description: String
+        let color: Color
+        
+        var body: some View {
+            VStack() {
+                Text("\(total)")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(color)
+                Text(description)
+                    .font(.caption2)
+                    .fontWeight(.regular)
             }
-            .onChange(of: model.dateRangeIndex) {
-                Task {
-                    await model.fetchRestrictedCards()
-                }
-            }
-            .onChange(of: model.sort) {
-                Task {
-                    await model.fetchRestrictedCards()
-                }
-            }
-            .task {
-                if DataTaskStatusParser.isDataPending(model.timelineDTS) {
-                    await model.fetchTimelineData()
-                }
-            }
+            Spacer()
         }
     }
 }
@@ -192,21 +285,22 @@ private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: Vie
     let header: Header
     let overlay: Overlay
     
-    init(format: CardRestrictionFormat,
-         restrictedCards: [YGOCard],
-         scoreEntries: [CardScoreEntry],
-         isOverlayVisible: Bool,
-         @ViewBuilder header: () -> Header,
-         @ViewBuilder overlay: () -> Overlay) {
-        self.format = format
-        self.restrictedCards = restrictedCards
-        self.scoreEntries = scoreEntries
-        
-        self.isOverlayVisible = isOverlayVisible
-        
-        self.header = header()
-        self.overlay = overlay()
-    }
+    init(
+        format: CardRestrictionFormat,
+        restrictedCards: [YGOCard],
+        scoreEntries: [CardScoreEntry],
+        isOverlayVisible: Bool,
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder overlay: () -> Overlay) {
+            self.format = format
+            self.restrictedCards = restrictedCards
+            self.scoreEntries = scoreEntries
+            
+            self.isOverlayVisible = isOverlayVisible
+            
+            self.header = header()
+            self.overlay = overlay()
+        }
     
     var body: some View {
         ScrollView {

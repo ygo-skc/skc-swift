@@ -9,28 +9,6 @@ import Foundation
 import YGOService
 import GRPCCore
 
-enum RestrictedContentSortOrder: Int, CaseIterable {
-    case cardNameAsc = 0, cardScoreDesc = 1
-    
-    var title: String {
-        switch self {
-        case .cardNameAsc:
-            return "Card Name"
-        case .cardScoreDesc:
-            return "Card Score"
-        }
-    }
-    
-    var subtitle: String {
-        switch self {
-        case .cardNameAsc:
-            return "A-Z"
-        case .cardScoreDesc:
-            return "9-0"
-        }
-    }
-}
-
 @Observable
 final class RestrictedCardsViewModel {
     var format = CardRestrictionFormat.tcg
@@ -80,6 +58,47 @@ final class RestrictedCardsViewModel {
         return cardScores?.entries ?? []
     }
     
+    @ObservationIgnored
+    var totalEntries: UInt16 {
+        if format == .genesys {
+            return UInt16(cardScores?.totalEntries ?? 0)
+        }
+        return (bannedContent?.numForbidden ?? 0 ) + (bannedContent?.numLimited ?? 0) + (bannedContent?.numSemiLimited ?? 0)
+    }
+    
+    @ObservationIgnored
+    var totalForbidden: UInt16 {
+        return bannedContent?.numForbidden ?? 0
+    }
+    
+    @ObservationIgnored
+    var totalLimited: UInt16 {
+        return bannedContent?.numLimited ?? 0
+    }
+    
+    @ObservationIgnored
+    var totalSemiLimited: UInt16 {
+        return bannedContent?.numSemiLimited ?? 0
+    }
+    
+    @ObservationIgnored
+    var genesysTotalRange1: UInt16 {
+        let entries = (cardScores?.entries ?? []).filter({$0.score <= 30})
+        return UInt16(entries.count)
+    }
+    
+    @ObservationIgnored
+    var genesysTotalRange2: UInt16 {
+        let entries = (cardScores?.entries ?? []).filter({$0.score > 30 && $0.score <= 70})
+        return UInt16(entries.count)
+    }
+    
+    @ObservationIgnored
+    var genesysTotalRange3: UInt16 {
+        let entries = (cardScores?.entries ?? []).filter({$0.score > 70})
+        return UInt16(entries.count)
+    }
+    
     func fetchTimelineData() async {
         (timelineNE, timelineDTS) = (nil, .pending)
         switch format {
@@ -108,24 +127,50 @@ final class RestrictedCardsViewModel {
         (contentNE, contentDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
-            let res = await data(bannedContentURL(format: format,
-                                                  listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
-                                                  saveBandwidth: false,
-                                                  allInfo: false),
-                                 resType: BannedContent.self)
+            let res = await data(
+                bannedContentURL(
+                    format: format,
+                    listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
+                    saveBandwidth: false,
+                    allInfo: false),
+                resType: BannedContent.self)
             if case .success(let bannedContent) = res {
                 self.bannedContent = bannedContent
             }
             (contentNE, contentDTS) = res.validate()
         case .genesys:
-            let res = await YGOService.getScoresByFormatAndDate(format: format.rawValue,
-                                                                date: restrictionDates[dateRangeIndex].effectiveDate,
-                                                                sort: sort.rawValue,
-                                                                mapper: CardScoreEntry.fromRPC)
-            if case .success(let cardScores) = res {
-                self.cardScores = CardScores(entries: cardScores)
+            let res = await YGOService.getScoresByFormatAndDate(
+                format: format.rawValue,
+                date: restrictionDates[dateRangeIndex].effectiveDate,
+                sort: sort.rawValue,
+                scoreMapper: CardScores.fromRPC,
+                entryMapper: CardScoreEntry.fromRPC)
+            if case .success(let c) = res {
+                self.cardScores = c
             }
             (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
+        }
+    }
+}
+
+enum RestrictedContentSortOrder: Int, CaseIterable {
+    case cardNameAsc = 0, cardScoreDesc = 1
+    
+    var title: String {
+        switch self {
+        case .cardNameAsc:
+            return "Card Name"
+        case .cardScoreDesc:
+            return "Card Score"
+        }
+    }
+    
+    var subtitle: String {
+        switch self {
+        case .cardNameAsc:
+            return "A-Z"
+        case .cardScoreDesc:
+            return "9-0"
         }
     }
 }

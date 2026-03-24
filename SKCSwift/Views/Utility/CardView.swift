@@ -8,11 +8,19 @@
 import SwiftUI
 
 struct CardView<Content: View>: View {
+    let minWidth: CGFloat?
+    let maxWidth: CGFloat
     let content: Content
     
     @Environment(\.colorScheme) private var colorScheme
     
-    init(@ViewBuilder content: () -> Content) {
+    init(
+        minWidth: CGFloat? = nil,
+        maxWidth: CGFloat = 200,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.minWidth = minWidth
+        self.maxWidth = maxWidth
         self.content = content()
     }
     
@@ -22,7 +30,7 @@ struct CardView<Content: View>: View {
         }
         .padding()
         .modifier(.card)
-        .frame(maxWidth: 200, alignment: .topLeading)
+        .frame(minWidth: minWidth, maxWidth: maxWidth, alignment: .topLeading)
     }
 }
 

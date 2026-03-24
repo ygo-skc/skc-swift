@@ -46,7 +46,7 @@ fileprivate struct YGOClients {
                             )
                         )
                         
-                        config.http2 = .init(maxFrameSize: 15 * 1024, targetWindowSize: 75 * 1024, authority: nil)
+                        config.http2 = .init(maxFrameSize: 14 << 10, targetWindowSize: 140 << 10, authority: nil)
                     },
                     serviceConfig: .init(
                         methodConfig: [
@@ -89,27 +89,30 @@ nonisolated public func getRestrictionDates(format: String) async -> Result<[Str
 }
 
 @concurrent
-nonisolated public func getScoresByFormatAndDate<U>(format: String,
-                                                    date: String,
-                                                    sort: Int,
-                                                    mapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U)
-async -> Result<[U], any Error> where U: Decodable {
+nonisolated public func getScoresByFormatAndDate<T, U>(
+    format: String,
+    date: String,
+    sort: Int,
+    scoreMapper: (String, String, [U], UInt32) -> T,
+    entryMapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U
+) async -> Result<T, any Error> where T: Decodable {
     do {
-        let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(.with {
-            $0.format = format
-            $0.effectiveDate = date
-            switch(sort) {
-            case 0:
-                $0.sortOrder = .cardColorAscCardNameAsc
-            case 1:
-                $0.sortOrder = .scoreDescCardColorAscCardNameAsc
-            default:
-                $0.sortOrder = .cardColorAscCardNameAsc
-            }
-        })
+        let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(
+            .with {
+                $0.format = format
+                $0.effectiveDate = date
+                switch(sort) {
+                case 0:
+                    $0.sortOrder = .cardColorAscCardNameAsc
+                case 1:
+                    $0.sortOrder = .scoreDescCardColorAscCardNameAsc
+                default:
+                    $0.sortOrder = .cardColorAscCardNameAsc
+                }
+            })
         let values = scores.entries.map({
             let card = $0.card
-            return mapper(
+            return entryMapper(
                 card.id,
                 card.name,
                 card.color,
@@ -121,16 +124,17 @@ async -> Result<[U], any Error> where U: Decodable {
                 $0.score
             )
         })
-        return .success(values)
+        return .success(scoreMapper(format, date, values, scores.totalEntries))
     } catch {
         return .failure(error)
     }
 }
 
 @concurrent
-nonisolated public func getCardScore<U>(cardID: String,
-                                        mapper: ([String: UInt32], [String], [String]) -> U
-) async -> Result<U, any Error> where U: Decodable {
+nonisolated public func getCardScore<T>(
+    cardID: String,
+    mapper: ([String: UInt32], [String], [String]) -> T
+) async -> Result<T, any Error> where T: Decodable {
     do {
         let cardScore = try await GRPCManager.ygoClients.score.getCardScoreByID(.with { $0.id = cardID })
         return .success(mapper(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))

@@ -16,8 +16,8 @@ private nonisolated struct YGOCardInfo: Codable, Equatable {
     let cardEffect: String
     let monsterType: String?
     let monsterAssociation: MonsterAssociation?
-    let monsterAttack: Int?
-    let monsterDefense: Int?
+    let monsterAttack: UInt32?
+    let monsterDefense: UInt32?
     let restrictedIn: BanListsForCard?
     let foundIn: [Product]?
     
@@ -28,8 +28,8 @@ private nonisolated struct YGOCardInfo: Codable, Equatable {
          cardEffect: String,
          monsterType: String? = nil,
          monsterAssociation: MonsterAssociation? = nil,
-         monsterAttack: Int? = nil,
-         monsterDefense: Int? = nil,
+         monsterAttack: UInt32? = nil,
+         monsterDefense: UInt32? = nil,
          restrictedIn: BanListsForCard? = nil,
          foundIn: [Product]? = nil) {
         self.cardID = cardID
