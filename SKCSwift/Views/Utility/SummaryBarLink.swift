@@ -34,7 +34,7 @@ struct SummaryBarLink<P: Hashable>: View {
                         .font(.headline)
                 }
                 Spacer()
-                Text("More")
+                Text(trailingText)
                     .font(.headline)
                     .fontWeight(.light)
                 Image(systemName: "chevron.forward")
