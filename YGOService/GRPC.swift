@@ -17,7 +17,7 @@ fileprivate struct YGOClients {
     let restrictions: Ygo_CardRestrictionService.Client<HTTP2ClientTransport.TransportServices>
     let score: Ygo_ScoreService.Client<HTTP2ClientTransport.TransportServices>
     private let client: GRPCClient<HTTP2ClientTransport.TransportServices>
-
+    
     init(host: String) {
         do {
             let transport = try HTTP2ClientTransport.TransportServices(
@@ -28,14 +28,14 @@ fileprivate struct YGOClients {
                         algorithm: .gzip,
                         enabledAlgorithms: [.gzip]
                     )
-
+                    
                     config.backoff = .init(
                         initial: .milliseconds(80),
                         max: .seconds(1),
                         multiplier: 1.4,
                         jitter: 0.25
                     )
-
+                    
                     config.connection = .init(
                         maxIdleTime: .seconds(60),
                         keepalive: .init(
@@ -44,8 +44,8 @@ fileprivate struct YGOClients {
                             allowWithoutCalls: false
                         )
                     )
-
-                    config.http2 = .init(maxFrameSize: 14 << 10, targetWindowSize: 140 << 10, authority: nil)
+                    
+                    config.http2 = .init(maxFrameSize: 20 << 10, targetWindowSize: 200 << 10, authority: nil)
                 },
                 serviceConfig: .init(
                     methodConfig: [
