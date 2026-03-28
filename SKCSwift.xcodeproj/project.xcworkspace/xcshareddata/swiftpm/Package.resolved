@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/grpc/grpc-swift-nio-transport",
       "state" : {
-        "revision" : "48d0d3b9910f294efde40dd274067c51000fb10e",
-        "version" : "2.6.0"
+        "revision" : "3ca4136b4426b3f87ca1d98e3b0939724025a202",
+        "version" : "2.6.1"
       }
     },
     {
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "bdf004b44f77c56fca752cd1cf243c802f8469c9",
-        "version" : "2.97.0"
+        "revision" : "558f24a4647193b5a0e2104031b71c55d31ff83a",
+        "version" : "2.97.1"
       }
     },
     {
