@@ -34,38 +34,44 @@ struct RestrictedContentView: View {
                         timelineDTS: model.timelineDTS,
                         contentDTS: model.contentDTS,
                         timelineNE: model.timelineNE,
-                        contentNE: model.contentNE)) {
-                            contentHeader
-                                .padding(.bottom)
-                        } overlay: {
-                            RestrictedCardsViewOverlay(
-                                timelineDTS: model.timelineDTS,
-                                contentDTS: model.contentDTS,
-                                timelineNE: model.timelineNE,
-                                contentNE: model.contentNE,
-                                timelineCB: { await model.fetchTimelineData() },
-                                contentCB: { await model.fetchRestrictedCards() })
-                        }
-                        .equatable()
-                        .navigationTitle("Restrictions")
-                        .modify {
-                            if #available(iOS 26.0, *) {
-                                $0.navigationSubtitle("\(model.format.rawValue) format")
-                            } else {
-                                $0
-                            }
-                        }
-                        .navigationBarTitleDisplayMode(.large)
-                        .safeAreaInset(edge: .bottom) {
-                            Color.clear.frame(height: mainSheetContentHeight)
-                        }
-                        .toolbar {
-                            if model.format == .genesys
-                                && !isOverlayVisible(timelineDTS: model.timelineDTS, contentDTS: model.contentDTS,
-                                                     timelineNE: model.timelineNE, contentNE: model.contentNE) {
-                                sortToolbarItem
-                            }
-                        }
+                        contentNE: model.contentNE)
+                ) {
+                    contentHeader
+                        .padding(.bottom)
+                } overlay: {
+                    RestrictedCardsViewOverlay(
+                        timelineDTS: model.timelineDTS,
+                        contentDTS: model.contentDTS,
+                        timelineNE: model.timelineNE,
+                        contentNE: model.contentNE,
+                        timelineCB: { await model.fetchTimelineData() },
+                        contentCB: { await model.fetchRestrictedCards() }
+                    )
+                }
+                .equatable()
+                .ygoNavigationDestination()
+                .navigationDestination(for: RestrictedContentDiffLinkDestinationValue.self) { values in
+                    RestrictedContentDiffView()
+                }
+                .navigationTitle("Restrictions")
+                .modify {
+                    if #available(iOS 26.0, *) {
+                        $0.navigationSubtitle("\(model.format.rawValue) format")
+                    } else {
+                        $0
+                    }
+                }
+                .navigationBarTitleDisplayMode(.large)
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: mainSheetContentHeight)
+                }
+                .toolbar {
+                    if model.format == .genesys
+                        && !isOverlayVisible(timelineDTS: model.timelineDTS, contentDTS: model.contentDTS,
+                                             timelineNE: model.timelineNE, contentNE: model.contentNE) {
+                        sortToolbarItem
+                    }
+                }
             } sheetContent: {
                 RestrictedContentNavigatorView(
                     format: $model.format,
@@ -129,6 +135,11 @@ struct RestrictedContentView: View {
         VStack(alignment: .leading, spacing: 15) {
             CardView(maxWidth: .infinity) {
                 formatSummary
+                    .padding(.bottom, 5)
+                if model.format != .genesys {
+                    SummaryBarLink(trailingText: "Changes & Additions",
+                                   value: RestrictedContentDiffLinkDestinationValue(effectiveDate: model.restrictedContentEffectiveDateStr ?? ""))
+                }
                 Divider()
                     .padding(.vertical, 5)
                 contentDescription
@@ -175,7 +186,7 @@ struct RestrictedContentView: View {
     @ViewBuilder
     private var contentDescription: some View {
         VStack(alignment: .leading, spacing: 5) {
-            if let chosenRestrictedContentDate = model.chosenRestrictedContentDate, chosenRestrictedContentDate > Date.now {
+            if let chosenRestrictedContentDate = model.restrictedContentEffectiveDate, chosenRestrictedContentDate > Date.now {
                 Label {
                     Text("Selected range is effective in \(abs(chosenRestrictedContentDate.timeIntervalSinceNow()) + 1) day(s)")
                 } icon: {
@@ -319,7 +330,6 @@ private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: Vie
                 .modifier(.parentView)
             }
         }
-        .ygoNavigationDestination()
         .frame(maxWidth: .infinity) // needed by overlay
         .scrollDisabled(isOverlayVisible)
         .overlay {
