@@ -21,16 +21,12 @@ nonisolated struct MonsterAssociation: Codable, Equatable, Hashable {
 }
 
 nonisolated struct YGOCard: Codable, Equatable, Hashable {
-    let cardID: String
-    let cardName: String
-    let cardColor: String
-    let cardAttribute: String?
-    let cardEffect: String
+    let cardID, cardName, cardColor, cardEffect: String
+    let cardAttribute, qualifier: String?
     private let monsterType: String?
     let monsterAssociation: MonsterAssociation?
     private let monsterAttack: UInt32?
     private let monsterDefense: UInt32?
-    private let qualifier: String?
     
     init(cardID: String,
          cardName: String,
@@ -55,16 +51,17 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     }
     
     func withQualifier(qualifier: String) -> YGOCard {
-        .init(cardID: cardID,
-              cardName: cardName,
-              cardColor: cardColor,
-              cardAttribute: cardAttribute,
-              cardEffect: cardEffect,
-              monsterType: monsterType,
-              monsterAssociation: monsterAssociation,
-              monsterAttack: monsterAttack,
-              monsterDefense: monsterDefense,
-              qualifier: qualifier)
+        .init(
+            cardID: cardID,
+            cardName: cardName,
+            cardColor: cardColor,
+            cardAttribute: cardAttribute,
+            cardEffect: cardEffect,
+            monsterType: monsterType,
+            monsterAssociation: monsterAssociation,
+            monsterAttack: monsterAttack,
+            monsterDefense: monsterDefense,
+            qualifier: qualifier)
     }
     
     /// this ID attribute can be customized to avoid List key issues in case List has multiple cards w/ same ID
@@ -113,11 +110,6 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
                                             monsterDefense: 9999)
     fileprivate static let nilStat: StaticString = "?"
     fileprivate static let linkDefStat: StaticString = "-"
-}
-
-// used as convenience when working with NavigationDestination
-struct CardLinkDestinationValue: Hashable {
-    let cardID, cardName: String
 }
 
 nonisolated struct CardBrowseCriteria: Codable {
@@ -229,13 +221,6 @@ struct Products: Codable, Equatable {
     let products: [Product]
 }
 
-// used as convenience when working with NavigationDestination
-struct ProductLinkDestinationValue: Hashable {
-    let productID: String
-    let productName: String
-}
-
-
 /*
  Misc models
  */
@@ -255,23 +240,20 @@ struct SKCDatabaseStats: Codable, Equatable {
  */
 
 struct CardReference: Codable, Equatable {
-    let occurrences: Int
     let card: YGOCard
+    let occurrences: Int
 }
 
 struct CardSuggestions: Codable {
-    let card: YGOCard?
-    let hasSelfReference: Bool?
-    let namedMaterials: [CardReference]
-    let namedReferences: [CardReference]
-    let materialArchetypes: [String]
-    let referencedArchetypes: [String]
+    let card: YGOCard
+    let namedMaterials, namedReferences: [CardReference]
+    let materialArchetypes, referencedArchetypes: [String]
+    let hasSelfReference: Bool
 }
 
 struct CardSupport: Codable {
     let card: YGOCard?
-    let referencedBy: [CardReference]
-    let materialFor: [CardReference]
+    let referencedBy, materialFor: [CardReference]
 }
 
 struct ProductSuggestions: Codable {
@@ -289,8 +271,7 @@ struct ProductSuggestions: Codable {
 
 struct TrendingMetric<R:Codable & Equatable>: Codable, Equatable {
     let resource: R
-    let occurrences: Int
-    let change: Int
+    let occurrences, change: Int
 }
 
 struct Trending<R:Codable & Equatable>: Codable, Equatable {
@@ -304,8 +285,8 @@ struct CardOfTheDay: Codable, Equatable {
     }
     
     let date: String
-    let version: UInt8
     let card: YGOCard
+    let version: UInt8
 }
 
 nonisolated struct BatchCardRequest: Codable {
@@ -318,23 +299,29 @@ nonisolated struct CardDetailsResponse: Codable {
 }
 
 struct BatchSuggestions: Codable {
-    let namedMaterials: [CardReference]
-    let namedReferences: [CardReference]
-    let materialArchetypes: Set<String>
-    let referencedArchetypes: Set<String>
-    let unknownResources: Set<String>
-    let falsePositives: Set<String>
+    let namedMaterials, namedReferences: [CardReference]
+    let materialArchetypes, referencedArchetypes, unknownResources, falsePositives: Set<String>
 }
 
 struct BatchSupport: Codable {
-    let referencedBy: [CardReference]
-    let materialFor: [CardReference]
-    let unknownResources: Set<String>
-    let falsePositives: Set<String>
+    let referencedBy, materialFor: [CardReference]
+    let unknownResources, falsePositives: Set<String>
 }
 
 struct YGOArchetypeData: Codable {
     let usingName, usingText, exclusions: [YGOCard]
+}
+
+/*
+ Link destination types
+ */
+
+struct ProductLinkDestinationValue: Hashable {
+    let productID, productName: String
+}
+
+struct CardLinkDestinationValue: Hashable {
+    let cardID, cardName: String
 }
 
 struct YGOArchetypeLinkDestinationValue: Hashable {
@@ -345,4 +332,8 @@ struct YGOArchetypeCategoryLinkDestinationValue: Hashable {
     let archetype: String
     let category: YGOArchetypeCategory
     let cards: [YGOCard]
+}
+
+struct RestrictedContentDiffLinkDestinationValue: Hashable {
+    let effectiveDate: String
 }

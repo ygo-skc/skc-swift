@@ -71,13 +71,10 @@ struct CardOfTheDayView: View, Equatable {
     
     NavigationStack {
         CardOfTheDayView(path: $path,
-                         cotd: CardOfTheDay(date: "2025-02-24",
-                                            version: 1,
-                                            card: YGOCard(cardID: "68762510",
-                                                          cardName: "Lucky Pied Piper",
-                                                          cardColor: "Effect",
-                                                          cardAttribute: "Wind" ,
-                                                          cardEffect: "")),
+                         cotd: CardOfTheDay(
+                            date: "2025-02-24",
+                            card: YGOCard(cardID: "68762510", cardName: "Lucky Pied Piper", cardColor: "Effect", cardAttribute: "Wind" , cardEffect: ""),
+                            version: 1),
                          dataTaskStatus: .done, networkError: nil, retryCB: {})
         .padding(.horizontal)
     }
@@ -88,13 +85,10 @@ struct CardOfTheDayView: View, Equatable {
     
     NavigationStack {
         CardOfTheDayView(path: $path,
-                         cotd: CardOfTheDay(date: "2025-02-24",
-                                            version: 1,
-                                            card: YGOCard(cardID: "68762510",
-                                                          cardName: "Lucky Pied Piper",
-                                                          cardColor: "Effect",
-                                                          cardAttribute: "Wind" ,
-                                                          cardEffect: "")),
+                         cotd: CardOfTheDay(
+                            date: "2025-02-24",
+                            card: YGOCard(cardID: "68762510", cardName: "Lucky Pied Piper", cardColor: "Effect", cardAttribute: "Wind", cardEffect: ""),
+                            version: 1),
                          dataTaskStatus: .pending, networkError: nil, retryCB: {})
         .padding(.horizontal)
     }
@@ -105,13 +99,10 @@ struct CardOfTheDayView: View, Equatable {
     
     NavigationStack {
         CardOfTheDayView(path: $path,
-                         cotd: CardOfTheDay(date: "2025-02-24",
-                                            version: 1,
-                                            card: YGOCard(cardID: "68762510",
-                                                          cardName: "Lucky Pied Piper",
-                                                          cardColor: "Effect",
-                                                          cardAttribute: "Wind" ,
-                                                          cardEffect: "")),
+                         cotd: CardOfTheDay(
+                            date: "2025-02-24",
+                            card: YGOCard(cardID: "68762510", cardName: "Lucky Pied Piper", cardColor: "Effect", cardAttribute: "Wind", cardEffect: ""),
+                            version: 1),
                          dataTaskStatus: .error, networkError: .timeout, retryCB: {})
         .padding(.horizontal)
     }
