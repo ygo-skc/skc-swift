@@ -167,13 +167,13 @@ nonisolated struct BanListNewContent: Codable {
 nonisolated struct BanListRemovedContent: Codable {
     let listRequested, comparedTo: String
     let changes: [BanListChange]
-    let numRemoved: UInt8
+    let count: UInt8
     
     enum CodingKeys: String, CodingKey {
         case listRequested
         case comparedTo
-        case changes = "removedContent"
-        case numRemoved
+        case changes = "removedCards"
+        case count = "numRemoved"
     }
 }
 

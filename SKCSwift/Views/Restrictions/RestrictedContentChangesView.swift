@@ -17,14 +17,15 @@ struct RestrictedContentChangesView: View {
         ScrollView {
             VStack(spacing: 30) {
                 newContent
+                removedContent
             }
             .modifier(.parentView)
         }
         .frame(maxWidth: .infinity) // needed by overlay
         .task {
-            await model.fetchNewContent()
+            await model.fetchChanges()
         }
-        .scrollDisabled(model.newContentDTS == .pending)
+        .scrollDisabled(model.isFetching)
         .overlay {
             overlay
         }
@@ -64,14 +65,28 @@ struct RestrictedContentChangesView: View {
     }
     
     @ViewBuilder
+    private var removedContent: some View {
+        if model.removedContentDTS == .done, let removedContent = model.removedContent {
+            if removedContent.count > 0 {
+                VStack(alignment: .leading) {
+                    Label("Newly unlimited", systemImage: "3.circle.fill")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                    CardListView(cards: removedContent.changes.map({$0.card}), showAllInfo: true)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
     private var overlay: some View {
-        if model.newContentDTS == .pending {
+        if model.isFetching {
             ProgressView("Loading…")
                 .controlSize(.large)
-        } else if let e = model.newContentNE {
+        } else if let e = model.newContentNE ?? model.removedContentNE {
             NetworkErrorView(error: e) {
                 Task {
-                    await model.fetchNewContent()
+                    await model.fetchChanges()
                 }
             }
         }

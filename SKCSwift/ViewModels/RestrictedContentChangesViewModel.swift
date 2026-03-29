@@ -30,7 +30,19 @@ final class RestrictedContentChangesViewModel {
     @ObservationIgnored
     private(set) var removedContent: BanListRemovedContent?
     
-    func fetchNewContent() async {
+    @ObservationIgnored
+    var isFetching: Bool {
+        newContentDTS == .pending || removedContentDTS == .pending
+    }
+    
+    func fetchChanges() async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { await self.fetchNewContent() }
+            taskGroup.addTask { await self.fetchRemovedContent() }
+        }
+    }
+    
+    private func fetchNewContent() async {
         (newContentNE, newContentDTS) = (nil, .pending)
         let res = await SKCSwift.data(newBannedContent(format: format, listStartDate: effectiveDate), resType: BanListNewContent.self)
         if case .success(let newContent) = res {
@@ -39,7 +51,7 @@ final class RestrictedContentChangesViewModel {
         (newContentNE, newContentDTS) = res.validate()
     }
     
-    func fetchRemovedContent() async {
+    private func fetchRemovedContent() async {
         let res = await SKCSwift.data(removedBannedContent(format: format, listStartDate: effectiveDate), resType: BanListRemovedContent.self)
         if case .success(let removedContent) = res {
             self.removedContent = removedContent

@@ -322,11 +322,14 @@ private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: Vie
                     header
                     switch format {
                     case .md, .tcg:
-                        CardListView(cards: restrictedCards)
+                        CardListView(cards: restrictedCards, showAllInfo: true)
                     case .genesys:
-                        CardListView(cards: scoreEntries.map({ $0.card }), label: { ind in
-                            Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
-                        })
+                        CardListView(
+                            cards: scoreEntries.map({ $0.card }),
+                            label: { ind in
+                                Label("\(scoreEntries[ind].score) points", systemImage: "medal.star.fill")
+                            }
+                        )
                     }
                 }
                 .modifier(.parentView)
