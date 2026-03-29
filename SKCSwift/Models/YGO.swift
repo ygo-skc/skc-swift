@@ -149,14 +149,32 @@ nonisolated struct BannedContent: Codable, Equatable {
 
 nonisolated struct BanListNewContent: Codable {
     let listRequested, comparedTo: String
-    let newForbidden, newLimited, newSemiLimited: [BanListChange]
-    let numNewForbidden, numNewLimited, numNewSemiLimited: UInt8
+    let forbidden, limited, semiLimited: [BanListChange]
+    let numForbidden, numLimited, numSemiLimited: UInt8
+    
+    enum CodingKeys: String, CodingKey {
+        case listRequested
+        case comparedTo
+        case forbidden = "newForbidden"
+        case limited = "newLimited"
+        case semiLimited = "newSemiLimited"
+        case numForbidden = "numNewForbidden"
+        case numLimited = "numNewLimited"
+        case numSemiLimited = "numNewSemiLimited"
+    }
 }
 
 nonisolated struct BanListRemovedContent: Codable {
     let listRequested, comparedTo: String
-    let removedCards: [BanListChange]
+    let changes: [BanListChange]
     let numRemoved: UInt8
+    
+    enum CodingKeys: String, CodingKey {
+        case listRequested
+        case comparedTo
+        case changes = "removedContent"
+        case numRemoved
+    }
 }
 
 nonisolated struct BanListChange: Codable {

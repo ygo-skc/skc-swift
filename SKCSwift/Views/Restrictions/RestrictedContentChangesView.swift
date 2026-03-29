@@ -34,30 +34,30 @@ struct RestrictedContentChangesView: View {
     @ViewBuilder
     private var newContent: some View {
         if model.newContentDTS == .done, let newContent = model.newContent {
-            if !newContent.newForbidden.isEmpty {
+            if !newContent.forbidden.isEmpty {
                 VStack(alignment: .leading) {
                     Label("Newly forbidden", systemImage: "x.circle.fill")
                         .font(.headline)
                         .fontWeight(.medium)
-                    CardListView(cards: newContent.newForbidden.map({$0.card}), showAllInfo: true)
+                    CardListView(cards: newContent.forbidden.map({$0.card}), showAllInfo: true)
                 }
             }
             
-            if !newContent.newLimited.isEmpty {
+            if !newContent.limited.isEmpty {
                 VStack(alignment: .leading) {
                     Label("Newly limited", systemImage: "1.circle.fill")
                         .font(.headline)
                         .fontWeight(.medium)
-                    CardListView(cards: newContent.newLimited.map({$0.card}), showAllInfo: true)
+                    CardListView(cards: newContent.limited.map({$0.card}), showAllInfo: true)
                 }
             }
             
-            if !newContent.newSemiLimited.isEmpty {
+            if !newContent.semiLimited.isEmpty {
                 VStack(alignment: .leading) {
                     Label("Newly semi-limited", systemImage: "2.circle.fill")
                         .font(.headline)
                         .fontWeight(.medium)
-                    CardListView(cards: newContent.newSemiLimited.map({$0.card}), showAllInfo: true)
+                    CardListView(cards: newContent.semiLimited.map({$0.card}), showAllInfo: true)
                 }
             }
         }
