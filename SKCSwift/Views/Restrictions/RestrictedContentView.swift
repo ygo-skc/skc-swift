@@ -50,8 +50,8 @@ struct RestrictedContentView: View {
                 }
                 .equatable()
                 .ygoNavigationDestination()
-                .navigationDestination(for: RestrictedContentDiffLinkDestinationValue.self) { values in
-                    RestrictedContentDiffView()
+                .navigationDestination(for: RestrictedContentChangesLinkDestinationValue.self) { values in
+                    RestrictedContentChangesView(values: values)
                 }
                 .navigationTitle("Restrictions")
                 .modify {
@@ -137,8 +137,10 @@ struct RestrictedContentView: View {
                 formatSummary
                     .padding(.bottom, 5)
                 if model.format != .genesys {
-                    SummaryBarLink(trailingText: "Changes & Additions",
-                                   value: RestrictedContentDiffLinkDestinationValue(effectiveDate: model.restrictedContentEffectiveDateStr ?? ""))
+                    SummaryBarLink(trailingText: "Changes",
+                                   value: RestrictedContentChangesLinkDestinationValue(
+                                    effectiveDate: model.restrictedContentEffectiveDateStr ?? "", format: model.format)
+                    )
                 }
                 Divider()
                     .padding(.vertical, 5)
