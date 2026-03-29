@@ -18,20 +18,20 @@ final class RestrictedContentChangesViewModel {
         self.format = format
     }
     
-    private(set) var dataDTS: DataTaskStatus = .pending
+    private(set) var newContentDTS: DataTaskStatus = .pending
     @ObservationIgnored
-    private(set) var dataNE: NetworkError?
+    private(set) var newContentNE: NetworkError?
     
     @ObservationIgnored
-    private(set) var data: BanListNewContent?
+    private(set) var newContent: BanListNewContent?
     
-    func fetchArchetypeData() async {
-        if dataDTS == .done { return }
-        (dataNE, dataDTS) = (nil, .pending)
+    func fetchNewContent() async {
+        if newContentDTS == .done { return }
+        (newContentNE, newContentDTS) = (nil, .pending)
         let res = await SKCSwift.data(newBannedContent(format: format, listStartDate: effectiveDate), resType: BanListNewContent.self)
-        if case .success(let data) = res {
-            self.data = data
+        if case .success(let newContent) = res {
+            self.newContent = newContent
         }
-        (dataNE, dataDTS) = res.validate()
+        (newContentNE, newContentDTS) = res.validate()
     }
 }

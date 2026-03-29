@@ -22,9 +22,9 @@ struct RestrictedContentChangesView: View {
         }
         .frame(maxWidth: .infinity) // needed by overlay
         .task {
-            await model.fetchArchetypeData()
+            await model.fetchNewContent()
         }
-        .scrollDisabled(model.dataDTS == .pending)
+        .scrollDisabled(model.newContentDTS == .pending)
         .overlay {
             overlay
         }
@@ -33,7 +33,7 @@ struct RestrictedContentChangesView: View {
     
     @ViewBuilder
     private var newContent: some View {
-        if model.dataDTS == .done, let newContent = model.data {
+        if model.newContentDTS == .done, let newContent = model.newContent {
             if !newContent.newForbidden.isEmpty {
                 VStack(alignment: .leading) {
                     Label("Newly forbidden", systemImage: "x.circle.fill")
@@ -65,13 +65,13 @@ struct RestrictedContentChangesView: View {
     
     @ViewBuilder
     private var overlay: some View {
-        if model.dataDTS == .pending {
+        if model.newContentDTS == .pending {
             ProgressView("Loading…")
                 .controlSize(.large)
-        } else if let e = model.dataNE {
+        } else if let e = model.newContentNE {
             NetworkErrorView(error: e) {
                 Task {
-                    await model.fetchArchetypeData()
+                    await model.fetchNewContent()
                 }
             }
         }
