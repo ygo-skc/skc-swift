@@ -24,8 +24,8 @@ fileprivate nonisolated struct SKCAPI {
     // ban list endpoints
     fileprivate static let BAN_LIST_DATES_ENDPOINT: StaticString = "/api/v1/ban_list/dates"
     fileprivate static let BAN_LIST_CONTENTS_ENDPOINT: StaticString = "/api/v1/ban_list/%@/cards"
-    fileprivate static let BAN_LIST_REMOVED_CONTENTS_ENDPOINT: StaticString = "/api/v1/ban_list/%@/removed"
     fileprivate static let BAN_LIST_NEW_CONTENTS_ENDPOINT: StaticString = "/api/v1/ban_list/%@/new"
+    fileprivate static let BAN_LIST_REMOVED_CONTENTS_ENDPOINT: StaticString = "/api/v1/ban_list/%@/removed"
 }
 
 fileprivate nonisolated struct SuggestionEngine {
@@ -169,10 +169,10 @@ func bannedContentURL(format: CardRestrictionFormat, listStartDate: String, save
     return createURL(components: components)
 }
 
-func removedBannedContent(format: CardRestrictionFormat, listStartDate: String) -> URL {
+func newBannedContent(format: CardRestrictionFormat, listStartDate: String) -> URL {
     let components = baseURLComponents(
         host: SKCAPI.BASE_URL.description,
-        path: SKCAPI.BAN_LIST_REMOVED_CONTENTS_ENDPOINT.description.replacingOccurrences(of: "%@", with: listStartDate),
+        path: SKCAPI.BAN_LIST_NEW_CONTENTS_ENDPOINT.description.replacingOccurrences(of: "%@", with: listStartDate),
         queryItems: [
             URLQueryItem(name: "format", value: "\(format)")
         ]
@@ -181,10 +181,10 @@ func removedBannedContent(format: CardRestrictionFormat, listStartDate: String) 
     return createURL(components: components)
 }
 
-func newBannedContent(format: CardRestrictionFormat, listStartDate: String) -> URL {
+func removedBannedContent(format: CardRestrictionFormat, listStartDate: String) -> URL {
     let components = baseURLComponents(
         host: SKCAPI.BASE_URL.description,
-        path: SKCAPI.BAN_LIST_NEW_CONTENTS_ENDPOINT.description.replacingOccurrences(of: "%@", with: listStartDate),
+        path: SKCAPI.BAN_LIST_REMOVED_CONTENTS_ENDPOINT.description.replacingOccurrences(of: "%@", with: listStartDate),
         queryItems: [
             URLQueryItem(name: "format", value: "\(format)")
         ]

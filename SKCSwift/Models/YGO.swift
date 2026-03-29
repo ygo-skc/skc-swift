@@ -147,20 +147,20 @@ nonisolated struct BannedContent: Codable, Equatable {
     let numForbidden, numLimited, numSemiLimited, numLimitedOne, numLimitedTwo, numLimitedThree: UInt16
 }
 
-nonisolated struct BanListRemovedContent: Codable {
+nonisolated struct BanListNewContent: Codable {
     let listRequested, comparedTo: String
-    let newForbidden, newLimited, NewSemiLimited: [BanListChange]
+    let newForbidden, newLimited, newSemiLimited: [BanListChange]
     let numNewForbidden, numNewLimited, numNewSemiLimited: UInt8
 }
 
-nonisolated struct BanListNewContent: Codable {
+nonisolated struct BanListRemovedContent: Codable {
     let listRequested, comparedTo: String
     let removedCards: [BanListChange]
     let numRemoved: UInt8
 }
 
 nonisolated struct BanListChange: Codable {
-    let card: [YGOCard]
+    let card: YGOCard
     let previousBanStatus: String
 }
 
@@ -352,6 +352,7 @@ struct YGOArchetypeCategoryLinkDestinationValue: Hashable {
     let cards: [YGOCard]
 }
 
-struct RestrictedContentDiffLinkDestinationValue: Hashable {
+struct RestrictedContentChangesLinkDestinationValue: Hashable {
     let effectiveDate: String
+    let format: CardRestrictionFormat
 }
