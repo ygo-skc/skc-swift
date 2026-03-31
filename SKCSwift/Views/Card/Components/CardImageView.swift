@@ -37,6 +37,8 @@ struct CardImageView: View, Equatable {
         } else {
             KFImage(URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!)
                 .backgroundDecode()
+                .downsampling(size: CGSize(width: length, height: length))
+                .scaleFactor(UIScreen.main.scale)
                 .placeholder {
                     PlaceholderView(width: length, height: length, radius: radius)
                 }
