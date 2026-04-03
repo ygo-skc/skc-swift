@@ -29,12 +29,20 @@ final class RestrictedCardsViewModel {
     private(set) var restrictionDates: [BanListDate] = []
     
     @ObservationIgnored
-    var chosenRestrictedContentDate: Date? {
+    var restrictedContentEffectiveDateStr: String? {
         if timelineDTS != .done || timelineNE != nil {
             return nil
         } else {
-            return Date.yyyyMMddLocalFormatter.date(from: restrictionDates[dateRangeIndex].effectiveDate) ?? nil
+            return restrictionDates[dateRangeIndex].effectiveDate
         }
+    }
+    
+    @ObservationIgnored
+    var restrictedContentEffectiveDate: Date? {
+        if let restrictedContentEffectiveDateStr {
+            return Date.yyyyMMddLocalFormatter.date(from: restrictedContentEffectiveDateStr) ?? nil
+        }
+        return nil
     }
     
     @ObservationIgnored
@@ -82,22 +90,11 @@ final class RestrictedCardsViewModel {
     }
     
     @ObservationIgnored
-    var genesysTotalRange1: UInt16 {
-        let entries = (cardScores?.entries ?? []).filter({$0.score <= 30})
-        return UInt16(entries.count)
-    }
-    
+    private(set) var genesysTotalRange1: UInt16 = 0
     @ObservationIgnored
-    var genesysTotalRange2: UInt16 {
-        let entries = (cardScores?.entries ?? []).filter({$0.score > 30 && $0.score <= 70})
-        return UInt16(entries.count)
-    }
-    
+    private(set) var genesysTotalRange2: UInt16 = 0
     @ObservationIgnored
-    var genesysTotalRange3: UInt16 {
-        let entries = (cardScores?.entries ?? []).filter({$0.score > 70})
-        return UInt16(entries.count)
-    }
+    private(set) var genesysTotalRange3: UInt16 = 0
     
     func fetchTimelineData() async {
         (timelineNE, timelineDTS) = (nil, .pending)
@@ -147,9 +144,26 @@ final class RestrictedCardsViewModel {
                 entryMapper: CardScoreEntry.fromRPC)
             if case .success(let c) = res {
                 self.cardScores = c
+                computeGenesysRanges()
             }
             (contentNE, contentDTS) = res.validate(method: "Card Scores By Format and Date")
         }
+    }
+    
+    private func computeGenesysRanges() {
+        let entries = cardScores?.entries ?? []
+        var r1: UInt16 = 0, r2: UInt16 = 0, r3: UInt16 = 0
+        for entry in entries {
+            switch entry.score {
+            case ...30:
+                r1 += 1
+            case 31...70:
+                r2 += 1
+            default:
+                r3 += 1
+            }
+        }
+        (genesysTotalRange1, genesysTotalRange2, genesysTotalRange3) = (r1, r2, r3)
     }
 }
 
@@ -174,3 +188,4 @@ enum RestrictedContentSortOrder: Int, CaseIterable {
         }
     }
 }
+

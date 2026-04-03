@@ -105,21 +105,9 @@ struct YGOArchetypeView: View {
             if !cards.isEmpty {
                 VStack(alignment: .leading) {
                     if numCards > YGOArchetypeSectionView.max {
-                        NavigationLink(value: YGOArchetypeCategoryLinkDestinationValue(archetype: archetype, category: category, cards: cards)) {
-                            HStack {
-                                Label("\(category.rawValue) • \(numCards)", systemImage: categorySystemImage)
-                                    .font(.headline)
-                                Spacer()
-                                Text("More")
-                                    .font(.headline)
-                                    .fontWeight(.light)
-                                Image(systemName: "chevron.forward")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
+                        SummaryBarLink("\(category.rawValue) • \(numCards)",
+                                       systemImage: categorySystemImage,
+                                       value: YGOArchetypeCategoryLinkDestinationValue(archetype: archetype, category: category, cards: cards))
                     } else {
                         Label("\(category.rawValue) • \(numCards)", systemImage: categorySystemImage)
                             .font(.headline)

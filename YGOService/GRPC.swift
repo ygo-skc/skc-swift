@@ -6,7 +6,7 @@
 //
 
 import GRPCCore
-import GRPCNIOTransportHTTP2
+import GRPCNIOTransportHTTP2TransportServices
 import SwiftProtobuf
 
 fileprivate actor GRPCManager {
@@ -14,58 +14,58 @@ fileprivate actor GRPCManager {
 }
 
 fileprivate struct YGOClients {
-    let restrictions: Ygo_CardRestrictionService.Client<HTTP2ClientTransport.Posix>
-    let score: Ygo_ScoreService.Client<HTTP2ClientTransport.Posix>
-    private let client: GRPCClient<HTTP2ClientTransport.Posix>
+    let restrictions: Ygo_CardRestrictionService.Client<HTTP2ClientTransport.TransportServices>
+    let score: Ygo_ScoreService.Client<HTTP2ClientTransport.TransportServices>
+    private let client: GRPCClient<HTTP2ClientTransport.TransportServices>
     
     init(host: String) {
         do {
-            let client = try GRPCClient(
-                transport: .http2NIOPosix(
-                    target: .dns(host: host, port: 443),
-                    transportSecurity: .tls,
-                    config: .defaults { config in
-                        config.compression = .init(
-                            algorithm: .gzip,
-                            enabledAlgorithms: [.gzip]
-                        )
-                        
-                        config.backoff = .init(
-                            initial: .milliseconds(80),
-                            max: .seconds(1),
-                            multiplier: 1.4,
-                            jitter: 0.25
-                        )
-                        
-                        config.connection = .init(
-                            maxIdleTime: .seconds(60),
-                            keepalive: .init(
-                                time: .seconds(20),
-                                timeout: .seconds(3),
-                                allowWithoutCalls: false
-                            )
-                        )
-                        
-                        config.http2 = .init(maxFrameSize: 14 << 10, targetWindowSize: 140 << 10, authority: nil)
-                    },
-                    serviceConfig: .init(
-                        methodConfig: [
-                            .init(
-                                names: [.init(service: "", method: "")],  // Empty service means all methods
-                                waitForReady: false,
-                                timeout: .seconds(8),
-                                executionPolicy: .retry(
-                                    .init(
-                                        maxAttempts: 3,
-                                        initialBackoff: .milliseconds(150),
-                                        maxBackoff: .milliseconds(500),
-                                        backoffMultiplier: 1.2,
-                                        retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
-                            )
-                        ]
+            let transport = try HTTP2ClientTransport.TransportServices(
+                target: .dns(host: host, port: 443),
+                transportSecurity: .tls,
+                config: .defaults { config in
+                    config.compression = .init(
+                        algorithm: .gzip,
+                        enabledAlgorithms: [.gzip]
                     )
+                    
+                    config.backoff = .init(
+                        initial: .milliseconds(80),
+                        max: .seconds(1),
+                        multiplier: 1.4,
+                        jitter: 0.25
+                    )
+                    
+                    config.connection = .init(
+                        maxIdleTime: .seconds(60),
+                        keepalive: .init(
+                            time: .seconds(20),
+                            timeout: .seconds(3),
+                            allowWithoutCalls: false
+                        )
+                    )
+                    
+                    config.http2 = .init(maxFrameSize: 20 << 10, targetWindowSize: 200 << 10, authority: nil)
+                },
+                serviceConfig: .init(
+                    methodConfig: [
+                        .init(
+                            names: [.init(service: "", method: "")],
+                            waitForReady: false,
+                            timeout: .seconds(8),
+                            executionPolicy: .retry(
+                                .init(
+                                    maxAttempts: 3,
+                                    initialBackoff: .milliseconds(150),
+                                    maxBackoff: .milliseconds(500),
+                                    backoffMultiplier: 1.2,
+                                    retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
+                        )
+                    ]
                 )
             )
+            let client = GRPCClient(transport: transport)
+            
             Task {
                 try await client.runConnections()
             }

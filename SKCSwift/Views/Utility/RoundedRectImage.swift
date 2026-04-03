@@ -24,6 +24,8 @@ struct RoundedRectImage: View, Equatable {
     var body: some View {
         KFImage(imageUrl)
             .backgroundDecode()
+            .downsampling(size: CGSize(width: width, height: height))
+            .scaleFactor(UIScreen.main.scale)
             .placeholder {
                 PlaceholderView(width: width, height: height, radius: cornerRadius)
             }
