@@ -281,14 +281,11 @@ struct CardReference: Codable, Equatable {
 }
 
 struct CardSuggestions: Codable {
-    let card: YGOCard?  // will be missing in product suggestions, but present in card suggestions
     let namedMaterials, namedReferences: [CardReference]
     let materialArchetypes, referencedArchetypes: [String]
-    let hasSelfReference: Bool? // will be missing in product suggestions, but present in card suggestions
 }
 
 struct CardSupport: Codable {
-    let card: YGOCard?  // will be missing in product suggestions, but present in card suggestions
     let referencedBy, materialFor: [CardReference]
 }
 
