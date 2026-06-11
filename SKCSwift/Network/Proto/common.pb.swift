@@ -15,12 +15,12 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
-enum Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf.Enum, Swift.CaseIterable {
+nonisolated enum Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf.Enum, Swift.CaseIterable {
   typealias RawValue = Int
   case cardColorAscCardNameAsc // = 0
   case scoreDescCardColorAscCardNameAsc // = 1
@@ -54,7 +54,7 @@ enum Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf.Enum, Swift.CaseIterable
 
 }
 
-struct Ygo_Common_ResourceID: Sendable {
+nonisolated struct Ygo_Common_ResourceID: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -66,7 +66,7 @@ struct Ygo_Common_ResourceID: Sendable {
   init() {}
 }
 
-struct Ygo_Common_ResourceIDs: Sendable {
+nonisolated struct Ygo_Common_ResourceIDs: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -78,7 +78,7 @@ struct Ygo_Common_ResourceIDs: Sendable {
   init() {}
 }
 
-struct Ygo_Common_ResourceName: Sendable {
+nonisolated struct Ygo_Common_ResourceName: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -90,7 +90,7 @@ struct Ygo_Common_ResourceName: Sendable {
   init() {}
 }
 
-struct Ygo_Common_ResourceNames: Sendable {
+nonisolated struct Ygo_Common_ResourceNames: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -102,7 +102,7 @@ struct Ygo_Common_ResourceNames: Sendable {
   init() {}
 }
 
-struct Ygo_Common_SearchTerm: Sendable {
+nonisolated struct Ygo_Common_SearchTerm: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -116,7 +116,7 @@ struct Ygo_Common_SearchTerm: Sendable {
   init() {}
 }
 
-struct Ygo_Common_Archetype: Sendable {
+nonisolated struct Ygo_Common_Archetype: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -128,7 +128,7 @@ struct Ygo_Common_Archetype: Sendable {
   init() {}
 }
 
-struct Ygo_Common_BlackListed: Sendable {
+nonisolated struct Ygo_Common_BlackListed: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -140,7 +140,7 @@ struct Ygo_Common_BlackListed: Sendable {
   init() {}
 }
 
-struct Ygo_Common_EffectiveTimeline: Sendable {
+nonisolated struct Ygo_Common_EffectiveTimeline: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -158,13 +158,13 @@ struct Ygo_Common_EffectiveTimeline: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "ygo.common"
+fileprivate nonisolated let _protobuf_package = "ygo.common"
 
-extension Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_CardRestrictionSortOrder: SwiftProtobuf._ProtoNameProviding {
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0CARD_COLOR_ASC_CARD_NAME_ASC\0\u{1}SCORE_DESC_CARD_COLOR_ASC_CARD_NAME_ASC\0")
 }
 
-extension Ygo_Common_ResourceID: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_ResourceID: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ResourceID"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0")
 
@@ -194,7 +194,7 @@ extension Ygo_Common_ResourceID: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
   }
 }
 
-extension Ygo_Common_ResourceIDs: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_ResourceIDs: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ResourceIDs"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}IDs\0")
 
@@ -224,7 +224,7 @@ extension Ygo_Common_ResourceIDs: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Ygo_Common_ResourceName: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_ResourceName: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ResourceName"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}value\0")
 
@@ -254,7 +254,7 @@ extension Ygo_Common_ResourceName: SwiftProtobuf.Message, SwiftProtobuf._Message
   }
 }
 
-extension Ygo_Common_ResourceNames: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_ResourceNames: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ResourceNames"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}names\0")
 
@@ -284,7 +284,7 @@ extension Ygo_Common_ResourceNames: SwiftProtobuf.Message, SwiftProtobuf._Messag
   }
 }
 
-extension Ygo_Common_SearchTerm: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_SearchTerm: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".SearchTerm"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0\u{1}name\0")
 
@@ -319,7 +319,7 @@ extension Ygo_Common_SearchTerm: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
   }
 }
 
-extension Ygo_Common_Archetype: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_Archetype: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Archetype"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}archetype\0")
 
@@ -349,7 +349,7 @@ extension Ygo_Common_Archetype: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   }
 }
 
-extension Ygo_Common_BlackListed: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_BlackListed: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".BlackListed"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}black_listed_refs\0")
 
@@ -379,7 +379,7 @@ extension Ygo_Common_BlackListed: SwiftProtobuf.Message, SwiftProtobuf._MessageI
   }
 }
 
-extension Ygo_Common_EffectiveTimeline: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Common_EffectiveTimeline: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".EffectiveTimeline"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}allDates\0\u{1}futureDates\0\u{1}activeDate\0")
 

@@ -9,7 +9,7 @@ import GRPCCore
 import GRPCNIOTransportHTTP2TransportServices
 import SwiftProtobuf
 
-fileprivate actor GRPCManager {
+fileprivate enum GRPCManager {
     static let ygoClients = YGOClients(host: "ygo-service.skc.cards")
 }
 
@@ -89,13 +89,7 @@ nonisolated public func getRestrictionDates(format: String) async -> Result<[Str
 }
 
 @concurrent
-nonisolated public func getScoresByFormatAndDate<T, U>(
-    format: String,
-    date: String,
-    sort: Int,
-    scoreMapper: (String, String, [U], UInt32) -> T,
-    entryMapper: (String, String, String, String?, String, String?, Int?, Int?, UInt32) -> U
-) async -> Result<T, any Error> where T: Decodable {
+nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Int) async -> Result<CardScores, any Error> {
     do {
         let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(
             .with {
@@ -112,32 +106,34 @@ nonisolated public func getScoresByFormatAndDate<T, U>(
             })
         let values = scores.entries.map({
             let card = $0.card
-            return entryMapper(
-                card.id,
-                card.name,
-                card.color,
-                card.attribute,
-                card.effect,
-                (card.hasMonsterType) ?  card.monsterType.value : nil,
-                (card.hasAttack) ? Int(card.attack.value) : nil,
-                (card.hasDefense) ? Int(card.defense.value) : nil,
-                $0.score
+            return CardScoreEntry.fromRPC(
+                cardID: card.id,
+                cardName: card.name,
+                cardColor: card.color,
+                cardAttribute: card.attribute,
+                cardEffect: card.effect,
+                monsterType: (card.hasMonsterType) ?  card.monsterType.value : nil,
+                monsterAttack: (card.hasAttack) ? Int(card.attack.value) : nil,
+                monsterDefense: (card.hasDefense) ? Int(card.defense.value) : nil,
+                score: $0.score
             )
         })
-        return .success(scoreMapper(format, date, values, scores.totalEntries))
+        return .success(CardScores.fromRPC(format: format, effectiveDate: date, entries: values, totalEntries: scores.totalEntries))
     } catch {
         return .failure(error)
     }
 }
 
 @concurrent
-nonisolated public func getCardScore<T>(
-    cardID: String,
-    mapper: ([String: UInt32], [String], [String]) -> T
-) async -> Result<T, any Error> where T: Decodable {
+nonisolated func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
     do {
         let cardScore = try await GRPCManager.ygoClients.score.getCardScoreByID(.with { $0.id = cardID })
-        return .success(mapper(cardScore.currentScoreByFormat, cardScore.uniqueFormats, cardScore.scheduledChanges))
+        return .success(
+            CardScore.fromRPC(
+                currentScoreByFormat: cardScore.currentScoreByFormat,
+                uniqueFormats: cardScore.uniqueFormats,
+                scheduledChanges: cardScore.scheduledChanges)
+        )
     } catch {
         return .failure(error)
     }

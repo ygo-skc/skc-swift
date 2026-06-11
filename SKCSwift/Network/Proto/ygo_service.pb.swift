@@ -15,12 +15,12 @@ import SwiftProtobuf
 // incompatible with the version of SwiftProtobuf to which you are linking.
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
-fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
+fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
   struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
   typealias Version = _2
 }
 
-struct Ygo_CardColors: Sendable {
+nonisolated struct Ygo_CardColors: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -32,7 +32,7 @@ struct Ygo_CardColors: Sendable {
   init() {}
 }
 
-struct Ygo_Card: Sendable {
+nonisolated struct Ygo_Card: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -83,7 +83,7 @@ struct Ygo_Card: Sendable {
   fileprivate var _defense: SwiftProtobuf.Google_Protobuf_UInt32Value? = nil
 }
 
-struct Ygo_Cards: Sendable {
+nonisolated struct Ygo_Cards: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -97,7 +97,7 @@ struct Ygo_Cards: Sendable {
   init() {}
 }
 
-struct Ygo_CardList: Sendable {
+nonisolated struct Ygo_CardList: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -109,7 +109,7 @@ struct Ygo_CardList: Sendable {
   init() {}
 }
 
-struct Ygo_Product: Sendable {
+nonisolated struct Ygo_Product: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -137,7 +137,7 @@ struct Ygo_Product: Sendable {
   init() {}
 }
 
-struct Ygo_ProductItem: Sendable {
+nonisolated struct Ygo_ProductItem: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -162,7 +162,7 @@ struct Ygo_ProductItem: Sendable {
   fileprivate var _card: Ygo_Card? = nil
 }
 
-struct Ygo_ProductSummary: Sendable {
+nonisolated struct Ygo_ProductSummary: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -186,7 +186,7 @@ struct Ygo_ProductSummary: Sendable {
   init() {}
 }
 
-struct Ygo_Products: Sendable {
+nonisolated struct Ygo_Products: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -200,7 +200,7 @@ struct Ygo_Products: Sendable {
   init() {}
 }
 
-struct Ygo_Format: Sendable {
+nonisolated struct Ygo_Format: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -212,7 +212,7 @@ struct Ygo_Format: Sendable {
   init() {}
 }
 
-struct Ygo_RestrictedContentRequest: Sendable {
+nonisolated struct Ygo_RestrictedContentRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -228,7 +228,7 @@ struct Ygo_RestrictedContentRequest: Sendable {
   init() {}
 }
 
-struct Ygo_ScoresForFormatAndDate: Sendable {
+nonisolated struct Ygo_ScoresForFormatAndDate: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -267,7 +267,7 @@ struct Ygo_ScoresForFormatAndDate: Sendable {
   fileprivate var _previousFormatDate: SwiftProtobuf.Google_Protobuf_StringValue? = nil
 }
 
-struct Ygo_CardScoreEntry: Sendable {
+nonisolated struct Ygo_CardScoreEntry: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -290,7 +290,7 @@ struct Ygo_CardScoreEntry: Sendable {
   fileprivate var _card: Ygo_Card? = nil
 }
 
-struct Ygo_CardScore: Sendable {
+nonisolated struct Ygo_CardScore: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -308,7 +308,7 @@ struct Ygo_CardScore: Sendable {
   init() {}
 }
 
-struct Ygo_CardScores: Sendable {
+nonisolated struct Ygo_CardScores: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -322,7 +322,7 @@ struct Ygo_CardScores: Sendable {
   init() {}
 }
 
-struct Ygo_ScoreEntry: Sendable {
+nonisolated struct Ygo_ScoreEntry: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -340,9 +340,9 @@ struct Ygo_ScoreEntry: Sendable {
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
-fileprivate let _protobuf_package = "ygo"
+fileprivate nonisolated let _protobuf_package = "ygo"
 
-extension Ygo_CardColors: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_CardColors: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CardColors"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}values\0")
 
@@ -372,7 +372,7 @@ extension Ygo_CardColors: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
   }
 }
 
-extension Ygo_Card: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Card: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Card"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0\u{1}color\0\u{1}name\0\u{1}attribute\0\u{1}effect\0\u{3}monster_type\0\u{1}attack\0\u{1}defense\0")
 
@@ -441,7 +441,7 @@ extension Ygo_Card: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationB
   }
 }
 
-extension Ygo_Cards: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Cards: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Cards"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}card_info\0\u{3}unknown_resources\0")
 
@@ -476,7 +476,7 @@ extension Ygo_Cards: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementation
   }
 }
 
-extension Ygo_CardList: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_CardList: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CardList"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cards\0")
 
@@ -506,7 +506,7 @@ extension Ygo_CardList: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
   }
 }
 
-extension Ygo_Product: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Product: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Product"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0\u{1}locale\0\u{1}name\0\u{1}type\0\u{1}subType\0\u{1}releaseDate\0\u{1}totalItems\0\u{1}items\0\u{1}rarityDistribution\0")
 
@@ -576,7 +576,7 @@ extension Ygo_Product: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementati
   }
 }
 
-extension Ygo_ProductItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_ProductItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ProductItem"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}card\0\u{1}position\0\u{1}rarities\0")
 
@@ -620,7 +620,7 @@ extension Ygo_ProductItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
   }
 }
 
-extension Ygo_ProductSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_ProductSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ProductSummary"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0\u{1}locale\0\u{1}name\0\u{1}type\0\u{1}subType\0\u{1}releaseDate\0\u{1}totalItems\0")
 
@@ -680,7 +680,7 @@ extension Ygo_ProductSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
   }
 }
 
-extension Ygo_Products: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Products: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Products"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}products\0\u{3}unknown_resources\0")
 
@@ -715,7 +715,7 @@ extension Ygo_Products: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
   }
 }
 
-extension Ygo_Format: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_Format: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Format"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}value\0")
 
@@ -745,7 +745,7 @@ extension Ygo_Format: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
   }
 }
 
-extension Ygo_RestrictedContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_RestrictedContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".RestrictedContentRequest"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{3}sort_order\0")
 
@@ -785,7 +785,7 @@ extension Ygo_RestrictedContentRequest: SwiftProtobuf.Message, SwiftProtobuf._Me
   }
 }
 
-extension Ygo_ScoresForFormatAndDate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_ScoresForFormatAndDate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ScoresForFormatAndDate"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{3}next_format_date\0\u{3}previous_format_date\0\u{1}entries\0\u{3}total_entries\0")
 
@@ -844,7 +844,7 @@ extension Ygo_ScoresForFormatAndDate: SwiftProtobuf.Message, SwiftProtobuf._Mess
   }
 }
 
-extension Ygo_CardScoreEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_CardScoreEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CardScoreEntry"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}card\0\u{1}score\0")
 
@@ -883,7 +883,7 @@ extension Ygo_CardScoreEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
   }
 }
 
-extension Ygo_CardScore: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_CardScore: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CardScore"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}current_score_by_format\0\u{3}unique_formats\0\u{3}score_history\0\u{3}scheduled_changes\0")
 
@@ -928,7 +928,7 @@ extension Ygo_CardScore: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
   }
 }
 
-extension Ygo_CardScores: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_CardScores: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CardScores"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}card_info\0\u{3}unknown_resources\0")
 
@@ -963,7 +963,7 @@ extension Ygo_CardScores: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
   }
 }
 
-extension Ygo_ScoreEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+nonisolated extension Ygo_ScoreEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".ScoreEntry"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{1}score\0")
 
