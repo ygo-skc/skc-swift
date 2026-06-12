@@ -5,7 +5,6 @@
 //  Created by Javi Gomez on 8/26/24.
 //
 import Foundation
-import YGOService
 import GRPCCore
 
 private nonisolated struct YGOCardInfo: Codable, Equatable {
@@ -128,7 +127,7 @@ final class CardViewModel {
     private func fetchCardScore() async {
         if score == nil {
             cardScoreDTS = .pending
-            let res = await YGOService.getCardScore(cardID: cardID, mapper: CardScore.fromRPC)
+            let res = await getCardScore(cardID: cardID)
             if case .success(let score) = res {
                 self.score = score
             }

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import YGOService
 import GRPCCore
 
 @Observable
@@ -108,7 +107,7 @@ final class RestrictedCardsViewModel {
             
             chosenBannedContentCategory = .forbidden
         case .genesys:
-            let res = await YGOService.getRestrictionDates(format: format.rawValue)
+            let res = await getRestrictionDates(format: format.rawValue)
             if case .success(let data) = res {
                 restrictionDates = data.map({BanListDate(effectiveDate: $0)})
             }
@@ -136,12 +135,11 @@ final class RestrictedCardsViewModel {
             }
             (contentNE, contentDTS) = res.validate()
         case .genesys:
-            let res = await YGOService.getScoresByFormatAndDate(
+            let res = await getScoresByFormatAndDate(
                 format: format.rawValue,
                 date: restrictionDates[dateRangeIndex].effectiveDate,
-                sort: sort.rawValue,
-                scoreMapper: CardScores.fromRPC,
-                entryMapper: CardScoreEntry.fromRPC)
+                sort: sort.rawValue
+            )
             if case .success(let c) = res {
                 self.cardScores = c
                 computeGenesysRanges()

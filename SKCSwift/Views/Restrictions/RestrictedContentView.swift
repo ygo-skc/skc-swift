@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import YGOService
 
 private func isOverlayVisible(timelineDTS: DataTaskStatus,
                               contentDTS: DataTaskStatus,

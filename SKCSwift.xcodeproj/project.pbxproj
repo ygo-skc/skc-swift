@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE2DFF7A2FB8C73D00F813AA /* GRPCCore in Frameworks */ = {isa = PBXBuildFile; productRef = DE2DFF792FB8C73D00F813AA /* GRPCCore */; };
+		DE2DFF7C2FB8C75900F813AA /* GRPCNIOTransportHTTP2 in Frameworks */ = {isa = PBXBuildFile; productRef = DE2DFF7B2FB8C75900F813AA /* GRPCNIOTransportHTTP2 */; };
+		DE2DFF7E2FB8C76D00F813AA /* GRPCProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = DE2DFF7D2FB8C76D00F813AA /* GRPCProtobuf */; };
 		DE605D372EC2E40B0033F2CB /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = DE605D362EC2E40B0033F2CB /* AppIcon.icon */; };
-		DE70C4BA2E9DF86100C568A5 /* libYGOService.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE70C4AE2E9DF85100C568A5 /* libYGOService.a */; };
-		DE70C4BF2E9DF86D00C568A5 /* GRPCProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = DE70C4BE2E9DF86D00C568A5 /* GRPCProtobuf */; };
-		DE70C4C22E9DF87800C568A5 /* GRPCCore in Frameworks */ = {isa = PBXBuildFile; productRef = DE70C4C12E9DF87800C568A5 /* GRPCCore */; };
-		DE70C4C52E9DF88400C568A5 /* GRPCNIOTransportHTTP2 in Frameworks */ = {isa = PBXBuildFile; productRef = DE70C4C42E9DF88400C568A5 /* GRPCNIOTransportHTTP2 */; };
 		DEC4DB5B2EE9EF9800379086 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = DEC4DB5A2EE9EF9800379086 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
@@ -30,31 +29,11 @@
 			remoteGlobalIDString = 1F8211E22961FF0000238EE1;
 			remoteInfo = SKCSwift;
 		};
-		DE70C4BB2E9DF86100C568A5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1F8211DB2961FF0000238EE1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DE70C4AD2E9DF85100C568A5;
-			remoteInfo = YGOService;
-		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		DE70C4AC2E9DF85100C568A5 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SKCSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE605D362EC2E40B0033F2CB /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
-		DE70C4AE2E9DF85100C568A5 /* libYGOService.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libYGOService.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEB0B2352C520CB7006D70D1 /* SKCSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SKCSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -73,7 +52,6 @@
 		DE38E01F2CD7E5AD0074D8A6 /* SKCSwiftTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SKCSwiftTests; sourceTree = "<group>"; };
 		DE38E0232CD7E5B10074D8A6 /* SKCSwiftUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SKCSwiftUITests; sourceTree = "<group>"; };
 		DE38E0742CD7E5F80074D8A6 /* SKCSwift */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DE38E0B72CD7E5F80074D8A6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SKCSwift; sourceTree = "<group>"; };
-		DE70C4AF2E9DF85100C568A5 /* YGOService */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = YGOService; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +60,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEC4DB5B2EE9EF9800379086 /* Kingfisher in Frameworks */,
-				DE70C4BA2E9DF86100C568A5 /* libYGOService.a in Frameworks */,
+				DE2DFF7A2FB8C73D00F813AA /* GRPCCore in Frameworks */,
+				DE2DFF7C2FB8C75900F813AA /* GRPCNIOTransportHTTP2 in Frameworks */,
+				DE2DFF7E2FB8C76D00F813AA /* GRPCProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,16 +80,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE70C4AB2E9DF85100C568A5 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DE70C4C52E9DF88400C568A5 /* GRPCNIOTransportHTTP2 in Frameworks */,
-				DE70C4BF2E9DF86D00C568A5 /* GRPCProtobuf in Frameworks */,
-				DE70C4C22E9DF87800C568A5 /* GRPCCore in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -122,8 +92,6 @@
 				DE38E0742CD7E5F80074D8A6 /* SKCSwift */,
 				DE38E01F2CD7E5AD0074D8A6 /* SKCSwiftTests */,
 				DE38E0232CD7E5B10074D8A6 /* SKCSwiftUITests */,
-				DE70C4AE2E9DF85100C568A5 /* libYGOService.a */,
-				DE70C4AF2E9DF85100C568A5 /* YGOService */,
 				DE70C4B92E9DF86100C568A5 /* Frameworks */,
 				DE605D362EC2E40B0033F2CB /* AppIcon.icon */,
 			);
@@ -150,7 +118,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				DE70C4BC2E9DF86100C568A5 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				DE38E0742CD7E5F80074D8A6 /* SKCSwift */,
@@ -158,6 +125,9 @@
 			name = SKCSwift;
 			packageProductDependencies = (
 				DEC4DB5A2EE9EF9800379086 /* Kingfisher */,
+				DE2DFF792FB8C73D00F813AA /* GRPCCore */,
+				DE2DFF7B2FB8C75900F813AA /* GRPCNIOTransportHTTP2 */,
+				DE2DFF7D2FB8C76D00F813AA /* GRPCProtobuf */,
 			);
 			productName = SKCSwift;
 			productReference = DE4CAF5B2C520DE1000FF167 /* SKCSwift.app */;
@@ -205,31 +175,6 @@
 			productReference = DEB0B2362C520CB7006D70D1 /* SKCSwiftUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		DE70C4AD2E9DF85100C568A5 /* YGOService */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DE70C4B42E9DF85100C568A5 /* Build configuration list for PBXNativeTarget "YGOService" */;
-			buildPhases = (
-				DE70C4AA2E9DF85100C568A5 /* Sources */,
-				DE70C4AB2E9DF85100C568A5 /* Frameworks */,
-				DE70C4AC2E9DF85100C568A5 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				DE70C4AF2E9DF85100C568A5 /* YGOService */,
-			);
-			name = YGOService;
-			packageProductDependencies = (
-				DE70C4BE2E9DF86D00C568A5 /* GRPCProtobuf */,
-				DE70C4C12E9DF87800C568A5 /* GRPCCore */,
-				DE70C4C42E9DF88400C568A5 /* GRPCNIOTransportHTTP2 */,
-			);
-			productName = YGOService;
-			productReference = DE70C4AE2E9DF85100C568A5 /* libYGOService.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -250,9 +195,6 @@
 					1F8211FC2961FF0100238EE1 = {
 						CreatedOnToolsVersion = 14.2;
 						TestTargetID = 1F8211E22961FF0000238EE1;
-					};
-					DE70C4AD2E9DF85100C568A5 = {
-						CreatedOnToolsVersion = 26.0.1;
 					};
 				};
 			};
@@ -278,7 +220,6 @@
 				1F8211E22961FF0000238EE1 /* SKCSwift */,
 				1F8211F22961FF0100238EE1 /* SKCSwiftTests */,
 				1F8211FC2961FF0100238EE1 /* SKCSwiftUITests */,
-				DE70C4AD2E9DF85100C568A5 /* YGOService */,
 			);
 		};
 /* End PBXProject section */
@@ -330,13 +271,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE70C4AA2E9DF85100C568A5 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -349,11 +283,6 @@
 			isa = PBXTargetDependency;
 			target = 1F8211E22961FF0000238EE1 /* SKCSwift */;
 			targetProxy = 1F8211FE2961FF0100238EE1 /* PBXContainerItemProxy */;
-		};
-		DE70C4BC2E9DF86100C568A5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DE70C4AD2E9DF85100C568A5 /* YGOService */;
-			targetProxy = DE70C4BB2E9DF86100C568A5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -502,7 +431,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SKCSwift/SKCSwiftDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20260330.2312;
+				CURRENT_PROJECT_VERSION = 20260610.2118;
 				DEVELOPMENT_ASSET_PATHS = "\"SKCSwift/Preview Content\"";
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				ENABLE_PREVIEWS = YES;
@@ -520,7 +449,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.5.0;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -554,7 +483,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SKCSwift/SKCSwift.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20260330.2312;
+				CURRENT_PROJECT_VERSION = 20260610.2118;
 				DEVELOPMENT_ASSET_PATHS = "\"SKCSwift/Preview Content\"";
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				ENABLE_PREVIEWS = YES;
@@ -572,7 +501,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.5.0;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.swift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -604,7 +533,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20260330.2312;
+				CURRENT_PROJECT_VERSION = 20260610.2118;
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -623,7 +552,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20260330.2312;
+				CURRENT_PROJECT_VERSION = 20260610.2118;
 				DEVELOPMENT_TEAM = L3TE47Z3E2;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -641,7 +570,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20260330.2312;
+				CURRENT_PROJECT_VERSION = 20260610.2118;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.SKCSwiftUITests;
@@ -657,7 +586,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20260330.2312;
+				CURRENT_PROJECT_VERSION = 20260610.2118;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skc.app.SKCSwiftUITests;
@@ -666,71 +595,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = SKCSwift;
-			};
-			name = Release;
-		};
-		DE70C4B22E9DF85100C568A5 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = L3TE47Z3E2;
-				GCC_C_LANGUAGE_STANDARD = gnu23;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
-				SWIFT_SKIP_AUTOLINKING_ALL_FRAMEWORKS = YES;
-				SWIFT_SKIP_AUTOLINKING_FRAMEWORKS = "";
-				SWIFT_STRICT_MEMORY_SAFETY = YES;
-				SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE = YES;
-				SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN = YES;
-				SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION = YES;
-				SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES = YES;
-				SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY = YES;
-				SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS = YES;
-				SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS = YES;
-				SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY = YES;
-				SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		DE70C4B32E9DF85100C568A5 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = L3TE47Z3E2;
-				GCC_C_LANGUAGE_STANDARD = gnu23;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
-				SWIFT_SKIP_AUTOLINKING_ALL_FRAMEWORKS = YES;
-				SWIFT_SKIP_AUTOLINKING_FRAMEWORKS = "";
-				SWIFT_STRICT_MEMORY_SAFETY = YES;
-				SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE = YES;
-				SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN = YES;
-				SWIFT_UPCOMING_FEATURE_DYNAMIC_ACTOR_ISOLATION = YES;
-				SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES = YES;
-				SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY = YES;
-				SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS = YES;
-				SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS = YES;
-				SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY = YES;
-				SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -773,15 +637,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DE70C4B42E9DF85100C568A5 /* Build configuration list for PBXNativeTarget "YGOService" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DE70C4B22E9DF85100C568A5 /* Debug */,
-				DE70C4B32E9DF85100C568A5 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -820,20 +675,20 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		DE70C4BE2E9DF86D00C568A5 /* GRPCProtobuf */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DE70C4BD2E9DF86D00C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-protobuf" */;
-			productName = GRPCProtobuf;
-		};
-		DE70C4C12E9DF87800C568A5 /* GRPCCore */ = {
+		DE2DFF792FB8C73D00F813AA /* GRPCCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DE70C4C02E9DF87800C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-2" */;
 			productName = GRPCCore;
 		};
-		DE70C4C42E9DF88400C568A5 /* GRPCNIOTransportHTTP2 */ = {
+		DE2DFF7B2FB8C75900F813AA /* GRPCNIOTransportHTTP2 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = DE70C4C32E9DF88400C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-nio-transport" */;
 			productName = GRPCNIOTransportHTTP2;
+		};
+		DE2DFF7D2FB8C76D00F813AA /* GRPCProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE70C4BD2E9DF86D00C568A5 /* XCRemoteSwiftPackageReference "grpc-swift-protobuf" */;
+			productName = GRPCProtobuf;
 		};
 		DEC4DB5A2EE9EF9800379086 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

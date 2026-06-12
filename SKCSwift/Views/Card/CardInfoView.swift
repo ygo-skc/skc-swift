@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import YGOService
 
 struct CardInfoView: View {
     @Environment(\.modelContext) private var modelContext

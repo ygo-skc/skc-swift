@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import YGOService
 
 struct CardReleasesView: View {
     let cardID: String
