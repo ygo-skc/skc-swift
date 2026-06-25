@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View, Equatable {
+struct ContentView: View {
     var body: some View {
         TabView {
             Tab("Home", systemImage: "house") {
@@ -33,8 +33,6 @@ struct ContentView: View, Equatable {
     }
 }
 
-struct CardInfo_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
 }
