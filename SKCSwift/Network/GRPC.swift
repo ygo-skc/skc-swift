@@ -44,6 +44,7 @@ fileprivate struct YGOClients {
                             allowWithoutCalls: false
                         )
                     )
+                    config.connection.flushCoalescing = .init(maxFlushDelay: .microseconds(50), maxBytes: 100 << 10)
                     
                     config.http2 = .init(maxFrameSize: 20 << 10, targetWindowSize: 200 << 10, authority: nil)
                 },
