@@ -79,19 +79,22 @@ fileprivate struct YGOClients {
     }
 }
 
+private func rpcResult<T: Codable>(_ rpcCall: () async throws -> T) async -> Result<T, any Error> {
+    do { return .success(try await rpcCall()) }
+    catch { return .failure(error) }
+}
+
 @concurrent
 nonisolated public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
-    do {
+    return await rpcResult {
         let timeline = try await GRPCManager.ygoClients.restrictions.getEffectiveTimelineForFormat(.with { $0.value = format })
-        return .success(.init(timeline.allDates))
-    } catch {
-        return .failure(error)
+        return .init(timeline.allDates)
     }
 }
 
 @concurrent
 nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Int) async -> Result<CardScores, any Error> {
-    do {
+    return await rpcResult {
         let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(
             .with {
                 $0.format = format
@@ -119,23 +122,18 @@ nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: In
                 score: $0.score
             )
         })
-        return .success(CardScores.fromRPC(format: format, effectiveDate: date, entries: values, totalEntries: scores.totalEntries))
-    } catch {
-        return .failure(error)
+        return CardScores.fromRPC(format: format, effectiveDate: date, entries: values, totalEntries: scores.totalEntries)
     }
 }
 
 @concurrent
 nonisolated func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
-    do {
+    return await rpcResult {
         let cardScore = try await GRPCManager.ygoClients.score.getCardScoreByID(.with { $0.id = cardID })
-        return .success(
-            CardScore.fromRPC(
-                currentScoreByFormat: cardScore.currentScoreByFormat,
-                uniqueFormats: cardScore.uniqueFormats,
-                scheduledChanges: cardScore.scheduledChanges)
+        return CardScore.fromRPC(
+            currentScoreByFormat: cardScore.currentScoreByFormat,
+            uniqueFormats: cardScore.uniqueFormats,
+            scheduledChanges: cardScore.scheduledChanges
         )
-    } catch {
-        return .failure(error)
     }
 }
