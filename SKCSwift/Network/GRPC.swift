@@ -68,7 +68,11 @@ fileprivate struct YGOClients {
             let client = GRPCClient(transport: transport)
             
             Task {
-                try await client.runConnections()
+                do {
+                    try await client.runConnections()
+                } catch {
+                    print("gRPC runConnections terminated: \(error)")
+                }
             }
             restrictions = Ygo_CardRestrictionService.Client(wrapping: client)
             score = Ygo_ScoreService.Client(wrapping: client)
@@ -93,20 +97,13 @@ nonisolated public func getRestrictionDates(format: String) async -> Result<[Str
 }
 
 @concurrent
-nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Int) async -> Result<CardScores, any Error> {
+nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Ygo_Common_CardRestrictionSortOrder) async -> Result<CardScores, any Error> {
     return await rpcResult {
         let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(
             .with {
                 $0.format = format
                 $0.effectiveDate = date
-                switch(sort) {
-                case 0:
-                    $0.sortOrder = .cardColorAscCardNameAsc
-                case 1:
-                    $0.sortOrder = .scoreDescCardColorAscCardNameAsc
-                default:
-                    $0.sortOrder = .cardColorAscCardNameAsc
-                }
+                $0.sortOrder = sort
             })
         let values = scores.entries.map({
             let card = $0.card
