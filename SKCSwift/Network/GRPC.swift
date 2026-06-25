@@ -1,5 +1,5 @@
 //
-//  Data.swift
+//  GRPC.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 10/13/25.
@@ -59,7 +59,7 @@ fileprivate struct YGOClients {
                                     maxAttempts: 3,
                                     initialBackoff: .milliseconds(150),
                                     maxBackoff: .milliseconds(500),
-                                    backoffMultiplier: 1.2,
+                                    backoffMultiplier: 1.5,
                                     retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
                         )
                     ]
