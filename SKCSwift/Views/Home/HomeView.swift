@@ -157,13 +157,11 @@ private struct SettingsView: View {
         init(moduleHeader: String,
              moduleFootnote: String?,
              action: @escaping () async -> Void,
-             label: () -> Label,
-             isAlertOpen: Bool = false) {
+             label: () -> Label) {
             self.moduleHeader = moduleHeader
             self.moduleFootnote = moduleFootnote
             self.action = action
             self.label = label()
-            self.isAlertOpen = isAlertOpen
         }
         
         var body: some View {
