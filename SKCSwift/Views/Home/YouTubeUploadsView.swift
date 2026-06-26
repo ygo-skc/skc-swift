@@ -52,11 +52,17 @@ struct YouTubeUploadsView: View, Equatable {
 }
 
 private struct YouTubeUploadView: View, Equatable {
+    static func == (lhs: YouTubeUploadView, rhs: YouTubeUploadView) -> Bool {
+        lhs.videoTitle == rhs.videoTitle
+        && lhs.videoURI == rhs.videoURI
+    }
+
     let videoTitle: String
     let videoURI: String
-    
+
+    @Environment(\.openURL) private var openURL
     private var videoThumbnailUrl: URL
-    
+
     init(videoID: String, title: String, uploadUrl: String) {
         self.videoTitle = title
         self.videoURI = uploadUrl
@@ -78,7 +84,7 @@ private struct YouTubeUploadView: View, Equatable {
             .contentShape(Rectangle())
             .onTapGesture {
                 if let url = URL(string: videoURI) {
-                    UIApplication.shared.open(url)
+                    openURL(url)
                 }
             }
             Divider()
