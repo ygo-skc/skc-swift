@@ -75,14 +75,12 @@ private struct DBStatView: View {
     let isDataLoaded: Bool
 
     var body: some View {
-        VStack {
+        VStack(spacing: 2) {
             Text(count.decimal)
+                .font(.title2)
+                .fontWeight(.bold)
             Text(stat)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-        }
-        .if(!isDataLoaded) {
-            $0.redacted(reason: .placeholder)
+                .font(.caption)
         }
     }
 }
