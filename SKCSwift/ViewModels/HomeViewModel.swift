@@ -87,20 +87,29 @@ final class HomeViewModel {
     }
     
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {
-        let (destination, type) = determineTypeOfURLClick(path: url.relativePath)
-        if let destination {
-            type == "product" ?  path.append(ProductLinkDestinationValue(productID: destination, productName: "")) : path.append(CardLinkDestinationValue(cardID: destination, cardName: ""))
-            return .handled
+        guard let destination = determineTypeOfURLClick(path: url.relativePath) else {
+            return .systemAction
         }
-        return .systemAction
+        switch destination {
+        case .card(let id):
+            path.append(CardLinkDestinationValue(cardID: id, cardName: ""))
+        case .product(let id):
+            path.append(ProductLinkDestinationValue(productID: id, productName: ""))
+        }
+        return .handled
     }
     
-    nonisolated private func determineTypeOfURLClick(path: String) -> (String?, String) {
+    nonisolated private func determineTypeOfURLClick(path: String) -> URLDestination? {
         if path.contains("/card/") {
-            return (path.replacingOccurrences(of: "/card/", with: ""), "card")
+            return .card(path.replacingOccurrences(of: "/card/", with: ""))
         } else if path.contains("/product/") {
-            return (path.replacingOccurrences(of: "/product/", with: ""), "product")
+            return .product(path.replacingOccurrences(of: "/product/", with: ""))
         }
-        return( nil, "")
+        return nil
     }
+}
+
+private enum URLDestination {
+    case card(String)
+    case product(String)
 }
