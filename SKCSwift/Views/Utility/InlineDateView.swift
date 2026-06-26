@@ -44,6 +44,7 @@ struct InlineDateView: View, Equatable {
             }
             .padding(.horizontal, 10)
         }
+        .fixedSize(horizontal: true, vertical: false)
         .background(.gray.opacity(0.2))
         .cornerRadius(8)
     }
