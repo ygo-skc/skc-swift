@@ -39,7 +39,7 @@ final class HomeViewModel {
     private var lastRefreshTimestamp: Date?
     
     func fetchData(forceRefresh: Bool) async {
-        if lastRefreshTimestamp == nil || (forceRefresh && lastRefreshTimestamp!.isDateInvalidated(5)) {
+        if lastRefreshTimestamp == nil || (forceRefresh && (lastRefreshTimestamp?.isDateInvalidated(5) == true)) {
             await withTaskGroup(of: Void.self) { taskGroup in
                 taskGroup.addTask { @Sendable in await self.fetchDBStatsData() }
                 taskGroup.addTask { @Sendable in await self.fetchCardOfTheDayData() }

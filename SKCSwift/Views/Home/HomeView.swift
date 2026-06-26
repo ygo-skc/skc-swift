@@ -64,7 +64,7 @@ struct HomeView: View {
                     .equatable()
                     
                     if model.upcomingTCGProductsDTS == .done {
-                        YouTubeUploadsView(ytUplaods: model.ytUploads,
+                        YouTubeUploadsView(ytUploads: model.ytUploads,
                                            dataTaskStatus: model.ytUploadsDTS,
                                            networkError: model.ytUploadsNE,
                                            retryCB: model.fetchYouTubeUploadsData)

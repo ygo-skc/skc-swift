@@ -9,11 +9,11 @@ import SwiftUI
 
 struct YouTubeUploadsView: View, Equatable {
     static func == (lhs: YouTubeUploadsView, rhs: YouTubeUploadsView) -> Bool {
-        lhs.ytUplaods == rhs.ytUplaods
+        lhs.ytUploads == rhs.ytUploads
         && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
     
-    let ytUplaods: [YouTubeVideos]
+    let ytUploads: [YouTubeVideos]
     let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
     let retryCB: () async -> Void
@@ -24,7 +24,7 @@ struct YouTubeUploadsView: View, Equatable {
             Text("Did you know I make YouTube videos? Keep tabs on the TCG, watch the best un-boxings on YouTube or watch some dope Master Duel replays. Don't forget to sub.")
                 .font(.callout)
             
-            ForEach(ytUplaods, id: \.id) { video in
+            ForEach(ytUploads, id: \.id) { video in
                 YouTubeUploadView(videoID: video.id, title: video.title, uploadUrl: video.url)
                     .equatable()
             }
@@ -37,7 +37,7 @@ struct YouTubeUploadsView: View, Equatable {
                 .modifier(.headerText)
             if let networkError {
                 NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
-            } else if dataTaskStatus == .done || !ytUplaods.isEmpty {
+            } else if dataTaskStatus == .done || !ytUploads.isEmpty {
                 youtubeUploads
             } else {
                 HStack {
@@ -61,13 +61,11 @@ private struct YouTubeUploadView: View, Equatable {
         self.videoTitle = title
         self.videoURI = uploadUrl
         
-        self.videoThumbnailUrl = URL(
-            string: YouTubeUploadView.THUMBNAIL_URI_TEMPLATE.replacingOccurrences(of: "%@", with: videoID))!
+        self.videoThumbnailUrl = URL(string: "https://img.youtube.com/vi/\(videoID)/mqdefault.jpg")!
     }
-    
+
     private static let UPLOAD_IMG_WIDTH: CGFloat = 175
     private static let UPLOAD_IMG_HEIGHT: CGFloat = YouTubeUploadView.UPLOAD_IMG_WIDTH * 0.6
-    private static let THUMBNAIL_URI_TEMPLATE = "https://img.youtube.com/vi/%@/mqdefault.jpg"
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -90,7 +88,7 @@ private struct YouTubeUploadView: View, Equatable {
 }
 
 #Preview("Default") {
-    YouTubeUploadsView(ytUplaods: [],
+    YouTubeUploadsView(ytUploads: [],
                        dataTaskStatus: .done,
                        networkError: nil,
                        retryCB: {})
@@ -98,7 +96,7 @@ private struct YouTubeUploadView: View, Equatable {
 }
 
 #Preview("Loading") {
-    YouTubeUploadsView(ytUplaods: [],
+    YouTubeUploadsView(ytUploads: [],
                        dataTaskStatus: .pending,
                        networkError: nil,
                        retryCB: {})
@@ -106,7 +104,7 @@ private struct YouTubeUploadView: View, Equatable {
 }
 
 #Preview("Network Error") {
-    YouTubeUploadsView(ytUplaods: [],
+    YouTubeUploadsView(ytUploads: [],
                        dataTaskStatus: .error,
                        networkError: .timeout,
                        retryCB: {})

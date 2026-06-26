@@ -73,13 +73,7 @@ private struct DBStatView: View {
     let count: Int
     let stat: String
     let isDataLoaded: Bool
-    
-    init(count: Int, stat: String, isDataLoaded: Bool) {
-        self.count = (!isDataLoaded) ? -999 : count
-        self.stat = stat
-        self.isDataLoaded = isDataLoaded
-    }
-    
+
     var body: some View {
         VStack {
             Text(count.decimal)
