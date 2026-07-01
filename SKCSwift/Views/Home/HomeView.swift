@@ -164,15 +164,22 @@ private struct SettingsView: View {
         }
         
         var body: some View {
-            VStack(alignment: .leading) {
-                Text(moduleHeader)
-                    .font(.headline)
-                if let moduleFootnote = moduleFootnote {
-                    Text(moduleFootnote)
-                        .font(.footnote)
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(moduleHeader)
+                        .font(.headline)
+                    if let moduleFootnote {
+                        Text(moduleFootnote)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 
+                Spacer()
+                
                 Button { isAlertOpen.toggle() } label: { label }
+                    .labelStyle(.iconOnly)
+                    .fixedSize()
                     .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
                         Button("Cancel", role: .cancel) {}
                         Button("🫡", role: .destructive) {
@@ -183,8 +190,15 @@ private struct SettingsView: View {
                     } message: {
                         Text("Action is irreversible.")
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.regular)
+                    .modify {
+                        if #available(iOS 26.0, *) {
+                            $0.buttonStyle(.glass(.regular.tint(.accentColor)))
+                                .foregroundStyle(.white)
+                        } else {
+                            $0.buttonStyle(.borderedProminent)
+                                .controlSize(.regular)
+                        }
+                    }
             }
             .frame(maxWidth: .infinity)
         }
