@@ -51,11 +51,14 @@ struct TrendingView: View {
                                                 trendChange: metrics[ind].change,
                                                 hits: metrics[ind].occurrences)
                             })
+                            .transition(.opacity)
                         case .product:
                             trendingProducts
+                                .transition(.opacity)
                         }
                     }
                 }
+                .animation(.easeInOut(duration: 0.2), value: trendingModel.focusedTrend)
                 .modifier(.parentView)
             }
             .task {
@@ -108,6 +111,15 @@ private struct TrendChangeView: View, Equatable {
         self.hits = hits
     }
     
+    private var rankColor: Color {
+        switch position {
+        case 1: .yellow
+        case 2: Color(white: 0.6)
+        case 3: .orange
+        default: .primary
+        }
+    }
+    
     var body: some View {
         HStack(spacing: 8) {
             Label {
@@ -116,21 +128,24 @@ private struct TrendChangeView: View, Equatable {
                 Image(systemName: trendImage)
             }
             .foregroundStyle(trendColor)
-
+            
             Divider()
-
+            
             Label {
-                Text(String(hits))
+                Text(hits.formatted())
+                    .contentTransition(.numericText())
             } icon: {
                 Image(systemName: "chart.bar.xaxis")
             }
             .foregroundStyle(.secondary)
-            
+
             Spacer()
-            
+
             Text("#\(position)")
                 .font(.headline)
-                .fontWeight(.thin)
+                .fontWeight(position <= 3 ? .semibold : .thin)
+                .foregroundStyle(rankColor)
+                .contentTransition(.numericText())
         }
     }
 }
