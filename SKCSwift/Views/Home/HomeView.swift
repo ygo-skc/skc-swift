@@ -197,6 +197,7 @@ private struct SettingsView: View {
                         } else {
                             $0.buttonStyle(.borderedProminent)
                                 .controlSize(.regular)
+                                .clipShape(.capsule)
                         }
                     }
             }
