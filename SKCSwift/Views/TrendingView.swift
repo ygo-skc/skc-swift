@@ -45,10 +45,11 @@ struct TrendingView: View {
                     if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
                         switch trendingModel.focusedTrend {
                         case .card:
-                            CardListView(cards: trendingModel.cards.map({ $0.resource }), label: { ind in
+                            let metrics = trendingModel.cards
+                            CardListView(cards: metrics.map(\.resource), label: { ind in
                                 TrendChangeView(position: ind + 1,
-                                                trendChange: trendingModel.cards[ind].change,
-                                                hits: trendingModel.cards[ind].occurrences)
+                                                trendChange: metrics[ind].change,
+                                                hits: metrics[ind].occurrences)
                             })
                         case .product:
                             trendingProducts
