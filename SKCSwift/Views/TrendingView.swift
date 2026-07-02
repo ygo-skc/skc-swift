@@ -14,12 +14,13 @@ struct TrendingView: View {
     @ViewBuilder
     var trendingProducts: some View {
         VStack {
-            ForEach(Array(trendingModel.products.enumerated()), id: \.element.resource.productId) { position, m in
+            ForEach(trendingModel.products.indices, id: \.self) { index in
+                let m = trendingModel.products[index]
                 let product = m.resource
                 Button {
                     path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
                 } label: {
-                    GroupBox(label: TrendChangeView(position: position + 1, trendChange: m.change, hits: m.occurrences)) {
+                    GroupBox(label: TrendChangeView(position: index + 1, trendChange: m.change, hits: m.occurrences)) {
                         ProductListItemView(product: product)
                             .equatable()
                     }
