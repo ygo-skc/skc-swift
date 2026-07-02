@@ -78,8 +78,9 @@ struct SearchView: View {
                             }
                         }
                         
-                        YGOArchetypesView(title: "Suggested archetypes (BETA)",
-                                          archetypes: model.recentlyViewedArchetypeSuggestions)
+                        YGOArchetypesView(title: "Suggested archetypes",
+                                          archetypes: model.recentlyViewedArchetypeSuggestions,
+                                          showBetaBadge: true)
                         
                         VStack(alignment: .leading) {
                             Label("Recently viewed", systemImage: "clock.arrow.circlepath")

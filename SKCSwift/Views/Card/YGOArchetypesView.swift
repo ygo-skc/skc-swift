@@ -9,13 +9,26 @@ import SwiftUI
 struct YGOArchetypesView: View {
     let title: String
     let archetypes: Set<String>
+    var showBetaBadge: Bool = false
     
     var body: some View {
         if !archetypes.isEmpty {
             VStack(alignment: .leading) {
-                Label(title, systemImage: "apple.books.pages")
-                    .font(.headline)
-                    .fontWeight(.medium)
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Label(title, systemImage: "apple.books.pages")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                    if showBetaBadge {
+                        Text("BETA")
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(.tint.opacity(0.12))
+                            .foregroundStyle(.tint)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+                }
                 ScrollView(.horizontal) {
                     HStack(spacing: 5) {
                         ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
