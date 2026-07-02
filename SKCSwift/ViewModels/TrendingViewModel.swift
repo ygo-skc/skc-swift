@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 @Observable
 final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
@@ -33,20 +34,14 @@ final class TrendingViewModel {
         return (focusedTrend == .card) ? trendingCardsNE : trendingProductsNE
     }
     
-    @ObservationIgnored
-    private var trendingDataLastFetched: [TrendingResourceType: Date] = [:]
-    
-    @ObservationIgnored
-    private static let invalidateDataThreshold = 5
-    
     func fetchTrendingData(forceRefresh: Bool = false) async {
         await withTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask { @Sendable in await self.fetchTrendingCards(forceRefresh: forceRefresh) }
-            taskGroup.addTask { @Sendable in await self.fetchTrendingProducts(forceRefresh: forceRefresh) }
+            taskGroup.addTask { @Sendable in await self.fetchTrendingCards() }
+            taskGroup.addTask { @Sendable in await self.fetchTrendingProducts() }
         }
     }
-    
-    private func fetchTrendingCards(forceRefresh: Bool = false) async {
+
+    private func fetchTrendingCards() async {
         (trendingCardsNE, trendingCardsDTS) = (nil, .pending)
         let res = await data(trendingUrl(resource: .card), resType: Trending<YGOCard>.self)
         if case .success(let data) = res {
@@ -55,7 +50,7 @@ final class TrendingViewModel {
         (trendingCardsNE, trendingCardsDTS) = res.validate()
     }
     
-    private func fetchTrendingProducts(forceRefresh: Bool = false) async {
+    private func fetchTrendingProducts() async {
         (trendingProductsNE, trendingProductsDTS) = (nil, .pending)
         let res = await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
         if case .success(let data) = res {

@@ -19,6 +19,9 @@ struct ContentView: View {
             Tab("Browse", systemImage: "square.grid.2x2") {
                 BrowseView()
             }
+            Tab("Trending", systemImage: "flame") {
+                TrendingView()
+            }
             Tab(role: .search) {
                 SearchView()
             }

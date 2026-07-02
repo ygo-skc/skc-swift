@@ -1,15 +1,15 @@
 //
-//  Trending.swift
+//  TrendingView.swift
 //  SKCSwift
 //
-//  Created by Javi Gomez on 7/22/24.
+//  Created by Javi Gomez on 1/5/23.
 //
 
 import SwiftUI
 
 struct TrendingView: View {
-    @Binding var path: NavigationPath
-    @Binding var trendingModel: TrendingViewModel
+    @State private var path = NavigationPath()
+    @State private var trendingModel =  TrendingViewModel()
     
     @ViewBuilder
     var trendingProducts: some View {
@@ -31,46 +31,51 @@ struct TrendingView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack {
-                Picker("Select Trend Type", selection: $trendingModel.focusedTrend) {
-                    ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                        Text(type.rawValue.capitalized).tag(type)
+        NavigationStack(path: $path) {
+            ScrollView {
+                VStack {
+                    Picker("Select Trend Type", selection: $trendingModel.focusedTrend) {
+                        ForEach(TrendingResourceType.allCases, id: \.self) { type in
+                            Text(type.rawValue.capitalized).tag(type)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    
+                    if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
+                        switch trendingModel.focusedTrend {
+                        case .card:
+                            CardListView(cards: trendingModel.cards.map({ $0.resource }), label: { ind in
+                                TrendChangeView(position: ind + 1,
+                                                trendChange: trendingModel.cards[ind].change,
+                                                hits: trendingModel.cards[ind].occurrences)
+                            })
+                        case .product:
+                            trendingProducts
+                        }
                     }
                 }
-                .pickerStyle(.segmented)
-                
-                if [.done, .pending].contains(trendingModel.focusedTrendDTS) {
-                    switch trendingModel.focusedTrend {
-                    case .card:
-                        CardListView(cards: trendingModel.cards.map({ $0.resource }), label: { ind in
-                            TrendChangeView(position: ind + 1,
-                                            trendChange: trendingModel.cards[ind].change,
-                                            hits: trendingModel.cards[ind].occurrences)
-                        })
-                    case .product:
-                        trendingProducts
-                    }
-                }
+                .modifier(.parentView)
             }
-            .modifier(.parentView)
-        }
-        .task {
-            await trendingModel.fetchTrendingData(forceRefresh: false)
-        }
-        .dynamicTypeSize(...DynamicTypeSize.medium)
-        .scrollDisabled(trendingModel.focusedTrendNE != nil)
-        .frame(maxWidth: .infinity) // needed by overlay
-        .overlay {
-            if trendingModel.focusedTrendDTS == .error, let networkError = trendingModel.focusedTrendNE {
-                NetworkErrorView(error: networkError, action: {
-                    Task {
-                        await trendingModel.fetchTrendingData(forceRefresh: true)
-                    }
-                })
-            } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
-                ProgressView("Loading…")
-                    .controlSize(.large)
+            .task {
+                await trendingModel.fetchTrendingData(forceRefresh: false)
+            }
+            .ygoNavigationDestination()
+            .navigationTitle("Trending")
+            .navigationBarTitleDisplayMode(.large)
+            .dynamicTypeSize(...DynamicTypeSize.medium)
+            .scrollDisabled(trendingModel.focusedTrendNE != nil)
+            .frame(maxWidth: .infinity) // needed by overlay
+            .overlay {
+                if trendingModel.focusedTrendDTS == .error, let networkError = trendingModel.focusedTrendNE {
+                    NetworkErrorView(error: networkError, action: {
+                        Task {
+                            await trendingModel.fetchTrendingData(forceRefresh: true)
+                        }
+                    })
+                } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
+                    ProgressView("Loading…")
+                        .controlSize(.large)
+                }
             }
         }
     }
@@ -108,16 +113,16 @@ private struct TrendChangeView: View, Equatable {
             } icon: {
                 Image(systemName: trendImage)
             }
-            .foregroundColor(trendColor)
-            
+            .foregroundStyle(trendColor)
+
             Divider()
-            
+
             Label {
                 Text(String(hits))
             } icon: {
                 Image(systemName: "chart.bar.xaxis")
             }
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
             
             Spacer()
             
@@ -144,4 +149,8 @@ private struct TrendChangeView: View, Equatable {
     TrendChangeView(position: 4, trendChange: 0, hits: 10)
         .frame(height: 20)
         .padding(.horizontal)
+}
+
+#Preview("Trending View") {
+    TrendingView()
 }

@@ -12,7 +12,6 @@ struct SearchView: View {
     @State private var path = NavigationPath()
     @State private var recentlyViewedModel = RecentlyViewedViewModel()
     @State private var searchModel = SearchViewModel()
-    @State private var trendingModel = TrendingViewModel()
     
     @Query(ArchiveContainer.fetchHistoryByAccessDate(sortOrder: .reverse, limit: 20)) private var history: [History]
     
@@ -22,18 +21,14 @@ struct SearchView: View {
                 switch searchModel.dataTaskStatus {
                 case .done where searchModel.searchText.isEmpty,
                         .pending where searchModel.searchText.isEmpty:
-                    if searchModel.isSearching {
-                        RecentlyViewedView(history: history,
-                                           recentlyViewedCardDetails: recentlyViewedModel.recentlyViewedCardDetails,
-                                           recentlyViewedSuggestions: recentlyViewedModel.recentlyViewedSuggestions,
-                                           recentlyViewedArchetypeSuggestions: recentlyViewedModel.recentlyViewedArchetypeSuggestions,
-                                           dataTaskStatus: recentlyViewedModel.dataTaskStatus,
-                                           requestError: recentlyViewedModel.requestError,
-                                           loadDataCB: { await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history) })
-                        .equatable()
-                    } else {
-                        TrendingView(path: $path, trendingModel: $trendingModel)
-                    }
+                    RecentlyViewedView(history: history,
+                                       recentlyViewedCardDetails: recentlyViewedModel.recentlyViewedCardDetails,
+                                       recentlyViewedSuggestions: recentlyViewedModel.recentlyViewedSuggestions,
+                                       recentlyViewedArchetypeSuggestions: recentlyViewedModel.recentlyViewedArchetypeSuggestions,
+                                       dataTaskStatus: recentlyViewedModel.dataTaskStatus,
+                                       requestError: recentlyViewedModel.requestError,
+                                       loadDataCB: { await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history) })
+                    .equatable()
                 case .pending where searchModel.isSearchSlow:
                     ProgressView("Loading…")
                         .controlSize(.large)
@@ -49,7 +44,7 @@ struct SearchView: View {
             }
             .ignoresSafeArea(.keyboard)
             .ygoNavigationDestination()
-            .navigationTitle("Search & Trending")
+            .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.large)
             .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
                 Task {
