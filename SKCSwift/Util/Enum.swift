@@ -86,6 +86,13 @@ enum ImageSize: String {
 
 enum TrendingResourceType: String, Codable, CaseIterable {
     case card = "CARD", product = "PRODUCT"
+
+    var displayName: String {
+        switch self {
+        case .card: "Card"
+        case .product: "Product"
+        }
+    }
 }
 
 enum DataTaskStatus: String, Codable, CaseIterable {

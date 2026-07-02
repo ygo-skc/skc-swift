@@ -36,7 +36,7 @@ struct TrendingView: View {
                 VStack {
                     Picker("Select Trend Type", selection: $trendingModel.focusedTrend) {
                         ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
+                            Text(type.displayName).tag(type)
                         }
                     }
                     .pickerStyle(.segmented)

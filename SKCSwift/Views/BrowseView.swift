@@ -20,7 +20,7 @@ struct BrowseView: View {
                 VStack {
                     Picker("Select resource to browse", selection: $focusedResource) {
                         ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
+                            Text(type.displayName).tag(type)
                         }
                     }
                     .pickerStyle(.segmented)
