@@ -144,7 +144,7 @@ struct SearchView: View {
         let retryCB: () async -> Void
         
         var body: some View {
-            VStack {
+            Group {
                 if requestError == nil {
                     List(results) { sr in
                         Section(header:  Text(sr.section)

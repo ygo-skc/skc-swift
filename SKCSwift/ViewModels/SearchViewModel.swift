@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 @Observable
 final class SearchViewModel {
     var isSearching = false // user has search open
@@ -23,7 +24,7 @@ final class SearchViewModel {
     @ObservationIgnored
     private var searchTask: Task<(), any Error>?
     @ObservationIgnored
-    private var slowSearchDispatch: DispatchWorkItem?
+    private var slowSearchTask: Task<(), any Error>?
     
     func searchDB(oldValue: String, newValue: String) async {
         if requestError == .notFound && newValue.starts(with: oldValue) {
@@ -31,7 +32,7 @@ final class SearchViewModel {
         }
         
         searchTask?.cancel()
-        slowSearchDispatch?.cancel()
+        slowSearchTask?.cancel()
         if newValue == "" {
             resetSearchResults()
             requestError = nil
@@ -39,16 +40,16 @@ final class SearchViewModel {
         } else {
             searchTask = Task {
                 (requestError, dataTaskStatus) = (nil, .pending)
-                slowSearchDispatch = DispatchWorkItem { [weak self] in
-                    self?.isSearchSlow = true
+                slowSearchTask = Task {
+                    try await Task.sleep(for: .milliseconds(200))
+                    isSearchSlow = true
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: slowSearchDispatch!)
                 
                 let (requestResults, searchErr, searchTaskStatus) = await search(subject: newValue)
                 if Task.isCancelled {
                     return
                 }
-                if requestResults.isEmpty || searchErr != nil || searchErr == .notFound {
+                if requestResults.isEmpty || searchErr != nil {
                     resetSearchResults()
                 } else {
                     let (newSearchResults, newSearchResultsCardIDs) = await partitionResults(newSearchResults: requestResults,
@@ -58,7 +59,7 @@ final class SearchViewModel {
                         cardIDsForSearchResults = newSearchResultsCardIDs
                     }
                 }
-                slowSearchDispatch?.cancel()
+                slowSearchTask?.cancel()
                 isSearchSlow = false
                 requestError = searchErr
                 dataTaskStatus = searchTaskStatus
