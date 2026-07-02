@@ -69,10 +69,6 @@ struct SearchView: View {
             ScrollView {
                 if !model.recentlyViewedCardDetails.isEmpty {
                     LazyVStack(alignment: .leading, spacing: 25) {
-                        Text("History")
-                            .modifier(.headerText)
-                            .padding(.bottom, -15)
-                        
                         if !model.recentlyViewedSuggestions.isEmpty {
                             VStack(alignment: .leading) {
                                 Label("Suggestions", systemImage: "sparkles")
@@ -136,9 +132,9 @@ struct SearchView: View {
             Group {
                 if requestError == nil {
                     List(results) { sr in
-                        Section(header:  Text(sr.section)
-                            .font(.headline)
-                            .fontWeight(.black) ) {
+                        Section(header: Text(sr.section)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)) {
                                 ForEach(sr.results, id: \.cardID) { card in
                                     CardListItemView(card: card)
                                         .equatable()
