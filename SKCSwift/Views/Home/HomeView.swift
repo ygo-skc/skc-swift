@@ -64,7 +64,7 @@ struct HomeView: View {
                     .equatable()
                     
                     if model.upcomingTCGProductsDTS == .done {
-                        YouTubeUploadsView(ytUplaods: model.ytUploads,
+                        YouTubeUploadsView(ytUploads: model.ytUploads,
                                            dataTaskStatus: model.ytUploadsDTS,
                                            networkError: model.ytUploadsNE,
                                            retryCB: model.fetchYouTubeUploadsData)
@@ -102,35 +102,34 @@ private struct SettingsView: View {
             VStack(alignment: .leading, spacing: 15) {
                 Text("Settings")
                     .font(.title)
-                SectionView(header: "Data",
-                            content: {
-                    SettingsModule(
-                        moduleHeader: "Network Cache (~\(model.networkCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
-                        moduleFootnote: "Cache data is used to speed up loading times and improve performance.",
-                        action: model.deleteNetworkCache) {
-                            Label("Delete Network Cache", systemImage: "trash.fill")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .padding(.bottom)
-                    
-                    SettingsModule(
-                        moduleHeader: "Cache Files (~\(model.fileCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
-                        moduleFootnote: "This will also delete network cache.",
-                        action: model.deleteFileCache) {
-                            Label("Delete File Cache", systemImage: "trash.fill")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .padding(.bottom)
-                    
-                    SettingsModule(
-                        moduleHeader: "Recently Viewed History",
-                        moduleFootnote: "Recently viewed data facilitates going back to previously viewed items. Deleting this means you will lose access to this data accross all devices.") {
-                            await model.deleteHistoryData(modelContext: modelContext)
-                        } label: {
-                            Label("Delete History", systemImage: "trash.fill")
-                                .frame(maxWidth: .infinity)
-                        }
-                })
+                SectionView(header: "Data") {
+                    VStack(spacing: 20) {
+                        SettingsModule(
+                            moduleHeader: "Network Cache (~\(model.networkCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
+                            moduleFootnote: "Cache data is used to speed up loading times and improve performance.",
+                            action: model.deleteNetworkCache) {
+                                Label("Delete Network Cache", systemImage: "trash.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                        
+                        SettingsModule(
+                            moduleHeader: "Cache Files (~\(model.fileCacheSize.formatted(.number.precision(.fractionLength(2)))) MB)",
+                            moduleFootnote: "This will also delete network cache.",
+                            action: model.deleteFileCache) {
+                                Label("Delete File Cache", systemImage: "trash.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                        
+                        SettingsModule(
+                            moduleHeader: "Recently Viewed History",
+                            moduleFootnote: "Recently viewed data facilitates going back to previously viewed items. Deleting this means you will lose access to this data accross all devices.") {
+                                await model.deleteHistoryData(modelContext: modelContext)
+                            } label: {
+                                Label("Delete History", systemImage: "trash.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                    }
+                }
             }
             .allowsHitTesting(!model.isDeleting)
             .modifier(.sheetParentView)
@@ -147,35 +146,40 @@ private struct SettingsView: View {
     }
     
     private struct SettingsModule<Label: View>: View {
-        let moduleHeader: String
-        let moduleFootnote: String?
-        let action: () async -> Void
-        let label: Label
+        private let moduleHeader: String
+        private let moduleFootnote: String?
+        private let action: () async -> Void
+        private let label: Label
         
         @State private var isAlertOpen = false
         
         init(moduleHeader: String,
              moduleFootnote: String?,
              action: @escaping () async -> Void,
-             label: () -> Label,
-             isAlertOpen: Bool = false) {
+             label: () -> Label) {
             self.moduleHeader = moduleHeader
             self.moduleFootnote = moduleFootnote
             self.action = action
             self.label = label()
-            self.isAlertOpen = isAlertOpen
         }
         
         var body: some View {
-            VStack(alignment: .leading) {
-                Text(moduleHeader)
-                    .font(.headline)
-                if let moduleFootnote = moduleFootnote {
-                    Text(moduleFootnote)
-                        .font(.footnote)
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(moduleHeader)
+                        .font(.headline)
+                    if let moduleFootnote {
+                        Text(moduleFootnote)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 
+                Spacer()
+                
                 Button { isAlertOpen.toggle() } label: { label }
+                    .labelStyle(.iconOnly)
+                    .fixedSize()
                     .alert("Proceed with deletion?", isPresented: $isAlertOpen) {
                         Button("Cancel", role: .cancel) {}
                         Button("🫡", role: .destructive) {
@@ -186,8 +190,16 @@ private struct SettingsView: View {
                     } message: {
                         Text("Action is irreversible.")
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.regular)
+                    .modify {
+                        if #available(iOS 26.0, *) {
+                            $0.buttonStyle(.glass(.regular.tint(.accentColor)))
+                                .foregroundStyle(.white)
+                        } else {
+                            $0.buttonStyle(.borderedProminent)
+                                .controlSize(.regular)
+                                .clipShape(.capsule)
+                        }
+                    }
             }
             .frame(maxWidth: .infinity)
         }

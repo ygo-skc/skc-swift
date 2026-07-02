@@ -1,5 +1,5 @@
 //
-//  Data.swift
+//  GRPC.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 10/13/25.
@@ -44,6 +44,7 @@ fileprivate struct YGOClients {
                             allowWithoutCalls: false
                         )
                     )
+                    config.connection.flushCoalescing = .init(maxFlushDelay: .microseconds(50), maxBytes: 100 << 10)
                     
                     config.http2 = .init(maxFrameSize: 20 << 10, targetWindowSize: 200 << 10, authority: nil)
                 },
@@ -58,7 +59,7 @@ fileprivate struct YGOClients {
                                     maxAttempts: 3,
                                     initialBackoff: .milliseconds(150),
                                     maxBackoff: .milliseconds(500),
-                                    backoffMultiplier: 1.2,
+                                    backoffMultiplier: 1.5,
                                     retryableStatusCodes: [.unknown, .deadlineExceeded, .dataLoss, .unavailable]))
                         )
                     ]
@@ -67,7 +68,11 @@ fileprivate struct YGOClients {
             let client = GRPCClient(transport: transport)
             
             Task {
-                try await client.runConnections()
+                do {
+                    try await client.runConnections()
+                } catch {
+                    print("gRPC runConnections terminated: \(error)")
+                }
             }
             restrictions = Ygo_CardRestrictionService.Client(wrapping: client)
             score = Ygo_ScoreService.Client(wrapping: client)
@@ -78,31 +83,27 @@ fileprivate struct YGOClients {
     }
 }
 
+private func rpcResult<T: Codable>(_ rpcCall: () async throws -> T) async -> Result<T, any Error> {
+    do { return .success(try await rpcCall()) }
+    catch { return .failure(error) }
+}
+
 @concurrent
 nonisolated public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
-    do {
+    return await rpcResult {
         let timeline = try await GRPCManager.ygoClients.restrictions.getEffectiveTimelineForFormat(.with { $0.value = format })
-        return .success(.init(timeline.allDates))
-    } catch {
-        return .failure(error)
+        return .init(timeline.allDates)
     }
 }
 
 @concurrent
-nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Int) async -> Result<CardScores, any Error> {
-    do {
+nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Ygo_Common_CardRestrictionSortOrder) async -> Result<CardScores, any Error> {
+    return await rpcResult {
         let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(
             .with {
                 $0.format = format
                 $0.effectiveDate = date
-                switch(sort) {
-                case 0:
-                    $0.sortOrder = .cardColorAscCardNameAsc
-                case 1:
-                    $0.sortOrder = .scoreDescCardColorAscCardNameAsc
-                default:
-                    $0.sortOrder = .cardColorAscCardNameAsc
-                }
+                $0.sortOrder = sort
             })
         let values = scores.entries.map({
             let card = $0.card
@@ -118,23 +119,18 @@ nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: In
                 score: $0.score
             )
         })
-        return .success(CardScores.fromRPC(format: format, effectiveDate: date, entries: values, totalEntries: scores.totalEntries))
-    } catch {
-        return .failure(error)
+        return CardScores.fromRPC(format: format, effectiveDate: date, entries: values, totalEntries: scores.totalEntries)
     }
 }
 
 @concurrent
 nonisolated func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
-    do {
+    return await rpcResult {
         let cardScore = try await GRPCManager.ygoClients.score.getCardScoreByID(.with { $0.id = cardID })
-        return .success(
-            CardScore.fromRPC(
-                currentScoreByFormat: cardScore.currentScoreByFormat,
-                uniqueFormats: cardScore.uniqueFormats,
-                scheduledChanges: cardScore.scheduledChanges)
+        return CardScore.fromRPC(
+            currentScoreByFormat: cardScore.currentScoreByFormat,
+            uniqueFormats: cardScore.uniqueFormats,
+            scheduledChanges: cardScore.scheduledChanges
         )
-    } catch {
-        return .failure(error)
     }
 }

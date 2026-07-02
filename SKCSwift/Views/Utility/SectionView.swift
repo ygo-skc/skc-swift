@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  SectionView.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 4/26/23.
@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SectionView<Content: View>: View {
-    let header: String
-    let content: Content
+    private let header: String
+    private let content: Content
     
     init(header: String, @ViewBuilder content: () -> Content) {
         self.header = header
@@ -17,7 +17,7 @@ struct SectionView<Content: View>: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(header)
                 .modifier(.headerText)
             

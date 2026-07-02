@@ -73,22 +73,14 @@ private struct DBStatView: View {
     let count: Int
     let stat: String
     let isDataLoaded: Bool
-    
-    init(count: Int, stat: String, isDataLoaded: Bool) {
-        self.count = (!isDataLoaded) ? -999 : count
-        self.stat = stat
-        self.isDataLoaded = isDataLoaded
-    }
-    
+
     var body: some View {
-        VStack {
+        VStack(spacing: 2) {
             Text(count.decimal)
+                .font(.title2)
+                .fontWeight(.bold)
             Text(stat)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-        }
-        .if(!isDataLoaded) {
-            $0.redacted(reason: .placeholder)
+                .font(.caption)
         }
     }
 }

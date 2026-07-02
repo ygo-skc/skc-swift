@@ -51,7 +51,7 @@ struct UpcomingTCGProductsView: View, Equatable {
 }
 
 private struct UpcomingTCGProductView: View {
-    var event: Event
+    let event: Event
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {

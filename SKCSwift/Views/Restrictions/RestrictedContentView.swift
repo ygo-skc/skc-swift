@@ -105,13 +105,14 @@ struct RestrictedContentView: View {
     private var sortToolbarItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
-                ForEach(RestrictedContentSortOrder.allCases, id: \.self) { sortOption in
+                ForEach(Ygo_Common_CardRestrictionSortOrder.allCases, id: \.self) { sortOption in
                     Button(action: {model.sort = sortOption}) {
-                        if model.sort == sortOption {
+                        let selected = model.sort == sortOption
+                        if selected {
                             Image(systemName: "checkmark")
                         }
                         Text(sortOption.title)
-                        if model.sort == sortOption {
+                        if selected {
                             Text(sortOption.subtitle)
                         }
                     }
