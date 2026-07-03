@@ -134,8 +134,8 @@ struct SearchView: View {
                 if requestError == nil {
                     List(results) { sr in
                         Section(header: Text(sr.section)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)) {
+                            .font(.headline)
+                            .fontWeight(.black)) {
                                 ForEach(sr.results, id: \.cardID) { card in
                                     CardListItemView(card: card)
                                         .equatable()
