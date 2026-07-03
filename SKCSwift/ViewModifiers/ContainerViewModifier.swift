@@ -51,13 +51,16 @@ struct CardViewModifier: ViewModifier {
     }
 }
 
-extension ViewModifier where Self == ParentViewModifier {
-    static var parentView: ParentViewModifier { .init(alignment: .topLeading) }
-    static var sheetParentView: SheetParentViewModifier { .init(alignment: .topLeading) }
-    static var centeredParentView: ParentViewModifier { .init(alignment: .center) }
-}
-
-extension ViewModifier where Self == CardViewModifier {
-    static var card: CardViewModifier { .init(hasShadow: true) }
-    static var cardNoShadow: CardViewModifier { .init(hasShadow: false) }
+extension View {
+    func parentModifier(isCentered: Bool = false) -> some View {
+        modifier(ParentViewModifier(alignment: (isCentered) ? .center : .topLeading))
+    }
+    
+    func sheetParentModifier() -> some View {
+        modifier(SheetParentViewModifier(alignment: .topLeading))
+    }
+    
+    func cardModifier(shadow: Bool = true) -> some View {
+        modifier(CardViewModifier(hasShadow: shadow))
+    }
 }

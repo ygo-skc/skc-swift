@@ -34,7 +34,7 @@ struct YouTubeUploadsView: View, Equatable {
     var body: some View {
         VStack(alignment: .leading) {
             Text("YouTube videos")
-                .modifier(.headerText)
+                .headerTextModifier()
             if let networkError {
                 NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
             } else if dataTaskStatus == .done || !ytUploads.isEmpty {

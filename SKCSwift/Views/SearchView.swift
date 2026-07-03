@@ -90,7 +90,7 @@ struct SearchView: View {
                                 .equatable()
                         }
                     }
-                    .modifier(.parentView)
+                    .parentModifier()
                 }
             }
             .task {

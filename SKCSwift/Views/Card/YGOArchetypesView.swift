@@ -66,7 +66,7 @@ struct YGOArchetypeView: View {
                     YGOArchetypeSectionView(archetype: model.archetype, category: .exclusions, cards: model.data.exclusions)
                 }
             }
-            .modifier(.parentView)
+            .parentModifier()
             .frame(maxWidth: .infinity) // needed by overlay
             .navigationTitle(model.archetype)
             .navigationBarTitleDisplayMode(.large)
@@ -159,7 +159,7 @@ struct YGOArchetypeCategoryView: View {
                     .padding(.bottom)
                 CardListView(cards: cards)
             }
-            .modifier(.parentView)
+            .parentModifier()
             .navigationTitle(category.rawValue)
             .navigationBarTitleDisplayMode(.large)
         }

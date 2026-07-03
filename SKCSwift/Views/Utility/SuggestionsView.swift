@@ -166,7 +166,7 @@ private struct SuggestedCardView: View {
                                       variant: .support)
             }
         }
-        .modifier(.parentView)
+        .parentModifier()
         .task {
             await model.fetchCardInfo()
             await model.fetchAllSuggestions()
@@ -198,7 +198,7 @@ private struct SuggestedCardView: View {
                                       variant: .support)
             }
         }
-        .modifier(.parentView)
+        .parentModifier()
         .task {
             await model.fetchCardInfo()
             await model.fetchAllSuggestions()

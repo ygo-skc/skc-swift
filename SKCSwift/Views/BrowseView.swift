@@ -53,7 +53,7 @@ struct BrowseView: View {
                             }
                     }
                 }
-                .modifier(.parentView)
+                .parentModifier()
             }
             .toolbar {
                 switch focusedResource {
@@ -210,7 +210,7 @@ private struct ProductFiltersView: View {
                                   filterImage: "2.circle",
                                   columns: Array(repeating: GridItem(.flexible()), count: 2))
             }
-            .modifier(.sheetParentView)
+            .sheetParentModifier()
         }
     }
 }
@@ -228,10 +228,10 @@ private struct ProductFilterView: View {
                     ForEach($filters) { $pt in
                         Toggle(isOn: $pt.isToggled) {
                             Text(pt.category)
-                                .modifier(.buttonToggleText)
+                                .buttonToggleTextModifier()
                         }
                         .disabled(pt.disableToggle)
-                        .modifier(.buttonToggle)
+                        .buttonToggleModifier()
                     }
                 }
             }
@@ -277,7 +277,7 @@ private struct CardFiltersView: View {
                         .fontWeight(.heavy)
                 }
             }
-            .modifier(.sheetParentView)
+            .sheetParentModifier()
         }
     }
 }
@@ -307,7 +307,7 @@ private struct CardFilterView<T: Equatable & Sendable, Content: View>: View {
                             content(cardColorFilter.category)
                                 .frame(maxWidth: .infinity)
                         }
-                        .modifier(.buttonToggle)
+                        .buttonToggleModifier()
                     }
                 }
             }

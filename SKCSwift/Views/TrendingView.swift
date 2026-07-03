@@ -59,7 +59,7 @@ struct TrendingView: View {
                     }
                 }
                 .animation(.smooth(duration: 0.25), value: trendingModel.focusedTrend)
-                .modifier(.parentView)
+                .parentModifier()
             }
             .task {
                 await trendingModel.fetchTrendingData(forceRefresh: false)

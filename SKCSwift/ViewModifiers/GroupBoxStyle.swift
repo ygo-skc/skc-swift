@@ -21,7 +21,7 @@ struct ListItemGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING)
-        .modifier(.card)
+        .cardModifier()
     }
 }
 
@@ -32,7 +32,7 @@ struct SectionContentGroupBoxStyle: GroupBoxStyle {
         }
         .contentShape(Rectangle())
         .padding(.all, GroupBoxStyleConstants.PADDING)
-        .modifier(.cardNoShadow)
+        .cardModifier(shadow: false)
     }
 }
 

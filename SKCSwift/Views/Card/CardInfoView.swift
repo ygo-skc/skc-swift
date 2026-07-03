@@ -30,12 +30,12 @@ struct CardInfoView: View {
                     
                     if let card = model.card, let products = model.products {
                         CardReleasesView(card: card, products: products)
-                            .modifier(.parentView)
+                            .parentModifier()
                         CardRestrictionsView(card: card,
                                              tcgBanList: model.restrictions?.TCG ?? [],
                                              mdBanLists: model.restrictions?.MD ?? [],
                                              score: model.score)
-                        .modifier(.parentView)
+                        .parentModifier()
                     }
                 }
                 
@@ -79,7 +79,7 @@ struct CardInfoView: View {
                         })
                         .equatable()
                     }
-                    .modifier(.parentView)
+                    .parentModifier()
                 }
             }
         }

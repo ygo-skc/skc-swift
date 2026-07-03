@@ -24,10 +24,13 @@ struct ButtonToggleTextViewModifier: ViewModifier {
     }
 }
 
-extension ViewModifier where Self == ButtonToggleViewModifier {
-    static var buttonToggle: ButtonToggleViewModifier { .init() }
+extension View {
+    func buttonToggleModifier() -> some View {
+        modifier(ButtonToggleViewModifier())
+    }
+    
+    func buttonToggleTextModifier() -> some View {
+        modifier(ButtonToggleTextViewModifier())
+    }
 }
 
-extension ViewModifier where Self == ButtonToggleTextViewModifier {
-    static var buttonToggleText: ButtonToggleTextViewModifier { .init() }
-}

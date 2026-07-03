@@ -182,7 +182,7 @@ private struct RestrictedContentDateRangePicker: View {
                 }
             }
             .presentationDetents([.medium])
-            .modifier(.sheetParentView)
+            .sheetParentModifier()
         }
     }
     

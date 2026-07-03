@@ -19,7 +19,7 @@ struct RestrictedContentChangesView: View {
                 newContent
                 removedContent
             }
-            .modifier(.parentView)
+            .parentModifier()
         }
         .frame(maxWidth: .infinity) // needed by overlay
         .task {

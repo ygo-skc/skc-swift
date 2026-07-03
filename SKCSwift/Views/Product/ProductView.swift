@@ -91,7 +91,7 @@ struct ProductView: View {
                         }
                     }
                 }
-                .modifier(.centeredParentView)
+                .parentModifier(isCentered: true)
                 .padding(.bottom, 40)
             }
             .scrollDisabled(productDTS != .done)
@@ -202,7 +202,7 @@ private struct ProductMetricsButton: View {
                     VStack {
                         LoadingView()
                     }
-                    .modifier(.sheetParentView)
+                    .sheetParentModifier()
                 }
             }
         }
@@ -247,7 +247,7 @@ private struct ProductMetricsButton: View {
                         description: "Monster cards printed in **\(productName)** categorized by their attribute.",
                         dataTitle: "Monster Attribute", data: monsterAttributeData)
                 }
-                .modifier(.sheetParentView)
+                .sheetParentModifier()
             }
         }
     }
@@ -299,7 +299,7 @@ private struct ProductSuggestionsButton: View {
                                                       variant: .support)
                             }
                         }
-                        .modifier(.sheetParentView)
+                        .sheetParentModifier()
                         .padding(.top)
                     }
                     .frame(maxWidth: .infinity)

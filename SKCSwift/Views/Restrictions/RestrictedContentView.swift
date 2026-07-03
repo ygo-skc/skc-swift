@@ -332,7 +332,7 @@ private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: Vie
                         )
                     }
                 }
-                .modifier(.parentView)
+                .parentModifier()
             }
         }
         .frame(maxWidth: .infinity) // needed by overlay

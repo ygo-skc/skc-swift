@@ -60,7 +60,7 @@ struct CardReleasesView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Releases")
-                .modifier(.headerText)
+                .headerTextModifier()
             if !products.isEmpty {
                 Label("Rarities", systemImage: "star.square.on.square")
                     .font(.headline)
@@ -141,7 +141,7 @@ struct CardRestrictionsView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Restrictions")
-                .modifier(.headerText)
+                .headerTextModifier()
             if let score {
                 Label("Summary", systemImage: "list.bullet.rectangle")
                     .font(.headline)
@@ -259,7 +259,7 @@ private struct RelatedContentsView<Content: View>: View {
                 
                 content
             }
-            .modifier(.sheetParentView)
+            .sheetParentModifier()
         }
     }
 }
