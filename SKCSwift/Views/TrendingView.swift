@@ -58,7 +58,7 @@ struct TrendingView: View {
                         }
                     }
                 }
-                .animation(.easeInOut(duration: 0.2), value: trendingModel.focusedTrend)
+                .animation(.smooth(duration: 0.25), value: trendingModel.focusedTrend)
                 .modifier(.parentView)
             }
             .task {
