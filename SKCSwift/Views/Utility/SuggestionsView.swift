@@ -27,8 +27,7 @@ struct SuggestionOverlayView: View, Equatable {
             ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
         } else if !areSuggestionsLoaded {
             HStack {
-                ProgressView("Loading…")
-                    .controlSize(.large)
+                LoadingView()
             }
             .frame(maxWidth: .infinity)
         }

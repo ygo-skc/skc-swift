@@ -81,8 +81,7 @@ struct RestrictedContentChangesView: View {
     @ViewBuilder
     private var overlay: some View {
         if model.isFetching {
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         } else if let e = model.newContentNE ?? model.removedContentNE {
             NetworkErrorView(error: e) {
                 Task {

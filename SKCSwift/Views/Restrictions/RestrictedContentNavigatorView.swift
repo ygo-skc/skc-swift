@@ -178,8 +178,7 @@ private struct RestrictedContentDateRangePicker: View {
                         .buttonStyle(.plain)
                     }
                 } else {
-                    ProgressView("Loading…")
-                        .controlSize(.large)
+                    LoadingView()
                 }
             }
             .presentationDetents([.medium])

@@ -139,8 +139,7 @@ private struct SettingsView: View {
         }
         .overlay {
             if model.isDeleting {
-                ProgressView("Deleting…")
-                    .controlSize(.large)
+                LoadingView("Deleting…")
             }
         }
     }

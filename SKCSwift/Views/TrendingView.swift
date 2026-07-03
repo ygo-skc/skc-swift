@@ -78,8 +78,7 @@ struct TrendingView: View {
                         }
                     })
                 } else if DataTaskStatusParser.isDataPending(trendingModel.focusedTrendDTS) {
-                    ProgressView("Loading…")
-                        .controlSize(.large)
+                    LoadingView()
                 }
             }
         }

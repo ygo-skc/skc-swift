@@ -110,8 +110,7 @@ private struct CardBrowseCriteriaOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         case .done, .error:
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
@@ -129,8 +128,7 @@ private struct CardBrowseDataOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         case .done, .error:
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
@@ -149,8 +147,7 @@ private struct ProductBrowseOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         case .done, .error:
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })

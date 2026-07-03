@@ -76,8 +76,7 @@ struct YGOArchetypeView: View {
         }
         .overlay {
             if model.dataDTS == .pending {
-                ProgressView("Loading…")
-                    .controlSize(.large)
+                LoadingView()
             } else if let networkError = model.dataNE {
                 if networkError == .notFound {
                     ContentUnavailableView("This suggested archetype is a false positive. We are actively improving our database.",
