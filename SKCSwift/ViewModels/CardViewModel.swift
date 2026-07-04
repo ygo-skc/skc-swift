@@ -45,6 +45,31 @@ private nonisolated struct YGOCardInfo: Codable, Equatable {
     }
 }
 
+struct CardInfoPrompt {
+    static let SYSTEM: StaticString = """
+    You summarize Yu-Gi-Oh! card text for quick reference. Never lose anything that changes how the card is played. Never invent unstated content. No rulings, reminders, or commentary.
+
+    Input: card name, type/subtype, effect text.
+
+    Output: one summary.
+    - If a specific summoning requirement is stated, give it first.
+    - List each effect separately. Separate each section using new line.
+    - After first mention, call it "this card."
+    - If the card has no effect, output exactly: No effect.
+    - Keep it brief.
+    
+
+    Preserve precisely for every effect:
+    - Timing: Ignition (Main Phase, your turn), Trigger (fires on condition), Quick (either turn/in response), Continuous (always active), or Condition (passive restriction).
+    - Optional ("you can") vs mandatory.
+    - "target" only if the source text uses it.
+    - Once per turn = this card only. Once per turn tied to the card's name (text like "of '[name]'") = shared across field/GY/hand/banished — label "once per turn, by name."
+    - Costs (tribute, discard, banish, pay LP, detach, or anything stated before a semicolon) stay listed as costs, separate from the effect, even if the effect is later negated.
+    - Negation/immunity clauses (cannot be negated/destroyed, unaffected by...) verbatim.
+    - Exact numeric limits — never round or vague.
+    """
+}
+
 @Observable
 final class CardViewModel {
     @ObservationIgnored
@@ -94,6 +119,23 @@ final class CardViewModel {
     @ObservationIgnored
     var suggestionsError: NetworkError? {
         return (suggestionsNE != nil) ? suggestionsNE : supportNE
+    }
+    
+    // AI fields
+    var summary: String = ""
+    var isStreaming: Bool = true
+    
+    @ObservationIgnored
+    var prompt: String {
+        if let card {
+            return """
+                Card Name: \(card.cardName)
+                Effect Text: \(card.cardEffect)
+                Card Type: \(card.cardType)
+                """
+        } else {
+            return ""
+        }
     }
     
     func fetchCardInfo(forceRefresh: Bool = false) async {
