@@ -127,7 +127,7 @@ struct CardInfoPrompt {
     Remarks — The LLM is confusing a special summon effect for a summoning requirement. Most (if not all) spells and traps cant be summoned. 
     Corrected Output — summoningRequirement: "" | effect: "(1)  Tribute 1 "Dark Magician"; Special Summon 1 "Dark Magician of Chaos" from your hand, Deck, or Graveyard."
     
-    2. Card was given an incorrect summoningRequirement (example 2)
+    3. Card was given an incorrect summoningRequirement (example 2)
     Input —
         Name: Magicians' Combination
         Text: Once per turn, when a card or effect is activated (except during the Damage Step): You can Tribute 1 'Dark Magician' or 1 'Dark Magician Girl'; Special Summon 1 'Dark Magician' or 1 'Dark Magician Girl' from your hand or GY, with a different name from the Tributed monster, and if you do, negate that activated effect. If this face-up card is sent from the Spell & Trap Zone to the GY: You can destroy 1 card on the field.
