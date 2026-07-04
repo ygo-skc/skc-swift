@@ -103,12 +103,10 @@ final class CardViewModel {
     var prompt: String {
         if let card {
             return """
-                Parse the following card:
+                Categorize the following card data:
                 Name: \(card.cardName)
                 Text: \(card.cardEffect)
-                Type: \(card.cardType) 
                 Classification: \(card.cardColor)
-                Attribute: \(card.attribute)
                 """
         } else {
             return ""
