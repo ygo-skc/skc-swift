@@ -126,7 +126,7 @@ struct CardInfoView: View {
 @available(iOS 26.0, *)
 private struct CardAISummary: View {
     let cardEffect: String
-    @State private var result: CardEffects = CardEffects(effects: [])
+    @State private var result: CardClauses = CardClauses(Clauses: [])
     @State private var isLoading = true
     
     private var prompt: String {
@@ -145,7 +145,7 @@ private struct CardAISummary: View {
                 if isLoading {
                     AISummaryPlaceholder()
                 } else {
-                    Text(result.effects.enumerated()
+                    Text(result.Clauses.enumerated()
                         .map { "(\($0.offset + 1)) \($0.element)" }
                         .joined(separator: "\n"))
                     .font(.callout)
@@ -158,7 +158,7 @@ private struct CardAISummary: View {
                 do {
                     result = try await session.respond(
                         to: prompt,
-                        generating: CardEffects.self,
+                        generating: CardClauses.self,
                         includeSchemaInPrompt: true,
                         options: GenerationOptions(sampling: .greedy)
                     ).content
