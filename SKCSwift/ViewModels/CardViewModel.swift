@@ -96,23 +96,6 @@ final class CardViewModel {
         return (suggestionsNE != nil) ? suggestionsNE : supportNE
     }
     
-    // AI fields
-    var isStreaming: Bool = true
-    
-    @ObservationIgnored
-    var prompt: String {
-        if let card {
-            return """
-                Categorize the following card data:
-                Name: \(card.cardName)
-                Text: \(card.cardEffect)
-                Classification: \(card.cardColor)
-                """
-        } else {
-            return ""
-        }
-    }
-    
     func fetchCardInfo(forceRefresh: Bool = false) async {
         await withTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask { await self.fetchCardData(forceRefresh: forceRefresh) }

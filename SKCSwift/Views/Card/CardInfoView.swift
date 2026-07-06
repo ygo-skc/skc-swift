@@ -29,7 +29,9 @@ struct CardInfoView: View {
                     YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
                         .equatable()
                     
-                    CardAISummary(model: model)
+                    if #available(iOS 26.0, *) {
+                        CardAISummary(model: model)
+                    }
                     
                     if let card = model.card, let products = model.products {
                         CardReleasesView(card: card, products: products)
@@ -118,52 +120,110 @@ struct CardInfoView: View {
     }
 }
 
+@available(iOS 26.0, *)
 private struct CardAISummary: View {
     let model: CardViewModel
+    @State private var result: CardEffects = CardEffects(effects: [])
+    @State private var isLoading = true
+
+    private var prompt: String {
+        if let card = model.card {
+            return """
+                Categorize the following card data:
+                Name: \(card.cardName)
+                Text: \(card.cardEffect)
+                Classification: \(card.cardColor)
+                """
+        } else {
+            return ""
+        }
+    }
     
     var body: some View {
-        if #available(iOS 26.0, *), case .available = SystemLanguageModel.default.availability {
-            if model.cardDTS == .done, let cardEffect = model.card?.cardEffect, !cardEffect.isEmpty {
-                VStack(alignment: .leading, spacing: 10) {
-                    Label("AI Summary", systemImage: "sparkles")
-                        .font(.headline)
-                    if model.isStreaming && model.summary.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            RoundedRectangle(cornerRadius: 4)
-                                .frame(maxWidth: .infinity, minHeight: 12)
-                            RoundedRectangle(cornerRadius: 4)
-                                .frame(maxWidth: .infinity, minHeight: 12)
-                            RoundedRectangle(cornerRadius: 4)
-                                .frame(maxWidth: 160, minHeight: 12)
-                        }
-                        .foregroundStyle(.purple.opacity(0.3))
-                        .phaseAnimator([0.4, 1.0]) { view, opacity in
-                            view.opacity(opacity)
-                        } animation: { _ in
-                            .easeInOut(duration: 0.45).repeatForever(autoreverses: true)
-                        }
-                    } else {
-                        Text((try? AttributedString(markdown: model.summary)) ?? AttributedString(model.summary))
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
-                            .font(.callout)
-                    }
+        if case .available = SystemLanguageModel.default.availability,
+           model.cardDTS == .done,
+           let cardEffect = model.card?.cardEffect, !cardEffect.isEmpty,
+           let cardColor = model.card?.cardColor, cardColor != "Normal" {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("AI Breakdown", systemImage: "sparkles")
+                    .font(.headline)
+                
+                if isLoading {
+                    AISummaryPlaceholder()
+                } else {
+                    CardEffectBreakdownView(classification: result)
                 }
-                .parentModifier()
-                .task(id: model.card?.cardID) {
-                    let session = LanguageModelSession(instructions: CardInfoPrompt.SYSTEM.description)
-                    let stream = session.streamResponse(to: model.prompt)
-                    do {
-                        for try await partial in stream {
-                            model.summary = partial.content
-                        }
-                    } catch {}
-                    model.isStreaming = false
-                }
-            } else {
-                Text("model is empty")
             }
-        } else {
-            Text("Local AI not available")
+            .parentModifier()
+            .task(id: model.card?.cardID) {
+                let session = LanguageModelSession(instructions: CardInfoPrompt.SYSTEM_BREAKDOWN.description)
+                do {
+                    result = try await session.respond(
+                        to: prompt,
+                        generating: CardEffects.self,
+                        includeSchemaInPrompt: true,
+                        options: GenerationOptions(sampling: .greedy)
+                    ).content
+                } catch {}
+                isLoading = false
+            }
+        }
+    }
+}
+
+@available(iOS 26.0, *)
+private struct CardEffectBreakdownView: View {
+    let classification: CardEffects
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            BucketRow(label: "Effect",
+                      icon: "sparkle",
+                      color: .green,
+                      text: classification.effects
+                .enumerated()
+                .map { "(\($0.offset + 1)) \($0.element)" }
+                .joined(separator: "\n"))
+        }
+    }
+}
+
+private struct BucketRow: View {
+    let label: String
+    let icon: String
+    let color: Color
+    let text: String?
+    
+    var body: some View {
+        if let text, !text.isEmpty {
+            HStack(alignment: .top, spacing: 10) {
+                Label(label, systemImage: icon)
+                    .font(.caption.bold())
+                    .foregroundStyle(color)
+                    .frame(width: 85, alignment: .leading)
+                Text(text)
+                    .font(.callout)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+}
+
+private struct AISummaryPlaceholder: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            RoundedRectangle(cornerRadius: 4)
+                .frame(maxWidth: .infinity, minHeight: 12)
+            RoundedRectangle(cornerRadius: 4)
+                .frame(maxWidth: .infinity, minHeight: 12)
+            RoundedRectangle(cornerRadius: 4)
+                .frame(maxWidth: 160, minHeight: 12)
+        }
+        .foregroundStyle(.purple.opacity(0.3))
+        .phaseAnimator([0.4, 1.0]) { view, opacity in
+            view.opacity(opacity)
+        } animation: { _ in
+                .easeInOut(duration: 0.45).repeatForever(autoreverses: true)
         }
     }
 }
