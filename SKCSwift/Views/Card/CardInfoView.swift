@@ -29,8 +29,11 @@ struct CardInfoView: View {
                     YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
                         .equatable()
                     
-                    if #available(iOS 26.0, *) {
-                        CardAISummary(model: model)
+                    if #available(iOS 26.0, *),
+                       model.cardDTS == .done,
+                       let cardColor = model.card?.cardColor, cardColor != "Normal",
+                       let cardEffect = model.card?.cardEffect, !cardEffect.isEmpty {
+                        CardAISummary(cardEffect: cardEffect)
                     }
                     
                     if let card = model.card, let products = model.products {
@@ -122,28 +125,19 @@ struct CardInfoView: View {
 
 @available(iOS 26.0, *)
 private struct CardAISummary: View {
-    let model: CardViewModel
+    let cardEffect: String
     @State private var result: CardEffects = CardEffects(effects: [])
     @State private var isLoading = true
-
+    
     private var prompt: String {
-        if let card = model.card {
-            return """
-                Categorize the following card data:
-                Name: \(card.cardName)
-                Text: \(card.cardEffect)
-                Classification: \(card.cardColor)
-                """
-        } else {
-            return ""
-        }
+        return """
+            Parse the following card text:
+            Text: \(cardEffect)
+            """
     }
     
     var body: some View {
-        if case .available = SystemLanguageModel.default.availability,
-           model.cardDTS == .done,
-           let cardEffect = model.card?.cardEffect, !cardEffect.isEmpty,
-           let cardColor = model.card?.cardColor, cardColor != "Normal" {
+        if case .available = SystemLanguageModel.default.availability {
             VStack(alignment: .leading, spacing: 10) {
                 Label("AI Breakdown", systemImage: "sparkles")
                     .font(.headline)
@@ -155,7 +149,7 @@ private struct CardAISummary: View {
                 }
             }
             .parentModifier()
-            .task(id: model.card?.cardID) {
+            .task(id: cardEffect) {
                 let session = LanguageModelSession(instructions: CardInfoPrompt.SYSTEM_BREAKDOWN.description)
                 do {
                     result = try await session.respond(
@@ -215,9 +209,9 @@ private struct AISummaryPlaceholder: View {
             RoundedRectangle(cornerRadius: 4)
                 .frame(maxWidth: .infinity, minHeight: 12)
             RoundedRectangle(cornerRadius: 4)
-                .frame(maxWidth: .infinity, minHeight: 12)
+                .frame(maxWidth: 220, minHeight: 12)
             RoundedRectangle(cornerRadius: 4)
-                .frame(maxWidth: 160, minHeight: 12)
+                .frame(maxWidth: 100, minHeight: 12)
         }
         .foregroundStyle(.purple.opacity(0.3))
         .phaseAnimator([0.4, 1.0]) { view, opacity in
