@@ -132,7 +132,7 @@ private struct CardAISummary: View {
     private var prompt: String {
         return """
             Parse the following card text:
-            Text: \(cardEffect)
+            <text>\(cardEffect)</text>
             """
     }
     
@@ -145,12 +145,16 @@ private struct CardAISummary: View {
                 if isLoading {
                     AISummaryPlaceholder()
                 } else {
-                    CardEffectBreakdownView(classification: result)
+                    Text(result.effects.enumerated()
+                        .map { "(\($0.offset + 1)) \($0.element)" }
+                        .joined(separator: "\n"))
+                    .font(.callout)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             .parentModifier()
             .task(id: cardEffect) {
-                let session = LanguageModelSession(instructions: CardInfoPrompt.SYSTEM_BREAKDOWN.description)
+                let session = LanguageModelSession(instructions: CardInfoPrompt.CARD_EFFECT_CLAUSES.description)
                 do {
                     result = try await session.respond(
                         to: prompt,
@@ -158,46 +162,10 @@ private struct CardAISummary: View {
                         includeSchemaInPrompt: true,
                         options: GenerationOptions(sampling: .greedy)
                     ).content
-                } catch {}
+                } catch let e {
+                    print("Error occurred while creating card effect clauses \(e)")
+                }
                 isLoading = false
-            }
-        }
-    }
-}
-
-@available(iOS 26.0, *)
-private struct CardEffectBreakdownView: View {
-    let classification: CardEffects
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            BucketRow(label: "Effect",
-                      icon: "sparkle",
-                      color: .green,
-                      text: classification.effects
-                .enumerated()
-                .map { "(\($0.offset + 1)) \($0.element)" }
-                .joined(separator: "\n"))
-        }
-    }
-}
-
-private struct BucketRow: View {
-    let label: String
-    let icon: String
-    let color: Color
-    let text: String?
-    
-    var body: some View {
-        if let text, !text.isEmpty {
-            HStack(alignment: .top, spacing: 10) {
-                Label(label, systemImage: icon)
-                    .font(.caption.bold())
-                    .foregroundStyle(color)
-                    .frame(width: 85, alignment: .leading)
-                Text(text)
-                    .font(.callout)
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }

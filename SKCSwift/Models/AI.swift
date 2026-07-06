@@ -15,7 +15,7 @@ struct CardEffects {
 }
 
 struct CardInfoPrompt {
-    static let SYSTEM_BREAKDOWN: StaticString = """
+    static let CARD_EFFECT_CLAUSES: StaticString = """
 You split Yu-Gi-Oh! card text into its individual distinct clauses. Copy text VERBATIM without truncating, numbering, or adding rulings/commentary. The ONLY exception is described under the MATERIALS section below.
 
 SPLITTING
