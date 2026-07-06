@@ -131,8 +131,8 @@ private struct CardAISummary: View {
     
     private var prompt: String {
         return """
-            Parse the following card text:
-            <text>\(cardEffect)</text>
+            This is the card text you will parse: 
+            \(cardEffect)
             """
     }
     
