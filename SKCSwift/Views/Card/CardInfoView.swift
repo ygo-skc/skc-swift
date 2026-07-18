@@ -56,8 +56,9 @@ struct CardInfoView: View {
                             }
                         
                         if model.areSuggestionsLoaded && model.suggestionsError == nil {
-                            YGOArchetypesView(title: "Suggested archetypes (BETA)",
-                                              archetypes: model.archetypeSuggestions)
+                            YGOArchetypesView(title: "Suggested archetypes",
+                                              archetypes: model.archetypeSuggestions,
+                                              showBetaBadge: true)
                             
                             SuggestionSectionView(header: "Named Materials",
                                                   subHeader: "Cards that can be used as summoning material for **\(cardName)**.",

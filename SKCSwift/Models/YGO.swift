@@ -282,7 +282,7 @@ nonisolated struct CardReference: Codable, Equatable {
 
 nonisolated struct CardSuggestions: Codable {
     let namedMaterials, namedReferences: [CardReference]
-    let materialArchetypes, referencedArchetypes: [String]
+    let relevantArchetypes, materialArchetypes, referencedArchetypes: Set<String>
 }
 
 nonisolated struct CardSupport: Codable {
@@ -333,7 +333,7 @@ nonisolated struct CardDetailsResponse: Codable {
 
 nonisolated struct BatchSuggestions: Codable {
     let namedMaterials, namedReferences: [CardReference]
-    let materialArchetypes, referencedArchetypes, unknownResources, falsePositives: Set<String>
+    let relevantArchetypes, materialArchetypes, referencedArchetypes, unknownResources, falsePositives: Set<String>
 }
 
 nonisolated struct BatchSupport: Codable {

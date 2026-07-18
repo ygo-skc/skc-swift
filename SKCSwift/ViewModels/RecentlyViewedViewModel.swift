@@ -61,7 +61,7 @@ final class RecentlyViewedViewModel {
         let support = await supportAsync
         return (
             await consolidateSuggestions(suggestions: suggestions, support: support),
-            Set(suggestions.materialArchetypes.union(suggestions.referencedArchetypes))
+            suggestions.relevantArchetypes
         )
     }
     
@@ -74,6 +74,7 @@ final class RecentlyViewedViewModel {
         }
         return BatchSuggestions(namedMaterials: [],
                                 namedReferences: [],
+                                relevantArchetypes: Set(),
                                 materialArchetypes: Set(),
                                 referencedArchetypes: Set(),
                                 unknownResources: Set(),
