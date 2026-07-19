@@ -342,7 +342,7 @@ nonisolated struct BatchSupport: Codable {
 }
 
 struct YGOArchetypeData: Codable {
-    let usingName, usingText, exclusions: [YGOCard]
+    let inheritMembers, qualifiedMembers, excludedMembers: [YGOCard]
 }
 
 /*

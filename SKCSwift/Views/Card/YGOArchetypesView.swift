@@ -61,9 +61,9 @@ struct YGOArchetypeView: View {
                         .font(.callout)
                         .padding(.bottom, -10)
                     
-                    YGOArchetypeSectionView(archetype: model.archetype, category: .byName, cards: model.data.usingName)
-                    YGOArchetypeSectionView(archetype: model.archetype, category: .byText, cards: model.data.usingText)
-                    YGOArchetypeSectionView(archetype: model.archetype, category: .exclusions, cards: model.data.exclusions)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .inheritMember, cards: model.data.inheritMembers)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .qualifiedMembers, cards: model.data.qualifiedMembers)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .excludedMembers, cards: model.data.excludedMembers)
                 }
             }
             .parentModifier()
@@ -103,9 +103,9 @@ struct YGOArchetypeView: View {
             self.archetype = archetype
             self.category = category
             self.categorySystemImage = switch (category) {
-            case .byName: "person.crop.circle"
-            case .byText: "text.document"
-            case .exclusions: "xmark.circle"
+            case .inheritMember: "person.crop.circle"
+            case .qualifiedMembers: "text.document"
+            case .excludedMembers: "xmark.circle"
             }
             self.cards = cards
             self.numCards = self.cards.count
@@ -133,7 +133,7 @@ struct YGOArchetypeView: View {
 }
 
 enum YGOArchetypeCategory: String {
-    case byName = "By Name", byText = "By Text", exclusions = "Exclusions"
+    case inheritMember = "Inherit Member", qualifiedMembers = "Qualified Members", excludedMembers = "Excluded Members"
 }
 
 struct YGOArchetypeCategoryView: View {
@@ -144,9 +144,9 @@ struct YGOArchetypeCategoryView: View {
     init(values: YGOArchetypeCategoryLinkDestinationValue) {
         self.category = values.category
         self.categoryExplanation = switch (values.category) {
-        case .byName: "The cards below are part of the **\(values.archetype)** archetype because the archetype is found in the name of the card verbatim"
-        case .byText: "The cards below are part of the **\(values.archetype)** archetype because the text box explicitly denotes them as such"
-        case .exclusions: "The cards below are not part of the **\(values.archetype)** archetype because the text box explicitly excludes them"
+        case .inheritMember: "The cards below are part of the **\(values.archetype)** archetype because the archetype is found in the name or text of the card verbatim"
+        case .qualifiedMembers: "The cards below are part of the **\(values.archetype)** archetype because the text box explicitly denotes them as such"
+        case .excludedMembers: "The cards below are not part of the **\(values.archetype)** archetype because the text box explicitly excludes them"
         }
         self.cards = values.cards
     }

@@ -21,7 +21,7 @@ final class ArchetypesViewModel {
     private(set) var dataNE: NetworkError?
     
     @ObservationIgnored
-    private(set) var data: YGOArchetypeData = .init(usingName: [], usingText: [], exclusions: [])
+    private(set) var data: YGOArchetypeData = .init(inheritMembers: [], qualifiedMembers: [], excludedMembers: [])
     
     @ObservationIgnored
     var hasContent: Bool {
