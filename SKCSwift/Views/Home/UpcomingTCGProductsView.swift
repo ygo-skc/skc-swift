@@ -32,7 +32,7 @@ struct UpcomingTCGProductsView: View, Equatable {
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text("Upcoming products")
-                .modifier(.headerText)
+                .headerTextModifier()
             
             if let networkError {
                 NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
@@ -40,8 +40,9 @@ struct UpcomingTCGProductsView: View, Equatable {
                 upcomingTCGProducts
             } else {
                 HStack {
-                    ProgressView("Loading…")
-                        .controlSize(.large)
+                    LoadingView()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.top)
                 }
                 .padding(.top)
                 .frame(maxWidth: .infinity)

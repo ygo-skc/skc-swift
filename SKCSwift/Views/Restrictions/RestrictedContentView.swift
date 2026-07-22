@@ -332,7 +332,7 @@ private struct RestrictedCardsView<Header: View, Overlay: View & Equatable>: Vie
                         )
                     }
                 }
-                .modifier(.parentView)
+                .parentModifier()
             }
         }
         .frame(maxWidth: .infinity) // needed by overlay
@@ -361,8 +361,7 @@ private struct RestrictedCardsViewOverlay: View, Equatable {
     var body: some View {
         if DataTaskStatusParser.isDataPending(timelineDTS)
             || (timelineDTS != .error && DataTaskStatusParser.isDataPending(contentDTS)) {
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         } else if let timelineNE {
             NetworkErrorView(error: timelineNE) {
                 Task {

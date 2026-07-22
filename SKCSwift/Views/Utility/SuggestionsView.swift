@@ -27,8 +27,7 @@ struct SuggestionOverlayView: View, Equatable {
             ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
         } else if !areSuggestionsLoaded {
             HStack {
-                ProgressView("Loading…")
-                    .controlSize(.large)
+                LoadingView()
             }
             .frame(maxWidth: .infinity)
         }
@@ -167,7 +166,7 @@ private struct SuggestedCardView: View {
                                       variant: .support)
             }
         }
-        .modifier(.parentView)
+        .parentModifier()
         .task {
             await model.fetchCardInfo()
             await model.fetchAllSuggestions()
@@ -199,7 +198,7 @@ private struct SuggestedCardView: View {
                                       variant: .support)
             }
         }
-        .modifier(.parentView)
+        .parentModifier()
         .task {
             await model.fetchCardInfo()
             await model.fetchAllSuggestions()

@@ -34,7 +34,7 @@ fileprivate nonisolated struct SuggestionEngine {
     fileprivate static let BATCH_CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support"
     fileprivate static let CARD_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/card/%@"
     fileprivate static let CARD_SUPPORT_ENDPOINT: StaticString = "/api/v1/suggestions/card/support/%@"
-    fileprivate static let ARCHETYPE_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/archetype/%@"
+    fileprivate static let ARCHETYPE_SUGGESTIONS_ENDPOINT: StaticString = "/api/v2/suggestions/archetype/%@"
     fileprivate static let PRODUCT_SUGGESTIONS_ENDPOINT: StaticString = "/api/v1/suggestions/product/%@"
     fileprivate static let CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
     fileprivate static let TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"

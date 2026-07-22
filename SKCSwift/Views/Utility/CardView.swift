@@ -29,7 +29,7 @@ struct CardView<Content: View>: View {
             content
         }
         .padding()
-        .modifier(.card)
+        .cardModifier()
         .frame(minWidth: minWidth, maxWidth: maxWidth, alignment: .topLeading)
     }
 }

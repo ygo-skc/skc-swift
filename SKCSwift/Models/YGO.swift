@@ -187,7 +187,7 @@ nonisolated struct BanListChange: Codable {
  Product models
  */
 
-struct Product: Codable, Equatable, Identifiable {
+nonisolated struct Product: Codable, Equatable, Identifiable {
     let productId, productLocale, productName, productType, productSubType, productReleaseDate: String
     let productTotal: Int?
     let productContent: [ProductContent]?
@@ -232,7 +232,7 @@ extension Array where Element == Product {
     }
 }
 
-struct ProductContent: Codable, Equatable, Identifiable {
+nonisolated struct ProductContent: Codable, Equatable, Identifiable {
     let card: YGOCard?
     let productPosition: String
     let rarities: [String]
@@ -252,7 +252,7 @@ struct ProductContent: Codable, Equatable, Identifiable {
     }
 }
 
-struct Products: Codable, Equatable {
+nonisolated struct Products: Codable, Equatable {
     let locale: String
     let products: [Product]
 }
@@ -261,13 +261,13 @@ struct Products: Codable, Equatable {
  Misc models
  */
 
-struct SearchResults: Identifiable, Equatable {
+nonisolated struct SearchResults: Identifiable, Equatable {
     let id = UUID()
     let section: String
     let results: [YGOCard]
 }
 
-struct SKCDatabaseStats: Codable, Equatable {
+nonisolated struct SKCDatabaseStats: Codable, Equatable {
     let productTotal, cardTotal, banListTotal: Int
 }
 
@@ -275,21 +275,21 @@ struct SKCDatabaseStats: Codable, Equatable {
  Suggestions
  */
 
-struct CardReference: Codable, Equatable {
+nonisolated struct CardReference: Codable, Equatable {
     let card: YGOCard
     let occurrences: Int
 }
 
-struct CardSuggestions: Codable {
+nonisolated struct CardSuggestions: Codable {
     let namedMaterials, namedReferences: [CardReference]
-    let materialArchetypes, referencedArchetypes: [String]
+    let relevantArchetypes, materialArchetypes, referencedArchetypes: Set<String>
 }
 
-struct CardSupport: Codable {
+nonisolated struct CardSupport: Codable {
     let referencedBy, materialFor: [CardReference]
 }
 
-struct ProductSuggestions: Codable {
+nonisolated struct ProductSuggestions: Codable {
     let suggestions: CardSuggestions
     let support: CardSupport
     
@@ -302,17 +302,17 @@ struct ProductSuggestions: Codable {
     }
 }
 
-struct TrendingMetric<R:Codable & Equatable>: Codable, Equatable {
+nonisolated struct TrendingMetric<R:Codable & Equatable>: Codable, Equatable {
     let resource: R
     let occurrences, change: Int
 }
 
-struct Trending<R:Codable & Equatable>: Codable, Equatable {
+nonisolated struct Trending<R:Codable & Equatable>: Codable, Equatable {
     let resourceName: TrendingResourceType
     let metrics: [TrendingMetric<R>]
 }
 
-struct CardOfTheDay: Codable, Equatable {
+nonisolated struct CardOfTheDay: Codable, Equatable {
     static func == (lhs: CardOfTheDay, rhs: CardOfTheDay) -> Bool {
         lhs.date == rhs.date && lhs.card.cardID == rhs.card.cardID
     }
@@ -331,18 +331,18 @@ nonisolated struct CardDetailsResponse: Codable {
     let unknownResources: [String]
 }
 
-struct BatchSuggestions: Codable {
+nonisolated struct BatchSuggestions: Codable {
     let namedMaterials, namedReferences: [CardReference]
-    let materialArchetypes, referencedArchetypes, unknownResources, falsePositives: Set<String>
+    let relevantArchetypes, materialArchetypes, referencedArchetypes, unknownResources, falsePositives: Set<String>
 }
 
-struct BatchSupport: Codable {
+nonisolated struct BatchSupport: Codable {
     let referencedBy, materialFor: [CardReference]
     let unknownResources, falsePositives: Set<String>
 }
 
 struct YGOArchetypeData: Codable {
-    let usingName, usingText, exclusions: [YGOCard]
+    let inheritMembers, qualifiedMembers, excludedMembers: [YGOCard]
 }
 
 /*

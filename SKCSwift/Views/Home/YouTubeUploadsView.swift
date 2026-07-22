@@ -34,15 +34,16 @@ struct YouTubeUploadsView: View, Equatable {
     var body: some View {
         VStack(alignment: .leading) {
             Text("YouTube videos")
-                .modifier(.headerText)
+                .headerTextModifier()
             if let networkError {
                 NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
             } else if dataTaskStatus == .done || !ytUploads.isEmpty {
                 youtubeUploads
             } else {
                 HStack {
-                    ProgressView("Loading…")
-                        .controlSize(.large)
+                    LoadingView()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.top)
                 }
                 .padding(.top)
                 .frame(maxWidth: .infinity)

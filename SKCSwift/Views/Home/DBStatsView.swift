@@ -82,6 +82,9 @@ private struct DBStatView: View {
             Text(stat)
                 .font(.caption)
         }
+        .if(!isDataLoaded) {
+            $0.redacted(reason: .placeholder)
+        }
     }
 }
 

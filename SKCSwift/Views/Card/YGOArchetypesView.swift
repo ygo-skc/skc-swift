@@ -9,13 +9,26 @@ import SwiftUI
 struct YGOArchetypesView: View {
     let title: String
     let archetypes: Set<String>
+    var showBetaBadge: Bool = false
     
     var body: some View {
         if !archetypes.isEmpty {
             VStack(alignment: .leading) {
-                Label(title, systemImage: "apple.books.pages")
-                    .font(.headline)
-                    .fontWeight(.medium)
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Label(title, systemImage: "apple.books.pages")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                    if showBetaBadge {
+                        Text("BETA")
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(.tint.opacity(0.12))
+                            .foregroundStyle(.tint)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+                }
                 ScrollView(.horizontal) {
                     HStack(spacing: 5) {
                         ForEach(Array(archetypes).sorted(), id: \.self) { archetype in
@@ -48,12 +61,12 @@ struct YGOArchetypeView: View {
                         .font(.callout)
                         .padding(.bottom, -10)
                     
-                    YGOArchetypeSectionView(archetype: model.archetype, category: .byName, cards: model.data.usingName)
-                    YGOArchetypeSectionView(archetype: model.archetype, category: .byText, cards: model.data.usingText)
-                    YGOArchetypeSectionView(archetype: model.archetype, category: .exclusions, cards: model.data.exclusions)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .inheritMember, cards: model.data.inheritMembers)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .qualifiedMembers, cards: model.data.qualifiedMembers)
+                    YGOArchetypeSectionView(archetype: model.archetype, category: .excludedMembers, cards: model.data.excludedMembers)
                 }
             }
-            .modifier(.parentView)
+            .parentModifier()
             .frame(maxWidth: .infinity) // needed by overlay
             .navigationTitle(model.archetype)
             .navigationBarTitleDisplayMode(.large)
@@ -63,8 +76,7 @@ struct YGOArchetypeView: View {
         }
         .overlay {
             if model.dataDTS == .pending {
-                ProgressView("Loading…")
-                    .controlSize(.large)
+                LoadingView()
             } else if let networkError = model.dataNE {
                 if networkError == .notFound {
                     ContentUnavailableView("This suggested archetype is a false positive. We are actively improving our database.",
@@ -91,9 +103,9 @@ struct YGOArchetypeView: View {
             self.archetype = archetype
             self.category = category
             self.categorySystemImage = switch (category) {
-            case .byName: "person.crop.circle"
-            case .byText: "text.document"
-            case .exclusions: "xmark.circle"
+            case .inheritMember: "person.crop.circle"
+            case .qualifiedMembers: "text.document"
+            case .excludedMembers: "xmark.circle"
             }
             self.cards = cards
             self.numCards = self.cards.count
@@ -121,7 +133,7 @@ struct YGOArchetypeView: View {
 }
 
 enum YGOArchetypeCategory: String {
-    case byName = "By Name", byText = "By Text", exclusions = "Exclusions"
+    case inheritMember = "Inherit Member", qualifiedMembers = "Qualified Members", excludedMembers = "Excluded Members"
 }
 
 struct YGOArchetypeCategoryView: View {
@@ -132,9 +144,9 @@ struct YGOArchetypeCategoryView: View {
     init(values: YGOArchetypeCategoryLinkDestinationValue) {
         self.category = values.category
         self.categoryExplanation = switch (values.category) {
-        case .byName: "The cards below are part of the **\(values.archetype)** archetype because the archetype is found in the name of the card verbatim"
-        case .byText: "The cards below are part of the **\(values.archetype)** archetype because the text box explicitly denotes them as such"
-        case .exclusions: "The cards below are not part of the **\(values.archetype)** archetype because the text box explicitly excludes them"
+        case .inheritMember: "The cards below are part of the **\(values.archetype)** archetype because the archetype is found in the name or text of the card verbatim"
+        case .qualifiedMembers: "The cards below are part of the **\(values.archetype)** archetype because the text box explicitly denotes them as such"
+        case .excludedMembers: "The cards below are not part of the **\(values.archetype)** archetype because the text box explicitly excludes them"
         }
         self.cards = values.cards
     }
@@ -147,7 +159,7 @@ struct YGOArchetypeCategoryView: View {
                     .padding(.bottom)
                 CardListView(cards: cards)
             }
-            .modifier(.parentView)
+            .parentModifier()
             .navigationTitle(category.rawValue)
             .navigationBarTitleDisplayMode(.large)
         }

@@ -75,7 +75,7 @@ struct HomeView: View {
                     settings
                 }
                 .ygoNavigationDestination()
-                .modifier(.parentView)
+                .parentModifier()
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
             .navigationBarTitle("Home")
@@ -132,15 +132,14 @@ private struct SettingsView: View {
                 }
             }
             .allowsHitTesting(!model.isDeleting)
-            .modifier(.sheetParentView)
+            .sheetParentModifier()
         }
         .task {
             await model.calculateDataUsage()
         }
         .overlay {
             if model.isDeleting {
-                ProgressView("Deleting…")
-                    .controlSize(.large)
+                LoadingView("Deleting…")
             }
         }
     }

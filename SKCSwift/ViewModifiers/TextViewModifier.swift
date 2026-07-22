@@ -15,6 +15,8 @@ struct HeaderTextModifier: ViewModifier {
     }
 }
 
-extension ViewModifier where Self == HeaderTextModifier {
-    static var headerText: HeaderTextModifier { .init() }
+extension View {
+    func headerTextModifier(isCentered: Bool = false) -> some View {
+        modifier(HeaderTextModifier())
+    }
 }

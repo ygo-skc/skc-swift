@@ -12,7 +12,6 @@ struct SearchView: View {
     @State private var path = NavigationPath()
     @State private var recentlyViewedModel = RecentlyViewedViewModel()
     @State private var searchModel = SearchViewModel()
-    @State private var trendingModel = TrendingViewModel()
     
     @Query(ArchiveContainer.fetchHistoryByAccessDate(sortOrder: .reverse, limit: 20)) private var history: [History]
     
@@ -22,18 +21,8 @@ struct SearchView: View {
                 switch searchModel.dataTaskStatus {
                 case .done where searchModel.searchText.isEmpty,
                         .pending where searchModel.searchText.isEmpty:
-                    if searchModel.isSearching {
-                        RecentlyViewedView(history: history,
-                                           recentlyViewedCardDetails: recentlyViewedModel.recentlyViewedCardDetails,
-                                           recentlyViewedSuggestions: recentlyViewedModel.recentlyViewedSuggestions,
-                                           recentlyViewedArchetypeSuggestions: recentlyViewedModel.recentlyViewedArchetypeSuggestions,
-                                           dataTaskStatus: recentlyViewedModel.dataTaskStatus,
-                                           requestError: recentlyViewedModel.requestError,
-                                           loadDataCB: { await recentlyViewedModel.fetchRecentlyViewedDetails(recentlyViewed: history) })
-                        .equatable()
-                    } else {
-                        TrendingView(path: $path, trendingModel: $trendingModel)
-                    }
+                    RecentlyViewedView(history: history, model: recentlyViewedModel)
+                    .equatable()
                 case .pending where searchModel.isSearchSlow:
                     ProgressView("Loading…")
                         .controlSize(.large)
@@ -49,7 +38,7 @@ struct SearchView: View {
             }
             .ignoresSafeArea(.keyboard)
             .ygoNavigationDestination()
-            .navigationTitle("Search & Trending")
+            .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.large)
             .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
                 Task {
@@ -68,66 +57,58 @@ struct SearchView: View {
     private struct RecentlyViewedView: View, Equatable {
         static func == (lhs: RecentlyViewedView, rhs: RecentlyViewedView) -> Bool {
             lhs.history == rhs.history
-            && lhs.dataTaskStatus == rhs.dataTaskStatus
-            && lhs.requestError == rhs.requestError
-            && lhs.recentlyViewedCardDetails == rhs.recentlyViewedCardDetails
+            && lhs.model.dataTaskStatus == rhs.model.dataTaskStatus
+            && lhs.model.requestError == rhs.model.requestError
+            && lhs.model.recentlyViewedCardDetails == rhs.model.recentlyViewedCardDetails
         }
         
         let history: [History]
-        let recentlyViewedCardDetails: [YGOCard]
-        let recentlyViewedSuggestions: [CardReference]
-        let recentlyViewedArchetypeSuggestions: Set<String>
-        let dataTaskStatus: DataTaskStatus
-        let requestError: NetworkError?
-        let loadDataCB: () async -> Void
+        let model: RecentlyViewedViewModel
         
         var body: some View {
             ScrollView {
-                if !recentlyViewedCardDetails.isEmpty {
+                if !model.recentlyViewedCardDetails.isEmpty {
                     LazyVStack(alignment: .leading, spacing: 25) {
-                        Text("History")
-                            .modifier(.headerText)
-                            .padding(.bottom, -15)
-                        
-                        if !recentlyViewedSuggestions.isEmpty {
+                        if !model.recentlyViewedSuggestions.isEmpty {
                             VStack(alignment: .leading) {
                                 Label("Suggestions", systemImage: "sparkles")
                                     .font(.headline)
                                     .fontWeight(.medium)
-                                SuggestionCarouselView(references: recentlyViewedSuggestions, variant: .support)
+                                SuggestionCarouselView(references: model.recentlyViewedSuggestions, variant: .support)
                             }
                         }
                         
-                        YGOArchetypesView(title: "Suggested archetypes (BETA)",
-                                          archetypes: recentlyViewedArchetypeSuggestions)
+                        YGOArchetypesView(title: "Suggested archetypes",
+                                          archetypes: model.recentlyViewedArchetypeSuggestions,
+                                          showBetaBadge: true)
                         
                         VStack(alignment: .leading) {
                             Label("Recently viewed", systemImage: "clock.arrow.circlepath")
                                 .font(.headline)
                                 .fontWeight(.medium)
-                            CardListView(cards: recentlyViewedCardDetails)
+                            CardListView(cards: model.recentlyViewedCardDetails)
                                 .equatable()
                         }
                     }
-                    .modifier(.parentView)
+                    .parentModifier()
                 }
             }
             .task {
-                await loadDataCB()
+                await model.fetchRecentlyViewedDetails(recentlyViewed: history)
             }
             .dynamicTypeSize(...DynamicTypeSize.medium)
             .frame(maxWidth: .infinity) // needed by overlay
             .overlay {
-                if let requestError = requestError {
+                if let requestError = model.requestError {
                     NetworkErrorView(error: requestError, action: {
                         Task {
-                            await loadDataCB()
+                            await model.fetchRecentlyViewedDetails(recentlyViewed: history)
                         }
                     })
-                } else if DataTaskStatusParser.isDataPending(dataTaskStatus) {
+                } else if DataTaskStatusParser.isDataPending(model.dataTaskStatus) {
                     ProgressView("Loading…")
                         .controlSize(.large)
-                } else if dataTaskStatus == .done && history.isEmpty {
+                } else if model.dataTaskStatus == .done && history.isEmpty {
                     ContentUnavailableView {
                         Label("Type to search 😉", systemImage: "text.magnifyingglass")
                     }
@@ -149,12 +130,12 @@ struct SearchView: View {
         let retryCB: () async -> Void
         
         var body: some View {
-            VStack {
+            Group {
                 if requestError == nil {
                     List(results) { sr in
-                        Section(header:  Text(sr.section)
+                        Section(header: Text(sr.section)
                             .font(.headline)
-                            .fontWeight(.black) ) {
+                            .fontWeight(.black)) {
                                 ForEach(sr.results, id: \.cardID) { card in
                                     CardListItemView(card: card)
                                         .equatable()

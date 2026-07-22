@@ -20,7 +20,7 @@ struct BrowseView: View {
                 VStack {
                     Picker("Select resource to browse", selection: $focusedResource) {
                         ForEach(TrendingResourceType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized).tag(type)
+                            Text(type.displayName).tag(type)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -53,7 +53,7 @@ struct BrowseView: View {
                             }
                     }
                 }
-                .modifier(.parentView)
+                .parentModifier()
             }
             .toolbar {
                 switch focusedResource {
@@ -110,8 +110,7 @@ private struct CardBrowseCriteriaOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         case .done, .error:
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
@@ -129,8 +128,7 @@ private struct CardBrowseDataOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         case .done, .error:
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
@@ -149,8 +147,7 @@ private struct ProductBrowseOverlay: View {
     var body: some View {
         switch dataRequestStatus {
         case .pending:
-            ProgressView("Loading…")
-                .controlSize(.large)
+            LoadingView()
         case .done, .error:
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
@@ -213,7 +210,7 @@ private struct ProductFiltersView: View {
                                   filterImage: "2.circle",
                                   columns: Array(repeating: GridItem(.flexible()), count: 2))
             }
-            .modifier(.sheetParentView)
+            .sheetParentModifier()
         }
     }
 }
@@ -231,10 +228,10 @@ private struct ProductFilterView: View {
                     ForEach($filters) { $pt in
                         Toggle(isOn: $pt.isToggled) {
                             Text(pt.category)
-                                .modifier(.buttonToggleText)
+                                .buttonToggleTextModifier()
                         }
                         .disabled(pt.disableToggle)
-                        .modifier(.buttonToggle)
+                        .buttonToggleModifier()
                     }
                 }
             }
@@ -280,7 +277,7 @@ private struct CardFiltersView: View {
                         .fontWeight(.heavy)
                 }
             }
-            .modifier(.sheetParentView)
+            .sheetParentModifier()
         }
     }
 }
@@ -310,7 +307,7 @@ private struct CardFilterView<T: Equatable & Sendable, Content: View>: View {
                             content(cardColorFilter.category)
                                 .frame(maxWidth: .infinity)
                         }
-                        .modifier(.buttonToggle)
+                        .buttonToggleModifier()
                     }
                 }
             }

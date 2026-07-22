@@ -150,7 +150,7 @@ final class CardViewModel {
         if case .success(let suggestions) = res {
             namedMaterials = suggestions.namedMaterials
             namedReferences = suggestions.namedReferences
-            archetypeSuggestions = Set(suggestions.materialArchetypes + suggestions.referencedArchetypes)
+            archetypeSuggestions = suggestions.relevantArchetypes
         }
         (suggestionsNE, suggestionsDTS) = res.validate()
     }

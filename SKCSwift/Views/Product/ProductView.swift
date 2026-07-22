@@ -91,15 +91,14 @@ struct ProductView: View {
                         }
                     }
                 }
-                .modifier(.centeredParentView)
+                .parentModifier(isCentered: true)
                 .padding(.bottom, 40)
             }
             .scrollDisabled(productDTS != .done)
             .frame(maxWidth:.infinity)
             .overlay {
                 if DataTaskStatusParser.isDataPending(productDTS) {
-                    ProgressView("Loading…")
-                        .controlSize(.large)
+                    LoadingView()
                 } else if let productNE {
                     NetworkErrorView(error: productNE, action: {
                         Task{
@@ -201,10 +200,9 @@ private struct ProductMetricsButton: View {
                     ProductMetricsView(productID: product.productId, productName: product.productName, data: data)
                 } else {
                     VStack {
-                        ProgressView("Loading…")
-                            .controlSize(.large)
+                        LoadingView()
                     }
-                    .modifier(.sheetParentView)
+                    .sheetParentModifier()
                 }
             }
         }
@@ -249,7 +247,7 @@ private struct ProductMetricsButton: View {
                         description: "Monster cards printed in **\(productName)** categorized by their attribute.",
                         dataTitle: "Monster Attribute", data: monsterAttributeData)
                 }
-                .modifier(.sheetParentView)
+                .sheetParentModifier()
             }
         }
     }
@@ -301,7 +299,7 @@ private struct ProductSuggestionsButton: View {
                                                       variant: .support)
                             }
                         }
-                        .modifier(.sheetParentView)
+                        .sheetParentModifier()
                         .padding(.top)
                     }
                     .frame(maxWidth: .infinity)
