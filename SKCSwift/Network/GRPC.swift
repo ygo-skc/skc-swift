@@ -14,8 +14,10 @@ fileprivate enum GRPCManager {
 }
 
 fileprivate struct YGOClients {
-    let restrictions: Ygo_CardRestrictionService.Client<HTTP2ClientTransport.TransportServices>
-    let score: Ygo_ScoreService.Client<HTTP2ClientTransport.TransportServices>
+    let productService: Ygo_ProductService.Client<HTTP2ClientTransport.TransportServices>
+    let restrictionService: Ygo_CardRestrictionService.Client<HTTP2ClientTransport.TransportServices>
+    let scoreService: Ygo_ScoreService.Client<HTTP2ClientTransport.TransportServices>
+    
     private let client: GRPCClient<HTTP2ClientTransport.TransportServices>
     
     init(host: String) {
@@ -74,8 +76,9 @@ fileprivate struct YGOClients {
                     print("gRPC runConnections terminated: \(error)")
                 }
             }
-            restrictions = Ygo_CardRestrictionService.Client(wrapping: client)
-            score = Ygo_ScoreService.Client(wrapping: client)
+            productService = Ygo_ProductService.Client(wrapping: client)
+            restrictionService = Ygo_CardRestrictionService.Client(wrapping: client)
+            scoreService = Ygo_ScoreService.Client(wrapping: client)
             self.client = client
         } catch {
             fatalError("Failed to create GRPC client: \(error)")
@@ -91,15 +94,15 @@ private func rpcResult<T: Codable>(_ rpcCall: () async throws -> T) async -> Res
 @concurrent
 nonisolated public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
     return await rpcResult {
-        let timeline = try await GRPCManager.ygoClients.restrictions.getEffectiveTimelineForFormat(.with { $0.value = format })
-        return .init(timeline.allDates)
+        let timeline = try await GRPCManager.ygoClients.restrictionService.getEffectiveTimelineForFormat(.with { $0.value = format })
+        return timeline.allDates
     }
 }
 
 @concurrent
-nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Ygo_Common_CardRestrictionSortOrder) async -> Result<CardScores, any Error> {
+nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Ygo_CardRestrictionSortOrder) async -> Result<CardScores, any Error> {
     return await rpcResult {
-        let scores = try await GRPCManager.ygoClients.score.getScoresByFormatAndDate(
+        let scores = try await GRPCManager.ygoClients.scoreService.getScoresByFormatAndDate(
             .with {
                 $0.format = format
                 $0.effectiveDate = date
@@ -126,7 +129,7 @@ nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Yg
 @concurrent
 nonisolated func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
     return await rpcResult {
-        let cardScore = try await GRPCManager.ygoClients.score.getCardScoreByID(.with { $0.id = cardID })
+        let cardScore = try await GRPCManager.ygoClients.scoreService.getCardScoreByID(.with { $0.id = cardID })
         return CardScore.fromRPC(
             currentScoreByFormat: cardScore.currentScoreByFormat,
             uniqueFormats: cardScore.uniqueFormats,
