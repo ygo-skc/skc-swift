@@ -92,6 +92,17 @@ private func rpcResult<T: Codable>(_ rpcCall: () async throws -> T) async -> Res
 }
 
 @concurrent
+nonisolated func getProductsReleasedSameDay(date: String) async -> Result<[Product], any Error> {
+    return await rpcResult {
+        let res = try await GRPCManager.ygoClients.productService.getProductsReleasedSameDay(
+            .with {
+                $0.date = date
+            })
+        return res.products.map { .init(from: $0) }
+    }
+}
+
+@concurrent
 nonisolated public func getRestrictionDates(format: String) async -> Result<[String], any Error> {
     return await rpcResult {
         let timeline = try await GRPCManager.ygoClients.restrictionService.getEffectiveTimelineForFormat(.with { $0.value = format })

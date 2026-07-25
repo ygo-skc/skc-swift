@@ -210,6 +210,17 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
         self.productContent = productContent
     }
     
+    init(from: Ygo_ProductSummary) {
+        self.productId = from.id
+        self.productLocale = from.locale
+        self.productName = from.name
+        self.productType = from.type
+        self.productSubType = from.subType
+        self.productReleaseDate = from.releaseDate
+        self.productTotal = Int(from.totalItems)
+        self.productContent = nil
+    }
+    
     var id: String {
         if !(productContent?.isEmpty ?? true), let productContent {
             return "\(productId)-\(productContent[0].id)"
