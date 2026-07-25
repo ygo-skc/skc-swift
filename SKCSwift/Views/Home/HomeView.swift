@@ -51,11 +51,22 @@ struct HomeView: View {
                                 retryCB: model.fetchDBStatsData)
                     .equatable()
                     
-                    CardOfTheDayView(path: $model.path, cotd: model.cardOfTheDay,
-                                     dataTaskStatus:  model.cotdDTS,
-                                     networkError: model.cotdNE,
-                                     retryCB: model.fetchCardOfTheDayData)
-                    .equatable()
+                    TodayView(
+                        cardOfTheDay: {
+                            CardOfTheDayView(path: $model.path,
+                                             cotd: model.cardOfTheDay,
+                                             dataTaskStatus:  model.cotdDTS,
+                                             networkError: model.cotdNE,
+                                             retryCB: model.fetchCardOfTheDayData)
+                            .equatable()
+                        }, productsReleasedToday: {
+                            ProductsReleasedTodayView(productsReleasedToday: model.productsReleasedToday,
+                                                      dataTaskStatus: model.productsReleasedTodayDTS,
+                                                      networkError: model.productsReleasedTodayNE,
+                                                      retryCB: model.fetchProductsReleasedToday)
+                            .equatable()
+                        }
+                    )
                     
                     UpcomingTCGProductsView(events: model.upcomingTCGProducts,
                                             dataTaskStatus: model.upcomingTCGProductsDTS,

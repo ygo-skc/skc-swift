@@ -14,6 +14,7 @@ final class HomeViewModel {
     private(set) var cotdDTS: DataTaskStatus = .pending
     private(set) var upcomingTCGProductsDTS: DataTaskStatus = .pending
     private(set) var ytUploadsDTS: DataTaskStatus = .pending
+    private(set) var productsReleasedTodayDTS: DataTaskStatus = .pending
     
     @ObservationIgnored
     private(set) var dbStatsNE: NetworkError? = nil
@@ -23,6 +24,8 @@ final class HomeViewModel {
     private(set) var upcomingTCGProductsNE: NetworkError? = nil
     @ObservationIgnored
     private(set) var ytUploadsNE: NetworkError? = nil
+    @ObservationIgnored
+    private(set) var productsReleasedTodayNE: NetworkError? = nil
     
     @ObservationIgnored
     private(set) var dbStats = SKCDatabaseStats(productTotal: 0, cardTotal: 0, banListTotal: 0)
@@ -32,6 +35,8 @@ final class HomeViewModel {
     private(set) var upcomingTCGProducts = [Event]()
     @ObservationIgnored
     private(set) var ytUploads = [YouTubeVideos]()
+    @ObservationIgnored
+    private(set) var productsReleasedToday = [Product]()
     
     var path = NavigationPath()
     
@@ -44,6 +49,7 @@ final class HomeViewModel {
                 taskGroup.addTask { @Sendable in await self.fetchDBStatsData() }
                 taskGroup.addTask { @Sendable in await self.fetchCardOfTheDayData() }
                 taskGroup.addTask { @Sendable in await self.fetchUpcomingTCGProducts() }
+                taskGroup.addTask { @Sendable in await self.fetchProductsReleasedToday() }
                 taskGroup.addTask(priority: .medium) { @Sendable in await self.fetchYouTubeUploadsData() }
             }
             lastRefreshTimestamp = Date()
@@ -75,6 +81,14 @@ final class HomeViewModel {
             self.upcomingTCGProducts = data.events
         }
         (upcomingTCGProductsNE, upcomingTCGProductsDTS) = res.validate()
+    }
+    
+    func fetchProductsReleasedToday() async {
+        let res = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: Date()))
+        if case .success(let p) = res {
+            self.productsReleasedToday = p
+        }
+        (productsReleasedTodayNE, productsReleasedTodayDTS) = res.validate(method: "Products Released Today")
     }
     
     func fetchYouTubeUploadsData() async {
