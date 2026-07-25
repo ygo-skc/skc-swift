@@ -108,21 +108,8 @@ nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Yg
                 $0.effectiveDate = date
                 $0.sortOrder = sort
             })
-        let values = scores.entries.map({
-            let card = $0.card
-            return CardScoreEntry.fromRPC(
-                cardID: card.id,
-                cardName: card.name,
-                cardColor: card.color,
-                cardAttribute: card.attribute,
-                cardEffect: card.effect,
-                monsterType: (card.hasMonsterType) ?  card.monsterType.value : nil,
-                monsterAttack: (card.hasAttack) ? Int(card.attack.value) : nil,
-                monsterDefense: (card.hasDefense) ? Int(card.defense.value) : nil,
-                score: $0.score
-            )
-        })
-        return CardScores.fromRPC(format: format, effectiveDate: date, entries: values, totalEntries: scores.totalEntries)
+        let values = scores.entries.map{ CardScoreEntry(from: $0) }
+        return CardScores(format: format, effectiveDate: date, entries: values, totalEntries: UInt32(values.count))
     }
 }
 
@@ -130,10 +117,8 @@ nonisolated func getScoresByFormatAndDate(format: String, date: String, sort: Yg
 nonisolated func getCardScore(cardID: String) async -> Result<CardScore, any Error> {
     return await rpcResult {
         let cardScore = try await GRPCManager.ygoClients.scoreService.getCardScoreByID(.with { $0.id = cardID })
-        return CardScore.fromRPC(
-            currentScoreByFormat: cardScore.currentScoreByFormat,
-            uniqueFormats: cardScore.uniqueFormats,
-            scheduledChanges: cardScore.scheduledChanges
-        )
+        return CardScore(currentScoreByFormat: cardScore.currentScoreByFormat,
+                         uniqueFormats: cardScore.uniqueFormats,
+                         scheduledChanges: cardScore.scheduledChanges)
     }
 }

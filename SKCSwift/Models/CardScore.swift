@@ -4,49 +4,34 @@
 //
 //  Created by Javi Gomez on 10/25/25.
 //
+import SwiftProtobuf
 
 nonisolated struct CardScore: Codable, Equatable {
     let currentScoreByFormat: [String: UInt32]
     let uniqueFormats: [String]
     let scheduledChanges: [String]
-    
-    nonisolated static func fromRPC(
-        currentScoreByFormat: [String: UInt32],
-        uniqueFormats: [String],
-        scheduledChanges: [String]) -> Self {
-            return .init(currentScoreByFormat: currentScoreByFormat, uniqueFormats: uniqueFormats, scheduledChanges: scheduledChanges)
-        }
 }
 
 nonisolated struct CardScores: Codable, Equatable {
     let format, effectiveDate: String
     let entries: [CardScoreEntry]
     let totalEntries: UInt32
-    
-    nonisolated static func fromRPC(format: String, effectiveDate: String, entries: [CardScoreEntry], totalEntries: UInt32) -> Self {
-        return .init(format: format, effectiveDate: effectiveDate, entries: entries, totalEntries: totalEntries)
-    }
 }
 
 nonisolated struct CardScoreEntry: Codable, Equatable {
     let card: YGOCard
     let score: UInt32
     
-    nonisolated static func fromRPC(
-        cardID: String,
-        cardName: String,
-        cardColor: String,
-        cardAttribute: String?,
-        cardEffect: String,
-        monsterType: String? = nil,
-        monsterAttack: Int? = nil,
-        monsterDefense: Int? = nil,
-        score: UInt32) -> Self {
-            return .init(
-                card: YGOCard(cardID: cardID, cardName: cardName, cardColor: cardColor, cardAttribute: cardAttribute,
-                              cardEffect: cardEffect, monsterType: monsterType,
-                              monsterAttack: (monsterAttack == nil) ? nil : UInt32(monsterAttack!),
-                              monsterDefense: (monsterDefense == nil) ? nil : UInt32(monsterDefense!)),
-                score: score)
-        }
+    init(from: Ygo_CardScoreEntry) {
+        let card = from.card
+        self.card = YGOCard(cardID: card.id,
+                            cardName: card.name,
+                            cardColor: card.color,
+                            cardAttribute: card.attribute,
+                            cardEffect: card.effect,
+                            monsterType: (card.hasMonsterType) ?  card.monsterType.value : nil,
+                            monsterAttack: (card.hasAttack) ? card.attack.value : nil,
+                            monsterDefense: (card.hasDefense) ? card.defense.value : nil)
+        self.score = from.score
+    }
 }
