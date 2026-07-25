@@ -211,7 +211,7 @@ private struct RestrictedContentDateRangeView: View {
     let toDate: String?
     
     init(fromDate: String, toDate: String?) {
-        let formatter = Date.yyyyMMddLocalFormatter
+        let formatter = Date.yyyyMMddLocal.formatter
         self.fromDate = formatter.date(from: fromDate)!
         self.toDate = toDate
     }

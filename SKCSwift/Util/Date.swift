@@ -26,9 +26,7 @@ nonisolated extension Date {
         return self.timeIntervalSinceNow(millisConversion: millisConversion) >= t
     }
     
-    static let yyyyMMddLocalFormatter = Date.tzFormatter(format: "yyyy-MM-dd", identifier: TimeZone.current.identifier)
-    
-    static let yyyyMMddLocal = (formatter: yyyyMMddLocalFormatter, calendar: localCalendar)
+    static let yyyyMMddLocal = (formatter: tzFormatter(format: "yyyy-MM-dd", identifier: TimeZone.current.identifier), calendar: localCalendar)
     static let yyyyMMddGMT = (formatter: tzFormatter(format: "yyyy-MM-dd", identifier: "GMT"), calendar: gmtCalendar)
     static let isoChicago = (formatter: tzFormatter(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZ", identifier: "America/Chicago"), calendar: chicagoCalendar)
     
@@ -61,7 +59,7 @@ nonisolated extension Date {
 
 extension String {
     func timeIntervalSinceNow(millisConversion: ConversionFromSeconds = .days) -> Int {
-        let referenceDate = Date.yyyyMMddLocalFormatter.date(from: self)!
+        let referenceDate = Date.yyyyMMddLocal.formatter.date(from: self)!
         return referenceDate.timeIntervalSinceNow(millisConversion: millisConversion)
     }
 }

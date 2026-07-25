@@ -39,7 +39,7 @@ final class RestrictedCardsViewModel {
     @ObservationIgnored
     var restrictedContentEffectiveDate: Date? {
         if let restrictedContentEffectiveDateStr {
-            return Date.yyyyMMddLocalFormatter.date(from: restrictedContentEffectiveDateStr) ?? nil
+            return Date.yyyyMMddLocal.formatter.date(from: restrictedContentEffectiveDateStr) ?? nil
         }
         return nil
     }
