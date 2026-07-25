@@ -228,6 +228,17 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
             return productId
         }
     }
+
+    static let placeholderId = "XXXXX"
+    static let placeholders: [Product] = (1...3).map {
+        Product(productId: "\(Product.placeholderId)\($0)",
+                productLocale: "EN",
+                productName: "Legendary Placeholder Collection",
+                productType: "Pack",
+                productSubType: "Core Set",
+                productReleaseDate: "1993-07-27",
+                productTotal: 99)
+    }
 }
 
 extension Array where Element == Product {

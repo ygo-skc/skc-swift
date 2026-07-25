@@ -31,22 +31,26 @@ struct ProductImageView: View, Equatable {
     }
     
     var body: some View {
-        KFImage(URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!)
-            .backgroundDecode()
-            .downsampling(size: CGSize(width: width, height: height))
-            .scaleFactor(UIScreen.main.scale)
-            .placeholder {
-                PlaceholderView(width: width, height: height, radius: 0)
-            }
-            .onFailureView {
-                Image(.unknownProduct)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: width, height: height)
-            }
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: width, height: height)
+        if productID.hasPrefix(Product.placeholderId) {
+            PlaceholderView(width: width, height: height, radius: 0)
+        } else {
+            KFImage(URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!)
+                .backgroundDecode()
+                .downsampling(size: CGSize(width: width, height: height))
+                .scaleFactor(UIScreen.main.scale)
+                .placeholder {
+                    PlaceholderView(width: width, height: height, radius: 0)
+                }
+                .onFailureView {
+                    Image(.unknownProduct)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: width, height: height)
+                }
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: width, height: height)
+        }
     }
 }
 

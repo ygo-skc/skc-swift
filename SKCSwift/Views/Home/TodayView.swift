@@ -24,7 +24,7 @@ struct TodayView<T: View, U: View>: View {
             })
             .padding(.bottom)
             
-            Text("Products released same day as today")
+            Text("Released on this day")
                 .font(.headline)
             productsReleasedToday()
         }
@@ -100,15 +100,19 @@ struct ProductsReleasedTodayView: View, Equatable {
             NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
         } else {
             LazyVStack {
-                ForEach(productsReleasedToday, id: \.id) { product in
+                ForEach(dataTaskStatus == .done ? productsReleasedToday : Product.placeholders, id: \.id) { product in
                     GroupBox {
                         ProductListItemView(product: product)
                             .equatable()
                     }
                     .groupBoxStyle(.listItem)
+                    .transition(.opacity)
                 }
             }
-//            .redacted(reason: .placeholder)
+            .if(dataTaskStatus != .done) {
+                $0.redacted(reason: .placeholder)
+            }
+            .animation(.smooth(duration: 0.25), value: dataTaskStatus)
             .disabled(dataTaskStatus != .done && networkError == nil)
         }
     }
@@ -144,7 +148,7 @@ struct ProductsReleasedTodayView: View, Equatable {
 
 #Preview("Network Error") {
     @Previewable @State var path = NavigationPath()
-    
+
     NavigationStack {
         CardOfTheDayView(path: $path,
                          cotd: CardOfTheDay(
@@ -154,4 +158,24 @@ struct ProductsReleasedTodayView: View, Equatable {
                          dataTaskStatus: .error, networkError: .timeout, retryCB: {})
         .padding(.horizontal)
     }
+}
+
+#Preview("Products - Default") {
+    ProductsReleasedTodayView(productsReleasedToday: [Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
+                                                              productType: "Pack", productSubType: "Core Set",
+                                                              productReleaseDate: "2024-02-09", productTotal: 100)],
+                              dataTaskStatus: .done, networkError: nil, retryCB: {})
+    .padding(.horizontal)
+}
+
+#Preview("Products - Loading") {
+    ProductsReleasedTodayView(productsReleasedToday: [],
+                              dataTaskStatus: .pending, networkError: nil, retryCB: {})
+    .padding(.horizontal)
+}
+
+#Preview("Products - Network Error") {
+    ProductsReleasedTodayView(productsReleasedToday: [],
+                              dataTaskStatus: .error, networkError: .timeout, retryCB: {})
+    .padding(.horizontal)
 }
