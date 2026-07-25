@@ -20,7 +20,17 @@ fileprivate nonisolated struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobu
   typealias Version = _2
 }
 
-nonisolated struct Ygo_CardColors: Sendable {
+nonisolated struct Ygo_GetCardColorsRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+nonisolated struct Ygo_GetCardColorsResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -32,72 +42,154 @@ nonisolated struct Ygo_CardColors: Sendable {
   init() {}
 }
 
-nonisolated struct Ygo_Card: Sendable {
+nonisolated struct Ygo_GetCardByIDRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var id: String = String()
-
-  var color: String = String()
-
-  var name: String = String()
-
-  var attribute: String = String()
-
-  var effect: String = String()
-
-  var monsterType: SwiftProtobuf.Google_Protobuf_StringValue {
-    get {_monsterType ?? SwiftProtobuf.Google_Protobuf_StringValue()}
-    set {_monsterType = newValue}
+  var subject: Ygo_ResourceID {
+    get {_subject ?? Ygo_ResourceID()}
+    set {_subject = newValue}
   }
-  /// Returns true if `monsterType` has been explicitly set.
-  var hasMonsterType: Bool {self._monsterType != nil}
-  /// Clears the value of `monsterType`. Subsequent reads from it will return its default value.
-  mutating func clearMonsterType() {self._monsterType = nil}
-
-  var attack: SwiftProtobuf.Google_Protobuf_UInt32Value {
-    get {_attack ?? SwiftProtobuf.Google_Protobuf_UInt32Value()}
-    set {_attack = newValue}
-  }
-  /// Returns true if `attack` has been explicitly set.
-  var hasAttack: Bool {self._attack != nil}
-  /// Clears the value of `attack`. Subsequent reads from it will return its default value.
-  mutating func clearAttack() {self._attack = nil}
-
-  var defense: SwiftProtobuf.Google_Protobuf_UInt32Value {
-    get {_defense ?? SwiftProtobuf.Google_Protobuf_UInt32Value()}
-    set {_defense = newValue}
-  }
-  /// Returns true if `defense` has been explicitly set.
-  var hasDefense: Bool {self._defense != nil}
-  /// Clears the value of `defense`. Subsequent reads from it will return its default value.
-  mutating func clearDefense() {self._defense = nil}
+  /// Returns true if `subject` has been explicitly set.
+  var hasSubject: Bool {self._subject != nil}
+  /// Clears the value of `subject`. Subsequent reads from it will return its default value.
+  mutating func clearSubject() {self._subject = nil}
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 
-  fileprivate var _monsterType: SwiftProtobuf.Google_Protobuf_StringValue? = nil
-  fileprivate var _attack: SwiftProtobuf.Google_Protobuf_UInt32Value? = nil
-  fileprivate var _defense: SwiftProtobuf.Google_Protobuf_UInt32Value? = nil
+  fileprivate var _subject: Ygo_ResourceID? = nil
 }
 
-nonisolated struct Ygo_Cards: Sendable {
+nonisolated struct Ygo_GetCardByIDResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var cardInfo: Dictionary<String,Ygo_Card> = [:]
-
-  var unknownResources: [String] = []
+  var card: Ygo_Card {
+    get {_card ?? Ygo_Card()}
+    set {_card = newValue}
+  }
+  /// Returns true if `card` has been explicitly set.
+  var hasCard: Bool {self._card != nil}
+  /// Clears the value of `card`. Subsequent reads from it will return its default value.
+  mutating func clearCard() {self._card = nil}
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
+
+  fileprivate var _card: Ygo_Card? = nil
 }
 
-nonisolated struct Ygo_CardList: Sendable {
+nonisolated struct Ygo_GetCardsByIDRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var subjects: Ygo_ResourceIDs {
+    get {_subjects ?? Ygo_ResourceIDs()}
+    set {_subjects = newValue}
+  }
+  /// Returns true if `subjects` has been explicitly set.
+  var hasSubjects: Bool {self._subjects != nil}
+  /// Clears the value of `subjects`. Subsequent reads from it will return its default value.
+  mutating func clearSubjects() {self._subjects = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _subjects: Ygo_ResourceIDs? = nil
+}
+
+nonisolated struct Ygo_GetCardsByIDResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var cards: Ygo_Cards {
+    get {_cards ?? Ygo_Cards()}
+    set {_cards = newValue}
+  }
+  /// Returns true if `cards` has been explicitly set.
+  var hasCards: Bool {self._cards != nil}
+  /// Clears the value of `cards`. Subsequent reads from it will return its default value.
+  mutating func clearCards() {self._cards = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _cards: Ygo_Cards? = nil
+}
+
+nonisolated struct Ygo_GetCardsByNameRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var subjects: Ygo_ResourceNames {
+    get {_subjects ?? Ygo_ResourceNames()}
+    set {_subjects = newValue}
+  }
+  /// Returns true if `subjects` has been explicitly set.
+  var hasSubjects: Bool {self._subjects != nil}
+  /// Clears the value of `subjects`. Subsequent reads from it will return its default value.
+  mutating func clearSubjects() {self._subjects = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _subjects: Ygo_ResourceNames? = nil
+}
+
+nonisolated struct Ygo_GetCardsByNameResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var cards: Ygo_Cards {
+    get {_cards ?? Ygo_Cards()}
+    set {_cards = newValue}
+  }
+  /// Returns true if `cards` has been explicitly set.
+  var hasCards: Bool {self._cards != nil}
+  /// Clears the value of `cards`. Subsequent reads from it will return its default value.
+  mutating func clearCards() {self._cards = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _cards: Ygo_Cards? = nil
+}
+
+nonisolated struct Ygo_GetCardsReferencingNameInEffectRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var subjects: Ygo_ResourceNames {
+    get {_subjects ?? Ygo_ResourceNames()}
+    set {_subjects = newValue}
+  }
+  /// Returns true if `subjects` has been explicitly set.
+  var hasSubjects: Bool {self._subjects != nil}
+  /// Clears the value of `subjects`. Subsequent reads from it will return its default value.
+  mutating func clearSubjects() {self._subjects = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _subjects: Ygo_ResourceNames? = nil
+}
+
+nonisolated struct Ygo_GetCardsReferencingNameInEffectResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -109,35 +201,127 @@ nonisolated struct Ygo_CardList: Sendable {
   init() {}
 }
 
-nonisolated struct Ygo_Product: Sendable {
+nonisolated struct Ygo_GetArchetypalCardsUsingCardNameRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var id: String = String()
+  var subject: Ygo_Archetype {
+    get {_subject ?? Ygo_Archetype()}
+    set {_subject = newValue}
+  }
+  /// Returns true if `subject` has been explicitly set.
+  var hasSubject: Bool {self._subject != nil}
+  /// Clears the value of `subject`. Subsequent reads from it will return its default value.
+  mutating func clearSubject() {self._subject = nil}
 
-  var locale: String = String()
+  var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  var name: String = String()
+  init() {}
 
-  var type: String = String()
+  fileprivate var _subject: Ygo_Archetype? = nil
+}
 
-  var subType: String = String()
+nonisolated struct Ygo_GetArchetypalCardsUsingCardNameResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
 
-  var releaseDate: String = String()
-
-  var totalItems: UInt32 = 0
-
-  var items: [Ygo_ProductItem] = []
-
-  var rarityDistribution: Dictionary<String,UInt32> = [:]
+  var cards: [Ygo_Card] = []
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 }
 
-nonisolated struct Ygo_ProductItem: Sendable {
+nonisolated struct Ygo_GetExplicitArchetypalInclusionsRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var subject: Ygo_Archetype {
+    get {_subject ?? Ygo_Archetype()}
+    set {_subject = newValue}
+  }
+  /// Returns true if `subject` has been explicitly set.
+  var hasSubject: Bool {self._subject != nil}
+  /// Clears the value of `subject`. Subsequent reads from it will return its default value.
+  mutating func clearSubject() {self._subject = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _subject: Ygo_Archetype? = nil
+}
+
+nonisolated struct Ygo_GetExplicitArchetypalInclusionsResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var cards: [Ygo_Card] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+nonisolated struct Ygo_GetExplicitArchetypalExclusionsRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var subject: Ygo_Archetype {
+    get {_subject ?? Ygo_Archetype()}
+    set {_subject = newValue}
+  }
+  /// Returns true if `subject` has been explicitly set.
+  var hasSubject: Bool {self._subject != nil}
+  /// Clears the value of `subject`. Subsequent reads from it will return its default value.
+  mutating func clearSubject() {self._subject = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _subject: Ygo_Archetype? = nil
+}
+
+nonisolated struct Ygo_GetExplicitArchetypalExclusionsResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var cards: [Ygo_Card] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+nonisolated struct Ygo_GetRandomCardRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var blacklist: Ygo_BlackListed {
+    get {_blacklist ?? Ygo_BlackListed()}
+    set {_blacklist = newValue}
+  }
+  /// Returns true if `blacklist` has been explicitly set.
+  var hasBlacklist: Bool {self._blacklist != nil}
+  /// Clears the value of `blacklist`. Subsequent reads from it will return its default value.
+  mutating func clearBlacklist() {self._blacklist = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _blacklist: Ygo_BlackListed? = nil
+}
+
+nonisolated struct Ygo_GetRandomCardResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -151,10 +335,6 @@ nonisolated struct Ygo_ProductItem: Sendable {
   /// Clears the value of `card`. Subsequent reads from it will return its default value.
   mutating func clearCard() {self._card = nil}
 
-  var position: String = String()
-
-  var rarities: [String] = []
-
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
@@ -162,188 +342,223 @@ nonisolated struct Ygo_ProductItem: Sendable {
   fileprivate var _card: Ygo_Card? = nil
 }
 
-nonisolated struct Ygo_ProductSummary: Sendable {
+nonisolated struct Ygo_GetCardsByProductIDRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var id: String = String()
-
-  var locale: String = String()
-
-  var name: String = String()
-
-  var type: String = String()
-
-  var subType: String = String()
-
-  var releaseDate: String = String()
-
-  var totalItems: UInt32 = 0
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-}
-
-nonisolated struct Ygo_Products: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var products: Dictionary<String,Ygo_ProductSummary> = [:]
-
-  var unknownResources: [String] = []
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-}
-
-nonisolated struct Ygo_Format: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var value: String = String()
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-}
-
-nonisolated struct Ygo_RestrictedContentRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var format: String = String()
-
-  var effectiveDate: String = String()
-
-  var sortOrder: Ygo_Common_CardRestrictionSortOrder = .cardColorAscCardNameAsc
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-}
-
-nonisolated struct Ygo_ScoresForFormatAndDate: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var format: String = String()
-
-  var effectiveDate: String = String()
-
-  var nextFormatDate: SwiftProtobuf.Google_Protobuf_StringValue {
-    get {_nextFormatDate ?? SwiftProtobuf.Google_Protobuf_StringValue()}
-    set {_nextFormatDate = newValue}
+  var subject: Ygo_ResourceID {
+    get {_subject ?? Ygo_ResourceID()}
+    set {_subject = newValue}
   }
-  /// Returns true if `nextFormatDate` has been explicitly set.
-  var hasNextFormatDate: Bool {self._nextFormatDate != nil}
-  /// Clears the value of `nextFormatDate`. Subsequent reads from it will return its default value.
-  mutating func clearNextFormatDate() {self._nextFormatDate = nil}
+  /// Returns true if `subject` has been explicitly set.
+  var hasSubject: Bool {self._subject != nil}
+  /// Clears the value of `subject`. Subsequent reads from it will return its default value.
+  mutating func clearSubject() {self._subject = nil}
 
-  var previousFormatDate: SwiftProtobuf.Google_Protobuf_StringValue {
-    get {_previousFormatDate ?? SwiftProtobuf.Google_Protobuf_StringValue()}
-    set {_previousFormatDate = newValue}
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _subject: Ygo_ResourceID? = nil
+}
+
+nonisolated struct Ygo_GetCardsByProductIDResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var product: Ygo_Product {
+    get {_product ?? Ygo_Product()}
+    set {_product = newValue}
   }
-  /// Returns true if `previousFormatDate` has been explicitly set.
-  var hasPreviousFormatDate: Bool {self._previousFormatDate != nil}
-  /// Clears the value of `previousFormatDate`. Subsequent reads from it will return its default value.
-  mutating func clearPreviousFormatDate() {self._previousFormatDate = nil}
-
-  var entries: [Ygo_CardScoreEntry] = []
-
-  var totalEntries: UInt32 = 0
+  /// Returns true if `product` has been explicitly set.
+  var hasProduct: Bool {self._product != nil}
+  /// Clears the value of `product`. Subsequent reads from it will return its default value.
+  mutating func clearProduct() {self._product = nil}
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 
-  fileprivate var _nextFormatDate: SwiftProtobuf.Google_Protobuf_StringValue? = nil
-  fileprivate var _previousFormatDate: SwiftProtobuf.Google_Protobuf_StringValue? = nil
+  fileprivate var _product: Ygo_Product? = nil
 }
 
-nonisolated struct Ygo_CardScoreEntry: Sendable {
+nonisolated struct Ygo_GetProductSummaryByIDRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var card: Ygo_Card {
-    get {_card ?? Ygo_Card()}
-    set {_card = newValue}
+  var subject: Ygo_ResourceID {
+    get {_subject ?? Ygo_ResourceID()}
+    set {_subject = newValue}
   }
-  /// Returns true if `card` has been explicitly set.
-  var hasCard: Bool {self._card != nil}
-  /// Clears the value of `card`. Subsequent reads from it will return its default value.
-  mutating func clearCard() {self._card = nil}
-
-  var score: UInt32 = 0
+  /// Returns true if `subject` has been explicitly set.
+  var hasSubject: Bool {self._subject != nil}
+  /// Clears the value of `subject`. Subsequent reads from it will return its default value.
+  mutating func clearSubject() {self._subject = nil}
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 
-  fileprivate var _card: Ygo_Card? = nil
+  fileprivate var _subject: Ygo_ResourceID? = nil
 }
 
-nonisolated struct Ygo_CardScore: Sendable {
+nonisolated struct Ygo_GetProductSummaryByIDResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var currentScoreByFormat: Dictionary<String,UInt32> = [:]
+  var productSummary: Ygo_ProductSummary {
+    get {_productSummary ?? Ygo_ProductSummary()}
+    set {_productSummary = newValue}
+  }
+  /// Returns true if `productSummary` has been explicitly set.
+  var hasProductSummary: Bool {self._productSummary != nil}
+  /// Clears the value of `productSummary`. Subsequent reads from it will return its default value.
+  mutating func clearProductSummary() {self._productSummary = nil}
 
-  var uniqueFormats: [String] = []
+  var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  var scoreHistory: [Ygo_ScoreEntry] = []
+  init() {}
 
-  var scheduledChanges: [String] = []
+  fileprivate var _productSummary: Ygo_ProductSummary? = nil
+}
+
+nonisolated struct Ygo_GetProductsSummaryByIDRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var subjects: Ygo_ResourceIDs {
+    get {_subjects ?? Ygo_ResourceIDs()}
+    set {_subjects = newValue}
+  }
+  /// Returns true if `subjects` has been explicitly set.
+  var hasSubjects: Bool {self._subjects != nil}
+  /// Clears the value of `subjects`. Subsequent reads from it will return its default value.
+  mutating func clearSubjects() {self._subjects = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _subjects: Ygo_ResourceIDs? = nil
+}
+
+nonisolated struct Ygo_GetProductsSummaryByIDResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var products: Ygo_Products {
+    get {_products ?? Ygo_Products()}
+    set {_products = newValue}
+  }
+  /// Returns true if `products` has been explicitly set.
+  var hasProducts: Bool {self._products != nil}
+  /// Clears the value of `products`. Subsequent reads from it will return its default value.
+  mutating func clearProducts() {self._products = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _products: Ygo_Products? = nil
+}
+
+nonisolated struct Ygo_GetProductsReleasedSameDayRequest: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var date: String = String()
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 }
 
-nonisolated struct Ygo_CardScores: Sendable {
+nonisolated struct Ygo_GetProductsReleasedSameDayResponse: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var cardInfo: Dictionary<String,Ygo_CardScore> = [:]
-
-  var unknownResources: [String] = []
+  var products: [Ygo_ProductSummary] = []
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
 }
 
-nonisolated struct Ygo_ScoreEntry: Sendable {
+nonisolated struct Ygo_GetCardScoresByIDsRequest: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var format: String = String()
-
-  var effectiveDate: String = String()
-
-  var score: UInt32 = 0
+  var subjects: Ygo_ResourceIDs {
+    get {_subjects ?? Ygo_ResourceIDs()}
+    set {_subjects = newValue}
+  }
+  /// Returns true if `subjects` has been explicitly set.
+  var hasSubjects: Bool {self._subjects != nil}
+  /// Clears the value of `subjects`. Subsequent reads from it will return its default value.
+  mutating func clearSubjects() {self._subjects = nil}
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
   init() {}
+
+  fileprivate var _subjects: Ygo_ResourceIDs? = nil
+}
+
+nonisolated struct Ygo_GetCardScoresByIDsResponse: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var scores: Ygo_CardScores {
+    get {_scores ?? Ygo_CardScores()}
+    set {_scores = newValue}
+  }
+  /// Returns true if `scores` has been explicitly set.
+  var hasScores: Bool {self._scores != nil}
+  /// Clears the value of `scores`. Subsequent reads from it will return its default value.
+  mutating func clearScores() {self._scores = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _scores: Ygo_CardScores? = nil
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate nonisolated let _protobuf_package = "ygo"
 
-nonisolated extension Ygo_CardColors: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".CardColors"
+nonisolated extension Ygo_GetCardColorsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardColorsRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    // Load everything into unknown fields
+    while try decoder.nextFieldNumber() != nil {}
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetCardColorsRequest, rhs: Ygo_GetCardColorsRequest) -> Bool {
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetCardColorsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardColorsResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}values\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -365,16 +580,16 @@ nonisolated extension Ygo_CardColors: SwiftProtobuf.Message, SwiftProtobuf._Mess
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_CardColors, rhs: Ygo_CardColors) -> Bool {
+  static func ==(lhs: Ygo_GetCardColorsResponse, rhs: Ygo_GetCardColorsResponse) -> Bool {
     if lhs.values != rhs.values {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_Card: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".Card"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0\u{1}color\0\u{1}name\0\u{1}attribute\0\u{1}effect\0\u{3}monster_type\0\u{1}attack\0\u{1}defense\0")
+nonisolated extension Ygo_GetCardByIDRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardByIDRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subject\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -382,14 +597,7 @@ nonisolated extension Ygo_Card: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.color) }()
-      case 3: try { try decoder.decodeSingularStringField(value: &self.name) }()
-      case 4: try { try decoder.decodeSingularStringField(value: &self.attribute) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.effect) }()
-      case 6: try { try decoder.decodeSingularMessageField(value: &self._monsterType) }()
-      case 7: try { try decoder.decodeSingularMessageField(value: &self._attack) }()
-      case 8: try { try decoder.decodeSingularMessageField(value: &self._defense) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subject) }()
       default: break
       }
     }
@@ -400,50 +608,22 @@ nonisolated extension Ygo_Card: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.id.isEmpty {
-      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
-    }
-    if !self.color.isEmpty {
-      try visitor.visitSingularStringField(value: self.color, fieldNumber: 2)
-    }
-    if !self.name.isEmpty {
-      try visitor.visitSingularStringField(value: self.name, fieldNumber: 3)
-    }
-    if !self.attribute.isEmpty {
-      try visitor.visitSingularStringField(value: self.attribute, fieldNumber: 4)
-    }
-    if !self.effect.isEmpty {
-      try visitor.visitSingularStringField(value: self.effect, fieldNumber: 5)
-    }
-    try { if let v = self._monsterType {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
-    } }()
-    try { if let v = self._attack {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
-    } }()
-    try { if let v = self._defense {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+    try { if let v = self._subject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_Card, rhs: Ygo_Card) -> Bool {
-    if lhs.id != rhs.id {return false}
-    if lhs.color != rhs.color {return false}
-    if lhs.name != rhs.name {return false}
-    if lhs.attribute != rhs.attribute {return false}
-    if lhs.effect != rhs.effect {return false}
-    if lhs._monsterType != rhs._monsterType {return false}
-    if lhs._attack != rhs._attack {return false}
-    if lhs._defense != rhs._defense {return false}
+  static func ==(lhs: Ygo_GetCardByIDRequest, rhs: Ygo_GetCardByIDRequest) -> Bool {
+    if lhs._subject != rhs._subject {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_Cards: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".Cards"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}card_info\0\u{3}unknown_resources\0")
+nonisolated extension Ygo_GetCardByIDResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardByIDResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}card\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -451,33 +631,202 @@ nonisolated extension Ygo_Cards: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Ygo_Card>.self, value: &self.cardInfo) }()
-      case 2: try { try decoder.decodeRepeatedStringField(value: &self.unknownResources) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._card) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.cardInfo.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Ygo_Card>.self, value: self.cardInfo, fieldNumber: 1)
-    }
-    if !self.unknownResources.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.unknownResources, fieldNumber: 2)
-    }
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._card {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_Cards, rhs: Ygo_Cards) -> Bool {
-    if lhs.cardInfo != rhs.cardInfo {return false}
-    if lhs.unknownResources != rhs.unknownResources {return false}
+  static func ==(lhs: Ygo_GetCardByIDResponse, rhs: Ygo_GetCardByIDResponse) -> Bool {
+    if lhs._card != rhs._card {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_CardList: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".CardList"
+nonisolated extension Ygo_GetCardsByIDRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsByIDRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subjects\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subjects) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subjects {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetCardsByIDRequest, rhs: Ygo_GetCardsByIDRequest) -> Bool {
+    if lhs._subjects != rhs._subjects {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetCardsByIDResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsByIDResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cards\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._cards) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._cards {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetCardsByIDResponse, rhs: Ygo_GetCardsByIDResponse) -> Bool {
+    if lhs._cards != rhs._cards {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetCardsByNameRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsByNameRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subjects\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subjects) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subjects {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetCardsByNameRequest, rhs: Ygo_GetCardsByNameRequest) -> Bool {
+    if lhs._subjects != rhs._subjects {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetCardsByNameResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsByNameResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cards\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._cards) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._cards {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetCardsByNameResponse, rhs: Ygo_GetCardsByNameResponse) -> Bool {
+    if lhs._cards != rhs._cards {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetCardsReferencingNameInEffectRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsReferencingNameInEffectRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subjects\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subjects) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subjects {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetCardsReferencingNameInEffectRequest, rhs: Ygo_GetCardsReferencingNameInEffectRequest) -> Bool {
+    if lhs._subjects != rhs._subjects {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetCardsReferencingNameInEffectResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsReferencingNameInEffectResponse"
   static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cards\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -499,16 +848,16 @@ nonisolated extension Ygo_CardList: SwiftProtobuf.Message, SwiftProtobuf._Messag
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_CardList, rhs: Ygo_CardList) -> Bool {
+  static func ==(lhs: Ygo_GetCardsReferencingNameInEffectResponse, rhs: Ygo_GetCardsReferencingNameInEffectResponse) -> Bool {
     if lhs.cards != rhs.cards {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_Product: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".Product"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0\u{1}locale\0\u{1}name\0\u{1}type\0\u{1}subType\0\u{1}releaseDate\0\u{1}totalItems\0\u{1}items\0\u{1}rarityDistribution\0")
+nonisolated extension Ygo_GetArchetypalCardsUsingCardNameRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetArchetypalCardsUsingCardNameRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subject\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -516,69 +865,225 @@ nonisolated extension Ygo_Product: SwiftProtobuf.Message, SwiftProtobuf._Message
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.locale) }()
-      case 3: try { try decoder.decodeSingularStringField(value: &self.name) }()
-      case 4: try { try decoder.decodeSingularStringField(value: &self.type) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.subType) }()
-      case 6: try { try decoder.decodeSingularStringField(value: &self.releaseDate) }()
-      case 7: try { try decoder.decodeSingularUInt32Field(value: &self.totalItems) }()
-      case 8: try { try decoder.decodeRepeatedMessageField(value: &self.items) }()
-      case 9: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufUInt32>.self, value: &self.rarityDistribution) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subject) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.id.isEmpty {
-      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
-    }
-    if !self.locale.isEmpty {
-      try visitor.visitSingularStringField(value: self.locale, fieldNumber: 2)
-    }
-    if !self.name.isEmpty {
-      try visitor.visitSingularStringField(value: self.name, fieldNumber: 3)
-    }
-    if !self.type.isEmpty {
-      try visitor.visitSingularStringField(value: self.type, fieldNumber: 4)
-    }
-    if !self.subType.isEmpty {
-      try visitor.visitSingularStringField(value: self.subType, fieldNumber: 5)
-    }
-    if !self.releaseDate.isEmpty {
-      try visitor.visitSingularStringField(value: self.releaseDate, fieldNumber: 6)
-    }
-    if self.totalItems != 0 {
-      try visitor.visitSingularUInt32Field(value: self.totalItems, fieldNumber: 7)
-    }
-    if !self.items.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.items, fieldNumber: 8)
-    }
-    if !self.rarityDistribution.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufUInt32>.self, value: self.rarityDistribution, fieldNumber: 9)
-    }
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_Product, rhs: Ygo_Product) -> Bool {
-    if lhs.id != rhs.id {return false}
-    if lhs.locale != rhs.locale {return false}
-    if lhs.name != rhs.name {return false}
-    if lhs.type != rhs.type {return false}
-    if lhs.subType != rhs.subType {return false}
-    if lhs.releaseDate != rhs.releaseDate {return false}
-    if lhs.totalItems != rhs.totalItems {return false}
-    if lhs.items != rhs.items {return false}
-    if lhs.rarityDistribution != rhs.rarityDistribution {return false}
+  static func ==(lhs: Ygo_GetArchetypalCardsUsingCardNameRequest, rhs: Ygo_GetArchetypalCardsUsingCardNameRequest) -> Bool {
+    if lhs._subject != rhs._subject {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_ProductItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".ProductItem"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}card\0\u{1}position\0\u{1}rarities\0")
+nonisolated extension Ygo_GetArchetypalCardsUsingCardNameResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetArchetypalCardsUsingCardNameResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cards\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.cards) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.cards.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.cards, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetArchetypalCardsUsingCardNameResponse, rhs: Ygo_GetArchetypalCardsUsingCardNameResponse) -> Bool {
+    if lhs.cards != rhs.cards {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetExplicitArchetypalInclusionsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetExplicitArchetypalInclusionsRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subject\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subject) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetExplicitArchetypalInclusionsRequest, rhs: Ygo_GetExplicitArchetypalInclusionsRequest) -> Bool {
+    if lhs._subject != rhs._subject {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetExplicitArchetypalInclusionsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetExplicitArchetypalInclusionsResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cards\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.cards) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.cards.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.cards, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetExplicitArchetypalInclusionsResponse, rhs: Ygo_GetExplicitArchetypalInclusionsResponse) -> Bool {
+    if lhs.cards != rhs.cards {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetExplicitArchetypalExclusionsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetExplicitArchetypalExclusionsRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subject\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subject) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetExplicitArchetypalExclusionsRequest, rhs: Ygo_GetExplicitArchetypalExclusionsRequest) -> Bool {
+    if lhs._subject != rhs._subject {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetExplicitArchetypalExclusionsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetExplicitArchetypalExclusionsResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cards\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.cards) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.cards.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.cards, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetExplicitArchetypalExclusionsResponse, rhs: Ygo_GetExplicitArchetypalExclusionsResponse) -> Bool {
+    if lhs.cards != rhs.cards {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetRandomCardRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetRandomCardRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}blacklist\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._blacklist) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._blacklist {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetRandomCardRequest, rhs: Ygo_GetRandomCardRequest) -> Bool {
+    if lhs._blacklist != rhs._blacklist {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetRandomCardResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetRandomCardResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}card\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -587,8 +1092,6 @@ nonisolated extension Ygo_ProductItem: SwiftProtobuf.Message, SwiftProtobuf._Mes
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularMessageField(value: &self._card) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.position) }()
-      case 3: try { try decoder.decodeRepeatedStringField(value: &self.rarities) }()
       default: break
       }
     }
@@ -602,27 +1105,19 @@ nonisolated extension Ygo_ProductItem: SwiftProtobuf.Message, SwiftProtobuf._Mes
     try { if let v = self._card {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     } }()
-    if !self.position.isEmpty {
-      try visitor.visitSingularStringField(value: self.position, fieldNumber: 2)
-    }
-    if !self.rarities.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.rarities, fieldNumber: 3)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_ProductItem, rhs: Ygo_ProductItem) -> Bool {
+  static func ==(lhs: Ygo_GetRandomCardResponse, rhs: Ygo_GetRandomCardResponse) -> Bool {
     if lhs._card != rhs._card {return false}
-    if lhs.position != rhs.position {return false}
-    if lhs.rarities != rhs.rarities {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_ProductSummary: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".ProductSummary"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}ID\0\u{1}locale\0\u{1}name\0\u{1}type\0\u{1}subType\0\u{1}releaseDate\0\u{1}totalItems\0")
+nonisolated extension Ygo_GetCardsByProductIDRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsByProductIDRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subject\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -630,59 +1125,33 @@ nonisolated extension Ygo_ProductSummary: SwiftProtobuf.Message, SwiftProtobuf._
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.locale) }()
-      case 3: try { try decoder.decodeSingularStringField(value: &self.name) }()
-      case 4: try { try decoder.decodeSingularStringField(value: &self.type) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.subType) }()
-      case 6: try { try decoder.decodeSingularStringField(value: &self.releaseDate) }()
-      case 7: try { try decoder.decodeSingularUInt32Field(value: &self.totalItems) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subject) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.id.isEmpty {
-      try visitor.visitSingularStringField(value: self.id, fieldNumber: 1)
-    }
-    if !self.locale.isEmpty {
-      try visitor.visitSingularStringField(value: self.locale, fieldNumber: 2)
-    }
-    if !self.name.isEmpty {
-      try visitor.visitSingularStringField(value: self.name, fieldNumber: 3)
-    }
-    if !self.type.isEmpty {
-      try visitor.visitSingularStringField(value: self.type, fieldNumber: 4)
-    }
-    if !self.subType.isEmpty {
-      try visitor.visitSingularStringField(value: self.subType, fieldNumber: 5)
-    }
-    if !self.releaseDate.isEmpty {
-      try visitor.visitSingularStringField(value: self.releaseDate, fieldNumber: 6)
-    }
-    if self.totalItems != 0 {
-      try visitor.visitSingularUInt32Field(value: self.totalItems, fieldNumber: 7)
-    }
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_ProductSummary, rhs: Ygo_ProductSummary) -> Bool {
-    if lhs.id != rhs.id {return false}
-    if lhs.locale != rhs.locale {return false}
-    if lhs.name != rhs.name {return false}
-    if lhs.type != rhs.type {return false}
-    if lhs.subType != rhs.subType {return false}
-    if lhs.releaseDate != rhs.releaseDate {return false}
-    if lhs.totalItems != rhs.totalItems {return false}
+  static func ==(lhs: Ygo_GetCardsByProductIDRequest, rhs: Ygo_GetCardsByProductIDRequest) -> Bool {
+    if lhs._subject != rhs._subject {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_Products: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".Products"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}products\0\u{3}unknown_resources\0")
+nonisolated extension Ygo_GetCardsByProductIDResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardsByProductIDResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}product\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -690,8 +1159,207 @@ nonisolated extension Ygo_Products: SwiftProtobuf.Message, SwiftProtobuf._Messag
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Ygo_ProductSummary>.self, value: &self.products) }()
-      case 2: try { try decoder.decodeRepeatedStringField(value: &self.unknownResources) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._product) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._product {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetCardsByProductIDResponse, rhs: Ygo_GetCardsByProductIDResponse) -> Bool {
+    if lhs._product != rhs._product {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetProductSummaryByIDRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetProductSummaryByIDRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subject\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subject) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subject {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetProductSummaryByIDRequest, rhs: Ygo_GetProductSummaryByIDRequest) -> Bool {
+    if lhs._subject != rhs._subject {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetProductSummaryByIDResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetProductSummaryByIDResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}product_summary\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._productSummary) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._productSummary {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetProductSummaryByIDResponse, rhs: Ygo_GetProductSummaryByIDResponse) -> Bool {
+    if lhs._productSummary != rhs._productSummary {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetProductsSummaryByIDRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetProductsSummaryByIDRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subjects\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subjects) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._subjects {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetProductsSummaryByIDRequest, rhs: Ygo_GetProductsSummaryByIDRequest) -> Bool {
+    if lhs._subjects != rhs._subjects {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetProductsSummaryByIDResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetProductsSummaryByIDResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}products\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._products) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._products {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetProductsSummaryByIDResponse, rhs: Ygo_GetProductsSummaryByIDResponse) -> Bool {
+    if lhs._products != rhs._products {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetProductsReleasedSameDayRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetProductsReleasedSameDayRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}date\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularStringField(value: &self.date) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.date.isEmpty {
+      try visitor.visitSingularStringField(value: self.date, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Ygo_GetProductsReleasedSameDayRequest, rhs: Ygo_GetProductsReleasedSameDayRequest) -> Bool {
+    if lhs.date != rhs.date {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+nonisolated extension Ygo_GetProductsReleasedSameDayResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetProductsReleasedSameDayResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}products\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.products) }()
       default: break
       }
     }
@@ -699,25 +1367,21 @@ nonisolated extension Ygo_Products: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     if !self.products.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Ygo_ProductSummary>.self, value: self.products, fieldNumber: 1)
-    }
-    if !self.unknownResources.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.unknownResources, fieldNumber: 2)
+      try visitor.visitRepeatedMessageField(value: self.products, fieldNumber: 1)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_Products, rhs: Ygo_Products) -> Bool {
+  static func ==(lhs: Ygo_GetProductsReleasedSameDayResponse, rhs: Ygo_GetProductsReleasedSameDayResponse) -> Bool {
     if lhs.products != rhs.products {return false}
-    if lhs.unknownResources != rhs.unknownResources {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_Format: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".Format"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}value\0")
+nonisolated extension Ygo_GetCardScoresByIDsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardScoresByIDsRequest"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}subjects\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -725,82 +1389,7 @@ nonisolated extension Ygo_Format: SwiftProtobuf.Message, SwiftProtobuf._MessageI
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.value) }()
-      default: break
-      }
-    }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.value.isEmpty {
-      try visitor.visitSingularStringField(value: self.value, fieldNumber: 1)
-    }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Ygo_Format, rhs: Ygo_Format) -> Bool {
-    if lhs.value != rhs.value {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
-}
-
-nonisolated extension Ygo_RestrictedContentRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".RestrictedContentRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{3}sort_order\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.format) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.effectiveDate) }()
-      case 3: try { try decoder.decodeSingularEnumField(value: &self.sortOrder) }()
-      default: break
-      }
-    }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.format.isEmpty {
-      try visitor.visitSingularStringField(value: self.format, fieldNumber: 1)
-    }
-    if !self.effectiveDate.isEmpty {
-      try visitor.visitSingularStringField(value: self.effectiveDate, fieldNumber: 2)
-    }
-    if self.sortOrder != .cardColorAscCardNameAsc {
-      try visitor.visitSingularEnumField(value: self.sortOrder, fieldNumber: 3)
-    }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Ygo_RestrictedContentRequest, rhs: Ygo_RestrictedContentRequest) -> Bool {
-    if lhs.format != rhs.format {return false}
-    if lhs.effectiveDate != rhs.effectiveDate {return false}
-    if lhs.sortOrder != rhs.sortOrder {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
-}
-
-nonisolated extension Ygo_ScoresForFormatAndDate: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".ScoresForFormatAndDate"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{3}next_format_date\0\u{3}previous_format_date\0\u{1}entries\0\u{3}total_entries\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.format) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.effectiveDate) }()
-      case 3: try { try decoder.decodeSingularMessageField(value: &self._nextFormatDate) }()
-      case 4: try { try decoder.decodeSingularMessageField(value: &self._previousFormatDate) }()
-      case 5: try { try decoder.decodeRepeatedMessageField(value: &self.entries) }()
-      case 6: try { try decoder.decodeSingularUInt32Field(value: &self.totalEntries) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._subjects) }()
       default: break
       }
     }
@@ -811,81 +1400,22 @@ nonisolated extension Ygo_ScoresForFormatAndDate: SwiftProtobuf.Message, SwiftPr
     // allocates stack space for every if/case branch local when no optimizations
     // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
     // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.format.isEmpty {
-      try visitor.visitSingularStringField(value: self.format, fieldNumber: 1)
-    }
-    if !self.effectiveDate.isEmpty {
-      try visitor.visitSingularStringField(value: self.effectiveDate, fieldNumber: 2)
-    }
-    try { if let v = self._nextFormatDate {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
-    } }()
-    try { if let v = self._previousFormatDate {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
-    } }()
-    if !self.entries.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.entries, fieldNumber: 5)
-    }
-    if self.totalEntries != 0 {
-      try visitor.visitSingularUInt32Field(value: self.totalEntries, fieldNumber: 6)
-    }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Ygo_ScoresForFormatAndDate, rhs: Ygo_ScoresForFormatAndDate) -> Bool {
-    if lhs.format != rhs.format {return false}
-    if lhs.effectiveDate != rhs.effectiveDate {return false}
-    if lhs._nextFormatDate != rhs._nextFormatDate {return false}
-    if lhs._previousFormatDate != rhs._previousFormatDate {return false}
-    if lhs.entries != rhs.entries {return false}
-    if lhs.totalEntries != rhs.totalEntries {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
-}
-
-nonisolated extension Ygo_CardScoreEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".CardScoreEntry"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}card\0\u{1}score\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularMessageField(value: &self._card) }()
-      case 2: try { try decoder.decodeSingularUInt32Field(value: &self.score) }()
-      default: break
-      }
-    }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._card {
+    try { if let v = self._subjects {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
     } }()
-    if self.score != 0 {
-      try visitor.visitSingularUInt32Field(value: self.score, fieldNumber: 2)
-    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_CardScoreEntry, rhs: Ygo_CardScoreEntry) -> Bool {
-    if lhs._card != rhs._card {return false}
-    if lhs.score != rhs.score {return false}
+  static func ==(lhs: Ygo_GetCardScoresByIDsRequest, rhs: Ygo_GetCardScoresByIDsRequest) -> Bool {
+    if lhs._subjects != rhs._subjects {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
 }
 
-nonisolated extension Ygo_CardScore: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".CardScore"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}current_score_by_format\0\u{3}unique_formats\0\u{3}score_history\0\u{3}scheduled_changes\0")
+nonisolated extension Ygo_GetCardScoresByIDsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GetCardScoresByIDsResponse"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}scores\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -893,111 +1423,25 @@ nonisolated extension Ygo_CardScore: SwiftProtobuf.Message, SwiftProtobuf._Messa
       // allocates stack space for every case branch when no optimizations are
       // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufUInt32>.self, value: &self.currentScoreByFormat) }()
-      case 2: try { try decoder.decodeRepeatedStringField(value: &self.uniqueFormats) }()
-      case 3: try { try decoder.decodeRepeatedMessageField(value: &self.scoreHistory) }()
-      case 4: try { try decoder.decodeRepeatedStringField(value: &self.scheduledChanges) }()
+      case 1: try { try decoder.decodeSingularMessageField(value: &self._scores) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.currentScoreByFormat.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMap<SwiftProtobuf.ProtobufString,SwiftProtobuf.ProtobufUInt32>.self, value: self.currentScoreByFormat, fieldNumber: 1)
-    }
-    if !self.uniqueFormats.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.uniqueFormats, fieldNumber: 2)
-    }
-    if !self.scoreHistory.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.scoreHistory, fieldNumber: 3)
-    }
-    if !self.scheduledChanges.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.scheduledChanges, fieldNumber: 4)
-    }
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._scores {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  static func ==(lhs: Ygo_CardScore, rhs: Ygo_CardScore) -> Bool {
-    if lhs.currentScoreByFormat != rhs.currentScoreByFormat {return false}
-    if lhs.uniqueFormats != rhs.uniqueFormats {return false}
-    if lhs.scoreHistory != rhs.scoreHistory {return false}
-    if lhs.scheduledChanges != rhs.scheduledChanges {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
-}
-
-nonisolated extension Ygo_CardScores: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".CardScores"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}card_info\0\u{3}unknown_resources\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Ygo_CardScore>.self, value: &self.cardInfo) }()
-      case 2: try { try decoder.decodeRepeatedStringField(value: &self.unknownResources) }()
-      default: break
-      }
-    }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.cardInfo.isEmpty {
-      try visitor.visitMapField(fieldType: SwiftProtobuf._ProtobufMessageMap<SwiftProtobuf.ProtobufString,Ygo_CardScore>.self, value: self.cardInfo, fieldNumber: 1)
-    }
-    if !self.unknownResources.isEmpty {
-      try visitor.visitRepeatedStringField(value: self.unknownResources, fieldNumber: 2)
-    }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Ygo_CardScores, rhs: Ygo_CardScores) -> Bool {
-    if lhs.cardInfo != rhs.cardInfo {return false}
-    if lhs.unknownResources != rhs.unknownResources {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
-}
-
-nonisolated extension Ygo_ScoreEntry: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".ScoreEntry"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}format\0\u{3}effective_date\0\u{1}score\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.format) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.effectiveDate) }()
-      case 3: try { try decoder.decodeSingularUInt32Field(value: &self.score) }()
-      default: break
-      }
-    }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if !self.format.isEmpty {
-      try visitor.visitSingularStringField(value: self.format, fieldNumber: 1)
-    }
-    if !self.effectiveDate.isEmpty {
-      try visitor.visitSingularStringField(value: self.effectiveDate, fieldNumber: 2)
-    }
-    if self.score != 0 {
-      try visitor.visitSingularUInt32Field(value: self.score, fieldNumber: 3)
-    }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Ygo_ScoreEntry, rhs: Ygo_ScoreEntry) -> Bool {
-    if lhs.format != rhs.format {return false}
-    if lhs.effectiveDate != rhs.effectiveDate {return false}
-    if lhs.score != rhs.score {return false}
+  static func ==(lhs: Ygo_GetCardScoresByIDsResponse, rhs: Ygo_GetCardScoresByIDsResponse) -> Bool {
+    if lhs._scores != rhs._scores {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
