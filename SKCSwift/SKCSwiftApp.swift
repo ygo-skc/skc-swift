@@ -17,8 +17,8 @@ struct SKCSwiftApp: App {
         ImageCache.default.memoryStorage.config.totalCostLimit = 30 * 1024 * 1024
         ImageCache.default.memoryStorage.config.expiration = .seconds(600)
         
-        ImageCache.default.diskStorage.config.sizeLimit = 50 * 1024 * 1024
-        ImageCache.default.diskStorage.config.expiration = .days(1)
+        ImageCache.default.diskStorage.config.sizeLimit = 80 * 1024 * 1024
+        ImageCache.default.diskStorage.config.expiration = .days(30)
     }
     
     var body: some Scene {
