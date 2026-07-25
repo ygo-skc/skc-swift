@@ -105,7 +105,7 @@ struct RestrictedContentView: View {
     private var sortToolbarItem: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
-                ForEach(Ygo_Common_CardRestrictionSortOrder.allCases, id: \.self) { sortOption in
+                ForEach(Ygo_CardRestrictionSortOrder.allCases, id: \.self) { sortOption in
                     Button(action: {model.sort = sortOption}) {
                         let selected = model.sort == sortOption
                         if selected {
