@@ -78,7 +78,7 @@ struct CardInfoView: View {
                                                   variant: .support)
                         }
                         
-                        SuggestionOverlayView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                        SuggestionTransitionView(areSuggestionsLoaded: model.areSuggestionsLoaded,
                                               noSuggestionsFound: !model.hasSuggestions(),
                                               networkError: model.suggestionsError,
                                               action: {

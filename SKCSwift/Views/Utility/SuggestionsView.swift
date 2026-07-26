@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct SuggestionOverlayView: View, Equatable {
-    static func == (lhs: SuggestionOverlayView, rhs: SuggestionOverlayView) -> Bool {
+struct SuggestionTransitionView: View, Equatable {
+    static func == (lhs: SuggestionTransitionView, rhs: SuggestionTransitionView) -> Bool {
         lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
         && lhs.noSuggestionsFound == rhs.noSuggestionsFound
         && lhs.networkError == rhs.networkError
