@@ -54,6 +54,9 @@ struct CardInfoView: View {
                             .task {
                                 await model.fetchAllSuggestions()
                             }
+                            .task {
+                                await model.fetchSimilarCards()
+                            }
                         
                         if model.areSuggestionsLoaded && model.suggestionsError == nil {
                             YGOArchetypesView(title: "Suggested archetypes",
@@ -76,6 +79,13 @@ struct CardInfoView: View {
                                                   subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
                                                   references: model.referencedBy,
                                                   variant: .support)
+                            
+                            if model.similarCardsDTS == .done && model.similarCardsNE == nil {
+                                SuggestionSectionView(header: "Similar Cards",
+                                                      subHeader: "Cards that are semantically similar to **\(cardName)**. This could be cards with similar stats/effects/lore/etc.",
+                                                      references: model.similarCards,
+                                                      variant: .support)
+                            }
                         }
                         
                         SuggestionTransitionView(areSuggestionsLoaded: model.areSuggestionsLoaded,
@@ -83,6 +93,9 @@ struct CardInfoView: View {
                                               networkError: model.suggestionsError,
                                               action: {
                             Task {
+                                if model.similarCardsNE != nil {
+                                    await model.fetchSimilarCards(forceRefresh: true)
+                                }
                                 await model.fetchAllSuggestions(forceRefresh: true)
                             }
                         })

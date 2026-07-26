@@ -311,6 +311,10 @@ nonisolated struct CardSupport: Codable {
     let referencedBy, materialFor: [CardReference]
 }
 
+nonisolated struct SimilarCards: Codable {
+    let matches: [YGOCard]
+}
+
 nonisolated struct ProductSuggestions: Codable {
     let suggestions: CardSuggestions
     let support: CardSupport
