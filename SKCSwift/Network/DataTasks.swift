@@ -15,6 +15,9 @@ struct DataTaskStatusParser {
 
 nonisolated fileprivate struct NilReqBody: Encodable {}
 
+nonisolated fileprivate let sharedJSONDecoder = JSONDecoder()
+nonisolated fileprivate let sharedJSONEncoder = JSONEncoder()
+
 nonisolated fileprivate let customSession: URLSession = {
     let configuration = URLSessionConfiguration.default
     
@@ -92,12 +95,12 @@ nonisolated func data<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, http
 @concurrent
 nonisolated fileprivate func dataTask<T, U>(_ url: URL, reqBody: T? = nil, resType: U.Type, httpMethod: String = "GET") async ->  Result<U, NetworkError> where T: Encodable, U: Decodable {
     do {
-        let bodyData = (reqBody == nil) ? nil : try JSONEncoder().encode(reqBody)
+        let bodyData = (reqBody == nil) ? nil : try sharedJSONEncoder.encode(reqBody)
         try Task.checkCancellation()
         let (body, response) = try await customSession.data(for: baseRequest(url: url, httpMethod: httpMethod, reqBody: bodyData))
         try Task.checkCancellation()
         try validateResponse(response: response)
-        return .success(try JSONDecoder().decode(resType, from: body))
+        return .success(try sharedJSONDecoder.decode(resType, from: body))
     } catch let networkError as NetworkError {
         print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")
         return .failure(networkError)
