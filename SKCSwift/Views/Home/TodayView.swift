@@ -99,21 +99,25 @@ struct ProductsReleasedTodayView: View, Equatable {
         if let networkError {
             NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
         } else {
-            LazyVStack {
-                ForEach(dataTaskStatus == .done ? productsReleasedToday : Product.placeholders, id: \.id) { product in
-                    GroupBox {
-                        ProductListItemView(product: product)
-                            .equatable()
+            if dataTaskStatus == .done, productsReleasedToday.isEmpty {
+                ContentUnavailableView("On this day, Konami rested", systemImage: "tray.fill")
+            } else {
+                LazyVStack {
+                    ForEach(dataTaskStatus == .done ? productsReleasedToday : Product.placeholders, id: \.id) { product in
+                        GroupBox {
+                            ProductListItemView(product: product)
+                                .equatable()
+                        }
+                        .groupBoxStyle(.listItem)
+                        .transition(.opacity)
                     }
-                    .groupBoxStyle(.listItem)
-                    .transition(.opacity)
                 }
+                .if(dataTaskStatus != .done) {
+                    $0.redacted(reason: .placeholder)
+                }
+                .animation(.smooth(duration: 0.25), value: dataTaskStatus)
+                .disabled(dataTaskStatus != .done && networkError == nil)
             }
-            .if(dataTaskStatus != .done) {
-                $0.redacted(reason: .placeholder)
-            }
-            .animation(.smooth(duration: 0.25), value: dataTaskStatus)
-            .disabled(dataTaskStatus != .done && networkError == nil)
         }
     }
 }
