@@ -80,7 +80,7 @@ struct YGOArchetypeView: View {
             } else if let networkError = model.dataNE {
                 if networkError == .notFound {
                     ContentUnavailableView("This suggested archetype is a false positive. We are actively improving our database.",
-                                           systemImage: "exclamationmark.square.fill")
+                                           systemImage: "tray.fill")
                 } else {
                     NetworkErrorView(error: networkError, action: {
                         Task {

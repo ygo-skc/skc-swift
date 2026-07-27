@@ -11,25 +11,25 @@ struct TodayView<T: View, U: View>: View {
     private let todaysDate: Date
     private let cardOfTheDay: () -> T
     private let productsReleasedToday: () -> U
-    
+
     private let calendarSymbol: String
-    
+
     init(todaysDate: Date, @ViewBuilder cardOfTheDay: @escaping () -> T, @ViewBuilder productsReleasedToday: @escaping () -> U) {
         self.todaysDate = todaysDate
         self.cardOfTheDay = cardOfTheDay
         self.productsReleasedToday = productsReleasedToday
-        
-        
+
+
         let symbol = "\(Calendar.current.component(.day, from: todaysDate)).calendar"
         self.calendarSymbol = UIImage(systemName: symbol) != nil ? symbol : "calendar"
     }
-    
+
     var body: some View {
         VStack(alignment: .leading) {
             Text(Date.MMMMdyyyyLocal.formatter.string(from: todaysDate))
                 .headerTextModifier()
                 .padding(.bottom, 10)
-            
+
             Text("Card of the day")
                 .font(.headline)
             GroupBox {
@@ -38,7 +38,7 @@ struct TodayView<T: View, U: View>: View {
             .groupBoxStyle(.listItem)
             .transition(.opacity)
             .padding(.bottom)
-            
+
             Label("Released on this day", systemImage: calendarSymbol)
                 .font(.headline)
             productsReleasedToday()
@@ -51,15 +51,15 @@ struct CardOfTheDayView: View, Equatable {
         lhs.cotd == rhs.cotd
         && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
-    
+
     @Binding var path: NavigationPath
     let cotd: CardOfTheDay
     let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
     let retryCB: () async -> Void
-    
+
     private static let IMAGE_SIZE: CGFloat = 90
-    
+
     var body: some View {
         if let networkError {
             NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
@@ -71,17 +71,17 @@ struct CardOfTheDayView: View, Equatable {
                     CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
                         .equatable()
                     VStack(alignment: .leading, spacing: 5) {
-                        
+
                         Text(cotd.card.cardName)
                             .lineLimit(2)
                             .font(.headline)
                             .fontWeight(.semibold)
-                        
+
                         Text(cotd.card.cardType)
                             .font(.headline)
                             .foregroundColor(.secondary)
                             .lineLimit(1)
-                        
+
                     }
                 }
                 .if(dataTaskStatus != .done) {
@@ -101,15 +101,15 @@ struct ProductsReleasedTodayView: View, Equatable {
         lhs.productsReleasedToday == rhs.productsReleasedToday
         && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
-    
+
     @Binding var path: NavigationPath
     let productsReleasedToday: [Product]
     let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
     let retryCB: () async -> Void
-    
+
     private static let IMAGE_SIZE: CGFloat = 90
-    
+
     var body: some View {
         if let networkError {
             NetworkErrorView(error: networkError, action: { Task { await retryCB() } })
@@ -128,19 +128,19 @@ struct ProductsReleasedTodayView: View, Equatable {
                     .buttonStyle(.plain)
                     .transition(.opacity)
                 }
+                .if(dataTaskStatus != .done) {
+                    $0.redacted(reason: .placeholder)
+                }
+                .animation(.smooth(duration: 0.25), value: dataTaskStatus)
+                .disabled(dataTaskStatus != .done && networkError == nil)
             }
-            .if(dataTaskStatus != .done) {
-                $0.redacted(reason: .placeholder)
-            }
-            .animation(.smooth(duration: 0.25), value: dataTaskStatus)
-            .disabled(dataTaskStatus != .done && networkError == nil)
         }
     }
 }
 
 #Preview("Default") {
     @Previewable @State var path = NavigationPath()
-    
+
     NavigationStack {
         CardOfTheDayView(path: $path,
                          cotd: CardOfTheDay(
@@ -154,7 +154,7 @@ struct ProductsReleasedTodayView: View, Equatable {
 
 #Preview("Loading") {
     @Previewable @State var path = NavigationPath()
-    
+
     NavigationStack {
         CardOfTheDayView(path: $path,
                          cotd: CardOfTheDay(
@@ -168,7 +168,7 @@ struct ProductsReleasedTodayView: View, Equatable {
 
 #Preview("Network Error") {
     @Previewable @State var path = NavigationPath()
-    
+
     NavigationStack {
         CardOfTheDayView(path: $path,
                          cotd: CardOfTheDay(
