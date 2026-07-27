@@ -24,7 +24,7 @@ struct SuggestionTransitionView: View, Equatable {
         if let networkError {
             NetworkErrorView(error: networkError, action: action)
         } else if areSuggestionsLoaded, noSuggestionsFound {
-            ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
+            ContentUnavailableView("No suggestions found 🤯", systemImage: "tray.fill")
         } else if !areSuggestionsLoaded {
             HStack {
                 LoadingView()
