@@ -18,6 +18,7 @@ final class ProductBrowseViewModel {
     private(set) var dataStatus = DataTaskStatus.pending
     
     private(set) var filteredProducts: [String: [Product]] = [:]
+    private(set) var sortedProductYears: [String] = []
     
     @ObservationIgnored
     private var products: [Product] = []
@@ -73,6 +74,7 @@ final class ProductBrowseViewModel {
         let toggledProductSubTypes = Set(productSubTypeFilters.filter{ $0.isToggled }.map{ $0.category })
         let p = (toggledProductSubTypes.isEmpty) ? products : products.filter { toggledProductSubTypes.contains($0.productSubType) }
         filteredProducts = Dictionary(grouping: p) { String($0.productReleaseDate.split(separator: "-", maxSplits: 1)[0]) }
+        sortedProductYears = filteredProducts.keys.sorted(by: >)
     }
     
     @concurrent
