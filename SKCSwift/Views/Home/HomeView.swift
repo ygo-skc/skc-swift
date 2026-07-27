@@ -52,6 +52,7 @@ struct HomeView: View {
                     .equatable()
                     
                     TodayView(
+                        todaysDate: model.todaysDate,
                         cardOfTheDay: {
                             CardOfTheDayView(path: $model.path,
                                              cotd: model.cardOfTheDay,
@@ -60,7 +61,8 @@ struct HomeView: View {
                                              retryCB: model.fetchCardOfTheDayData)
                             .equatable()
                         }, productsReleasedToday: {
-                            ProductsReleasedTodayView(productsReleasedToday: model.productsReleasedToday,
+                            ProductsReleasedTodayView(path: $model.path,
+                                                      productsReleasedToday: model.productsReleasedToday,
                                                       dataTaskStatus: model.productsReleasedTodayDTS,
                                                       networkError: model.productsReleasedTodayNE,
                                                       retryCB: model.fetchProductsReleasedToday)

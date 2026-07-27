@@ -8,23 +8,38 @@
 import SwiftUI
 
 struct TodayView<T: View, U: View>: View {
-    let cardOfTheDay: () -> T
-    let productsReleasedToday: () -> U
+    private let todaysDate: Date
+    private let cardOfTheDay: () -> T
+    private let productsReleasedToday: () -> U
     
-    init(@ViewBuilder cardOfTheDay: @escaping () -> T, @ViewBuilder productsReleasedToday: @escaping () -> U) {
+    private let calendarSymbol: String
+    
+    init(todaysDate: Date, @ViewBuilder cardOfTheDay: @escaping () -> T, @ViewBuilder productsReleasedToday: @escaping () -> U) {
+        self.todaysDate = todaysDate
         self.cardOfTheDay = cardOfTheDay
         self.productsReleasedToday = productsReleasedToday
+        
+        
+        let symbol = "\(Calendar.current.component(.day, from: todaysDate)).calendar"
+        self.calendarSymbol = UIImage(systemName: symbol) != nil ? symbol : "calendar"
     }
     
     var body: some View {
         VStack(alignment: .leading) {
-            SectionView(header: "Today",
-                        content: {
+            Text(Date.MMMMdyyyyLocal.formatter.string(from: todaysDate))
+                .headerTextModifier()
+                .padding(.bottom, 10)
+            
+            Text("Card of the day")
+                .font(.headline)
+            GroupBox {
                 cardOfTheDay()
-            })
+            }
+            .groupBoxStyle(.listItem)
+            .transition(.opacity)
             .padding(.bottom)
             
-            Text("Released on this day")
+            Label("Released on this day", systemImage: calendarSymbol)
                 .font(.headline)
             productsReleasedToday()
         }
@@ -56,8 +71,7 @@ struct CardOfTheDayView: View, Equatable {
                     CardImageView(length: CardOfTheDayView.IMAGE_SIZE, cardID: cotd.card.cardID, imgSize: .tiny, cardColor: cotd.card.cardColor)
                         .equatable()
                     VStack(alignment: .leading, spacing: 5) {
-                        InlineDateView(date: cotd.date)
-                            .equatable()
+                        
                         Text(cotd.card.cardName)
                             .lineLimit(2)
                             .font(.headline)
@@ -88,6 +102,7 @@ struct ProductsReleasedTodayView: View, Equatable {
         && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
     
+    @Binding var path: NavigationPath
     let productsReleasedToday: [Product]
     let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
@@ -101,11 +116,16 @@ struct ProductsReleasedTodayView: View, Equatable {
         } else {
             LazyVStack {
                 ForEach(dataTaskStatus == .done ? productsReleasedToday : Product.placeholders, id: \.id) { product in
-                    GroupBox {
-                        ProductListItemView(product: product)
-                            .equatable()
+                    Button {
+                        path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
+                    } label: {
+                        GroupBox {
+                            ProductListItemView(product: product)
+                                .equatable()
+                        }
+                        .groupBoxStyle(.listItem)
                     }
-                    .groupBoxStyle(.listItem)
+                    .buttonStyle(.plain)
                     .transition(.opacity)
                 }
             }
@@ -148,7 +168,7 @@ struct ProductsReleasedTodayView: View, Equatable {
 
 #Preview("Network Error") {
     @Previewable @State var path = NavigationPath()
-
+    
     NavigationStack {
         CardOfTheDayView(path: $path,
                          cotd: CardOfTheDay(
@@ -161,7 +181,9 @@ struct ProductsReleasedTodayView: View, Equatable {
 }
 
 #Preview("Products - Default") {
-    ProductsReleasedTodayView(productsReleasedToday: [Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
+    @Previewable @State var path = NavigationPath()
+    ProductsReleasedTodayView(path: $path,
+                              productsReleasedToday: [Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
                                                               productType: "Pack", productSubType: "Core Set",
                                                               productReleaseDate: "2024-02-09", productTotal: 100)],
                               dataTaskStatus: .done, networkError: nil, retryCB: {})
@@ -169,13 +191,17 @@ struct ProductsReleasedTodayView: View, Equatable {
 }
 
 #Preview("Products - Loading") {
-    ProductsReleasedTodayView(productsReleasedToday: [],
+    @Previewable @State var path = NavigationPath()
+    ProductsReleasedTodayView(path: $path,
+                              productsReleasedToday: [],
                               dataTaskStatus: .pending, networkError: nil, retryCB: {})
     .padding(.horizontal)
 }
 
 #Preview("Products - Network Error") {
-    ProductsReleasedTodayView(productsReleasedToday: [],
+    @Previewable @State var path = NavigationPath()
+    ProductsReleasedTodayView(path: $path,
+                              productsReleasedToday: [],
                               dataTaskStatus: .error, networkError: .timeout, retryCB: {})
     .padding(.horizontal)
 }

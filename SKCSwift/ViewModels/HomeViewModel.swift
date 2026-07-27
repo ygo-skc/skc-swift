@@ -10,6 +10,9 @@ import SwiftUI
 
 @Observable
 final class HomeViewModel {
+    @ObservationIgnored
+    private(set) var todaysDate = Date()
+    
     private(set) var dbStatsDTS: DataTaskStatus = .pending
     private(set) var cotdDTS: DataTaskStatus = .pending
     private(set) var upcomingTCGProductsDTS: DataTaskStatus = .pending
@@ -44,6 +47,7 @@ final class HomeViewModel {
     private var lastRefreshTimestamp: Date?
     
     func fetchData(forceRefresh: Bool) async {
+        todaysDate = Date()
         if lastRefreshTimestamp == nil || (forceRefresh && (lastRefreshTimestamp?.isDateInvalidated(5) == true)) {
             await withTaskGroup(of: Void.self) { taskGroup in
                 taskGroup.addTask { @Sendable in await self.fetchDBStatsData() }
@@ -84,7 +88,7 @@ final class HomeViewModel {
     }
     
     func fetchProductsReleasedToday() async {
-        let res = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: Date()))
+        let res = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: todaysDate))
         if case .success(let p) = res {
             self.productsReleasedToday = p
         }
