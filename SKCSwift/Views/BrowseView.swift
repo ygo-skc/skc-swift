@@ -133,7 +133,7 @@ private struct CardBrowseDataOverlay: View {
             if let networkError = dataRequestError {
                 NetworkErrorView(error: networkError, action: { Task{ await retryDataRequest() } })
             } else if noResults {
-                ContentUnavailableView("No cards found using the selected filters 😕", systemImage: "exclamationmark.square.fill")
+                ContentUnavailableView("No cards found using the selected filters 😕", systemImage: "tray.fill")
             }
         }
     }

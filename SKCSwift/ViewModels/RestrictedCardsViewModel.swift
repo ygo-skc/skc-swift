@@ -14,7 +14,7 @@ final class RestrictedCardsViewModel {
     var dateRangeIndex: Int = 0
     var chosenBannedContentCategory = BannedContentCategory.forbidden
     
-    var sort = Ygo_Common_CardRestrictionSortOrder.cardColorAscCardNameAsc
+    var sort = Ygo_CardRestrictionSortOrder.unspecified
     
     private(set) var timelineDTS: DataTaskStatus = .pending
     private(set) var contentDTS: DataTaskStatus = .pending
@@ -39,7 +39,7 @@ final class RestrictedCardsViewModel {
     @ObservationIgnored
     var restrictedContentEffectiveDate: Date? {
         if let restrictedContentEffectiveDateStr {
-            return Date.yyyyMMddLocalFormatter.date(from: restrictedContentEffectiveDateStr) ?? nil
+            return Date.yyyyMMddLocal.formatter.date(from: restrictedContentEffectiveDateStr) ?? nil
         }
         return nil
     }
@@ -165,10 +165,10 @@ final class RestrictedCardsViewModel {
     }
 }
 
-extension Ygo_Common_CardRestrictionSortOrder {
+extension Ygo_CardRestrictionSortOrder {
     var title: String {
         switch self {
-        case .cardColorAscCardNameAsc:
+        case .unspecified:
             return "Card Name"
         case .scoreDescCardColorAscCardNameAsc:
             return "Card Score"
@@ -179,7 +179,7 @@ extension Ygo_Common_CardRestrictionSortOrder {
     
     var subtitle: String {
         switch self {
-        case .cardColorAscCardNameAsc:
+        case .unspecified:
             return "A-Z"
         case .scoreDescCardColorAscCardNameAsc:
             return "9-0"

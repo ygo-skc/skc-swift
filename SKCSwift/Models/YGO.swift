@@ -210,12 +210,34 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
         self.productContent = productContent
     }
     
+    init(from: Ygo_ProductSummary) {
+        self.productId = from.id
+        self.productLocale = from.locale
+        self.productName = from.name
+        self.productType = from.type
+        self.productSubType = from.subType
+        self.productReleaseDate = from.releaseDate
+        self.productTotal = Int(from.totalItems)
+        self.productContent = nil
+    }
+    
     var id: String {
         if !(productContent?.isEmpty ?? true), let productContent {
             return "\(productId)-\(productContent[0].id)"
         } else {
             return productId
         }
+    }
+
+    static let placeholderId = "XXXXX"
+    static let placeholders: [Product] = (1...3).map {
+        Product(productId: "\(Product.placeholderId)\($0)",
+                productLocale: "EN",
+                productName: "Legendary Placeholder Collection",
+                productType: "Pack",
+                productSubType: "Core Set",
+                productReleaseDate: "1993-07-27",
+                productTotal: 99)
     }
 }
 
@@ -287,6 +309,10 @@ nonisolated struct CardSuggestions: Codable {
 
 nonisolated struct CardSupport: Codable {
     let referencedBy, materialFor: [CardReference]
+}
+
+nonisolated struct SimilarCards: Codable {
+    let matches: [YGOCard]
 }
 
 nonisolated struct ProductSuggestions: Codable {

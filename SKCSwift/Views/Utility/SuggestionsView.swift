@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct SuggestionOverlayView: View, Equatable {
-    static func == (lhs: SuggestionOverlayView, rhs: SuggestionOverlayView) -> Bool {
+struct SuggestionTransitionView: View, Equatable {
+    static func == (lhs: SuggestionTransitionView, rhs: SuggestionTransitionView) -> Bool {
         lhs.areSuggestionsLoaded == rhs.areSuggestionsLoaded
         && lhs.noSuggestionsFound == rhs.noSuggestionsFound
         && lhs.networkError == rhs.networkError
@@ -24,7 +24,7 @@ struct SuggestionOverlayView: View, Equatable {
         if let networkError {
             NetworkErrorView(error: networkError, action: action)
         } else if areSuggestionsLoaded, noSuggestionsFound {
-            ContentUnavailableView("No suggestions found 🤯", systemImage: "exclamationmark.square.fill")
+            ContentUnavailableView("No suggestions found 🤯", systemImage: "tray.fill")
         } else if !areSuggestionsLoaded {
             HStack {
                 LoadingView()

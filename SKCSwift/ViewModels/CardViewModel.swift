@@ -59,6 +59,7 @@ final class CardViewModel {
     
     private(set) var suggestionsDTS: DataTaskStatus = .pending
     private(set) var supportDTS: DataTaskStatus = .pending
+    private(set) var similarCardsDTS: DataTaskStatus = .pending
     
     @ObservationIgnored
     private(set) var cardNE: NetworkError?
@@ -68,6 +69,8 @@ final class CardViewModel {
     private(set) var suggestionsNE: NetworkError?
     @ObservationIgnored
     private(set) var supportNE: NetworkError?
+    @ObservationIgnored
+    private(set) var similarCardsNE: NetworkError?
     
     @ObservationIgnored
     private(set) var card: YGOCard?
@@ -90,10 +93,13 @@ final class CardViewModel {
     private(set) var archetypeSuggestions: Set<String> = []
     
     @ObservationIgnored
-    var areSuggestionsLoaded: Bool { suggestionsDTS == .done && supportDTS == .done }
+    private(set) var similarCards: [CardReference] = []
+    
+    @ObservationIgnored
+    var areSuggestionsLoaded: Bool { suggestionsDTS == .done && supportDTS == .done && similarCardsDTS == .done }
     @ObservationIgnored
     var suggestionsError: NetworkError? {
-        return (suggestionsNE != nil) ? suggestionsNE : supportNE
+        return suggestionsNE ?? supportNE ?? similarCardsNE
     }
     
     func fetchCardInfo(forceRefresh: Bool = false) async {
@@ -166,6 +172,22 @@ final class CardViewModel {
     }
     
     func hasSuggestions() -> Bool {
-        return !(namedMaterials.isEmpty && namedReferences.isEmpty && referencedBy.isEmpty && materialFor.isEmpty && archetypeSuggestions.isEmpty)
+        return !(namedMaterials.isEmpty &&
+                 namedReferences.isEmpty &&
+                 referencedBy.isEmpty &&
+                 materialFor.isEmpty &&
+                 archetypeSuggestions.isEmpty &&
+                 similarCards.isEmpty)
+    }
+    
+    func fetchSimilarCards(forceRefresh: Bool = false) async {
+        if forceRefresh || similarCardsDTS != .done || similarCardsNE != nil {
+            (similarCardsNE, similarCardsDTS) = (nil, .pending)
+            let res = await data(similarCardsURL(cardID: cardID), resType: SimilarCards.self)
+            if case .success(let similarCards) = res {
+                self.similarCards = similarCards.matches.map({CardReference(card: $0, occurrences: 1)})
+            }
+            (similarCardsNE, similarCardsDTS) = res.validate()
+        }
     }
 }

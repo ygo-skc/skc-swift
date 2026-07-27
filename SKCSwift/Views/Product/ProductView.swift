@@ -304,7 +304,7 @@ private struct ProductSuggestionsButton: View {
                     }
                     .frame(maxWidth: .infinity)
                     .overlay {
-                        SuggestionOverlayView(areSuggestionsLoaded: model.suggestionsDTS == .done,
+                        SuggestionTransitionView(areSuggestionsLoaded: model.suggestionsDTS == .done,
                                               noSuggestionsFound: !model.hasSuggestions,
                                               networkError: model.suggestionsNE,
                                               action: {

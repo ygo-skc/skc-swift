@@ -10,7 +10,6 @@
 
 import GRPCCore
 import GRPCProtobuf
-import SwiftProtobuf
 
 // MARK: - ygo.CardService
 
@@ -24,9 +23,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetCardColors" metadata.
         internal enum GetCardColors: Sendable {
             /// Request type for "GetCardColors".
-            internal typealias Input = SwiftProtobuf.Google_Protobuf_Empty
+            internal typealias Input = Ygo_GetCardColorsRequest
             /// Response type for "GetCardColors".
-            internal typealias Output = Ygo_CardColors
+            internal typealias Output = Ygo_GetCardColorsResponse
             /// Descriptor for "GetCardColors".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -37,9 +36,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetCardByID" metadata.
         internal enum GetCardByID: Sendable {
             /// Request type for "GetCardByID".
-            internal typealias Input = Ygo_Common_ResourceID
+            internal typealias Input = Ygo_GetCardByIDRequest
             /// Response type for "GetCardByID".
-            internal typealias Output = Ygo_Card
+            internal typealias Output = Ygo_GetCardByIDResponse
             /// Descriptor for "GetCardByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -50,9 +49,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetCardsByID" metadata.
         internal enum GetCardsByID: Sendable {
             /// Request type for "GetCardsByID".
-            internal typealias Input = Ygo_Common_ResourceIDs
+            internal typealias Input = Ygo_GetCardsByIDRequest
             /// Response type for "GetCardsByID".
-            internal typealias Output = Ygo_Cards
+            internal typealias Output = Ygo_GetCardsByIDResponse
             /// Descriptor for "GetCardsByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -63,9 +62,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetCardsByName" metadata.
         internal enum GetCardsByName: Sendable {
             /// Request type for "GetCardsByName".
-            internal typealias Input = Ygo_Common_ResourceNames
+            internal typealias Input = Ygo_GetCardsByNameRequest
             /// Response type for "GetCardsByName".
-            internal typealias Output = Ygo_Cards
+            internal typealias Output = Ygo_GetCardsByNameResponse
             /// Descriptor for "GetCardsByName".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -76,9 +75,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetCardsReferencingNameInEffect" metadata.
         internal enum GetCardsReferencingNameInEffect: Sendable {
             /// Request type for "GetCardsReferencingNameInEffect".
-            internal typealias Input = Ygo_Common_ResourceNames
+            internal typealias Input = Ygo_GetCardsReferencingNameInEffectRequest
             /// Response type for "GetCardsReferencingNameInEffect".
-            internal typealias Output = Ygo_CardList
+            internal typealias Output = Ygo_GetCardsReferencingNameInEffectResponse
             /// Descriptor for "GetCardsReferencingNameInEffect".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -89,9 +88,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetArchetypalCardsUsingCardName" metadata.
         internal enum GetArchetypalCardsUsingCardName: Sendable {
             /// Request type for "GetArchetypalCardsUsingCardName".
-            internal typealias Input = Ygo_Common_Archetype
+            internal typealias Input = Ygo_GetArchetypalCardsUsingCardNameRequest
             /// Response type for "GetArchetypalCardsUsingCardName".
-            internal typealias Output = Ygo_CardList
+            internal typealias Output = Ygo_GetArchetypalCardsUsingCardNameResponse
             /// Descriptor for "GetArchetypalCardsUsingCardName".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -102,9 +101,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetExplicitArchetypalInclusions" metadata.
         internal enum GetExplicitArchetypalInclusions: Sendable {
             /// Request type for "GetExplicitArchetypalInclusions".
-            internal typealias Input = Ygo_Common_Archetype
+            internal typealias Input = Ygo_GetExplicitArchetypalInclusionsRequest
             /// Response type for "GetExplicitArchetypalInclusions".
-            internal typealias Output = Ygo_CardList
+            internal typealias Output = Ygo_GetExplicitArchetypalInclusionsResponse
             /// Descriptor for "GetExplicitArchetypalInclusions".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -115,9 +114,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetExplicitArchetypalExclusions" metadata.
         internal enum GetExplicitArchetypalExclusions: Sendable {
             /// Request type for "GetExplicitArchetypalExclusions".
-            internal typealias Input = Ygo_Common_Archetype
+            internal typealias Input = Ygo_GetExplicitArchetypalExclusionsRequest
             /// Response type for "GetExplicitArchetypalExclusions".
-            internal typealias Output = Ygo_CardList
+            internal typealias Output = Ygo_GetExplicitArchetypalExclusionsResponse
             /// Descriptor for "GetExplicitArchetypalExclusions".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -128,9 +127,9 @@ internal enum Ygo_CardService: Sendable {
         /// Namespace for "GetRandomCard" metadata.
         internal enum GetRandomCard: Sendable {
             /// Request type for "GetRandomCard".
-            internal typealias Input = Ygo_Common_BlackListed
+            internal typealias Input = Ygo_GetRandomCardRequest
             /// Response type for "GetRandomCard".
-            internal typealias Output = Ygo_Card
+            internal typealias Output = Ygo_GetRandomCardResponse
             /// Descriptor for "GetRandomCard".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardService"),
@@ -171,172 +170,172 @@ extension Ygo_CardService {
         /// Call the "GetCardColors" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `SwiftProtobuf.Google_Protobuf_Empty` message.
-        ///   - serializer: A serializer for `SwiftProtobuf.Google_Protobuf_Empty` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardColors` messages.
+        ///   - request: A request containing a single `Ygo_GetCardColorsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardColorsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardColorsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardColors<Result>(
-            request: GRPCCore.ClientRequest<SwiftProtobuf.Google_Protobuf_Empty>,
-            serializer: some GRPCCore.MessageSerializer<SwiftProtobuf.Google_Protobuf_Empty>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardColors>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardColorsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardColorsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardColorsResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardColors>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardColorsResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetCardByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
-        ///   - deserializer: A deserializer for `Ygo_Card` messages.
+        ///   - request: A request containing a single `Ygo_GetCardByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Card>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardByIDResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardByIDResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetCardsByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceIDs` messages.
-        ///   - deserializer: A deserializer for `Ygo_Cards` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardsByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceIDs>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Cards>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsByIDResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByIDResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetCardsByName" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceNames` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceNames` messages.
-        ///   - deserializer: A deserializer for `Ygo_Cards` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsByNameRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsByNameRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsByNameResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardsByName<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceNames>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceNames>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Cards>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsByNameRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsByNameRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsByNameResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByNameResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetCardsReferencingNameInEffect" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceNames` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceNames` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsReferencingNameInEffectRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsReferencingNameInEffectRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsReferencingNameInEffectResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardsReferencingNameInEffect<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceNames>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceNames>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsReferencingNameInEffectRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsReferencingNameInEffectRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsReferencingNameInEffectResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsReferencingNameInEffectResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetArchetypalCardsUsingCardName" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_Archetype` message.
-        ///   - serializer: A serializer for `Ygo_Common_Archetype` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetArchetypalCardsUsingCardNameRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetArchetypalCardsUsingCardNameRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetArchetypalCardsUsingCardNameResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getArchetypalCardsUsingCardName<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_Archetype>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetArchetypalCardsUsingCardNameRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetArchetypalCardsUsingCardNameRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetArchetypalCardsUsingCardNameResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetArchetypalCardsUsingCardNameResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetExplicitArchetypalInclusions" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_Archetype` message.
-        ///   - serializer: A serializer for `Ygo_Common_Archetype` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetExplicitArchetypalInclusionsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetExplicitArchetypalInclusionsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetExplicitArchetypalInclusionsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getExplicitArchetypalInclusions<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_Archetype>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalInclusionsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetExplicitArchetypalInclusionsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetExplicitArchetypalInclusionsResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalInclusionsResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetExplicitArchetypalExclusions" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_Archetype` message.
-        ///   - serializer: A serializer for `Ygo_Common_Archetype` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetExplicitArchetypalExclusionsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetExplicitArchetypalExclusionsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetExplicitArchetypalExclusionsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getExplicitArchetypalExclusions<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_Archetype>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalExclusionsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetExplicitArchetypalExclusionsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetExplicitArchetypalExclusionsResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalExclusionsResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetRandomCard" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_BlackListed` message.
-        ///   - serializer: A serializer for `Ygo_Common_BlackListed` messages.
-        ///   - deserializer: A deserializer for `Ygo_Card` messages.
+        ///   - request: A request containing a single `Ygo_GetRandomCardRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetRandomCardRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetRandomCardResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getRandomCard<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_BlackListed>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_BlackListed>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Card>,
+            request: GRPCCore.ClientRequest<Ygo_GetRandomCardRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetRandomCardRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetRandomCardResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetRandomCardResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
     }
 
@@ -359,20 +358,20 @@ extension Ygo_CardService {
         /// Call the "GetCardColors" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `SwiftProtobuf.Google_Protobuf_Empty` message.
-        ///   - serializer: A serializer for `SwiftProtobuf.Google_Protobuf_Empty` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardColors` messages.
+        ///   - request: A request containing a single `Ygo_GetCardColorsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardColorsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardColorsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardColors<Result>(
-            request: GRPCCore.ClientRequest<SwiftProtobuf.Google_Protobuf_Empty>,
-            serializer: some GRPCCore.MessageSerializer<SwiftProtobuf.Google_Protobuf_Empty>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardColors>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardColorsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardColorsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardColorsResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardColors>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardColorsResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -389,20 +388,20 @@ extension Ygo_CardService {
         /// Call the "GetCardByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
-        ///   - deserializer: A deserializer for `Ygo_Card` messages.
+        ///   - request: A request containing a single `Ygo_GetCardByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Card>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardByIDResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardByIDResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -419,20 +418,20 @@ extension Ygo_CardService {
         /// Call the "GetCardsByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceIDs` messages.
-        ///   - deserializer: A deserializer for `Ygo_Cards` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardsByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceIDs>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Cards>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsByIDResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByIDResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -449,20 +448,20 @@ extension Ygo_CardService {
         /// Call the "GetCardsByName" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceNames` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceNames` messages.
-        ///   - deserializer: A deserializer for `Ygo_Cards` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsByNameRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsByNameRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsByNameResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardsByName<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceNames>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceNames>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Cards>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsByNameRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsByNameRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsByNameResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByNameResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -479,20 +478,20 @@ extension Ygo_CardService {
         /// Call the "GetCardsReferencingNameInEffect" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceNames` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceNames` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsReferencingNameInEffectRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsReferencingNameInEffectRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsReferencingNameInEffectResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardsReferencingNameInEffect<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceNames>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceNames>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsReferencingNameInEffectRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsReferencingNameInEffectRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsReferencingNameInEffectResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsReferencingNameInEffectResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -509,20 +508,20 @@ extension Ygo_CardService {
         /// Call the "GetArchetypalCardsUsingCardName" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_Archetype` message.
-        ///   - serializer: A serializer for `Ygo_Common_Archetype` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetArchetypalCardsUsingCardNameRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetArchetypalCardsUsingCardNameRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetArchetypalCardsUsingCardNameResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getArchetypalCardsUsingCardName<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_Archetype>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetArchetypalCardsUsingCardNameRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetArchetypalCardsUsingCardNameRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetArchetypalCardsUsingCardNameResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetArchetypalCardsUsingCardNameResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -539,20 +538,20 @@ extension Ygo_CardService {
         /// Call the "GetExplicitArchetypalInclusions" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_Archetype` message.
-        ///   - serializer: A serializer for `Ygo_Common_Archetype` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetExplicitArchetypalInclusionsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetExplicitArchetypalInclusionsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetExplicitArchetypalInclusionsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getExplicitArchetypalInclusions<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_Archetype>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalInclusionsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetExplicitArchetypalInclusionsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetExplicitArchetypalInclusionsResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalInclusionsResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -569,20 +568,20 @@ extension Ygo_CardService {
         /// Call the "GetExplicitArchetypalExclusions" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_Archetype` message.
-        ///   - serializer: A serializer for `Ygo_Common_Archetype` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardList` messages.
+        ///   - request: A request containing a single `Ygo_GetExplicitArchetypalExclusionsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetExplicitArchetypalExclusionsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetExplicitArchetypalExclusionsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getExplicitArchetypalExclusions<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_Archetype>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardList>,
+            request: GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalExclusionsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetExplicitArchetypalExclusionsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetExplicitArchetypalExclusionsResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalExclusionsResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -599,20 +598,20 @@ extension Ygo_CardService {
         /// Call the "GetRandomCard" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_BlackListed` message.
-        ///   - serializer: A serializer for `Ygo_Common_BlackListed` messages.
-        ///   - deserializer: A deserializer for `Ygo_Card` messages.
+        ///   - request: A request containing a single `Ygo_GetRandomCardRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetRandomCardRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetRandomCardResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getRandomCard<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_BlackListed>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_BlackListed>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Card>,
+            request: GRPCCore.ClientRequest<Ygo_GetRandomCardRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetRandomCardRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetRandomCardResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetRandomCardResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -634,23 +633,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetCardColors" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `SwiftProtobuf.Google_Protobuf_Empty` message.
+    ///   - request: A request containing a single `Ygo_GetCardColorsRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardColors<Result>(
-        request: GRPCCore.ClientRequest<SwiftProtobuf.Google_Protobuf_Empty>,
+        request: GRPCCore.ClientRequest<Ygo_GetCardColorsRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardColors>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardColorsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getCardColors(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<SwiftProtobuf.Google_Protobuf_Empty>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_CardColors>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetCardColorsRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetCardColorsResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -659,23 +658,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetCardByID" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
+    ///   - request: A request containing a single `Ygo_GetCardByIDRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardByID<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
+        request: GRPCCore.ClientRequest<Ygo_GetCardByIDRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getCardByID(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceID>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Card>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetCardByIDRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetCardByIDResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -684,23 +683,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetCardsByID" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
+    ///   - request: A request containing a single `Ygo_GetCardsByIDRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsByID<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
+        request: GRPCCore.ClientRequest<Ygo_GetCardsByIDRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getCardsByID(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceIDs>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Cards>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetCardsByIDRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetCardsByIDResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -709,23 +708,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetCardsByName" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceNames` message.
+    ///   - request: A request containing a single `Ygo_GetCardsByNameRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsByName<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceNames>,
+        request: GRPCCore.ClientRequest<Ygo_GetCardsByNameRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByNameResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getCardsByName(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceNames>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Cards>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetCardsByNameRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetCardsByNameResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -734,23 +733,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetCardsReferencingNameInEffect" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceNames` message.
+    ///   - request: A request containing a single `Ygo_GetCardsReferencingNameInEffectRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsReferencingNameInEffect<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceNames>,
+        request: GRPCCore.ClientRequest<Ygo_GetCardsReferencingNameInEffectRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsReferencingNameInEffectResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getCardsReferencingNameInEffect(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceNames>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_CardList>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetCardsReferencingNameInEffectRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetCardsReferencingNameInEffectResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -759,23 +758,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetArchetypalCardsUsingCardName" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_Archetype` message.
+    ///   - request: A request containing a single `Ygo_GetArchetypalCardsUsingCardNameRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getArchetypalCardsUsingCardName<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
+        request: GRPCCore.ClientRequest<Ygo_GetArchetypalCardsUsingCardNameRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetArchetypalCardsUsingCardNameResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getArchetypalCardsUsingCardName(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_Archetype>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_CardList>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetArchetypalCardsUsingCardNameRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetArchetypalCardsUsingCardNameResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -784,23 +783,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetExplicitArchetypalInclusions" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_Archetype` message.
+    ///   - request: A request containing a single `Ygo_GetExplicitArchetypalInclusionsRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getExplicitArchetypalInclusions<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
+        request: GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalInclusionsRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalInclusionsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getExplicitArchetypalInclusions(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_Archetype>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_CardList>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetExplicitArchetypalInclusionsRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetExplicitArchetypalInclusionsResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -809,23 +808,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetExplicitArchetypalExclusions" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_Archetype` message.
+    ///   - request: A request containing a single `Ygo_GetExplicitArchetypalExclusionsRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getExplicitArchetypalExclusions<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_Archetype>,
+        request: GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalExclusionsRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalExclusionsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getExplicitArchetypalExclusions(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_Archetype>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_CardList>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetExplicitArchetypalExclusionsRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetExplicitArchetypalExclusionsResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -834,23 +833,23 @@ extension Ygo_CardService.ClientProtocol {
     /// Call the "GetRandomCard" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_BlackListed` message.
+    ///   - request: A request containing a single `Ygo_GetRandomCardRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getRandomCard<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_BlackListed>,
+        request: GRPCCore.ClientRequest<Ygo_GetRandomCardRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetRandomCardResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getRandomCard(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_BlackListed>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Card>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetRandomCardRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetRandomCardResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -871,14 +870,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardColors<Result>(
-        _ message: SwiftProtobuf.Google_Protobuf_Empty,
+        _ message: Ygo_GetCardColorsRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardColors>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardColorsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<SwiftProtobuf.Google_Protobuf_Empty>(
+        let request = GRPCCore.ClientRequest<Ygo_GetCardColorsRequest>(
             message: message,
             metadata: metadata
         )
@@ -900,14 +899,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardByID<Result>(
-        _ message: Ygo_Common_ResourceID,
+        _ message: Ygo_GetCardByIDRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceID>(
+        let request = GRPCCore.ClientRequest<Ygo_GetCardByIDRequest>(
             message: message,
             metadata: metadata
         )
@@ -929,14 +928,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsByID<Result>(
-        _ message: Ygo_Common_ResourceIDs,
+        _ message: Ygo_GetCardsByIDRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>(
+        let request = GRPCCore.ClientRequest<Ygo_GetCardsByIDRequest>(
             message: message,
             metadata: metadata
         )
@@ -958,14 +957,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsByName<Result>(
-        _ message: Ygo_Common_ResourceNames,
+        _ message: Ygo_GetCardsByNameRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Cards>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByNameResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceNames>(
+        let request = GRPCCore.ClientRequest<Ygo_GetCardsByNameRequest>(
             message: message,
             metadata: metadata
         )
@@ -987,14 +986,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsReferencingNameInEffect<Result>(
-        _ message: Ygo_Common_ResourceNames,
+        _ message: Ygo_GetCardsReferencingNameInEffectRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsReferencingNameInEffectResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceNames>(
+        let request = GRPCCore.ClientRequest<Ygo_GetCardsReferencingNameInEffectRequest>(
             message: message,
             metadata: metadata
         )
@@ -1016,14 +1015,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getArchetypalCardsUsingCardName<Result>(
-        _ message: Ygo_Common_Archetype,
+        _ message: Ygo_GetArchetypalCardsUsingCardNameRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetArchetypalCardsUsingCardNameResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_Archetype>(
+        let request = GRPCCore.ClientRequest<Ygo_GetArchetypalCardsUsingCardNameRequest>(
             message: message,
             metadata: metadata
         )
@@ -1045,14 +1044,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getExplicitArchetypalInclusions<Result>(
-        _ message: Ygo_Common_Archetype,
+        _ message: Ygo_GetExplicitArchetypalInclusionsRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalInclusionsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_Archetype>(
+        let request = GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalInclusionsRequest>(
             message: message,
             metadata: metadata
         )
@@ -1074,14 +1073,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getExplicitArchetypalExclusions<Result>(
-        _ message: Ygo_Common_Archetype,
+        _ message: Ygo_GetExplicitArchetypalExclusionsRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardList>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetExplicitArchetypalExclusionsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_Archetype>(
+        let request = GRPCCore.ClientRequest<Ygo_GetExplicitArchetypalExclusionsRequest>(
             message: message,
             metadata: metadata
         )
@@ -1103,14 +1102,14 @@ extension Ygo_CardService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getRandomCard<Result>(
-        _ message: Ygo_Common_BlackListed,
+        _ message: Ygo_GetRandomCardRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Card>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetRandomCardResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_BlackListed>(
+        let request = GRPCCore.ClientRequest<Ygo_GetRandomCardRequest>(
             message: message,
             metadata: metadata
         )
@@ -1134,9 +1133,9 @@ internal enum Ygo_ProductService: Sendable {
         /// Namespace for "GetCardsByProductID" metadata.
         internal enum GetCardsByProductID: Sendable {
             /// Request type for "GetCardsByProductID".
-            internal typealias Input = Ygo_Common_ResourceID
+            internal typealias Input = Ygo_GetCardsByProductIDRequest
             /// Response type for "GetCardsByProductID".
-            internal typealias Output = Ygo_Product
+            internal typealias Output = Ygo_GetCardsByProductIDResponse
             /// Descriptor for "GetCardsByProductID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService"),
@@ -1147,9 +1146,9 @@ internal enum Ygo_ProductService: Sendable {
         /// Namespace for "GetProductSummaryByID" metadata.
         internal enum GetProductSummaryByID: Sendable {
             /// Request type for "GetProductSummaryByID".
-            internal typealias Input = Ygo_Common_ResourceID
+            internal typealias Input = Ygo_GetProductSummaryByIDRequest
             /// Response type for "GetProductSummaryByID".
-            internal typealias Output = Ygo_ProductSummary
+            internal typealias Output = Ygo_GetProductSummaryByIDResponse
             /// Descriptor for "GetProductSummaryByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService"),
@@ -1160,9 +1159,9 @@ internal enum Ygo_ProductService: Sendable {
         /// Namespace for "GetProductsSummaryByID" metadata.
         internal enum GetProductsSummaryByID: Sendable {
             /// Request type for "GetProductsSummaryByID".
-            internal typealias Input = Ygo_Common_ResourceIDs
+            internal typealias Input = Ygo_GetProductsSummaryByIDRequest
             /// Response type for "GetProductsSummaryByID".
-            internal typealias Output = Ygo_Products
+            internal typealias Output = Ygo_GetProductsSummaryByIDResponse
             /// Descriptor for "GetProductsSummaryByID".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService"),
@@ -1170,11 +1169,25 @@ internal enum Ygo_ProductService: Sendable {
                 type: .unary
             )
         }
+        /// Namespace for "GetProductsReleasedSameDay" metadata.
+        internal enum GetProductsReleasedSameDay: Sendable {
+            /// Request type for "GetProductsReleasedSameDay".
+            internal typealias Input = Ygo_GetProductsReleasedSameDayRequest
+            /// Response type for "GetProductsReleasedSameDay".
+            internal typealias Output = Ygo_GetProductsReleasedSameDayResponse
+            /// Descriptor for "GetProductsReleasedSameDay".
+            internal static let descriptor = GRPCCore.MethodDescriptor(
+                service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ProductService"),
+                method: "GetProductsReleasedSameDay",
+                type: .unary
+            )
+        }
         /// Descriptors for all methods in the "ygo.ProductService" service.
         internal static let descriptors: [GRPCCore.MethodDescriptor] = [
             GetCardsByProductID.descriptor,
             GetProductSummaryByID.descriptor,
-            GetProductsSummaryByID.descriptor
+            GetProductsSummaryByID.descriptor,
+            GetProductsReleasedSameDay.descriptor
         ]
     }
 }
@@ -1197,58 +1210,77 @@ extension Ygo_ProductService {
         /// Call the "GetCardsByProductID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
-        ///   - deserializer: A deserializer for `Ygo_Product` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsByProductIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsByProductIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsByProductIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardsByProductID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Product>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsByProductIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsByProductIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsByProductIDResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Product>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByProductIDResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetProductSummaryByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
-        ///   - deserializer: A deserializer for `Ygo_ProductSummary` messages.
+        ///   - request: A request containing a single `Ygo_GetProductSummaryByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetProductSummaryByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetProductSummaryByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getProductSummaryByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_ProductSummary>,
+            request: GRPCCore.ClientRequest<Ygo_GetProductSummaryByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetProductSummaryByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetProductSummaryByIDResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ProductSummary>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductSummaryByIDResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
 
         /// Call the "GetProductsSummaryByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceIDs` messages.
-        ///   - deserializer: A deserializer for `Ygo_Products` messages.
+        ///   - request: A request containing a single `Ygo_GetProductsSummaryByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetProductsSummaryByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetProductsSummaryByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getProductsSummaryByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceIDs>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Products>,
+            request: GRPCCore.ClientRequest<Ygo_GetProductsSummaryByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetProductsSummaryByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetProductsSummaryByIDResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Products>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsSummaryByIDResponse>) async throws -> Result
+        ) async throws -> Result where Result: Sendable
+
+        /// Call the "GetProductsReleasedSameDay" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Ygo_GetProductsReleasedSameDayRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetProductsReleasedSameDayRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetProductsReleasedSameDayResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        func getProductsReleasedSameDay<Result>(
+            request: GRPCCore.ClientRequest<Ygo_GetProductsReleasedSameDayRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetProductsReleasedSameDayRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetProductsReleasedSameDayResponse>,
+            options: GRPCCore.CallOptions,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsReleasedSameDayResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
     }
 
@@ -1271,20 +1303,20 @@ extension Ygo_ProductService {
         /// Call the "GetCardsByProductID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
-        ///   - deserializer: A deserializer for `Ygo_Product` messages.
+        ///   - request: A request containing a single `Ygo_GetCardsByProductIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardsByProductIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardsByProductIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardsByProductID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Product>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardsByProductIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardsByProductIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardsByProductIDResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Product>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByProductIDResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -1301,20 +1333,20 @@ extension Ygo_ProductService {
         /// Call the "GetProductSummaryByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
-        ///   - deserializer: A deserializer for `Ygo_ProductSummary` messages.
+        ///   - request: A request containing a single `Ygo_GetProductSummaryByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetProductSummaryByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetProductSummaryByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getProductSummaryByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_ProductSummary>,
+            request: GRPCCore.ClientRequest<Ygo_GetProductSummaryByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetProductSummaryByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetProductSummaryByIDResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ProductSummary>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductSummaryByIDResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -1331,26 +1363,56 @@ extension Ygo_ProductService {
         /// Call the "GetProductsSummaryByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceIDs` messages.
-        ///   - deserializer: A deserializer for `Ygo_Products` messages.
+        ///   - request: A request containing a single `Ygo_GetProductsSummaryByIDRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetProductsSummaryByIDRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetProductsSummaryByIDResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getProductsSummaryByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceIDs>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Products>,
+            request: GRPCCore.ClientRequest<Ygo_GetProductsSummaryByIDRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetProductsSummaryByIDRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetProductsSummaryByIDResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Products>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsSummaryByIDResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
             try await self.client.unary(
                 request: request,
                 descriptor: Ygo_ProductService.Method.GetProductsSummaryByID.descriptor,
+                serializer: serializer,
+                deserializer: deserializer,
+                options: options,
+                onResponse: handleResponse
+            )
+        }
+
+        /// Call the "GetProductsReleasedSameDay" method.
+        ///
+        /// - Parameters:
+        ///   - request: A request containing a single `Ygo_GetProductsReleasedSameDayRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetProductsReleasedSameDayRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetProductsReleasedSameDayResponse` messages.
+        ///   - options: Options to apply to this RPC.
+        ///   - handleResponse: A closure which handles the response, the result of which is
+        ///       returned to the caller. Returning from the closure will cancel the RPC if it
+        ///       hasn't already finished.
+        /// - Returns: The result of `handleResponse`.
+        internal func getProductsReleasedSameDay<Result>(
+            request: GRPCCore.ClientRequest<Ygo_GetProductsReleasedSameDayRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetProductsReleasedSameDayRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetProductsReleasedSameDayResponse>,
+            options: GRPCCore.CallOptions = .defaults,
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsReleasedSameDayResponse>) async throws -> Result = { response in
+                try response.message
+            }
+        ) async throws -> Result where Result: Sendable {
+            try await self.client.unary(
+                request: request,
+                descriptor: Ygo_ProductService.Method.GetProductsReleasedSameDay.descriptor,
                 serializer: serializer,
                 deserializer: deserializer,
                 options: options,
@@ -1366,23 +1428,23 @@ extension Ygo_ProductService.ClientProtocol {
     /// Call the "GetCardsByProductID" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
+    ///   - request: A request containing a single `Ygo_GetCardsByProductIDRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsByProductID<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
+        request: GRPCCore.ClientRequest<Ygo_GetCardsByProductIDRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Product>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByProductIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getCardsByProductID(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceID>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Product>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetCardsByProductIDRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetCardsByProductIDResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -1391,23 +1453,23 @@ extension Ygo_ProductService.ClientProtocol {
     /// Call the "GetProductSummaryByID" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
+    ///   - request: A request containing a single `Ygo_GetProductSummaryByIDRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getProductSummaryByID<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
+        request: GRPCCore.ClientRequest<Ygo_GetProductSummaryByIDRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ProductSummary>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductSummaryByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getProductSummaryByID(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceID>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_ProductSummary>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetProductSummaryByIDRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetProductSummaryByIDResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -1416,23 +1478,48 @@ extension Ygo_ProductService.ClientProtocol {
     /// Call the "GetProductsSummaryByID" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
+    ///   - request: A request containing a single `Ygo_GetProductsSummaryByIDRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getProductsSummaryByID<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
+        request: GRPCCore.ClientRequest<Ygo_GetProductsSummaryByIDRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Products>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsSummaryByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getProductsSummaryByID(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceIDs>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Products>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetProductsSummaryByIDRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetProductsSummaryByIDResponse>(),
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "GetProductsReleasedSameDay" method.
+    ///
+    /// - Parameters:
+    ///   - request: A request containing a single `Ygo_GetProductsReleasedSameDayRequest` message.
+    ///   - options: Options to apply to this RPC.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func getProductsReleasedSameDay<Result>(
+        request: GRPCCore.ClientRequest<Ygo_GetProductsReleasedSameDayRequest>,
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsReleasedSameDayResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        try await self.getProductsReleasedSameDay(
+            request: request,
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetProductsReleasedSameDayRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetProductsReleasedSameDayResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -1453,14 +1540,14 @@ extension Ygo_ProductService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardsByProductID<Result>(
-        _ message: Ygo_Common_ResourceID,
+        _ message: Ygo_GetCardsByProductIDRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Product>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardsByProductIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceID>(
+        let request = GRPCCore.ClientRequest<Ygo_GetCardsByProductIDRequest>(
             message: message,
             metadata: metadata
         )
@@ -1482,14 +1569,14 @@ extension Ygo_ProductService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getProductSummaryByID<Result>(
-        _ message: Ygo_Common_ResourceID,
+        _ message: Ygo_GetProductSummaryByIDRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_ProductSummary>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductSummaryByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceID>(
+        let request = GRPCCore.ClientRequest<Ygo_GetProductSummaryByIDRequest>(
             message: message,
             metadata: metadata
         )
@@ -1511,18 +1598,47 @@ extension Ygo_ProductService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getProductsSummaryByID<Result>(
-        _ message: Ygo_Common_ResourceIDs,
+        _ message: Ygo_GetProductsSummaryByIDRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Products>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsSummaryByIDResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>(
+        let request = GRPCCore.ClientRequest<Ygo_GetProductsSummaryByIDRequest>(
             message: message,
             metadata: metadata
         )
         return try await self.getProductsSummaryByID(
+            request: request,
+            options: options,
+            onResponse: handleResponse
+        )
+    }
+
+    /// Call the "GetProductsReleasedSameDay" method.
+    ///
+    /// - Parameters:
+    ///   - message: request message to send.
+    ///   - metadata: Additional metadata to send, defaults to empty.
+    ///   - options: Options to apply to this RPC, defaults to `.defaults`.
+    ///   - handleResponse: A closure which handles the response, the result of which is
+    ///       returned to the caller. Returning from the closure will cancel the RPC if it
+    ///       hasn't already finished.
+    /// - Returns: The result of `handleResponse`.
+    internal func getProductsReleasedSameDay<Result>(
+        _ message: Ygo_GetProductsReleasedSameDayRequest,
+        metadata: GRPCCore.Metadata = [:],
+        options: GRPCCore.CallOptions = .defaults,
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetProductsReleasedSameDayResponse>) async throws -> Result = { response in
+            try response.message
+        }
+    ) async throws -> Result where Result: Sendable {
+        let request = GRPCCore.ClientRequest<Ygo_GetProductsReleasedSameDayRequest>(
+            message: message,
+            metadata: metadata
+        )
+        return try await self.getProductsReleasedSameDay(
             request: request,
             options: options,
             onResponse: handleResponse
@@ -1544,7 +1660,7 @@ internal enum Ygo_CardRestrictionService: Sendable {
             /// Request type for "GetEffectiveTimelineForFormat".
             internal typealias Input = Ygo_Format
             /// Response type for "GetEffectiveTimelineForFormat".
-            internal typealias Output = Ygo_Common_EffectiveTimeline
+            internal typealias Output = Ygo_EffectiveTimeline
             /// Descriptor for "GetEffectiveTimelineForFormat".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.CardRestrictionService"),
@@ -1579,7 +1695,7 @@ extension Ygo_CardRestrictionService {
         /// - Parameters:
         ///   - request: A request containing a single `Ygo_Format` message.
         ///   - serializer: A serializer for `Ygo_Format` messages.
-        ///   - deserializer: A deserializer for `Ygo_Common_EffectiveTimeline` messages.
+        ///   - deserializer: A deserializer for `Ygo_EffectiveTimeline` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
@@ -1588,9 +1704,9 @@ extension Ygo_CardRestrictionService {
         func getEffectiveTimelineForFormat<Result>(
             request: GRPCCore.ClientRequest<Ygo_Format>,
             serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_EffectiveTimeline>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_EffectiveTimeline>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_EffectiveTimeline>) async throws -> Result
         ) async throws -> Result where Result: Sendable
     }
 
@@ -1615,7 +1731,7 @@ extension Ygo_CardRestrictionService {
         /// - Parameters:
         ///   - request: A request containing a single `Ygo_Format` message.
         ///   - serializer: A serializer for `Ygo_Format` messages.
-        ///   - deserializer: A deserializer for `Ygo_Common_EffectiveTimeline` messages.
+        ///   - deserializer: A deserializer for `Ygo_EffectiveTimeline` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
@@ -1624,9 +1740,9 @@ extension Ygo_CardRestrictionService {
         internal func getEffectiveTimelineForFormat<Result>(
             request: GRPCCore.ClientRequest<Ygo_Format>,
             serializer: some GRPCCore.MessageSerializer<Ygo_Format>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_Common_EffectiveTimeline>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_EffectiveTimeline>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_EffectiveTimeline>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -1657,14 +1773,14 @@ extension Ygo_CardRestrictionService.ClientProtocol {
     internal func getEffectiveTimelineForFormat<Result>(
         request: GRPCCore.ClientRequest<Ygo_Format>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_EffectiveTimeline>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getEffectiveTimelineForFormat(
             request: request,
             serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Format>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_Common_EffectiveTimeline>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_EffectiveTimeline>(),
             options: options,
             onResponse: handleResponse
         )
@@ -1688,7 +1804,7 @@ extension Ygo_CardRestrictionService.ClientProtocol {
         _ message: Ygo_Format,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_Common_EffectiveTimeline>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_EffectiveTimeline>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
@@ -1729,7 +1845,7 @@ internal enum Ygo_ScoreService: Sendable {
         /// Namespace for "GetCardScoreByID" metadata.
         internal enum GetCardScoreByID: Sendable {
             /// Request type for "GetCardScoreByID".
-            internal typealias Input = Ygo_Common_ResourceID
+            internal typealias Input = Ygo_ResourceID
             /// Response type for "GetCardScoreByID".
             internal typealias Output = Ygo_CardScore
             /// Descriptor for "GetCardScoreByID".
@@ -1742,9 +1858,9 @@ internal enum Ygo_ScoreService: Sendable {
         /// Namespace for "GetCardScoresByIDs" metadata.
         internal enum GetCardScoresByIDs: Sendable {
             /// Request type for "GetCardScoresByIDs".
-            internal typealias Input = Ygo_Common_ResourceIDs
+            internal typealias Input = Ygo_GetCardScoresByIDsRequest
             /// Response type for "GetCardScoresByIDs".
-            internal typealias Output = Ygo_CardScores
+            internal typealias Output = Ygo_GetCardScoresByIDsResponse
             /// Descriptor for "GetCardScoresByIDs".
             internal static let descriptor = GRPCCore.MethodDescriptor(
                 service: GRPCCore.ServiceDescriptor(fullyQualifiedService: "ygo.ScoreService"),
@@ -1798,8 +1914,8 @@ extension Ygo_ScoreService {
         /// Call the "GetCardScoreByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
+        ///   - request: A request containing a single `Ygo_ResourceID` message.
+        ///   - serializer: A serializer for `Ygo_ResourceID` messages.
         ///   - deserializer: A deserializer for `Ygo_CardScore` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
@@ -1807,8 +1923,8 @@ extension Ygo_ScoreService {
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardScoreByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
+            request: GRPCCore.ClientRequest<Ygo_ResourceID>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_ResourceID>,
             deserializer: some GRPCCore.MessageDeserializer<Ygo_CardScore>,
             options: GRPCCore.CallOptions,
             onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScore>) async throws -> Result
@@ -1817,20 +1933,20 @@ extension Ygo_ScoreService {
         /// Call the "GetCardScoresByIDs" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceIDs` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardScores` messages.
+        ///   - request: A request containing a single `Ygo_GetCardScoresByIDsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardScoresByIDsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardScoresByIDsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         func getCardScoresByIDs<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceIDs>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardScores>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardScoresByIDsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardScoresByIDsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardScoresByIDsResponse>,
             options: GRPCCore.CallOptions,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScores>) async throws -> Result
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardScoresByIDsResponse>) async throws -> Result
         ) async throws -> Result where Result: Sendable
     }
 
@@ -1883,8 +1999,8 @@ extension Ygo_ScoreService {
         /// Call the "GetCardScoreByID" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceID` messages.
+        ///   - request: A request containing a single `Ygo_ResourceID` message.
+        ///   - serializer: A serializer for `Ygo_ResourceID` messages.
         ///   - deserializer: A deserializer for `Ygo_CardScore` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
@@ -1892,8 +2008,8 @@ extension Ygo_ScoreService {
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardScoreByID<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceID>,
+            request: GRPCCore.ClientRequest<Ygo_ResourceID>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_ResourceID>,
             deserializer: some GRPCCore.MessageDeserializer<Ygo_CardScore>,
             options: GRPCCore.CallOptions = .defaults,
             onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScore>) async throws -> Result = { response in
@@ -1913,20 +2029,20 @@ extension Ygo_ScoreService {
         /// Call the "GetCardScoresByIDs" method.
         ///
         /// - Parameters:
-        ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
-        ///   - serializer: A serializer for `Ygo_Common_ResourceIDs` messages.
-        ///   - deserializer: A deserializer for `Ygo_CardScores` messages.
+        ///   - request: A request containing a single `Ygo_GetCardScoresByIDsRequest` message.
+        ///   - serializer: A serializer for `Ygo_GetCardScoresByIDsRequest` messages.
+        ///   - deserializer: A deserializer for `Ygo_GetCardScoresByIDsResponse` messages.
         ///   - options: Options to apply to this RPC.
         ///   - handleResponse: A closure which handles the response, the result of which is
         ///       returned to the caller. Returning from the closure will cancel the RPC if it
         ///       hasn't already finished.
         /// - Returns: The result of `handleResponse`.
         internal func getCardScoresByIDs<Result>(
-            request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
-            serializer: some GRPCCore.MessageSerializer<Ygo_Common_ResourceIDs>,
-            deserializer: some GRPCCore.MessageDeserializer<Ygo_CardScores>,
+            request: GRPCCore.ClientRequest<Ygo_GetCardScoresByIDsRequest>,
+            serializer: some GRPCCore.MessageSerializer<Ygo_GetCardScoresByIDsRequest>,
+            deserializer: some GRPCCore.MessageDeserializer<Ygo_GetCardScoresByIDsResponse>,
             options: GRPCCore.CallOptions = .defaults,
-            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScores>) async throws -> Result = { response in
+            onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardScoresByIDsResponse>) async throws -> Result = { response in
                 try response.message
             }
         ) async throws -> Result where Result: Sendable {
@@ -1973,14 +2089,14 @@ extension Ygo_ScoreService.ClientProtocol {
     /// Call the "GetCardScoreByID" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceID` message.
+    ///   - request: A request containing a single `Ygo_ResourceID` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardScoreByID<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceID>,
+        request: GRPCCore.ClientRequest<Ygo_ResourceID>,
         options: GRPCCore.CallOptions = .defaults,
         onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScore>) async throws -> Result = { response in
             try response.message
@@ -1988,7 +2104,7 @@ extension Ygo_ScoreService.ClientProtocol {
     ) async throws -> Result where Result: Sendable {
         try await self.getCardScoreByID(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceID>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_ResourceID>(),
             deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_CardScore>(),
             options: options,
             onResponse: handleResponse
@@ -1998,23 +2114,23 @@ extension Ygo_ScoreService.ClientProtocol {
     /// Call the "GetCardScoresByIDs" method.
     ///
     /// - Parameters:
-    ///   - request: A request containing a single `Ygo_Common_ResourceIDs` message.
+    ///   - request: A request containing a single `Ygo_GetCardScoresByIDsRequest` message.
     ///   - options: Options to apply to this RPC.
     ///   - handleResponse: A closure which handles the response, the result of which is
     ///       returned to the caller. Returning from the closure will cancel the RPC if it
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardScoresByIDs<Result>(
-        request: GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>,
+        request: GRPCCore.ClientRequest<Ygo_GetCardScoresByIDsRequest>,
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScores>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardScoresByIDsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
         try await self.getCardScoresByIDs(
             request: request,
-            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_Common_ResourceIDs>(),
-            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_CardScores>(),
+            serializer: GRPCProtobuf.ProtobufSerializer<Ygo_GetCardScoresByIDsRequest>(),
+            deserializer: GRPCProtobuf.ProtobufDeserializer<Ygo_GetCardScoresByIDsResponse>(),
             options: options,
             onResponse: handleResponse
         )
@@ -2064,14 +2180,14 @@ extension Ygo_ScoreService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardScoreByID<Result>(
-        _ message: Ygo_Common_ResourceID,
+        _ message: Ygo_ResourceID,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
         onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScore>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceID>(
+        let request = GRPCCore.ClientRequest<Ygo_ResourceID>(
             message: message,
             metadata: metadata
         )
@@ -2093,14 +2209,14 @@ extension Ygo_ScoreService.ClientProtocol {
     ///       hasn't already finished.
     /// - Returns: The result of `handleResponse`.
     internal func getCardScoresByIDs<Result>(
-        _ message: Ygo_Common_ResourceIDs,
+        _ message: Ygo_GetCardScoresByIDsRequest,
         metadata: GRPCCore.Metadata = [:],
         options: GRPCCore.CallOptions = .defaults,
-        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_CardScores>) async throws -> Result = { response in
+        onResponse handleResponse: @Sendable @escaping (GRPCCore.ClientResponse<Ygo_GetCardScoresByIDsResponse>) async throws -> Result = { response in
             try response.message
         }
     ) async throws -> Result where Result: Sendable {
-        let request = GRPCCore.ClientRequest<Ygo_Common_ResourceIDs>(
+        let request = GRPCCore.ClientRequest<Ygo_GetCardScoresByIDsRequest>(
             message: message,
             metadata: metadata
         )
