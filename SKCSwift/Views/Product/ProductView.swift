@@ -315,7 +315,7 @@ private struct ProductSuggestionsButton: View {
                         .equatable()
                     }
                     .task {
-                        await model.fetchProductSuggestions(forceRefresh: true)
+                        await model.fetchProductSuggestions(forceRefresh: false)
                     }
                     .ygoNavigationDestination()
                 }
