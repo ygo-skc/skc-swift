@@ -88,6 +88,7 @@ final class HomeViewModel {
     }
     
     func fetchProductsReleasedToday() async {
+        (productsReleasedTodayNE, productsReleasedTodayDTS) = (nil, .pending)
         let res = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: todaysDate))
         if case .success(let p) = res {
             self.productsReleasedToday = p
