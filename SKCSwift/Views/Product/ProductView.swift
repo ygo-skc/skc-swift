@@ -141,43 +141,41 @@ private struct ProductMetricsButton: View {
     
     @concurrent
     private nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
-        return await Task.detached {
-            let rarities = productContents.flatMap { $0.rarities }
-            let cards = productContents.compactMap { $0.card }
-            
-            let rarityData = rarities
-                .reduce(into: [String: Int]()) { counts, rarity in
-                    counts[rarity.cardRarityShortHand(), default: 0] += 1
+        let rarities = productContents.flatMap { $0.rarities }
+        let cards = productContents.compactMap { $0.card }
+
+        let rarityData = rarities
+            .reduce(into: [String: Int]()) { counts, rarity in
+                counts[rarity.cardRarityShortHand(), default: 0] += 1
+            }
+            .map { ChartData(category: $0.key, count: $0.value) }
+        
+        var monsters: [YGOCard] = []
+        let mstData = cards
+            .reduce(into: [String: Int]()) { counts, card in
+                if card.attribute == .spell || card.attribute == .trap {
+                    counts[card.attribute.rawValue, default: 0] += 1
+                } else {
+                    counts["Monster", default: 0] += 1
+                    monsters.append(card)
                 }
-                .map { ChartData(category: $0.key, count: $0.value) }
-            
-            let mstData = cards
-                .reduce(into: [String: Int]()) { counts, card in
-                    if card.attribute == .spell || card.attribute == .trap {
-                        counts[card.attribute.rawValue, default: 0] += 1
-                    } else {
-                        counts["Monster", default: 0] += 1
-                    }
-                }
-                .map { ChartData(category: $0.key, count: $0.value) }
-            
-            let monsterColorData = cards
-                .filter { $0.attribute != .spell && $0.attribute != .trap }
-                .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
-                .reduce(into: [String: Int]()) { counts, color in
-                    counts[color, default: 0] += 1
-                }
-                .map { ChartData(category: $0.key, count: $0.value) }
-            
-            let monsterAttributeData = cards
-                .filter { $0.attribute != .spell && $0.attribute != .trap }
-                .reduce(into: [String: Int]()) { counts, card in
-                    counts[card.cardAttribute!, default: 0] += 1
-                }
-                .map { ChartData(category: $0.key, count: $0.value) }
-            
-            return (rarityData, mstData, monsterColorData, monsterAttributeData)
-        }.value
+            }
+            .map { ChartData(category: $0.key, count: $0.value) }
+
+        let monsterColorData = monsters
+            .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
+            .reduce(into: [String: Int]()) { counts, color in
+                counts[color, default: 0] += 1
+            }
+            .map { ChartData(category: $0.key, count: $0.value) }
+
+        let monsterAttributeData = monsters
+            .reduce(into: [String: Int]()) { counts, card in
+                counts[card.cardAttribute!, default: 0] += 1
+            }
+            .map { ChartData(category: $0.key, count: $0.value) }
+
+        return (rarityData, mstData, monsterColorData, monsterAttributeData)
     }
     
     var body: some View {
