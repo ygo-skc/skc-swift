@@ -6,20 +6,13 @@
 //
 
 import SwiftUI
-import SwiftData
 import FoundationModels
 
 struct CardInfoView: View {
-    @Environment(\.modelContext) private var modelContext
-    
     @State private var model: CardViewModel
-    
-    @Query
-    private var cardFromTable: [History]
-    
+
     init(cardID: String) {
         self.model = .init(cardID: cardID)
-        _cardFromTable = Query(ArchiveContainer.fetchHistoryResourceByID(id: cardID))
     }
     
     var body: some View {
@@ -113,8 +106,7 @@ struct CardInfoView: View {
         }
         .onChange(of: model.card) {
             Task {
-                let newItem = History(resource: .card, id: model.cardID, lastAccessDate: Date(), timesAccessed: 1)
-                newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
+                await ArchiveContainer.historyActor.recordAccess(resource: .card, id: model.cardID)
             }
         }
         .frame(maxWidth: .infinity) // needed by overlay

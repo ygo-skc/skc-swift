@@ -6,19 +6,12 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct ProductView: View {
-    @Environment(\.modelContext) private var modelContext
-    
     @State private var model: ProductViewModel
-    
-    @Query
-    private var productFromTable: [History]
-    
+
     init(productID: String) {
         self.model = .init(productID: productID)
-        _productFromTable = Query(ArchiveContainer.fetchHistoryResourceByID(id: productID))
     }
     
     var body: some View {
@@ -42,8 +35,7 @@ struct ProductView: View {
                            }
                            .onChange(of: model.product) {
                                Task {
-                                   let newItem = History(resource: .product, id: model.productID, lastAccessDate: Date(), timesAccessed: 1)
-                                   newItem.updateHistoryContext(history: productFromTable, modelContext: modelContext)
+                                   await ArchiveContainer.historyActor.recordAccess(resource: .product, id: model.productID)
                                }
                            }
     }
