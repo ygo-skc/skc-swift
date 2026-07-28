@@ -61,19 +61,23 @@ struct CardReleasesView: View {
         VStack(alignment: .leading) {
             Text("Releases")
                 .headerTextModifier()
-            if !products.isEmpty {
+            if products.isEmpty {
+                ContentUnavailableView(initialReleaseSubHeader, systemImage: "tray.fill")
+            } else {
                 Label("Rarities", systemImage: "star.square.on.square")
                     .font(.headline)
+                    .padding(.bottom, 5)
                 Text("All unique rarities \(cardName) was printed in")
                     .font(.callout)
                 OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
-                    .padding(.bottom)
-            }
-            
-            Label("Products", systemImage: "cart")
-                .font(.headline)
-                .padding(.bottom, 4)
-            if !products.isEmpty {
+                
+                Divider()
+                    .padding(.vertical)
+                
+                Label("Products", systemImage: "cart")
+                    .font(.headline)
+                    .padding(.bottom, 4)
+                
                 RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
                     RelatedContentsView(header: "Products",
                                         subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
@@ -89,32 +93,33 @@ struct CardReleasesView: View {
                     }
                 }
                 .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
-            }
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    CardView {
-                        Group {
-                            Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
-                                .font(.title3)
-                            Text(initialReleaseSubHeader)
-                                .font(.subheadline)
-                        }
-                    }
-                    if let latestReleaseHeader, let latestReleaseSubHeader {
+                .padding(.bottom)
+                
+                ScrollView(.horizontal) {
+                    HStack(spacing: 10) {
                         CardView {
                             Group {
-                                Label(latestReleaseHeader, systemImage: "calendar")
+                                Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
                                     .font(.title3)
-                                Text(latestReleaseSubHeader)
+                                Text(initialReleaseSubHeader)
                                     .font(.subheadline)
                             }
                         }
+                        if let latestReleaseHeader, let latestReleaseSubHeader {
+                            CardView {
+                                Group {
+                                    Label(latestReleaseHeader, systemImage: "calendar")
+                                        .font(.title3)
+                                    Text(latestReleaseSubHeader)
+                                        .font(.subheadline)
+                                }
+                            }
+                        }
                     }
+                    .padding(.bottom, 10)
                 }
-                .padding(.bottom, 10)
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
@@ -145,7 +150,10 @@ struct CardRestrictionsView: View {
             if let score {
                 Label("Summary", systemImage: "list.bullet.rectangle")
                     .font(.headline)
-                    .padding(.bottom, 4)
+                    .padding(.bottom, 5)
+                Text("Current restrictions on \(cardName)")
+                    .font(.callout)
+                
                 ForEach(score.uniqueFormats, id: \.self) { format in
                     if let cardScore = score.currentScoreByFormat[format] {
                         CardView {
@@ -161,6 +169,9 @@ struct CardRestrictionsView: View {
                     }
                 }
             }
+            
+            Divider()
+                .padding(.vertical)
             
             Label("Historical", systemImage: "hourglass.circle")
                 .font(.headline)
