@@ -13,9 +13,8 @@ struct TrendingView: View {
     
     @ViewBuilder
     var trendingProducts: some View {
-        VStack {
-            ForEach(trendingModel.products.indices, id: \.self) { index in
-                let m = trendingModel.products[index]
+        LazyVStack {
+            ForEach(Array(trendingModel.products.enumerated()), id: \.element.resource.productId) { index, m in
                 let product = m.resource
                 Button {
                     path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
