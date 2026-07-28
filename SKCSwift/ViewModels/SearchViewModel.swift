@@ -39,6 +39,8 @@ final class SearchViewModel {
             dataTaskStatus = .done
         } else {
             searchTask = Task {
+                try await Task.sleep(for: .milliseconds(200))
+                try Task.checkCancellation()
                 (requestError, dataTaskStatus) = (nil, .pending)
                 slowSearchTask = Task {
                     try await Task.sleep(for: .milliseconds(200))
