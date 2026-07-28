@@ -19,7 +19,8 @@ struct SectionView<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(header)
-                .headerTextModifier()
+                .font(.title2)
+                .fontWeight(.bold)
             
             GroupBox {
                 content
