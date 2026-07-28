@@ -28,7 +28,6 @@ struct TodayView<T: View, U: View>: View {
         VStack(alignment: .leading) {
             Text(Date.MMMMdyyyyLocal.formatter.string(from: todaysDate))
                 .headerTextModifier()
-                .padding(.bottom, 10)
 
             Text("Card of the day")
                 .font(.headline)

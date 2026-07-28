@@ -12,11 +12,12 @@ struct HeaderTextModifier: ViewModifier {
         content
             .font(.title2)
             .fontWeight(.bold)
+            .padding(.bottom, 8)
     }
 }
 
 extension View {
-    func headerTextModifier(isCentered: Bool = false) -> some View {
+    func headerTextModifier(hasPadding: Bool = true) -> some View {
         modifier(HeaderTextModifier())
     }
 }
