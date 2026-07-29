@@ -34,11 +34,17 @@ final class TrendingViewModel {
         return (focusedTrend == .card) ? trendingCardsNE : trendingProductsNE
     }
     
+    @ObservationIgnored
+    private var lastRefreshTimestamp = Date.distantPast
+
     func fetchTrendingData(forceRefresh: Bool = false) async {
+        guard forceRefresh || trendingCardsNE != nil || trendingProductsNE != nil
+                || lastRefreshTimestamp.isDateInvalidated(5) else { return }
         await withTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask { @Sendable in await self.fetchTrendingCards() }
             taskGroup.addTask { @Sendable in await self.fetchTrendingProducts() }
         }
+        lastRefreshTimestamp = Date()
     }
 
     private func fetchTrendingCards() async {
