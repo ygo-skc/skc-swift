@@ -54,5 +54,5 @@ struct ProductListItemView: View, Equatable {
 
 #Preview {
     ProductListItemView(product: Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
-                                         productType: "Pack", productSubType: "Core Set", productReleaseDate: "2024-02-09", productTotal: 100))
+                                         productType: "Pack", productSubType: "Core Set", productReleaseDate: Date.yyyyMMddLocal.formatter.date(from: "2024-02-09") ?? .distantPast, productTotal: 100))
 }

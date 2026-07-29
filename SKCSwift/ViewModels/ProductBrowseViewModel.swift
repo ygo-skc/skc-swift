@@ -72,7 +72,7 @@ final class ProductBrowseViewModel {
     func updateProductList() async {
         let toggledProductSubTypes = Set(productSubTypeFilters.filter{ $0.isToggled }.map{ $0.category })
         let p = (toggledProductSubTypes.isEmpty) ? products : products.filter { toggledProductSubTypes.contains($0.productSubType) }
-        filteredProducts = Dictionary(grouping: p) { String($0.productReleaseDate.split(separator: "-", maxSplits: 1)[0]) }
+        filteredProducts = Dictionary(grouping: p) { String(Date.yyyyMMddLocal.calendar.component(.year, from: $0.productReleaseDate)) }
         sortedProductYears = filteredProducts.keys.sorted(by: >)
     }
     

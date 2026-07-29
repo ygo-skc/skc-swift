@@ -59,21 +59,20 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
         self.qualifier = qualifier == nil ? "" : qualifier!
         (self.attribute, self.monsterTypeE) = Self.derive(cardAttribute: cardAttribute, monsterType: monsterType)
     }
-
+    
     init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        cardID             = try c.decode(String.self, forKey: .cardID)
-        cardName           = try c.decode(String.self, forKey: .cardName)
-        cardColor          = try c.decode(String.self, forKey: .cardColor)
-        cardEffect         = try c.decode(String.self, forKey: .cardEffect)
-        cardAttribute      = try c.decodeIfPresent(String.self, forKey: .cardAttribute)
-        let q              = try c.decodeIfPresent(String.self, forKey: .qualifier)
-        qualifier          = q == nil ? "" : q!
-        monsterType        = try c.decodeIfPresent(String.self, forKey: .monsterType)
-        monsterAssociation = try c.decodeIfPresent(MonsterAssociation.self, forKey: .monsterAssociation)
-        monsterAttack      = try c.decodeIfPresent(UInt32.self, forKey: .monsterAttack)
-        monsterDefense     = try c.decodeIfPresent(UInt32.self, forKey: .monsterDefense)
-        (attribute, monsterTypeE) = Self.derive(cardAttribute: cardAttribute, monsterType: monsterType)
+        try self.init(
+            cardID:             c.decode(String.self, forKey: .cardID),
+            cardName:           c.decode(String.self, forKey: .cardName),
+            cardColor:          c.decode(String.self, forKey: .cardColor),
+            cardAttribute:      c.decodeIfPresent(String.self, forKey: .cardAttribute),
+            cardEffect:         c.decode(String.self, forKey: .cardEffect),
+            monsterType:        c.decodeIfPresent(String.self, forKey: .monsterType),
+            monsterAssociation: c.decodeIfPresent(MonsterAssociation.self, forKey: .monsterAssociation),
+            monsterAttack:      c.decodeIfPresent(UInt32.self, forKey: .monsterAttack),
+            monsterDefense:     c.decodeIfPresent(UInt32.self, forKey: .monsterDefense)
+        )
     }
 
     private static func derive(cardAttribute: String?, monsterType: String?) -> (Attribute, MonsterType) {
@@ -214,16 +213,22 @@ nonisolated struct BanListChange: Codable {
  */
 
 nonisolated struct Product: Codable, Equatable, Identifiable {
-    let productId, productLocale, productName, productType, productSubType, productReleaseDate: String
+    let productId, productLocale, productName, productType, productSubType: String
+    let productReleaseDate: Date
     let productTotal: Int?
     let productContent: [ProductContent]?
-    
+
+    private enum CodingKeys: String, CodingKey {
+        case productId, productLocale, productName, productType, productSubType, productReleaseDate
+        case productTotal, productContent
+    }
+
     init(productId: String,
          productLocale: String,
          productName: String,
          productType: String,
          productSubType: String,
-         productReleaseDate: String,
+         productReleaseDate: Date,
          productTotal: Int? = nil,
          productContent: [ProductContent]? = nil) {
         self.productId = productId
@@ -235,18 +240,34 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
         self.productTotal = productTotal
         self.productContent = productContent
     }
-    
-    init(from: Ygo_ProductSummary) {
-        self.productId = from.id
-        self.productLocale = from.locale
-        self.productName = from.name
-        self.productType = from.type
-        self.productSubType = from.subType
-        self.productReleaseDate = from.releaseDate
-        self.productTotal = Int(from.totalItems)
-        self.productContent = nil
+
+    // custom decoding to parse product release date as Date
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let releaseDate = try c.decode(String.self, forKey: .productReleaseDate)
+        guard let parsed = Date.yyyyMMddLocal.formatter.date(from: releaseDate) else {
+            throw DecodingError.dataCorruptedError(forKey: .productReleaseDate, in: c,
+                                                   debugDescription: "Expected yyyy-MM-dd date, got \"\(releaseDate)\"")
+        }
+        try self.init(productId: c.decode(String.self, forKey: .productId),
+                      productLocale: c.decode(String.self, forKey: .productLocale),
+                      productName: c.decode(String.self, forKey: .productName),
+                      productType: c.decode(String.self, forKey: .productType),
+                      productSubType: c.decode(String.self, forKey: .productSubType),
+                      productReleaseDate: parsed,
+                      productTotal: c.decodeIfPresent(Int.self, forKey: .productTotal),
+                      productContent: c.decodeIfPresent([ProductContent].self, forKey: .productContent))
     }
-    
+
+    init(from: Ygo_ProductSummary) {
+        self.init(productId: from.id,
+                  productLocale: from.locale,
+                  productName: from.name,
+                  productType: from.type,
+                  productSubType: from.subType,
+                  productReleaseDate: Date.yyyyMMddLocal.formatter.date(from: from.releaseDate) ?? .distantPast)
+    }
+
     var id: String {
         if !(productContent?.isEmpty ?? true), let productContent {
             return "\(productId)-\(productContent[0].id)"
@@ -262,7 +283,7 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
                 productName: "Legendary Placeholder Collection",
                 productType: "Pack",
                 productSubType: "Core Set",
-                productReleaseDate: "1993-07-27",
+                productReleaseDate: Date.yyyyMMddLocal.formatter.date(from: "1993-07-27") ?? .distantPast,
                 productTotal: 99)
     }
 }
