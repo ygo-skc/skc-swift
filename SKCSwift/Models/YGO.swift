@@ -27,7 +27,16 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     let monsterAssociation: MonsterAssociation?
     private let monsterAttack: UInt32?
     private let monsterDefense: UInt32?
+
+    // derived
+    let attribute: Attribute
+    let monsterTypeE: MonsterType
     
+    private enum CodingKeys: String, CodingKey {
+        case cardID, cardName, cardColor, cardEffect, cardAttribute, qualifier
+        case monsterType, monsterAssociation, monsterAttack, monsterDefense
+    }
+
     init(cardID: String,
          cardName: String,
          cardColor: String,
@@ -48,8 +57,33 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
         self.monsterAttack = monsterAttack
         self.monsterDefense = monsterDefense
         self.qualifier = qualifier == nil ? "" : qualifier!
+        (self.attribute, self.monsterTypeE) = Self.derive(cardAttribute: cardAttribute, monsterType: monsterType)
     }
-    
+
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        cardID             = try c.decode(String.self, forKey: .cardID)
+        cardName           = try c.decode(String.self, forKey: .cardName)
+        cardColor          = try c.decode(String.self, forKey: .cardColor)
+        cardEffect         = try c.decode(String.self, forKey: .cardEffect)
+        cardAttribute      = try c.decodeIfPresent(String.self, forKey: .cardAttribute)
+        let q              = try c.decodeIfPresent(String.self, forKey: .qualifier)
+        qualifier          = q == nil ? "" : q!
+        monsterType        = try c.decodeIfPresent(String.self, forKey: .monsterType)
+        monsterAssociation = try c.decodeIfPresent(MonsterAssociation.self, forKey: .monsterAssociation)
+        monsterAttack      = try c.decodeIfPresent(UInt32.self, forKey: .monsterAttack)
+        monsterDefense     = try c.decodeIfPresent(UInt32.self, forKey: .monsterDefense)
+        (attribute, monsterTypeE) = Self.derive(cardAttribute: cardAttribute, monsterType: monsterType)
+    }
+
+    private static func derive(cardAttribute: String?, monsterType: String?) -> (Attribute, MonsterType) {
+        let attribute = Attribute(rawValue: cardAttribute ?? "") ?? .unknown
+        let monsterTypeE = (monsterType != nil)
+            ? MonsterType(rawValue: String(monsterType!.split(separator: "/").first ?? "")) ?? .unknown
+            : .unknown
+        return (attribute, monsterTypeE)
+    }
+
     func withQualifier(qualifier: String) -> YGOCard {
         .init(
             cardID: cardID,
@@ -69,22 +103,14 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
         cardID + (qualifier == nil ? "" : qualifier!)
     }
     
-    var attribute: Attribute {
-        Attribute(rawValue: cardAttribute ?? "") ?? .unknown
-    }
-    
     var isPendulum: Bool {
         cardColor.starts(with: "Pendulum")
     }
-    
+
     var cardType: String {
         (monsterType != nil) ? monsterType! : cardAttribute ?? ""
     }
-    
-    var monsterTypeE: MonsterType {
-        (monsterType != nil) ? MonsterType(rawValue: String(monsterType?.split(separator: "/").first ?? "")) ?? .unknown : .unknown
-    }
-    
+
     var atk: String {
         (monsterAttack == nil) ? YGOCard.nilStat.description : String(monsterAttack!)
     }
@@ -266,10 +292,11 @@ nonisolated struct ProductContent: Codable, Equatable, Identifiable {
     }
     
     var id: String {
+        let rarityKey = rarities.joined(separator: "-")
         if let card {
-            return card.cardID + productPosition + String(rarities.hashValue)
+            return card.cardID + productPosition + rarityKey
         } else {
-            return productPosition + String(rarities.hashValue)
+            return productPosition + rarityKey
         }
     }
 }
@@ -284,9 +311,10 @@ nonisolated struct Products: Codable, Equatable {
  */
 
 nonisolated struct SearchResults: Identifiable, Equatable {
-    let id = UUID()
     let section: String
     let results: [YGOCard]
+
+    var id: String { section }
 }
 
 nonisolated struct SKCDatabaseStats: Codable, Equatable {
