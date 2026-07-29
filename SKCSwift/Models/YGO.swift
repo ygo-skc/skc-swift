@@ -27,7 +27,7 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     let monsterAssociation: MonsterAssociation?
     private let monsterAttack: UInt32?
     private let monsterDefense: UInt32?
-
+    
     // derived
     let attribute: Attribute
     let monsterTypeE: MonsterType
@@ -36,7 +36,7 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
         case cardID, cardName, cardColor, cardEffect, cardAttribute, qualifier
         case monsterType, monsterAssociation, monsterAttack, monsterDefense
     }
-
+    
     init(cardID: String,
          cardName: String,
          cardColor: String,
@@ -57,32 +57,27 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
         self.monsterAttack = monsterAttack
         self.monsterDefense = monsterDefense
         self.qualifier = qualifier == nil ? "" : qualifier!
-        (self.attribute, self.monsterTypeE) = Self.derive(cardAttribute: cardAttribute, monsterType: monsterType)
+        
+        // derived fields
+        self.attribute = Attribute(rawValue: cardAttribute ?? "") ?? .unknown
+        self.monsterTypeE = (monsterType != nil) ? MonsterType(rawValue: String(monsterType!.split(separator: "/").first ?? "")) ?? .unknown : .unknown
     }
     
     init(from decoder: any Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         try self.init(
-            cardID:             c.decode(String.self, forKey: .cardID),
-            cardName:           c.decode(String.self, forKey: .cardName),
-            cardColor:          c.decode(String.self, forKey: .cardColor),
-            cardAttribute:      c.decodeIfPresent(String.self, forKey: .cardAttribute),
-            cardEffect:         c.decode(String.self, forKey: .cardEffect),
-            monsterType:        c.decodeIfPresent(String.self, forKey: .monsterType),
-            monsterAssociation: c.decodeIfPresent(MonsterAssociation.self, forKey: .monsterAssociation),
-            monsterAttack:      c.decodeIfPresent(UInt32.self, forKey: .monsterAttack),
-            monsterDefense:     c.decodeIfPresent(UInt32.self, forKey: .monsterDefense)
+            cardID:             container.decode(String.self, forKey: .cardID),
+            cardName:           container.decode(String.self, forKey: .cardName),
+            cardColor:          container.decode(String.self, forKey: .cardColor),
+            cardAttribute:      container.decodeIfPresent(String.self, forKey: .cardAttribute),
+            cardEffect:         container.decode(String.self, forKey: .cardEffect),
+            monsterType:        container.decodeIfPresent(String.self, forKey: .monsterType),
+            monsterAssociation: container.decodeIfPresent(MonsterAssociation.self, forKey: .monsterAssociation),
+            monsterAttack:      container.decodeIfPresent(UInt32.self, forKey: .monsterAttack),
+            monsterDefense:     container.decodeIfPresent(UInt32.self, forKey: .monsterDefense)
         )
     }
-
-    private static func derive(cardAttribute: String?, monsterType: String?) -> (Attribute, MonsterType) {
-        let attribute = Attribute(rawValue: cardAttribute ?? "") ?? .unknown
-        let monsterTypeE = (monsterType != nil)
-            ? MonsterType(rawValue: String(monsterType!.split(separator: "/").first ?? "")) ?? .unknown
-            : .unknown
-        return (attribute, monsterTypeE)
-    }
-
+    
     func withQualifier(qualifier: String) -> YGOCard {
         .init(
             cardID: cardID,
@@ -105,11 +100,11 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     var isPendulum: Bool {
         cardColor.starts(with: "Pendulum")
     }
-
+    
     var cardType: String {
         (monsterType != nil) ? monsterType! : cardAttribute ?? ""
     }
-
+    
     var atk: String {
         (monsterAttack == nil) ? YGOCard.nilStat.description : String(monsterAttack!)
     }
@@ -217,12 +212,12 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
     let productReleaseDate: Date
     let productTotal: Int?
     let productContent: [ProductContent]?
-
+    
     private enum CodingKeys: String, CodingKey {
         case productId, productLocale, productName, productType, productSubType, productReleaseDate
         case productTotal, productContent
     }
-
+    
     init(productId: String,
          productLocale: String,
          productName: String,
@@ -240,25 +235,26 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
         self.productTotal = productTotal
         self.productContent = productContent
     }
-
+    
     // custom decoding to parse product release date as Date
     init(from decoder: any Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        let releaseDate = try c.decode(String.self, forKey: .productReleaseDate)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let releaseDate = try container.decode(String.self, forKey: .productReleaseDate)
         guard let parsed = Date.yyyyMMddLocal.formatter.date(from: releaseDate) else {
-            throw DecodingError.dataCorruptedError(forKey: .productReleaseDate, in: c,
+            throw DecodingError.dataCorruptedError(forKey: .productReleaseDate, in: container,
                                                    debugDescription: "Expected yyyy-MM-dd date, got \"\(releaseDate)\"")
         }
-        try self.init(productId: c.decode(String.self, forKey: .productId),
-                      productLocale: c.decode(String.self, forKey: .productLocale),
-                      productName: c.decode(String.self, forKey: .productName),
-                      productType: c.decode(String.self, forKey: .productType),
-                      productSubType: c.decode(String.self, forKey: .productSubType),
+        
+        try self.init(productId: container.decode(String.self, forKey: .productId),
+                      productLocale: container.decode(String.self, forKey: .productLocale),
+                      productName: container.decode(String.self, forKey: .productName),
+                      productType: container.decode(String.self, forKey: .productType),
+                      productSubType: container.decode(String.self, forKey: .productSubType),
                       productReleaseDate: parsed,
-                      productTotal: c.decodeIfPresent(Int.self, forKey: .productTotal),
-                      productContent: c.decodeIfPresent([ProductContent].self, forKey: .productContent))
+                      productTotal: container.decodeIfPresent(Int.self, forKey: .productTotal),
+                      productContent: container.decodeIfPresent([ProductContent].self, forKey: .productContent))
     }
-
+    
     init(from: Ygo_ProductSummary) {
         self.init(productId: from.id,
                   productLocale: from.locale,
@@ -267,7 +263,7 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
                   productSubType: from.subType,
                   productReleaseDate: Date.yyyyMMddLocal.formatter.date(from: from.releaseDate) ?? .distantPast)
     }
-
+    
     var id: String {
         if !(productContent?.isEmpty ?? true), let productContent {
             return "\(productId)-\(productContent[0].id)"
@@ -275,7 +271,7 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
             return productId
         }
     }
-
+    
     static let placeholderId = "XXXXX"
     static let placeholders: [Product] = (1...3).map {
         Product(productId: "\(Product.placeholderId)\($0)",
@@ -334,7 +330,7 @@ nonisolated struct Products: Codable, Equatable {
 nonisolated struct SearchResults: Identifiable, Equatable {
     let section: String
     let results: [YGOCard]
-
+    
     var id: String { section }
 }
 
