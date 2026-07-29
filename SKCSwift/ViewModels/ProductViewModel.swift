@@ -39,24 +39,22 @@ final class ProductViewModel {
     }
     
     func fetchProductData(forceRefresh: Bool = false) async {
-        if forceRefresh || product == nil {
-            (productNE, productDTS) = (nil, .pending)
-            let res = await data(productInfoURL(productID: productID), resType: Product.self)
-            if case .success(let product) = res {
-                self.product = product
-            }
-            (productNE, productDTS) = res.validate()
+        guard forceRefresh || product == nil else { return }
+        (productNE, productDTS) = (nil, .pending)
+        let res = await data(productInfoURL(productID: productID), resType: Product.self)
+        if case .success(let product) = res {
+            self.product = product
         }
+        (productNE, productDTS) = res.validate()
     }
     
     func fetchProductSuggestions(forceRefresh: Bool = false) async {
-        if forceRefresh || suggestions == nil {
-            (suggestionsNE, suggestionsDTS) = (nil, .pending)
-            let res = await data(productSuggestionsURL(productID: productID), resType: ProductSuggestions.self)
-            if case .success(let suggestions) = res {
-                self.suggestions = suggestions
-            }
-            (suggestionsNE, suggestionsDTS) = res.validate()
+        guard forceRefresh || suggestions == nil else { return }
+        (suggestionsNE, suggestionsDTS) = (nil, .pending)
+        let res = await data(productSuggestionsURL(productID: productID), resType: ProductSuggestions.self)
+        if case .success(let suggestions) = res {
+            self.suggestions = suggestions
         }
+        (suggestionsNE, suggestionsDTS) = res.validate()
     }
 }

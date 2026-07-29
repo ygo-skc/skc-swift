@@ -35,23 +35,22 @@ final class ProductBrowseViewModel {
     private var lastRefreshTimestamp = Date.distantPast
     
     func fetchProductBrowseData() async {
-        if dataError != nil || dataStatus == .pending || lastRefreshTimestamp.isDateInvalidated(10) {
-            dataStatus = .pending
-            switch await data(productsURL(), resType: Products.self) {
-            case .success(let p):
-                if p.products.isEmpty {
-                    dataError = .notFound
-                } else {
-                    products = p.products
-                    (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureCriteria(products: products)
-                    dataError = nil
-                }
-            case .failure(let error):
-                dataError = error
+        guard dataError != nil || dataStatus == .pending || lastRefreshTimestamp.isDateInvalidated(10) else { return }
+        dataStatus = .pending
+        switch await data(productsURL(), resType: Products.self) {
+        case .success(let p):
+            if p.products.isEmpty {
+                dataError = .notFound
+            } else {
+                products = p.products
+                (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureCriteria(products: products)
+                dataError = nil
             }
-            lastRefreshTimestamp = Date()
-            dataStatus = .done
+        case .failure(let error):
+            dataError = error
         }
+        lastRefreshTimestamp = Date()
+        dataStatus = .done
     }
     
     func syncProductSubTypeFilters(insertions: [CollectionDifference<FilteredItem<String>>.Change]) async {

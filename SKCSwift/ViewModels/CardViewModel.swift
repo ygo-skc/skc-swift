@@ -110,43 +110,40 @@ final class CardViewModel {
     }
     
     private func fetchCardData(forceRefresh: Bool = false) async {
-        if forceRefresh || card == nil {
-            (cardNE, cardDTS) = (nil, .pending)
-            let res = await data(cardInfoURL(cardID: cardID), resType: YGOCardInfo.self)
-            if case .success(let card) = res {
-                self.card = .init(cardID: card.cardID,
-                                  cardName: card.cardName,
-                                  cardColor: card.cardColor,
-                                  cardAttribute: card.cardAttribute,
-                                  cardEffect: card.cardEffect,
-                                  monsterType: card.monsterType,
-                                  monsterAssociation: card.monsterAssociation,
-                                  monsterAttack: card.monsterAttack,
-                                  monsterDefense: card.monsterDefense)
-                self.products = card.foundIn
-                self.restrictions = card.restrictedIn
-            }
-            (cardNE, cardDTS) = res.validate()
+        guard forceRefresh || card == nil else { return }
+        (cardNE, cardDTS) = (nil, .pending)
+        let res = await data(cardInfoURL(cardID: cardID), resType: YGOCardInfo.self)
+        if case .success(let card) = res {
+            self.card = .init(cardID: card.cardID,
+                              cardName: card.cardName,
+                              cardColor: card.cardColor,
+                              cardAttribute: card.cardAttribute,
+                              cardEffect: card.cardEffect,
+                              monsterType: card.monsterType,
+                              monsterAssociation: card.monsterAssociation,
+                              monsterAttack: card.monsterAttack,
+                              monsterDefense: card.monsterDefense)
+            self.products = card.foundIn
+            self.restrictions = card.restrictedIn
         }
+        (cardNE, cardDTS) = res.validate()
     }
     
     private func fetchCardScore() async {
-        if score == nil {
-            cardScoreDTS = .pending
-            let res = await getCardScore(cardID: cardID)
-            if case .success(let score) = res {
-                self.score = score
-            }
-            (cardScoredNE, cardScoreDTS) = res.validate(method: "Card Score Timeline")
+        guard score == nil else { return }
+        cardScoreDTS = .pending
+        let res = await getCardScore(cardID: cardID)
+        if case .success(let score) = res {
+            self.score = score
         }
+        (cardScoredNE, cardScoreDTS) = res.validate(method: "Card Score Timeline")
     }
     
     func fetchAllSuggestions(forceRefresh: Bool = false) async {
-        if forceRefresh || !areSuggestionsLoaded || suggestionsError != nil {
-            await withTaskGroup(of: Void.self) { taskGroup in
-                taskGroup.addTask { await self.fetchSuggestions() }
-                taskGroup.addTask { await self.fetchSupport() }
-            }
+        guard forceRefresh || !areSuggestionsLoaded || suggestionsError != nil else { return }
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { await self.fetchSuggestions() }
+            taskGroup.addTask { await self.fetchSupport() }
         }
     }
     
@@ -181,13 +178,12 @@ final class CardViewModel {
     }
     
     func fetchSimilarCards(forceRefresh: Bool = false) async {
-        if forceRefresh || similarCardsDTS != .done || similarCardsNE != nil {
-            (similarCardsNE, similarCardsDTS) = (nil, .pending)
-            let res = await data(similarCardsURL(cardID: cardID), resType: SimilarCards.self)
-            if case .success(let similarCards) = res {
-                self.similarCards = similarCards.matches.map({CardReference(card: $0, occurrences: 1)})
-            }
-            (similarCardsNE, similarCardsDTS) = res.validate()
+        guard forceRefresh || similarCardsDTS != .done || similarCardsNE != nil else { return }
+        (similarCardsNE, similarCardsDTS) = (nil, .pending)
+        let res = await data(similarCardsURL(cardID: cardID), resType: SimilarCards.self)
+        if case .success(let similarCards) = res {
+            self.similarCards = similarCards.matches.map({CardReference(card: $0, occurrences: 1)})
         }
+        (similarCardsNE, similarCardsDTS) = res.validate()
     }
 }
