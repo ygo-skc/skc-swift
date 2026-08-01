@@ -97,7 +97,7 @@ final class RecentlyViewedViewModel {
         return Array(s
             .reduce(into: [String: CardReference]()) { accumulator, ref in
                 accumulator[ref.card.cardID] = CardReference(
-                    card: ref.card, occurrences: accumulator[ref.card.cardID]?.occurrences ?? 0 + ref.occurrences)
+                    card: ref.card, occurrences: (accumulator[ref.card.cardID]?.occurrences ?? 0) + ref.occurrences)
             }
             .values
             .sorted(by: { $0.occurrences > $1.occurrences })
