@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 @Observable
 final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
