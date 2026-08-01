@@ -122,7 +122,7 @@ final class RestrictedCardsViewModel {
     }
     
     func fetchRestrictedCards() async {
-        if timelineNE != nil { return }
+        guard timelineNE == nil else { return }
         
         (contentNE, contentDTS) = (nil, .pending)
         switch format {
