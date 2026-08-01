@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FoundationModels
+import os
 
 struct CardInfoView: View {
     @State private var model: CardViewModel
@@ -175,7 +176,7 @@ private struct CardAISummary: View {
                         options: GenerationOptions(sampling: .greedy)
                     ).content
                 } catch let e {
-                    print("Error occurred while creating card effect clauses \(e)")
+                    Logger.ui.error("Error occurred while creating card effect clauses: \(e, privacy: .public)")
                 }
                 isLoading = false
             }

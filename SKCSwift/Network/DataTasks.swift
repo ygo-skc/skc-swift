@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os
 
 struct DataTaskStatusParser {
     static func isDataPending(_ status: DataTaskStatus) -> Bool {
@@ -102,30 +103,30 @@ nonisolated fileprivate func dataTask<T, U>(_ url: URL, reqBody: T? = nil, resTy
         try validateResponse(response: response)
         return .success(try sharedJSONDecoder.decode(resType, from: body))
     } catch let networkError as NetworkError {
-        print("Error occurred while calling \(url.absoluteString) \(networkError.localizedDescription)")
+        Logger.network.error("Error occurred while calling \(url.absoluteString, privacy: .public) - \(networkError.localizedDescription, privacy: .public)")
         return .failure(networkError)
     } catch let urlError as URLError {
         switch urlError.code {
         case .cancelled:
             return .failure(NetworkError.cancelled)
         case .timedOut:
-            print("Request timed out for url: \(url.absoluteString)")
+            Logger.network.error("Request timed out for url: \(url.absoluteString, privacy: .public)")
             return .failure(NetworkError.timeout)
         case .badServerResponse, .cannotDecodeContentData, .cannotParseResponse:
-            print("Server responded with bad data for url: \(url.absoluteString)")
+            Logger.network.error("Server responded with bad data for url: \(url.absoluteString, privacy: .public)")
             return .failure(NetworkError.resDecode)
         default:
-            print("Unknown URLError occurred while calling \(url.absoluteString) - error: \(urlError)")
+            Logger.network.error("Unknown URLError occurred while calling \(url.absoluteString, privacy: .public) - error: \(urlError, privacy: .public)")
             return .failure(NetworkError.unknown)
         }
     } catch let decodeError as DecodingError {
-        print("Error decoding output for url: \(url.absoluteString) - error: \(decodeError)")
+        Logger.network.error("Error decoding output for url: \(url.absoluteString, privacy: .public) - error: \(decodeError, privacy: .public)")
         return .failure(NetworkError.resDecode)
     } catch let encodeError as EncodingError {
-        print("Error encoding request body for url: \(url.absoluteString) - error: \(encodeError)")
+        Logger.network.error("Error encoding request body for url: \(url.absoluteString, privacy: .public) - error: \(encodeError, privacy: .public)")
         return .failure(NetworkError.reqEncode)
     } catch let error {
-        print("Unknown error occurred while calling \(url.absoluteString) - error: \(error)")
+        Logger.network.error("Unknown error occurred while calling \(url.absoluteString, privacy: .public) - error: \(error, privacy: .public)")
         return .failure(NetworkError.unknown)
     }
 }

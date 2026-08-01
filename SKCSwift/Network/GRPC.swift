@@ -8,6 +8,7 @@
 import GRPCCore
 import GRPCNIOTransportHTTP2TransportServices
 import SwiftProtobuf
+import os
 
 fileprivate enum GRPCManager {
     static let ygoClients = YGOClients(host: "ygo-service.skc.cards")
@@ -73,7 +74,7 @@ fileprivate struct YGOClients {
                 do {
                     try await client.runConnections()
                 } catch {
-                    print("gRPC runConnections terminated: \(error)")
+                    Logger.network.error("gRPC runConnections terminated: \(error, privacy: .public)")
                 }
             }
             productService = Ygo_ProductService.Client(wrapping: client)
