@@ -113,8 +113,12 @@ final class RestrictedCardsViewModel {
             }
             (timelineNE, timelineDTS) = res.validate(method: "Card Score Timeline")
         }
-        dateRangeIndex = 0
-        await fetchRestrictedCards()
+        
+        if dateRangeIndex == 0 {
+            await fetchRestrictedCards()
+        } else {
+            dateRangeIndex = 0  // will trigger fetchRestrictedCards() via onChange
+        }
     }
     
     func fetchRestrictedCards() async {
