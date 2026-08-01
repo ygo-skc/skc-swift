@@ -10,6 +10,7 @@ import FoundationModels
 
 struct CardInfoView: View {
     @State private var model: CardViewModel
+    @State private var containerWidth: CGFloat = 0
 
     init(cardID: String) {
         self.model = .init(cardID: cardID)
@@ -19,7 +20,7 @@ struct CardInfoView: View {
         ScrollView {
             VStack(spacing: 35) {
                 if model.cardDTS != .error {
-                    YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
+                    YGOCardView(cardID: model.cardID, card: model.card, width: containerWidth)
                         .equatable()
                     
                     if #available(iOS 26.0, *),
@@ -110,6 +111,11 @@ struct CardInfoView: View {
             }
         }
         .frame(maxWidth: .infinity) // needed by overlay
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+        } action: { newWidth in
+            containerWidth = newWidth
+        }
         .overlay {
             if let networkError = model.cardNE {
                 switch networkError {

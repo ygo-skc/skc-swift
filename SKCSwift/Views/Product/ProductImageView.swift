@@ -13,9 +13,18 @@ struct ProductImageView: View, Equatable {
     private let width: CGFloat
     private let productID: String
     private let imgSize: ImageSize
-    
+
+    @Environment(\.displayScale) private var displayScale
+
     private static let RATIO = 1.667
-    
+
+    static func == (lhs: ProductImageView, rhs: ProductImageView) -> Bool {
+        lhs.width == rhs.width &&
+        lhs.height == rhs.height &&
+        lhs.productID == rhs.productID &&
+        lhs.imgSize == rhs.imgSize
+    }
+
     init(height: CGFloat, productID: String, imgSize: ImageSize) {
         self.height = height
         self.width = height / ProductImageView.RATIO
@@ -37,7 +46,7 @@ struct ProductImageView: View, Equatable {
             KFImage(URL(string: "https://images.thesupremekingscastle.com/products/\(imgSize.rawValue)/\(productID).png")!)
                 .backgroundDecode()
                 .downsampling(size: CGSize(width: width, height: height))
-                .scaleFactor(UIScreen.main.scale)
+                .scaleFactor(displayScale)
                 .placeholder {
                     PlaceholderView(width: width, height: height, radius: 0)
                 }
