@@ -37,7 +37,7 @@ struct BrowseView: View {
                                 }
                             }
                     case .product:
-                        ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProducts, sortedYears: productBrowseViewModel.sortedProductYears)
+                        ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProductsByYear, sortedYears: productBrowseViewModel.sortedProductYears)
                             .task(priority: .userInitiated) {
                                 await productBrowseViewModel.fetchProductBrowseData()
                             }

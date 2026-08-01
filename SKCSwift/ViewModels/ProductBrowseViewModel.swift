@@ -17,7 +17,7 @@ final class ProductBrowseViewModel {
     private(set) var dataError: NetworkError?
     private(set) var dataStatus = DataTaskStatus.pending
     
-    private(set) var filteredProducts: [String: [Product]] = [:]
+    private(set) var filteredProductsByYear: [String: [Product]] = [:]
     private(set) var sortedProductYears: [String] = []
     
     @ObservationIgnored
@@ -71,9 +71,16 @@ final class ProductBrowseViewModel {
     
     func updateProductList() async {
         let toggledProductSubTypes = Set(productSubTypeFilters.filter{ $0.isToggled }.map{ $0.category })
-        let p = (toggledProductSubTypes.isEmpty) ? products : products.filter { toggledProductSubTypes.contains($0.productSubType) }
-        filteredProducts = Dictionary(grouping: p) { String(Date.yyyyMMddLocal.calendar.component(.year, from: $0.productReleaseDate)) }
-        sortedProductYears = filteredProducts.keys.sorted(by: >)
+        (filteredProductsByYear, sortedProductYears) = await groupProductsByYear(products: products, toggledProductSubTypes: toggledProductSubTypes)
+    }
+
+    @concurrent
+    private func groupProductsByYear(products: [Product], toggledProductSubTypes: Set<String>) async -> ([String: [Product]], [String]) {
+        let filteredProducts = (toggledProductSubTypes.isEmpty) ? products : products.filter { toggledProductSubTypes.contains($0.productSubType) }
+        let filteredProductsByYear = Dictionary(grouping: filteredProducts) {
+            String(Date.yyyyMMddLocal.calendar.component(.year, from: $0.productReleaseDate))
+        }
+        return (filteredProductsByYear, filteredProductsByYear.keys.sorted(by: >))
     }
     
     @concurrent
