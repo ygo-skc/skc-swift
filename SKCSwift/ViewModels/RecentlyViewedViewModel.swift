@@ -47,8 +47,8 @@ final class RecentlyViewedViewModel {
         let res = await data(cardDetailsUrl(),
                              reqBody: BatchCardRequest(cardIDs: newRecentlyViewed),
                              resType: CardDetailsResponse.self, httpMethod: "POST")
-        let cardData = (try? res.get().cardInfo) ?? recentlyViewedCardInfo
-        let (error, status) = res.validate()
+        var cardData = recentlyViewedCardInfo
+        let (error, status) = res.validate(&cardData, keyPath: \.cardInfo)
         return (cardData, error, status)
     }
     

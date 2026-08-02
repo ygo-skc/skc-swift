@@ -45,20 +45,14 @@ final class RestrictedContentChangesViewModel {
     private func fetchNewContent() async {
         guard newContentDTS != .done else { return }
         (newContentNE, newContentDTS) = (nil, .pending)
-        let res = await SKCSwift.data(newBannedContent(format: format, listStartDate: effectiveDate), resType: BanListNewContent.self)
-        if case .success(let newContent) = res {
-            self.newContent = newContent
-        }
-        (newContentNE, newContentDTS) = res.validate()
+        (newContentNE, newContentDTS) = await SKCSwift.data(newBannedContent(format: format, listStartDate: effectiveDate), resType: BanListNewContent.self)
+            .validate(&newContent)
     }
     
     private func fetchRemovedContent() async {
         guard removedContentDTS != .done else { return }
         (removedContentNE, removedContentDTS) = (nil, .pending)
-        let res = await SKCSwift.data(removedBannedContent(format: format, listStartDate: effectiveDate), resType: BanListRemovedContent.self)
-        if case .success(let removedContent) = res {
-            self.removedContent = removedContent
-        }
-        (removedContentNE, removedContentDTS) = res.validate()
+        (removedContentNE, removedContentDTS) = await SKCSwift.data(removedBannedContent(format: format, listStartDate: effectiveDate), resType: BanListRemovedContent.self)
+            .validate(&removedContent)
     }
 }

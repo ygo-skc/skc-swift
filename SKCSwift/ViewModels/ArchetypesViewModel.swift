@@ -32,9 +32,6 @@ final class ArchetypesViewModel {
         guard dataDTS != .done else { return }
         (dataNE, dataDTS) = (nil, .pending)
         let res = await SKCSwift.data(archetypeSuggestionsURL(archetype: archetype), resType: YGOArchetypeData.self)
-        if case .success(let data) = res {
-            self.data = data
-        }
-        (dataNE, dataDTS) = res.validate()
+        (dataNE, dataDTS) = res.validate(&data, keyPath: \.self)
     }
 }

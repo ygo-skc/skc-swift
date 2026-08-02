@@ -99,12 +99,9 @@ final class RestrictedCardsViewModel {
         (timelineNE, timelineDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
-            let res = await data(banListDatesURL(format: format), resType: BanListDates.self)
-            if case .success(let data) = res {
-                restrictionDates = data.banListDates
-            }
-            (timelineNE, timelineDTS) = res.validate()
-            
+            (timelineNE, timelineDTS) = await data(banListDatesURL(format: format), resType: BanListDates.self)
+                .validate(&restrictionDates, keyPath: \.banListDates)
+
             chosenBannedContentCategory = .forbidden
         case .genesys:
             let res = await getRestrictionDates(format: format.rawValue)
@@ -127,17 +124,14 @@ final class RestrictedCardsViewModel {
         (contentNE, contentDTS) = (nil, .pending)
         switch format {
         case .tcg, .md:
-            let res = await data(
+            (contentNE, contentDTS) = await data(
                 bannedContentURL(
                     format: format,
                     listStartDate: restrictionDates[dateRangeIndex].effectiveDate,
                     saveBandwidth: false,
                     allInfo: false),
                 resType: BannedContent.self)
-            if case .success(let bannedContent) = res {
-                self.bannedContent = bannedContent
-            }
-            (contentNE, contentDTS) = res.validate()
+                .validate(&bannedContent)
         case .genesys:
             let res = await getScoresByFormatAndDate(
                 format: format.rawValue,

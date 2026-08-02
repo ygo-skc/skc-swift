@@ -77,10 +77,7 @@ final class SearchViewModel {
     nonisolated private func search(subject: String) async -> ([YGOCard], NetworkError?, DataTaskStatus) {
         let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [YGOCard].self)
         var cards: [YGOCard] = []
-        if case let .success(results) = res {
-            cards = results
-        }
-        let (networkError, taskStatus) = res.validate()
+        let (networkError, taskStatus) = res.validate(&cards, keyPath: \.self)
         return (cards, (cards.isEmpty && networkError == nil) ? .notFound : networkError, taskStatus)   // if empty results list returned w/ no errors, treat it as not found
     }
     

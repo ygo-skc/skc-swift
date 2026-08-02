@@ -61,47 +61,30 @@ final class HomeViewModel {
     
     func fetchDBStatsData() async {
         (dbStatsNE, dbStatsDTS) = (nil, .pending)
-        let res = await data(dbStatsURL(), resType: SKCDatabaseStats.self)
-        if case .success(let dbStats) = res {
-            self.dbStats = dbStats
-        }
-        (dbStatsNE, dbStatsDTS) = res.validate()
+        (dbStatsNE, dbStatsDTS)  = await data(dbStatsURL(), resType: SKCDatabaseStats.self).validate(&dbStats, keyPath: \.self)
     }
     
     func fetchCardOfTheDayData() async {
         (cotdNE, cotdDTS) = (nil, .pending)
-        let res = await data(cardOfTheDayURL(), resType: CardOfTheDay.self)
-        if case .success(let cardOfTheDay) = res {
-            self.cardOfTheDay = cardOfTheDay
-        }
-        (cotdNE, cotdDTS) = res.validate()
+        (cotdNE, cotdDTS) = await data(cardOfTheDayURL(), resType: CardOfTheDay.self).validate(&cardOfTheDay, keyPath: \.self)
     }
     
     func fetchUpcomingTCGProducts() async {
         (upcomingTCGProductsNE, upcomingTCGProductsDTS) = (nil, .pending)
-        let res = await data(upcomingEventsURL(), resType: Events.self)
-        if case .success(let data) = res {
-            self.upcomingTCGProducts = data.events
-        }
-        (upcomingTCGProductsNE, upcomingTCGProductsDTS) = res.validate()
+        (upcomingTCGProductsNE, upcomingTCGProductsDTS) = await data(upcomingEventsURL(), resType: Events.self)
+            .validate(&upcomingTCGProducts, keyPath: \.events)
     }
     
     func fetchProductsReleasedToday() async {
         (productsReleasedTodayNE, productsReleasedTodayDTS) = (nil, .pending)
-        let res = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: todaysDate))
-        if case .success(let p) = res {
-            self.productsReleasedToday = p
-        }
-        (productsReleasedTodayNE, productsReleasedTodayDTS) = res.validate(method: "Products Released Today")
+        (productsReleasedTodayNE, productsReleasedTodayDTS) = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: todaysDate))
+            .validate(&productsReleasedToday, keyPath: \.self, method: "Products Released Today")
     }
     
     func fetchYouTubeUploadsData() async {
         (ytUploadsNE, ytUploadsDTS) = (nil, .pending)
-        let res = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
-        if case .success(let data) = res {
-            self.ytUploads = data.videos
-        }
-        (ytUploadsNE, ytUploadsDTS) = res.validate()
+        (ytUploadsNE, ytUploadsDTS) = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
+            .validate(&ytUploads, keyPath: \.videos)
     }
     
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {

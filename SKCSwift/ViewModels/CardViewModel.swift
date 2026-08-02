@@ -132,11 +132,7 @@ final class CardViewModel {
     private func fetchCardScore() async {
         guard score == nil else { return }
         cardScoreDTS = .pending
-        let res = await getCardScore(cardID: cardID)
-        if case .success(let score) = res {
-            self.score = score
-        }
-        (cardScoredNE, cardScoreDTS) = res.validate(method: "Card Score Timeline")
+        (cardScoredNE, cardScoreDTS) = await getCardScore(cardID: cardID).validate(&score, method: "Card Score Timeline")
     }
     
     func fetchAllSuggestions(forceRefresh: Bool = false) async {

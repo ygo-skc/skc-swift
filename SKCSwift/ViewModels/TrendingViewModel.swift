@@ -48,19 +48,13 @@ final class TrendingViewModel {
 
     private func fetchTrendingCards() async {
         (trendingCardsNE, trendingCardsDTS) = (nil, .pending)
-        let res = await data(trendingUrl(resource: .card), resType: Trending<YGOCard>.self)
-        if case .success(let data) = res {
-            cards = data.metrics
-        }
-        (trendingCardsNE, trendingCardsDTS) = res.validate()
+        (trendingCardsNE, trendingCardsDTS) = await data(trendingUrl(resource: .card), resType: Trending<YGOCard>.self)
+            .validate(&cards, keyPath: \.metrics)
     }
     
     private func fetchTrendingProducts() async {
         (trendingProductsNE, trendingProductsDTS) = (nil, .pending)
-        let res = await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
-        if case .success(let data) = res {
-            products = data.metrics
-        }
-        (trendingProductsNE, trendingProductsDTS) = res.validate()
+        (trendingProductsNE, trendingProductsDTS) = await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
+            .validate(&products, keyPath: \.metrics)
     }
 }
