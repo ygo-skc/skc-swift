@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 @Observable
 final class TrendingViewModel {
     var focusedTrend = TrendingResourceType.card
@@ -34,28 +33,28 @@ final class TrendingViewModel {
         return (focusedTrend == .card) ? trendingCardsNE : trendingProductsNE
     }
     
+    @ObservationIgnored
+    private var lastRefreshTimestamp = Date.distantPast
+
     func fetchTrendingData(forceRefresh: Bool = false) async {
+        guard forceRefresh || trendingCardsNE != nil || trendingProductsNE != nil
+                || lastRefreshTimestamp.isDateInvalidated(5) else { return }
         await withTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask { @Sendable in await self.fetchTrendingCards() }
             taskGroup.addTask { @Sendable in await self.fetchTrendingProducts() }
         }
+        lastRefreshTimestamp = Date()
     }
 
     private func fetchTrendingCards() async {
         (trendingCardsNE, trendingCardsDTS) = (nil, .pending)
-        let res = await data(trendingUrl(resource: .card), resType: Trending<YGOCard>.self)
-        if case .success(let data) = res {
-            cards = data.metrics
-        }
-        (trendingCardsNE, trendingCardsDTS) = res.validate()
+        (trendingCardsNE, trendingCardsDTS) = await data(trendingUrl(resource: .card), resType: Trending<YGOCard>.self)
+            .validate(&cards, keyPath: \.metrics)
     }
     
     private func fetchTrendingProducts() async {
         (trendingProductsNE, trendingProductsDTS) = (nil, .pending)
-        let res = await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
-        if case .success(let data) = res {
-            products = data.metrics
-        }
-        (trendingProductsNE, trendingProductsDTS) = res.validate()
+        (trendingProductsNE, trendingProductsDTS) = await data(trendingUrl(resource: .product), resType: Trending<Product>.self)
+            .validate(&products, keyPath: \.metrics)
     }
 }

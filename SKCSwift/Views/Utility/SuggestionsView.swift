@@ -79,19 +79,22 @@ struct SuggestionCarouselView: View {
                     switch variant {
                     case .suggestion:
                         SuggestedCardView(card: suggestion.card, occurrence: suggestion.occurrences)
-                            .modifier(CarouselItemViewModifier(height: $height))
+                            .modifier(CarouselItemViewModifier())
                     case .support:
                         let card = suggestion.card
                         NavigationLink(value: CardLinkDestinationValue(cardID: card.cardID, cardName: card.cardName), label: {
                             YGOCardView(cardID: card.cardID, card: card, variant: .condensed)
                                 .equatable()
                         })
-                        .modifier(CarouselItemViewModifier(height: $height))
+                        .modifier(CarouselItemViewModifier())
                     }
                 }
             }
             .frame(maxWidth: .infinity, minHeight: height)
             .scrollTargetLayout()
+            .onPreferenceChange(CarouselItemMaxHeightPreferenceKey.self) { [$height] newValue in
+                $height.wrappedValue = newValue
+            }
         }
         .scrollTargetBehavior(.viewAligned(limitBehavior: .alwaysByFew))
         .scrollIndicators(.automatic)
@@ -99,8 +102,6 @@ struct SuggestionCarouselView: View {
 }
 
 private struct CarouselItemViewModifier: ViewModifier {
-    @Binding var height: CGFloat
-    
     func body(content: Content) -> some View {
         content
             .buttonStyle(.plain)
@@ -108,14 +109,17 @@ private struct CarouselItemViewModifier: ViewModifier {
             .overlay(
                 GeometryReader { geometry in
                     Color.clear
-                        .onAppear {
-                            height = max(height, geometry.size.height)
-                        }
-                        .onChange(of: geometry.size.height) {
-                            height = max(height, geometry.size.height)
-                        }
+                        .preference(key: CarouselItemMaxHeightPreferenceKey.self, value: geometry.size.height)
                 }
             )
+    }
+}
+
+private struct CarouselItemMaxHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 

@@ -37,7 +37,7 @@ struct BrowseView: View {
                                 }
                             }
                     case .product:
-                        ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProducts)
+                        ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProductsByYear, sortedYears: productBrowseViewModel.sortedProductYears)
                             .task(priority: .userInitiated) {
                                 await productBrowseViewModel.fetchProductBrowseData()
                             }
@@ -159,14 +159,15 @@ private struct ProductBrowseOverlay: View {
 private struct ProductBrowseView: View {
     @Binding var path: NavigationPath
     let filteredProducts: [String: [Product]]
-    
+    let sortedYears: [String]
+
     var body: some View {
         LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-            ForEach(filteredProducts.keys.sorted(by: >), id: \.self) { year in
-                if let filteredProducts = filteredProducts[year] {
-                    Section(header: SectionHeaderView(header: "\(year) • \(filteredProducts.count) total")) {
+            ForEach(sortedYears, id: \.self) { year in
+                if let products = filteredProducts[year] {
+                    Section(header: SectionHeaderView(header: "\(year) • \(products.count) total")) {
                         LazyVStack {
-                            ForEach(filteredProducts, id: \.productId) { product in
+                            ForEach(products, id: \.productId) { product in
                                 Button {
                                     path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
                                 } label: {

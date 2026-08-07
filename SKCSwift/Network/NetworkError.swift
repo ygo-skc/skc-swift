@@ -7,6 +7,7 @@
 
 import Foundation
 import GRPCCore
+import os
 
 enum NetworkError: Error {
     case client
@@ -23,31 +24,31 @@ enum NetworkError: Error {
     static func fromRPCError(_ rpcError: RPCError, method: String) -> NetworkError {
         switch rpcError.code {
         case .cancelled, .aborted, .dataLoss:
-            print("RPC \(method) call cancelled. Message: \(rpcError.message)")
+            Logger.network.debug("RPC \(method, privacy: .public) call cancelled. Message: \(rpcError.message, privacy: .public)")
             return .cancelled
         case .unknown:
-            print("RPC \(method) call resulted in unknown error. Message: \(rpcError.message)")
+            Logger.network.error("RPC \(method, privacy: .public) call resulted in unknown error. Message: \(rpcError.message, privacy: .public)")
             return .unknown
         case .deadlineExceeded:
-            print("RPC \(method) call timed out. Message: \(rpcError.message)")
+            Logger.network.error("RPC \(method, privacy: .public) call timed out. Message: \(rpcError.message, privacy: .public)")
             return .timeout
         case .invalidArgument, .alreadyExists:
-            print("RPC \(method) call failed due to invalid request. Message: \(rpcError.message)")
+            Logger.network.error("RPC \(method, privacy: .public) call failed due to invalid request. Message: \(rpcError.message, privacy: .public)")
             return .badRequest
         case .notFound, .unimplemented:
-            print("RPC \(method) call resulted in not found error. Message: \(rpcError.message)")
+            Logger.network.error("RPC \(method, privacy: .public) call resulted in not found error. Message: \(rpcError.message, privacy: .public)")
             return .notFound
         case .permissionDenied, .unauthenticated:
-            print("RPC \(method) call resulted in authentication error. Message: \(rpcError.message)")
+            Logger.network.error("RPC \(method, privacy: .public) call resulted in authentication error. Message: \(rpcError.message, privacy: .public)")
             return .client
         case .failedPrecondition, .outOfRange:
-            print("RPC \(method) call failed due to unprocessable entity. Message: \(rpcError.message)")
+            Logger.network.error("RPC \(method, privacy: .public) call failed due to unprocessable entity. Message: \(rpcError.message, privacy: .public)")
             return .unprocessableEntity
         case .unimplemented, .unavailable, .internalError, .resourceExhausted:
-            print("RPC \(method) call resulted in server error. Message: \(rpcError.message)")
+            Logger.network.error("RPC \(method, privacy: .public) call resulted in server error. Message: \(rpcError.message, privacy: .public)")
             return .server
         default:
-            print("RPC \(method) call resulted in unknown error.")
+            Logger.network.error("RPC \(method, privacy: .public) call resulted in unknown error.")
             return .unknown
         }
     }

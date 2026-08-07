@@ -13,7 +13,7 @@ struct SearchView: View {
     @State private var recentlyViewedModel = RecentlyViewedViewModel()
     @State private var searchModel = SearchViewModel()
     
-    @Query(ArchiveContainer.fetchHistoryByAccessDate(sortOrder: .reverse, limit: 20)) private var history: [History]
+    @Query(History.recentlyViewedCards(sortOrder: .reverse, limit: 20)) private var history: [History]
     
     var body: some View {
         NavigationStack(path: $path) {

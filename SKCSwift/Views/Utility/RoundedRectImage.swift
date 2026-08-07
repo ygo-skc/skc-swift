@@ -13,7 +13,16 @@ struct RoundedRectImage: View, Equatable {
     private let height: CGFloat
     private let imageUrl: URL
     private let cornerRadius: CGFloat
-    
+
+    @Environment(\.displayScale) private var displayScale
+
+    static func == (lhs: RoundedRectImage, rhs: RoundedRectImage) -> Bool {
+        lhs.width == rhs.width &&
+        lhs.height == rhs.height &&
+        lhs.imageUrl == rhs.imageUrl &&
+        lhs.cornerRadius == rhs.cornerRadius
+    }
+
     init(width: CGFloat, height: CGFloat, imageUrl: URL, cornerRadius: CGFloat? = nil) {
         self.width = width
         self.height = height
@@ -25,7 +34,7 @@ struct RoundedRectImage: View, Equatable {
         KFImage(imageUrl)
             .backgroundDecode()
             .downsampling(size: CGSize(width: width, height: height))
-            .scaleFactor(UIScreen.main.scale)
+            .scaleFactor(displayScale)
             .placeholder {
                 PlaceholderView(width: width, height: height, radius: cornerRadius)
             }

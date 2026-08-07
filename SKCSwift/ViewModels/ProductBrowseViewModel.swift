@@ -17,7 +17,8 @@ final class ProductBrowseViewModel {
     private(set) var dataError: NetworkError?
     private(set) var dataStatus = DataTaskStatus.pending
     
-    private(set) var filteredProducts: [String: [Product]] = [:]
+    private(set) var filteredProductsByYear: [String: [Product]] = [:]
+    private(set) var sortedProductYears: [String] = []
     
     @ObservationIgnored
     private var products: [Product] = []
@@ -34,23 +35,22 @@ final class ProductBrowseViewModel {
     private var lastRefreshTimestamp = Date.distantPast
     
     func fetchProductBrowseData() async {
-        if dataError != nil || dataStatus == .pending || lastRefreshTimestamp.isDateInvalidated(10) {
-            dataStatus = .pending
-            switch await data(productsURL(), resType: Products.self) {
-            case .success(let p):
-                if p.products.isEmpty {
-                    dataError = .notFound
-                } else {
-                    products = p.products
-                    (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureCriteria(products: products)
-                    dataError = nil
-                }
-            case .failure(let error):
-                dataError = error
+        guard dataError != nil || dataStatus == .pending || lastRefreshTimestamp.isDateInvalidated(10) else { return }
+        dataStatus = .pending
+        switch await data(productsURL(), resType: Products.self) {
+        case .success(let p):
+            if p.products.isEmpty {
+                dataError = .notFound
+            } else {
+                products = p.products
+                (uniqueProductTypes, uniqueProductSubTypes, productTypeByProductSubType, productTypeFilters) = await configureCriteria(products: products)
+                dataError = nil
             }
-            lastRefreshTimestamp = Date()
-            dataStatus = .done
+        case .failure(let error):
+            dataError = error
         }
+        lastRefreshTimestamp = Date()
+        dataStatus = .done
     }
     
     func syncProductSubTypeFilters(insertions: [CollectionDifference<FilteredItem<String>>.Change]) async {
@@ -71,8 +71,16 @@ final class ProductBrowseViewModel {
     
     func updateProductList() async {
         let toggledProductSubTypes = Set(productSubTypeFilters.filter{ $0.isToggled }.map{ $0.category })
-        let p = (toggledProductSubTypes.isEmpty) ? products : products.filter { toggledProductSubTypes.contains($0.productSubType) }
-        filteredProducts = Dictionary(grouping: p) { String($0.productReleaseDate.split(separator: "-", maxSplits: 1)[0]) }
+        (filteredProductsByYear, sortedProductYears) = await groupProductsByYear(products: products, toggledProductSubTypes: toggledProductSubTypes)
+    }
+
+    @concurrent
+    private func groupProductsByYear(products: [Product], toggledProductSubTypes: Set<String>) async -> ([String: [Product]], [String]) {
+        let filteredProducts = (toggledProductSubTypes.isEmpty) ? products : products.filter { toggledProductSubTypes.contains($0.productSubType) }
+        let filteredProductsByYear = Dictionary(grouping: filteredProducts) {
+            String(Date.yyyyMMddLocal.calendar.component(.year, from: $0.productReleaseDate))
+        }
+        return (filteredProductsByYear, filteredProductsByYear.keys.sorted(by: >))
     }
     
     @concurrent

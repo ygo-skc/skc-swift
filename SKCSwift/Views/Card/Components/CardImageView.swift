@@ -17,9 +17,19 @@ struct CardImageView: View, Equatable {
     
     private let colorOverLayWidth: CGFloat
     private let radius: CGFloat
-    
+
+    @Environment(\.displayScale) private var displayScale
+
     private static let CARD_BACK_IMAGE = Image(.cardBackground)
-    
+
+    static func == (lhs: CardImageView, rhs: CardImageView) -> Bool {
+        lhs.length == rhs.length &&
+        lhs.cardID == rhs.cardID &&
+        lhs.imgSize == rhs.imgSize &&
+        lhs.variant == rhs.variant &&
+        lhs.cardColor == rhs.cardColor
+    }
+
     init(length: CGFloat, cardID: String, imgSize: ImageSize, cardColor: String? = nil, variant: YGOCardImageVariant = .round) {
         self.length = length
         self.variant = variant
@@ -38,7 +48,7 @@ struct CardImageView: View, Equatable {
             KFImage(URL(string: "https://images.thesupremekingscastle.com/cards/\(imgSize.rawValue)/\(cardID).jpg")!)
                 .backgroundDecode()
                 .downsampling(size: CGSize(width: length, height: length))
-                .scaleFactor(UIScreen.main.scale)
+                .scaleFactor(displayScale)
                 .placeholder {
                     PlaceholderView(width: length, height: length, radius: radius)
                 }

@@ -6,27 +6,22 @@
 //
 
 import SwiftUI
-import SwiftData
 import FoundationModels
+import os
 
 struct CardInfoView: View {
-    @Environment(\.modelContext) private var modelContext
-    
     @State private var model: CardViewModel
-    
-    @Query
-    private var cardFromTable: [History]
-    
+    @State private var containerWidth: CGFloat = 0
+
     init(cardID: String) {
         self.model = .init(cardID: cardID)
-        _cardFromTable = Query(ArchiveContainer.fetchHistoryResourceByID(id: cardID))
     }
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 25) {
+            VStack(spacing: 35) {
                 if model.cardDTS != .error {
-                    YGOCardView(cardID: model.cardID, card: model.card, width: UIScreen.main.bounds.width)
+                    YGOCardView(cardID: model.cardID, card: model.card, width: containerWidth)
                         .equatable()
                     
                     if #available(iOS 26.0, *),
@@ -113,11 +108,15 @@ struct CardInfoView: View {
         }
         .onChange(of: model.card) {
             Task {
-                let newItem = History(resource: .card, id: model.cardID, lastAccessDate: Date(), timesAccessed: 1)
-                newItem.updateHistoryContext(history: cardFromTable, modelContext: modelContext)
+                await ArchiveContainer.historyActor.recordAccess(resource: .card, id: model.cardID)
             }
         }
         .frame(maxWidth: .infinity) // needed by overlay
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+        } action: { newWidth in
+            containerWidth = newWidth
+        }
         .overlay {
             if let networkError = model.cardNE {
                 switch networkError {
@@ -177,7 +176,7 @@ private struct CardAISummary: View {
                         options: GenerationOptions(sampling: .greedy)
                     ).content
                 } catch let e {
-                    print("Error occurred while creating card effect clauses \(e)")
+                    Logger.ui.error("Error occurred while creating card effect clauses: \(e, privacy: .public)")
                 }
                 isLoading = false
             }

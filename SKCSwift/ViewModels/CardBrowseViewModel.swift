@@ -19,12 +19,16 @@ final class CardBrowseViewModel {
     
     private(set) var dataError: NetworkError?
     private(set) var dataStatus = DataTaskStatus.pending
-    
-    
+
+    @ObservationIgnored
+    private var lastRefreshTimestamp = Date.distantPast
+
     func fetchCardBrowseCriteria() async {
+        guard criteriaError != nil || criteriaStatus == .pending || lastRefreshTimestamp.isDateInvalidated(10) else { return }
         criteriaError = nil
         criteriaStatus = .pending
         (filters, criteriaError) = await fetchCriteria(filters: filters)
+        lastRefreshTimestamp = Date()
         criteriaStatus = .done
     }
     

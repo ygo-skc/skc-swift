@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import os
 
 @Observable
 final class SettingsViewModel {
@@ -53,7 +54,7 @@ final class SettingsViewModel {
             do {
                 fileCacheSizeInBytes = try cacheDirectory.calculateDirectorySize(manager: fileManager)
             } catch {
-                print("Error calculating cache size: \(error.localizedDescription)")
+                Logger.settings.error("Error calculating cache size: \(error.localizedDescription, privacy: .public)")
             }
         }
         
@@ -67,7 +68,7 @@ final class SettingsViewModel {
             do {
                 try cacheDirectory.deleteContents(manager: fileManager)
             } catch {
-                print("Error calculating cache size: \(error.localizedDescription)")
+                Logger.settings.error("Error deleting file cache: \(error.localizedDescription, privacy: .public)")
             }
         }
     }

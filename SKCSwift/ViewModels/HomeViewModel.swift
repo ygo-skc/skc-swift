@@ -48,60 +48,43 @@ final class HomeViewModel {
     
     func fetchData(forceRefresh: Bool) async {
         todaysDate = Date()
-        if lastRefreshTimestamp == nil || (forceRefresh && (lastRefreshTimestamp?.isDateInvalidated(5) == true)) {
-            await withTaskGroup(of: Void.self) { taskGroup in
-                taskGroup.addTask { @Sendable in await self.fetchDBStatsData() }
-                taskGroup.addTask { @Sendable in await self.fetchCardOfTheDayData() }
-                taskGroup.addTask { @Sendable in await self.fetchUpcomingTCGProducts() }
-                taskGroup.addTask { @Sendable in await self.fetchProductsReleasedToday() }
-                taskGroup.addTask(priority: .medium) { @Sendable in await self.fetchYouTubeUploadsData() }
-            }
-            lastRefreshTimestamp = Date()
+        guard lastRefreshTimestamp == nil || (forceRefresh && (lastRefreshTimestamp?.isDateInvalidated(5) == true)) else { return }
+        await withTaskGroup(of: Void.self) { taskGroup in
+            taskGroup.addTask { @Sendable in await self.fetchDBStatsData() }
+            taskGroup.addTask { @Sendable in await self.fetchCardOfTheDayData() }
+            taskGroup.addTask { @Sendable in await self.fetchUpcomingTCGProducts() }
+            taskGroup.addTask { @Sendable in await self.fetchProductsReleasedToday() }
+            taskGroup.addTask(priority: .medium) { @Sendable in await self.fetchYouTubeUploadsData() }
         }
+        lastRefreshTimestamp = Date()
     }
     
     func fetchDBStatsData() async {
         (dbStatsNE, dbStatsDTS) = (nil, .pending)
-        let res = await data(dbStatsURL(), resType: SKCDatabaseStats.self)
-        if case .success(let dbStats) = res {
-            self.dbStats = dbStats
-        }
-        (dbStatsNE, dbStatsDTS) = res.validate()
+        (dbStatsNE, dbStatsDTS)  = await data(dbStatsURL(), resType: SKCDatabaseStats.self).validate(&dbStats, keyPath: \.self)
     }
     
     func fetchCardOfTheDayData() async {
         (cotdNE, cotdDTS) = (nil, .pending)
-        let res = await data(cardOfTheDayURL(), resType: CardOfTheDay.self)
-        if case .success(let cardOfTheDay) = res {
-            self.cardOfTheDay = cardOfTheDay
-        }
-        (cotdNE, cotdDTS) = res.validate()
+        (cotdNE, cotdDTS) = await data(cardOfTheDayURL(), resType: CardOfTheDay.self).validate(&cardOfTheDay, keyPath: \.self)
     }
     
     func fetchUpcomingTCGProducts() async {
         (upcomingTCGProductsNE, upcomingTCGProductsDTS) = (nil, .pending)
-        let res = await data(upcomingEventsURL(), resType: Events.self)
-        if case .success(let data) = res {
-            self.upcomingTCGProducts = data.events
-        }
-        (upcomingTCGProductsNE, upcomingTCGProductsDTS) = res.validate()
+        (upcomingTCGProductsNE, upcomingTCGProductsDTS) = await data(upcomingEventsURL(), resType: Events.self)
+            .validate(&upcomingTCGProducts, keyPath: \.events)
     }
     
     func fetchProductsReleasedToday() async {
-        let res = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: todaysDate))
-        if case .success(let p) = res {
-            self.productsReleasedToday = p
-        }
-        (productsReleasedTodayNE, productsReleasedTodayDTS) = res.validate(method: "Products Released Today")
+        (productsReleasedTodayNE, productsReleasedTodayDTS) = (nil, .pending)
+        (productsReleasedTodayNE, productsReleasedTodayDTS) = await getProductsReleasedSameDay(date: Date.yyyyMMddLocal.formatter.string(from: todaysDate))
+            .validate(&productsReleasedToday, keyPath: \.self, method: "Products Released Today")
     }
     
     func fetchYouTubeUploadsData() async {
         (ytUploadsNE, ytUploadsDTS) = (nil, .pending)
-        let res = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
-        if case .success(let data) = res {
-            self.ytUploads = data.videos
-        }
-        (ytUploadsNE, ytUploadsDTS) = res.validate()
+        (ytUploadsNE, ytUploadsDTS) = await data(ytUploadsURL(ytChannelId: "UCBZ_1wWyLQI3SV9IgLbyiNQ"), resType: YouTubeUploads.self)
+            .validate(&ytUploads, keyPath: \.videos)
     }
     
     func handleURLClick(_ url: URL) -> OpenURLAction.Result {

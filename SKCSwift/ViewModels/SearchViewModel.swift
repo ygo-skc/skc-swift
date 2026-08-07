@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 @Observable
 final class SearchViewModel {
     var isSearching = false // user has search open
@@ -39,6 +38,8 @@ final class SearchViewModel {
             dataTaskStatus = .done
         } else {
             searchTask = Task {
+                try await Task.sleep(for: .milliseconds(200))
+                try Task.checkCancellation()
                 (requestError, dataTaskStatus) = (nil, .pending)
                 slowSearchTask = Task {
                     try await Task.sleep(for: .milliseconds(200))
@@ -76,10 +77,7 @@ final class SearchViewModel {
     nonisolated private func search(subject: String) async -> ([YGOCard], NetworkError?, DataTaskStatus) {
         let res = await data(searchCardURL(cardName: subject.trimmingCharacters(in: .whitespacesAndNewlines)), resType: [YGOCard].self)
         var cards: [YGOCard] = []
-        if case let .success(results) = res {
-            cards = results
-        }
-        let (networkError, taskStatus) = res.validate()
+        let (networkError, taskStatus) = res.validate(&cards, keyPath: \.self)
         return (cards, (cards.isEmpty && networkError == nil) ? .notFound : networkError, taskStatus)   // if empty results list returned w/ no errors, treat it as not found
     }
     

@@ -1,5 +1,5 @@
 //
-//  Favorites.swift
+//  Archive.swift
 //  SKCSwift
 //
 //  Created by Javi Gomez on 2/3/25.
@@ -7,6 +7,15 @@
 
 import Foundation
 import SwiftData
+
+final class ArchiveContainer {
+    static let archiveModelContainer: ModelContainer = {
+        let config = ModelConfiguration(cloudKitDatabase: .private("iCloud.com.skc.app.Archive"))
+        return try! ModelContainer(for: Schema([Favorite.self, History.self]), configurations: config)
+    }()
+
+    static let historyActor = HistoryActor(modelContainer: archiveModelContainer)
+}
 
 enum ArchiveResource: String, Codable {
     case card = "card"
@@ -47,7 +56,7 @@ final class History {
         self.timesAccessed += timesAccessed
     }
     
-    func updateHistoryContext(history: [History], modelContext: ModelContext) {
+    fileprivate func updateHistoryContext(history: [History], modelContext: ModelContext) {
         /*
          If no history, create new instance in table
          Else if there is at least one history record for card, update the last modified date and access time for the first record
@@ -72,5 +81,31 @@ final class History {
                 }
             }
         }
+    }
+    
+    static func recentlyViewedCards(sortOrder: SortOrder, limit: Int? = 20) -> FetchDescriptor<History> {
+        let cardResource = ArchiveResource.card.rawValue
+        var descriptor = FetchDescriptor<History>(
+            predicate: #Predicate { $0.resource == cardResource },
+            sortBy: [SortDescriptor(\.lastAccessDate, order: sortOrder)]
+        )
+        
+        descriptor.fetchLimit = limit
+        return descriptor
+    }
+    
+    fileprivate static func fetchHistoryResourceByID(id: String) -> FetchDescriptor<History> {
+        return FetchDescriptor<History>(
+            predicate: #Predicate { $0.id == id }
+        )
+    }
+}
+
+@ModelActor
+actor HistoryActor {
+    func recordAccess(resource: ArchiveResource, id: String) {
+        let history = (try? modelContext.fetch(History.fetchHistoryResourceByID(id: id))) ?? []
+        History(resource: resource, id: id, lastAccessDate: Date(), timesAccessed: 1)
+            .updateHistoryContext(history: history, modelContext: modelContext)
     }
 }

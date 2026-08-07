@@ -28,7 +28,6 @@ struct TodayView<T: View, U: View>: View {
         VStack(alignment: .leading) {
             Text(Date.MMMMdyyyyLocal.formatter.string(from: todaysDate))
                 .headerTextModifier()
-                .padding(.bottom, 10)
 
             Text("Card of the day")
                 .font(.headline)
@@ -189,7 +188,7 @@ struct ProductsReleasedTodayView: View, Equatable {
     ProductsReleasedTodayView(path: $path,
                               productsReleasedToday: [Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
                                                               productType: "Pack", productSubType: "Core Set",
-                                                              productReleaseDate: "2024-02-09", productTotal: 100)],
+                                                              productReleaseDate: Date.yyyyMMddLocal.formatter.date(from: "2024-02-09") ?? .distantPast, productTotal: 100)],
                               dataTaskStatus: .done, networkError: nil, retryCB: {})
     .padding(.horizontal)
 }
