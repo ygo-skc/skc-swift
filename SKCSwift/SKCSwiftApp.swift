@@ -19,6 +19,8 @@ struct SKCSwiftApp: App {
         
         ImageCache.default.diskStorage.config.sizeLimit = 80 * 1024 * 1024
         ImageCache.default.diskStorage.config.expiration = .days(30)
+
+        KingfisherManager.shared.defaultOptions = [.asyncCacheTypeCheck]
     }
     
     var body: some Scene {
