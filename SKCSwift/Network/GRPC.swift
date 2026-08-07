@@ -28,28 +28,29 @@ fileprivate actor YGOClientProvider {
 
         generation += 1
         let currentGeneration = generation
-        clientTask = Task {
-            let clients = try await MainActor.run { try YGOClients(host: host) }
+        let task = Task {
+            do {
+                let clients = try await MainActor.run { try YGOClients(host: host) }
 
-            Task {
-                do {
-                    try await clients.runConnections()
-                    Logger.network.debug("gRPC connection loop finished")
-                } catch {
-                    Logger.network.error("gRPC runConnections terminated: \(error, privacy: .public)")
+                Task {
+                    do {
+                        try await clients.runConnections()
+                        Logger.network.debug("gRPC connection loop finished")
+                    } catch {
+                        Logger.network.error("gRPC runConnections terminated: \(error, privacy: .public)")
+                    }
+                    invalidate(generation: currentGeneration)
                 }
+
+                return clients
+            } catch {
                 invalidate(generation: currentGeneration)
+                throw error
             }
-
-            return clients
         }
+        clientTask = task
 
-        do {
-            return try await clientTask!.value
-        } catch {
-            invalidate(generation: currentGeneration)
-            throw error
-        }
+        return try await task.value
     }
 
     private func invalidate(generation: Int) {
