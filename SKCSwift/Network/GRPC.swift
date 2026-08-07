@@ -22,6 +22,8 @@ fileprivate actor YGOClientProvider {
     }
 
     func getClients() async throws -> YGOClients {
+        // actor will allow one task to execute this code, but if task yields a new task can pick up the job
+        // below condition will ensure only one clientTask runs even when yielding on await later in the func
         if let clientTask {
             return try await clientTask.value
         }
