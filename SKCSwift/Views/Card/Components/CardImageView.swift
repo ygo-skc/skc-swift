@@ -51,7 +51,6 @@ struct CardImageView: View, Equatable {
                 .scaleFactor(displayScale)
                 .cacheOriginalImage()
                 .reducePriorityOnDisappear(true)
-                .loadTransition(OpacityTransition(), animation: .easeOut(duration: 0.2))
                 .placeholder {
                     PlaceholderView(width: length, height: length, radius: radius)
                 }
