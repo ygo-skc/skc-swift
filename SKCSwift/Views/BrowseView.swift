@@ -77,7 +77,7 @@ struct BrowseView: View {
                     }
                 }
             }
-            .ygoNavigationDestination()
+            .ygoNavigationDestination(path: $path)
             .navigationTitle("Browse")
             .overlay {
                 switch focusedResource {

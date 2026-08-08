@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 nonisolated struct MonsterAssociation: Codable, Equatable, Hashable {
     let level, rank, scaleRating, linkRating: UInt8?
@@ -207,7 +208,7 @@ nonisolated struct BanListChange: Codable {
  Product models
  */
 
-nonisolated struct Product: Codable, Equatable, Identifiable {
+nonisolated struct Product: Codable, Equatable, Identifiable, Hashable {
     let productId, productLocale, productName, productType, productSubType: String
     let productReleaseDate: Date
     let productTotal: Int?
@@ -297,7 +298,7 @@ extension Array where Element == Product {
     }
 }
 
-nonisolated struct ProductContent: Codable, Equatable, Identifiable {
+nonisolated struct ProductContent: Codable, Equatable, Identifiable, Hashable {
     let card: YGOCard?
     let productPosition: String
     let rarities: [String]
@@ -422,6 +423,10 @@ struct YGOArchetypeData: Codable {
 
 struct ProductLinkDestinationValue: Hashable {
     let productID, productName: String
+}
+
+struct ProductListLinkDestinationValue: Hashable {
+    let products: [Product]
 }
 
 struct CardLinkDestinationValue: Hashable {

@@ -37,7 +37,7 @@ struct SearchView: View {
                 }
             }
             .ignoresSafeArea(.keyboard)
-            .ygoNavigationDestination()
+            .ygoNavigationDestination(path: $path)
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.large)
             .onChange(of: searchModel.searchText, initial: false) { oldValue, newValue in
