@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-nonisolated struct MonsterAssociation: Codable, Equatable, Hashable {
+nonisolated struct MonsterAssociation: Codable, Equatable {
     let level, rank, scaleRating, linkRating: UInt8?
     let linkArrows: [String]?
     
@@ -120,7 +120,11 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     var isGod: Bool {
         cardAttribute != nil && cardAttribute!.lowercased() == "divine"
     }
-    
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
     static let placeholder: YGOCard = .init(cardID: "XXXXXXXX",
                                             cardName: "Placeholder of Chaos",
                                             cardColor: "Token",
@@ -272,7 +276,11 @@ nonisolated struct Product: Codable, Equatable, Identifiable, Hashable {
             return productId
         }
     }
-    
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
     static let placeholderId = "XXXXX"
     static let placeholders: [Product] = (1...3).map {
         Product(productId: "\(Product.placeholderId)\($0)",
@@ -298,7 +306,7 @@ extension Array where Element == Product {
     }
 }
 
-nonisolated struct ProductContent: Codable, Equatable, Identifiable, Hashable {
+nonisolated struct ProductContent: Codable, Equatable, Identifiable {
     let card: YGOCard?
     let productPosition: String
     let rarities: [String]
@@ -441,6 +449,11 @@ struct YGOArchetypeCategoryLinkDestinationValue: Hashable {
     let archetype: String
     let category: YGOArchetypeCategory
     let cards: [YGOCard]
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(archetype)
+        hasher.combine(category)
+    }
 }
 
 struct RestrictedContentChangesLinkDestinationValue: Hashable {
