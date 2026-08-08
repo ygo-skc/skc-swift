@@ -156,7 +156,6 @@ struct YGOArchetypeCategoryView: View {
             VStack(alignment: .leading) {
                 Label(LocalizedStringKey(categoryExplanation), systemImage: "info.circle")
                     .font(.callout)
-                    .padding(.bottom)
                 CardListView(cards: cards)
             }
             .parentModifier()
