@@ -10,10 +10,12 @@ import FoundationModels
 import os
 
 struct CardInfoView: View {
+    @Binding private var path: NavigationPath
     @State private var model: CardViewModel
     @State private var containerWidth: CGFloat = 0
-
-    init(cardID: String) {
+    
+    init(path: Binding<NavigationPath>, cardID: String) {
+        self._path = path
         self.model = .init(cardID: cardID)
     }
     
@@ -32,7 +34,7 @@ struct CardInfoView: View {
                     }
                     
                     if let card = model.card, let products = model.products {
-                        CardReleasesView(card: card, products: products)
+                        CardReleasesView(path: $path, card: card, products: products)
                             .parentModifier()
                         CardRestrictionsView(card: card,
                                              tcgBanList: model.restrictions?.TCG ?? [],
@@ -84,9 +86,9 @@ struct CardInfoView: View {
                         }
                         
                         SuggestionTransitionView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-                                              noSuggestionsFound: !model.hasSuggestions(),
-                                              networkError: model.suggestionsError,
-                                              action: {
+                                                 noSuggestionsFound: !model.hasSuggestions(),
+                                                 networkError: model.suggestionsError,
+                                                 action: {
                             Task {
                                 if model.similarCardsNE != nil {
                                     await model.fetchSimilarCards(forceRefresh: true)
