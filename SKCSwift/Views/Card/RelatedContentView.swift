@@ -150,7 +150,7 @@ struct ProductListView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            LazyVStack(alignment: .leading) {
                 ForEach(values.products, id: \.id) { product in
                     Button {
                         path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
