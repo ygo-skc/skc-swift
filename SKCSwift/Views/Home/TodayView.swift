@@ -116,7 +116,7 @@ struct ProductsReleasedTodayView: View, Equatable {
             if dataTaskStatus == .done, productsReleasedToday.isEmpty {
                 ContentUnavailableView("On this day, Konami rested", systemImage: "tray.fill")
             } else {
-                LazyVStack {
+                VStack {
                     ForEach(dataTaskStatus == .done ? productsReleasedToday : Product.placeholders, id: \.id) { product in
                         Button {
                             path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
