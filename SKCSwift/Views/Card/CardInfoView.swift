@@ -206,21 +206,26 @@ private struct AISummaryPlaceholder: View {
 }
 
 #Preview("Kluger")  {
-    CardInfoView(cardID: "90307498")
+    @Previewable @State var path = NavigationPath()
+    CardInfoView(path: $path, cardID: "90307498")
 }
 
 #Preview("Air Neos")  {
-    CardInfoView(cardID: "11502550")
+    @Previewable @State var path = NavigationPath()
+    CardInfoView(path: $path, cardID: "11502550")
 }
 
 #Preview("No Suggestions")  {
-    CardInfoView(cardID: "61269611")
+    @Previewable @State var path = NavigationPath()
+    CardInfoView(path: $path, cardID: "61269611")
 }
 
 #Preview("Token")  {
-    CardInfoView(cardID: "0034")
+    @Previewable @State var path = NavigationPath()
+    CardInfoView(path: $path, cardID: "0034")
 }
 
 #Preview("Card DNE")  {
-    CardInfoView(cardID: "12345678")
+    @Previewable @State var path = NavigationPath()
+    CardInfoView(path: $path, cardID: "12345678")
 }
