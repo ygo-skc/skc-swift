@@ -9,9 +9,7 @@ import SwiftUI
 
 struct CardReleasesView: View {
     @Binding private var path: NavigationPath
-    private let cardID: String
     private let cardName: String
-    private let cardColor: String
     private let products: [Product]
     private let rarityDistribution: [String: Int]
     
@@ -25,9 +23,7 @@ struct CardReleasesView: View {
     
     init(path: Binding<NavigationPath>, card: YGOCard, products: [Product]) {
         self._path = path
-        self.cardID = card.cardID
         self.cardName = card.cardName
-        self.cardColor = card.cardColor
         self.products = products
         self.rarityDistribution = products.rarityDistribution()
         

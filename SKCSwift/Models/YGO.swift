@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 nonisolated struct MonsterAssociation: Codable, Equatable {
     let level, rank, scaleRating, linkRating: UInt8?
