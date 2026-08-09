@@ -68,12 +68,12 @@ struct YGOArchetypeView: View {
             }
             .parentModifier()
             .frame(maxWidth: .infinity) // needed by overlay
-            .navigationTitle(model.archetype)
-            .navigationBarTitleDisplayMode(.large)
             .task {
                 await model.fetchArchetypeData()
             }
         }
+        .navigationTitle(model.archetype)
+        .navigationBarTitleDisplayMode(.large)
         .overlay {
             if model.dataDTS == .pending {
                 LoadingView()
@@ -159,8 +159,8 @@ struct YGOArchetypeCategoryView: View {
                 CardListView(cards: cards)
             }
             .parentModifier()
-            .navigationTitle(category.rawValue)
-            .navigationBarTitleDisplayMode(.large)
         }
+        .navigationTitle(category.rawValue)
+        .navigationBarTitleDisplayMode(.large)
     }
 }

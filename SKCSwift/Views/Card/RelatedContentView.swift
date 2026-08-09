@@ -137,12 +137,16 @@ struct CardReleasesView: View {
 }
 
 struct ProductListView: View {
-    let values: ProductListLinkDestinationValue
+    let products: [Product]
+    
+    init(values: ProductListLinkDestinationValue) {
+        self.products = values.products
+    }
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                ForEach(values.products, id: \.id) { product in
+                ForEach(products, id: \.id) { product in
                     NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName)) {
                         GroupBox {
                             ProductListItemView(product: product)
@@ -155,9 +159,9 @@ struct ProductListView: View {
                 }
             }
             .parentModifier()
-            .navigationTitle("Products")
-            .navigationBarTitleDisplayMode(.large)
         }
+        .navigationTitle("Products")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 

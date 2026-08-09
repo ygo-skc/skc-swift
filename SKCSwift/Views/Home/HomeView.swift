@@ -84,13 +84,13 @@ struct HomeView: View {
                         .equatable()
                     }
                 }
-                .toolbar {
-                    settings
-                }
-                .ygoNavigationDestination()
                 .parentModifier()
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))
+            .toolbar {
+                settings
+            }
+            .ygoNavigationDestination()
             .navigationBarTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
             .refreshable {
