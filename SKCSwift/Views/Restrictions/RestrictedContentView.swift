@@ -48,7 +48,7 @@ struct RestrictedContentView: View {
                     )
                 }
                 .equatable()
-                .ygoNavigationDestination(path: $path)
+                .ygoNavigationDestination()
                 .navigationDestination(for: RestrictedContentChangesLinkDestinationValue.self) { values in
                     RestrictedContentChangesView(values: values)
                 }

@@ -245,7 +245,6 @@ private struct ProductMetricsButton: View {
 private struct ProductSuggestionsButton: View {
     let model: ProductViewModel
     
-    @State private var path = NavigationPath()
     @State private var toggle = false
     
     var body: some View {
@@ -307,7 +306,7 @@ private struct ProductSuggestionsButton: View {
                     .task {
                         await model.fetchProductSuggestions(forceRefresh: false)
                     }
-                    .ygoNavigationDestination(path: $path)
+                    .ygoNavigationDestination()
                 }
             }
         }

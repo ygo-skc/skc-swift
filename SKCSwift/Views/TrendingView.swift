@@ -63,7 +63,7 @@ struct TrendingView: View {
             .task {
                 await trendingModel.fetchTrendingData(forceRefresh: false)
             }
-            .ygoNavigationDestination(path: $path)
+            .ygoNavigationDestination()
             .navigationTitle("Trending")
             .navigationBarTitleDisplayMode(.large)
             .dynamicTypeSize(...DynamicTypeSize.medium)

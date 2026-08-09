@@ -87,7 +87,7 @@ struct HomeView: View {
                 .toolbar {
                     settings
                 }
-                .ygoNavigationDestination(path: $model.path)
+                .ygoNavigationDestination()
                 .parentModifier()
             }
             .environment(\.openURL, OpenURLAction(handler: model.handleURLClick))

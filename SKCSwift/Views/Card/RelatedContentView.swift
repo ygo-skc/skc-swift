@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CardReleasesView: View {
-    @Binding private var path: NavigationPath
     private let cardName: String
     private let products: [Product]
     private let rarityDistribution: [String: Int]
@@ -21,8 +20,7 @@ struct CardReleasesView: View {
     
     private static let MAX_RELEASES_TO_SHOW: Int = 5
     
-    init(path: Binding<NavigationPath>, card: YGOCard, products: [Product]) {
-        self._path = path
+    init(card: YGOCard, products: [Product]) {
         self.cardName = card.cardName
         self.products = products
         self.rarityDistribution = products.rarityDistribution()
@@ -79,9 +77,7 @@ struct CardReleasesView: View {
         }
         
         ForEach(Array(products).prefix(CardReleasesView.MAX_RELEASES_TO_SHOW), id: \.id) { product in
-            Button {
-                path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
-            } label: {
+            NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName)) {
                 GroupBox {
                     ProductListItemView(product: product)
                         .equatable()
@@ -141,16 +137,13 @@ struct CardReleasesView: View {
 }
 
 struct ProductListView: View {
-    @Binding var path: NavigationPath
     let values: ProductListLinkDestinationValue
-    
+
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
                 ForEach(values.products, id: \.id) { product in
-                    Button {
-                        path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
-                    } label: {
+                    NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName)) {
                         GroupBox {
                             ProductListItemView(product: product)
                                 .equatable()

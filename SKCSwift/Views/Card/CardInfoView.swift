@@ -10,12 +10,10 @@ import FoundationModels
 import os
 
 struct CardInfoView: View {
-    @Binding private var path: NavigationPath
     @State private var model: CardViewModel
     @State private var containerWidth: CGFloat = 0
-    
-    init(path: Binding<NavigationPath>, cardID: String) {
-        self._path = path
+
+    init(cardID: String) {
         self.model = .init(cardID: cardID)
     }
     
@@ -34,7 +32,7 @@ struct CardInfoView: View {
                     }
                     
                     if let card = model.card, let products = model.products {
-                        CardReleasesView(path: $path, card: card, products: products)
+                        CardReleasesView(card: card, products: products)
                             .parentModifier()
                         CardRestrictionsView(card: card,
                                              tcgBanList: model.restrictions?.TCG ?? [],
@@ -206,26 +204,21 @@ private struct AISummaryPlaceholder: View {
 }
 
 #Preview("Kluger")  {
-    @Previewable @State var path = NavigationPath()
-    CardInfoView(path: $path, cardID: "90307498")
+    CardInfoView(cardID: "90307498")
 }
 
 #Preview("Air Neos")  {
-    @Previewable @State var path = NavigationPath()
-    CardInfoView(path: $path, cardID: "11502550")
+    CardInfoView(cardID: "11502550")
 }
 
 #Preview("No Suggestions")  {
-    @Previewable @State var path = NavigationPath()
-    CardInfoView(path: $path, cardID: "61269611")
+    CardInfoView(cardID: "61269611")
 }
 
 #Preview("Token")  {
-    @Previewable @State var path = NavigationPath()
-    CardInfoView(path: $path, cardID: "0034")
+    CardInfoView(cardID: "0034")
 }
 
 #Preview("Card DNE")  {
-    @Previewable @State var path = NavigationPath()
-    CardInfoView(path: $path, cardID: "12345678")
+    CardInfoView(cardID: "12345678")
 }
