@@ -101,7 +101,6 @@ struct ProductsReleasedTodayView: View, Equatable {
         && lhs.dataTaskStatus == rhs.dataTaskStatus
     }
 
-    @Binding var path: NavigationPath
     let productsReleasedToday: [Product]
     let dataTaskStatus: DataTaskStatus
     let networkError: NetworkError?
@@ -116,26 +115,13 @@ struct ProductsReleasedTodayView: View, Equatable {
             if dataTaskStatus == .done, productsReleasedToday.isEmpty {
                 ContentUnavailableView("On this day, Konami rested", systemImage: "tray.fill")
             } else {
-                VStack {
-                    ForEach(dataTaskStatus == .done ? productsReleasedToday : Product.placeholders, id: \.id) { product in
-                        Button {
-                            path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
-                        } label: {
-                            GroupBox {
-                                ProductListItemView(product: product)
-                                    .equatable()
-                            }
-                            .groupBoxStyle(.listItem)
-                        }
-                        .buttonStyle(.plain)
-                        .transition(.opacity)
-                    }
+                ProductListView(products: dataTaskStatus == .done ? productsReleasedToday : Product.placeholders)
+                    .equatable()
                     .if(dataTaskStatus != .done) {
                         $0.redacted(reason: .placeholder)
                     }
                     .animation(.smooth(duration: 0.25), value: dataTaskStatus)
                     .disabled(dataTaskStatus != .done && networkError == nil)
-                }
             }
         }
     }
@@ -184,9 +170,7 @@ struct ProductsReleasedTodayView: View, Equatable {
 }
 
 #Preview("Products - Default") {
-    @Previewable @State var path = NavigationPath()
-    ProductsReleasedTodayView(path: $path,
-                              productsReleasedToday: [Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
+    ProductsReleasedTodayView(productsReleasedToday: [Product(productId: "PHNI", productLocale: "EN", productName: "Phantom Nightmare",
                                                               productType: "Pack", productSubType: "Core Set",
                                                               productReleaseDate: Date.yyyyMMddLocal.formatter.date(from: "2024-02-09") ?? .distantPast, productTotal: 100)],
                               dataTaskStatus: .done, networkError: nil, retryCB: {})
@@ -194,17 +178,13 @@ struct ProductsReleasedTodayView: View, Equatable {
 }
 
 #Preview("Products - Loading") {
-    @Previewable @State var path = NavigationPath()
-    ProductsReleasedTodayView(path: $path,
-                              productsReleasedToday: [],
+    ProductsReleasedTodayView(productsReleasedToday: [],
                               dataTaskStatus: .pending, networkError: nil, retryCB: {})
     .padding(.horizontal)
 }
 
 #Preview("Products - Network Error") {
-    @Previewable @State var path = NavigationPath()
-    ProductsReleasedTodayView(path: $path,
-                              productsReleasedToday: [],
+    ProductsReleasedTodayView(productsReleasedToday: [],
                               dataTaskStatus: .error, networkError: .timeout, retryCB: {})
     .padding(.horizontal)
 }

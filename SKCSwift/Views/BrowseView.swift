@@ -37,7 +37,7 @@ struct BrowseView: View {
                                 }
                             }
                     case .product:
-                        ProductBrowseView(path: $path, filteredProducts: productBrowseViewModel.filteredProductsByYear, sortedYears: productBrowseViewModel.sortedProductYears)
+                        ProductBrowseView(filteredProducts: productBrowseViewModel.filteredProductsByYear, sortedYears: productBrowseViewModel.sortedProductYears)
                             .task(priority: .userInitiated) {
                                 await productBrowseViewModel.fetchProductBrowseData()
                             }
@@ -157,7 +157,6 @@ private struct ProductBrowseOverlay: View {
 }
 
 private struct ProductBrowseView: View {
-    @Binding var path: NavigationPath
     let filteredProducts: [String: [Product]]
     let sortedYears: [String]
 
@@ -166,20 +165,8 @@ private struct ProductBrowseView: View {
             ForEach(sortedYears, id: \.self) { year in
                 if let products = filteredProducts[year] {
                     Section(header: SectionHeaderView(header: "\(year) • \(products.count) total")) {
-                        LazyVStack {
-                            ForEach(products, id: \.productId) { product in
-                                Button {
-                                    path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
-                                } label: {
-                                    GroupBox {
-                                        ProductListItemView(product: product)
-                                            .equatable()
-                                    }
-                                    .groupBoxStyle(.listItem)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
+                        ProductListView(products: products)
+                            .equatable()
                     }
                 }
             }

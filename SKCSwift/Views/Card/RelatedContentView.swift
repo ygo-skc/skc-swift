@@ -76,17 +76,8 @@ struct CardReleasesView: View {
                 .font(.headline)
         }
         
-        ForEach(Array(products).prefix(CardReleasesView.MAX_RELEASES_TO_SHOW), id: \.id) { product in
-            NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName)) {
-                GroupBox {
-                    ProductListItemView(product: product)
-                        .equatable()
-                }
-                .groupBoxStyle(.listItem)
-            }
-            .buttonStyle(.plain)
-            .transition(.opacity)
-        }
+        ProductListView(products: Array(products.prefix(CardReleasesView.MAX_RELEASES_TO_SHOW)))
+            .equatable()
     }
     
     @ViewBuilder

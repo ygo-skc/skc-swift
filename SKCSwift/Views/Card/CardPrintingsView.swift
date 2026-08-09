@@ -22,17 +22,8 @@ struct CardPrintingsView: View {
                 Text("**\(cardName)** was printed in \(products.count) different products.")
                     .font(.callout)
 
-                ForEach(products, id: \.id) { product in
-                    NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName)) {
-                        GroupBox {
-                            ProductListItemView(product: product)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
-                    .transition(.opacity)
-                }
+                ProductListView(products: products)
+                    .equatable()
             }
             .parentModifier()
         }
