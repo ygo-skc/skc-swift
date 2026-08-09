@@ -22,7 +22,7 @@ struct YGOCardView: View, Equatable {
         self.variant = variant
         
         self.width = width
-        self.imageSize = (variant == .normal) ? width - 80 : width - 30
+        self.imageSize = max(0, (variant == .normal) ? width - 80 : width - 30)
         self.imageSizeVariant = (variant == .normal) ? .medium : .extraSmall
     }
     
