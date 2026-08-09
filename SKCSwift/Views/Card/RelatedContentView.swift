@@ -70,7 +70,7 @@ struct CardReleasesView: View {
         if products.count > CardReleasesView.MAX_RELEASES_TO_SHOW {
             SummaryBarLink("Printed In • \(products.count)",
                            systemImage: "cart",
-                           value: ProductListLinkDestinationValue(products: products))
+                           value: CardPrintingsLinkDestinationValue(cardName: cardName, products: products))
         } else {
             Label("Printed In • \(products.count)", systemImage: "cart")
                 .font(.headline)
@@ -133,35 +133,6 @@ struct CardReleasesView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-}
-
-struct ProductListView: View {
-    let products: [Product]
-    
-    init(values: ProductListLinkDestinationValue) {
-        self.products = values.products
-    }
-
-    var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading) {
-                ForEach(products, id: \.id) { product in
-                    NavigationLink(value: ProductLinkDestinationValue(productID: product.productId, productName: product.productName)) {
-                        GroupBox {
-                            ProductListItemView(product: product)
-                                .equatable()
-                        }
-                        .groupBoxStyle(.listItem)
-                    }
-                    .buttonStyle(.plain)
-                    .transition(.opacity)
-                }
-            }
-            .parentModifier()
-        }
-        .navigationTitle("Products")
-        .navigationBarTitleDisplayMode(.large)
     }
 }
 

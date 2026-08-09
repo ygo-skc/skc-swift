@@ -432,8 +432,13 @@ struct ProductLinkDestinationValue: Hashable {
     let productID, productName: String
 }
 
-struct ProductListLinkDestinationValue: Hashable {
+struct CardPrintingsLinkDestinationValue: Hashable {
+    let cardName: String
     let products: [Product]
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(cardName)
+    }
 }
 
 struct CardLinkDestinationValue: Hashable {

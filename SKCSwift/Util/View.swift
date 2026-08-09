@@ -15,8 +15,8 @@ extension View {
         .navigationDestination(for: ProductLinkDestinationValue.self) { product in
             ProductView(productID: product.productID)
         }
-        .navigationDestination(for: ProductListLinkDestinationValue.self) { values in
-            ProductListView(values: values)
+        .navigationDestination(for: CardPrintingsLinkDestinationValue.self) { values in
+            CardPrintingsView(values: values)
         }
         .navigationDestination(for: YGOArchetypeLinkDestinationValue.self) { archetype in
             YGOArchetypeView(archetype: archetype.archetype)
