@@ -146,9 +146,7 @@ nonisolated struct CardBrowseResults: Codable {
     let numResults: UInt
 }
 
-/*
- Ban List models
- */
+// MARK: - Ban List models
 
 nonisolated struct BanList: Codable, Equatable {
     let banListDate, cardID, banStatus, format: String
@@ -206,10 +204,7 @@ nonisolated struct BanListChange: Codable {
     let previousBanStatus: String
 }
 
-
-/*
- Product models
- */
+// MARK: - Product models
 
 nonisolated struct Product: Codable, Equatable, Identifiable, Hashable {
     let productId, productLocale, productName, productType, productSubType: String
@@ -331,9 +326,7 @@ nonisolated struct Products: Codable, Equatable {
     let products: [Product]
 }
 
-/*
- Misc models
- */
+// MARK: - Misc models
 
 nonisolated struct SearchResults: Identifiable, Equatable {
     let section: String
@@ -346,9 +339,7 @@ nonisolated struct SKCDatabaseStats: Codable, Equatable {
     let productTotal, cardTotal, banListTotal: Int
 }
 
-/*
- Suggestions
- */
+// MARK: - Suggestions
 
 nonisolated struct CardReference: Codable, Equatable {
     let card: YGOCard
@@ -424,9 +415,8 @@ struct YGOArchetypeData: Codable {
     let inheritMembers, qualifiedMembers, excludedMembers: [YGOCard]
 }
 
-/*
- Link destination types
- */
+
+// MARK: -  Link destination types
 
 struct ProductLinkDestinationValue: Hashable {
     let productID, productName: String
@@ -463,4 +453,38 @@ struct YGOArchetypeCategoryLinkDestinationValue: Hashable {
 struct RestrictedContentChangesLinkDestinationValue: Hashable {
     let effectiveDate: String
     let format: CardRestrictionFormat
+}
+
+// MARK: - Card mechanic types
+
+
+struct TaggedText: Codable, Hashable, Sendable {
+    let text: String
+    let tags: [String]
+}
+
+struct Effect: Codable, Hashable, Sendable {
+    let text: String
+    let zone: String?
+    let tags: [String]
+    let frequency: String?
+    let counters: [String]
+    let modes: [TaggedText]
+    let choice: String?
+}
+
+struct CardMechanic: Codable, Hashable, Sendable {
+    let id: String
+    let name: String
+    let type: String
+    let materials: String?
+    let summonConditions: [TaggedText]
+    let effects: [Effect]
+    let metaTags: [String]
+    let flags: [String]
+    let flavor: Bool
+    let doesAll: [String]
+    let doesAny: [String]
+    let counters: [String]
+    let gates: [String]
 }

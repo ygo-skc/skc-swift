@@ -40,6 +40,8 @@ fileprivate nonisolated struct SuggestionEngine {
     fileprivate static let CARD_OF_THE_DAY_ENDPOINT: StaticString = "/api/v1/suggestions/card-of-the-day"
     fileprivate static let TRENDING_ENDPOINT: StaticString = "/api/v1/suggestions/trending/%@"
     fileprivate static let CARD_DETAILS_ENDPOINT: StaticString = "/api/v1/suggestions/card-details"
+    
+    fileprivate static let CARD_MECHANICS_ENDPOINT: StaticString = "/api/v1/analysis/card/%@/mechanics"
 }
 
 fileprivate nonisolated struct HeartAPI {
@@ -272,6 +274,14 @@ func cardDetailsUrl() -> URL {
     let components = baseURLComponents(
         host: SuggestionEngine.BASE_URL.description,
         path: SuggestionEngine.CARD_DETAILS_ENDPOINT.description
+    )
+    return createURL(components: components)
+}
+
+func cardMechanicsUrl(cardID: String) -> URL {
+    let components = baseURLComponents(
+        host: SuggestionEngine.BASE_URL.description,
+        path: SuggestionEngine.CARD_MECHANICS_ENDPOINT.description.replacingOccurrences(of: "%@", with: cardID),
     )
     return createURL(components: components)
 }

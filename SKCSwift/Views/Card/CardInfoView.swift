@@ -12,7 +12,7 @@ import os
 struct CardInfoView: View {
     @State private var model: CardViewModel
     @State private var containerWidth: CGFloat = 0
-
+    
     init(cardID: String) {
         self.model = .init(cardID: cardID)
     }
@@ -24,11 +24,8 @@ struct CardInfoView: View {
                     YGOCardView(cardID: model.cardID, card: model.card, width: containerWidth)
                         .equatable()
                     
-                    if #available(iOS 26.0, *),
-                       model.cardDTS == .done,
-                       let cardColor = model.card?.cardColor, cardColor != "Normal",
-                       let cardEffect = model.card?.cardEffect, !cardEffect.isEmpty {
-                        CardAISummary(cardEffect: cardEffect)
+                    if let cardMechanic = model.cardMechanic {
+                        CardMechanicView(cardMechanic: cardMechanic)
                     }
                     
                     if let card = model.card, let products = model.products {
@@ -136,70 +133,22 @@ struct CardInfoView: View {
     }
 }
 
-@available(iOS 26.0, *)
-private struct CardAISummary: View {
-    let cardEffect: String
-    @State private var result: CardClauses = CardClauses(Clauses: [])
-    @State private var isLoading = true
-    
-    private var prompt: String {
-        return """
-            This is the card text you will parse: 
-            \(cardEffect)
-            """
-    }
+private struct CardMechanicView : View {
+    let cardMechanic: CardMechanic
     
     var body: some View {
-        if case .available = SystemLanguageModel.default.availability {
-            VStack(alignment: .leading, spacing: 10) {
-                Label("AI Breakdown", systemImage: "sparkles")
-                    .font(.headline)
-                
-                if isLoading {
-                    AISummaryPlaceholder()
-                } else {
-                    Text(result.Clauses.enumerated()
-                        .map { "(\($0.offset + 1)) \($0.element)" }
-                        .joined(separator: "\n"))
-                    .font(.callout)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(alignment: .leading) {
+            Text("Effect Breakdown")
+                .headerTextModifier()
+            FlowLayout(spacing: 6) {
+                ForEach(cardMechanic.doesAny, id: \.self) { member in
+                    Text(member)
+                        .modifier(TagModifier())
                 }
             }
-            .parentModifier()
-            .task(id: cardEffect) {
-                let session = LanguageModelSession(instructions: CardInfoPrompt.CARD_EFFECT_CLAUSES.description)
-                do {
-                    result = try await session.respond(
-                        to: prompt,
-                        generating: CardClauses.self,
-                        includeSchemaInPrompt: true,
-                        options: GenerationOptions(sampling: .greedy)
-                    ).content
-                } catch let e {
-                    Logger.ui.error("Error occurred while creating card effect clauses: \(e, privacy: .public)")
-                }
-                isLoading = false
-            }
         }
-    }
-}
-
-private struct AISummaryPlaceholder: View {
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            RoundedRectangle(cornerRadius: 4)
-                .frame(maxWidth: .infinity, minHeight: 12)
-            RoundedRectangle(cornerRadius: 4)
-                .frame(maxWidth: 220, minHeight: 12)
-            RoundedRectangle(cornerRadius: 4)
-                .frame(maxWidth: 100, minHeight: 12)
-        }
-        .foregroundStyle(.purple.opacity(0.3))
-        .phaseAnimator([0.4, 1.0]) { view, opacity in
-            view.opacity(opacity)
-        } animation: { _ in
-                .easeInOut(duration: 0.45).repeatForever(autoreverses: true)
-        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .parentModifier()
     }
 }
 
