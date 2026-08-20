@@ -147,9 +147,8 @@ private struct CardMechanicView : View {
                 .headerTextModifier()
             }
             
-            if cardMechanic.flavor {
-                Text("Card has no effects")
-                    .font(.caption)
+            if cardMechanic.flavor || (cardMechanic.summonConditions.isEmpty && cardMechanic.effects.isEmpty) {
+                ContentUnavailableView("Card has no effects", systemImage: "tray.fill")
             } else {
                 ForEach(cardMechanic.summonConditions, id: \.self) { conditions in
                     CardEffectView(effect: conditions.text) {
