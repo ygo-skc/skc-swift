@@ -138,17 +138,84 @@ private struct CardMechanicView : View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Effect Breakdown")
+            HStack() {
+                Group {
+                    Text("Effect Breakdown")
+                    Text("BETA")
+                        .tagModifier()
+                }
                 .headerTextModifier()
-            FlowLayout(spacing: 6) {
-                ForEach(cardMechanic.doesAny, id: \.self) { member in
-                    Text(member)
-                        .modifier(TagModifier())
+            }
+            
+            if cardMechanic.flavor {
+                Text("Card has no effects")
+                    .font(.caption)
+            } else {
+                ForEach(cardMechanic.summonConditions, id: \.self) { conditions in
+                    CardEffectView(effect: conditions.text) {
+                        CardMechanicTagView(type: "Tags", tags: conditions.tags)
+                    }
+                }
+                
+                ForEach(cardMechanic.effects, id: \.self) { effect in
+                    CardEffectView(effect: effect.text) {
+                        CardMechanicTagView(type: "Tags", tags: effect.tags)
+                        CardMechanicTagView(type: "Counters", tags: effect.counters)
+                    }
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .parentModifier()
+    }
+    
+    private struct CardEffectView<Tags: View>: View {
+        let effect: String
+        let tags: () -> Tags
+        
+        init(effect: String, @ViewBuilder tags: @escaping () -> Tags) {
+            self.effect = effect
+            self.tags = tags
+        }
+        
+        var body: some View {
+            VStack(alignment: .leading) {
+                Text(effect)
+                    .font(.callout)
+                    .italic()
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 2)
+                
+                tags()
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .padding(18)
+            .background(Color(.secondarySystemGroupedBackground),
+                        in: .rect(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(.accent.opacity(0.3), lineWidth: 2)
+            }
+        }
+    }
+    
+    private struct CardMechanicTagView: View {
+        let type: String
+        let tags: [String]
+        
+        var body: some View {
+            if tags.count > 0 {
+                FlowLayout(spacing: 6) {
+                    Text(type)
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                    ForEach(tags, id: \.self) { tag in
+                        Text(tag)
+                            .tagModifier(.neutral, font: .caption)
+                    }
+                }
+            }
+        }
     }
 }
 
