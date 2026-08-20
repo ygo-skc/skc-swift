@@ -458,12 +458,12 @@ struct RestrictedContentChangesLinkDestinationValue: Hashable {
 // MARK: - Card mechanic types
 
 
-struct TaggedText: Codable, Hashable, Sendable {
+nonisolated struct TaggedText: Codable, Hashable, Sendable {
     let text: String
     let tags: [String]
 }
 
-struct Effect: Codable, Hashable, Sendable {
+nonisolated struct Effect: Codable, Hashable, Sendable {
     let text: String
     let zone: String?
     let tags: [String]
@@ -473,7 +473,7 @@ struct Effect: Codable, Hashable, Sendable {
     let choice: String?
 }
 
-struct CardMechanic: Codable, Hashable, Sendable {
+nonisolated struct CardMechanic: Codable, Hashable, Sendable {
     let id: String
     let name: String
     let type: String
