@@ -17,6 +17,66 @@ struct CardInfoView: View {
         self.model = .init(cardID: cardID)
     }
     
+    @ViewBuilder
+    private var suggestions: some View {
+        if model.cardDTS == .done, let cardName = model.card?.cardName {
+            LazyVStack(alignment: .leading, spacing: 25) {
+                Label("Suggestions", systemImage: "sparkles")
+                    .font(.title)
+                    .task {
+                        await model.fetchAllSuggestions()
+                    }
+                    .task {
+                        await model.fetchSimilarCards()
+                    }
+                
+                if model.areSuggestionsLoaded && model.suggestionsError == nil {
+                    YGOArchetypesView(title: "Suggested archetypes",
+                                      archetypes: model.archetypeSuggestions,
+                                      showBetaBadge: true)
+                    
+                    SuggestionSectionView(header: "Named Materials",
+                                          subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
+                                          references: model.namedMaterials,
+                                          variant: .suggestion)
+                    SuggestionSectionView(header: "Named References",
+                                          subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
+                                          references: model.namedReferences,
+                                          variant: .suggestion)
+                    SuggestionSectionView(header: "Material For",
+                                          subHeader: "ED cards that can be summoned using **\(cardName)** as material",
+                                          references: model.materialFor,
+                                          variant: .support)
+                    SuggestionSectionView(header: "Referenced By",
+                                          subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
+                                          references: model.referencedBy,
+                                          variant: .support)
+                    
+                    if model.similarCardsDTS == .done && model.similarCardsNE == nil {
+                        SuggestionSectionView(header: "Similar Cards",
+                                              subHeader: "Cards that are semantically similar to **\(cardName)**. This could be cards with similar stats/effects/lore/etc.",
+                                              references: model.similarCards,
+                                              variant: .support)
+                    }
+                }
+                
+                SuggestionTransitionView(areSuggestionsLoaded: model.areSuggestionsLoaded,
+                                         noSuggestionsFound: !model.hasSuggestions(),
+                                         networkError: model.suggestionsError,
+                                         action: {
+                    Task {
+                        if model.similarCardsNE != nil {
+                            await model.fetchSimilarCards(forceRefresh: true)
+                        }
+                        await model.fetchAllSuggestions(forceRefresh: true)
+                    }
+                })
+                .equatable()
+            }
+            .parentModifier()
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 35) {
@@ -39,62 +99,7 @@ struct CardInfoView: View {
                     }
                 }
                 
-                if model.cardDTS == .done, let cardName = model.card?.cardName {
-                    LazyVStack(alignment: .leading, spacing: 25) {
-                        Label("Suggestions", systemImage: "sparkles")
-                            .font(.title)
-                            .task {
-                                await model.fetchAllSuggestions()
-                            }
-                            .task {
-                                await model.fetchSimilarCards()
-                            }
-                        
-                        if model.areSuggestionsLoaded && model.suggestionsError == nil {
-                            YGOArchetypesView(title: "Suggested archetypes",
-                                              archetypes: model.archetypeSuggestions,
-                                              showBetaBadge: true)
-                            
-                            SuggestionSectionView(header: "Named Materials",
-                                                  subHeader: "Cards that can be used as summoning material for **\(cardName)**.",
-                                                  references: model.namedMaterials,
-                                                  variant: .suggestion)
-                            SuggestionSectionView(header: "Named References",
-                                                  subHeader: "Cards found in the text of **\(cardName)** but aren't explicitly listed as a summoning material.",
-                                                  references: model.namedReferences,
-                                                  variant: .suggestion)
-                            SuggestionSectionView(header: "Material For",
-                                                  subHeader: "ED cards that can be summoned using **\(cardName)** as material",
-                                                  references: model.materialFor,
-                                                  variant: .support)
-                            SuggestionSectionView(header: "Referenced By",
-                                                  subHeader: "Cards that reference **\(cardName)** excluding ED cards that reference **\(cardName)** as a summoning material.",
-                                                  references: model.referencedBy,
-                                                  variant: .support)
-                            
-                            if model.similarCardsDTS == .done && model.similarCardsNE == nil {
-                                SuggestionSectionView(header: "Similar Cards",
-                                                      subHeader: "Cards that are semantically similar to **\(cardName)**. This could be cards with similar stats/effects/lore/etc.",
-                                                      references: model.similarCards,
-                                                      variant: .support)
-                            }
-                        }
-                        
-                        SuggestionTransitionView(areSuggestionsLoaded: model.areSuggestionsLoaded,
-                                                 noSuggestionsFound: !model.hasSuggestions(),
-                                                 networkError: model.suggestionsError,
-                                                 action: {
-                            Task {
-                                if model.similarCardsNE != nil {
-                                    await model.fetchSimilarCards(forceRefresh: true)
-                                }
-                                await model.fetchAllSuggestions(forceRefresh: true)
-                            }
-                        })
-                        .equatable()
-                    }
-                    .parentModifier()
-                }
+                suggestions
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -164,7 +169,6 @@ private struct CardMechanicView : View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
         .parentModifier()
     }
     
