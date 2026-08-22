@@ -143,7 +143,7 @@ final class CardViewModel {
         (cardNE, cardDTS) = res.validate()
     }
     
-    private func fetchCardMechanic() async {
+    func fetchCardMechanic() async {
         guard cardMechanic == nil else { return }
         (cardMechanicNE, cardMechanicDTS) = (nil, .pending)
         (cardMechanicNE, cardMechanicDTS) = await data(cardMechanicsUrl(cardID: cardID), resType: CardMechanic.self).validate(&cardMechanic)

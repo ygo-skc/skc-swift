@@ -84,7 +84,14 @@ struct CardInfoView: View {
                     YGOCardView(cardID: model.cardID, card: model.card, width: containerWidth)
                         .equatable()
                     
-                    CardMechanicView(cardMechanic: model.cardMechanic, dts: model.cardMechanicDTS)
+                    CardMechanicView(cardMechanic: model.cardMechanic,
+                                     dts: model.cardMechanicDTS,
+                                     networkError: model.cardMechanicNE,
+                                     retryCB: {
+                        Task{
+                            await model.fetchCardMechanic()
+                        }
+                    })
                     
                     if let card = model.card, let products = model.products {
                         CardReleasesView(card: card, products: products)
@@ -139,6 +146,28 @@ struct CardInfoView: View {
 private struct CardMechanicView : View {
     let cardMechanic: CardMechanic?
     let dts: DataTaskStatus
+    let networkError: NetworkError?
+    let retryCB: () -> Void
+    
+    @ViewBuilder
+    var content: some View {
+        if let cardMechanic, cardMechanic.flavor || (cardMechanic.summonConditions.isEmpty && cardMechanic.effects.isEmpty) {
+            ContentUnavailableView("Card has no effects", systemImage: "tray.fill")
+        } else if let cardMechanic {
+            ForEach(cardMechanic.summonConditions, id: \.self) { conditions in
+                CardEffectView(effect: conditions.text) {
+                    CardMechanicTagView(type: "Tags", tags: conditions.tags)
+                }
+            }
+            
+            ForEach(cardMechanic.effects, id: \.self) { effect in
+                CardEffectView(effect: effect.text) {
+                    CardMechanicTagView(type: "Tags", tags: effect.tags)
+                    CardMechanicTagView(type: "Counters", tags: effect.counters)
+                }
+            }
+        }
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -160,23 +189,12 @@ private struct CardMechanicView : View {
                 }
                 .padding(.top)
                 .frame(maxWidth: .infinity)
-            case .done, .error:
-                if let cardMechanic, cardMechanic.flavor || (cardMechanic.summonConditions.isEmpty && cardMechanic.effects.isEmpty) {
-                    ContentUnavailableView("Card has no effects", systemImage: "tray.fill")
-                } else if let cardMechanic {
-                    ForEach(cardMechanic.summonConditions, id: \.self) { conditions in
-                        CardEffectView(effect: conditions.text) {
-                            CardMechanicTagView(type: "Tags", tags: conditions.tags)
-                        }
-                    }
-                    
-                    ForEach(cardMechanic.effects, id: \.self) { effect in
-                        CardEffectView(effect: effect.text) {
-                            CardMechanicTagView(type: "Tags", tags: effect.tags)
-                            CardMechanicTagView(type: "Counters", tags: effect.counters)
-                        }
-                    }
+            case .error:
+                if let networkError {
+                    NetworkErrorView(error: networkError, action: retryCB)
                 }
+            case .done:
+                content
             }
         }
         .parentModifier()
