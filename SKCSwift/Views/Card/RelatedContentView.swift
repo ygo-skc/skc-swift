@@ -281,21 +281,14 @@ private struct BanListItemViewModel: View {
     let banList: [BanList]
     
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2)) {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
             ForEach(banList, id: \.banListDate) { banListInstance in
                 GroupBox {
                     VStack(alignment: .leading) {
                         DateBadgeView(date: banListInstance.banListDate, variant: .condensed)
                             .equatable()
-                        HStack {
-                            Circle()
-                                .foregroundColor(banStatusColor(status: banListInstance.banStatus))
-                                .frame(width: 18)
-                            Text(banListInstance.banStatus)
-                                .lineLimit(1)
-                                .font(.subheadline)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(banListInstance.banStatus)
+                            .tagModifier(.status(banStatusColor(status: banListInstance.banStatus)))
                     }
                     .frame(maxWidth: .infinity)
                 }

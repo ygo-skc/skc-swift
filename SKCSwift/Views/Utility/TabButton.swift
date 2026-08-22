@@ -17,21 +17,22 @@ struct TabButton<T: RawRepresentable>: View where T.RawValue == String {
             withAnimation(.spring(response: 0.15)) {selected = value}
         }) {
             Text(value.rawValue)
-                .font(.caption)
-                .foregroundColor(selected == value ? .white : .primary)
-                .padding(.vertical, 6)
-                .padding(.horizontal, 8)
-                .if(selected == value) {
-                    $0.background {
-                        Color.accentColor
+                .font(TagConstants.FONT)
+                .fontWeight(.medium)
+                .lineLimit(1)
+                .foregroundStyle(selected == value ? Color.white : .primary)
+                .padding(.horizontal, TagConstants.HORIZONTAL_PADDING)
+                .padding(.vertical, 6)  // deliberately > TagConstants.VERTICAL_PADDING - this is a touch target
+                .background {
+                    if selected == value {
+                        Capsule()
+                            .fill(Color.accentColor)
                             .matchedGeometryEffect(id: "Tab", in: animation)
-                    }
-                } else: {
-                    $0.background {
-                        Color.gray.opacity(0.3)
+                    } else {
+                        Capsule()
+                            .fill(TagConstants.NEUTRAL_WASH)
                     }
                 }
-                .cornerRadius(8)
         }
     }
 }

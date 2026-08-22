@@ -20,13 +20,7 @@ struct YGOArchetypesView: View {
                         .fontWeight(.medium)
                     if showBetaBadge {
                         Text("BETA")
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 2)
-                            .background(.tint.opacity(0.12))
-                            .foregroundStyle(.tint)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .tagModifier()
                     }
                 }
                 ScrollView(.horizontal) {

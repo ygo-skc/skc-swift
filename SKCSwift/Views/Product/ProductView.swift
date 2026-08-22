@@ -75,7 +75,7 @@ struct ProductView: View {
                                 FlowLayout(spacing: 6) {
                                     ForEach(productContents[ind].rarities, id: \.self) { rarity in
                                         Text(rarity.cardRarityShortHand())
-                                            .modifier(TagModifier())
+                                            .tagModifier(.neutral)
                                     }
                                 }
                             }
@@ -117,7 +117,7 @@ private struct ProductTagsView: View {
                     Label(product.productSubType, systemImage: "tag")
                     Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
                 }
-                .modifier(TagModifier(font: .caption))
+                .tagModifier(.neutral, font: .caption)
             }
             .padding(.bottom)
         }

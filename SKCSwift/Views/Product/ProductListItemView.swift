@@ -61,7 +61,7 @@ struct ProductListItemView: View, Equatable {
                     FlowLayout(spacing: 6) {
                         ForEach(contents[0].rarities, id: \.self) { rarity in
                             Text(rarity.cardRarityShortHand())
-                                .modifier(TagModifier())
+                                .tagModifier(.neutral)
                         }
                     }
                 } else {
@@ -74,7 +74,7 @@ struct ProductListItemView: View, Equatable {
                                 Label("\(productTotal) card(s)", systemImage: "tray.full.fill")
                             }
                         }
-                        .modifier(TagModifier())
+                        .tagModifier(.neutral)
                     }
                 }
             }
