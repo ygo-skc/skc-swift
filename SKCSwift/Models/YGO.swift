@@ -7,7 +7,7 @@
 
 import Foundation
 
-nonisolated struct MonsterAssociation: Codable, Equatable, Hashable {
+nonisolated struct MonsterAssociation: Codable, Equatable {
     let level, rank, scaleRating, linkRating: UInt8?
     let linkArrows: [String]?
     
@@ -119,7 +119,11 @@ nonisolated struct YGOCard: Codable, Equatable, Hashable {
     var isGod: Bool {
         cardAttribute != nil && cardAttribute!.lowercased() == "divine"
     }
-    
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
     static let placeholder: YGOCard = .init(cardID: "XXXXXXXX",
                                             cardName: "Placeholder of Chaos",
                                             cardColor: "Token",
@@ -142,9 +146,7 @@ nonisolated struct CardBrowseResults: Codable {
     let numResults: UInt
 }
 
-/*
- Ban List models
- */
+// MARK: - Ban List models
 
 nonisolated struct BanList: Codable, Equatable {
     let banListDate, cardID, banStatus, format: String
@@ -202,12 +204,9 @@ nonisolated struct BanListChange: Codable {
     let previousBanStatus: String
 }
 
+// MARK: - Product models
 
-/*
- Product models
- */
-
-nonisolated struct Product: Codable, Equatable, Identifiable {
+nonisolated struct Product: Codable, Equatable, Identifiable, Hashable {
     let productId, productLocale, productName, productType, productSubType: String
     let productReleaseDate: Date
     let productTotal: Int?
@@ -271,7 +270,11 @@ nonisolated struct Product: Codable, Equatable, Identifiable {
             return productId
         }
     }
-    
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
     static let placeholderId = "XXXXX"
     static let placeholders: [Product] = (1...3).map {
         Product(productId: "\(Product.placeholderId)\($0)",
@@ -323,9 +326,7 @@ nonisolated struct Products: Codable, Equatable {
     let products: [Product]
 }
 
-/*
- Misc models
- */
+// MARK: - Misc models
 
 nonisolated struct SearchResults: Identifiable, Equatable {
     let section: String
@@ -338,9 +339,7 @@ nonisolated struct SKCDatabaseStats: Codable, Equatable {
     let productTotal, cardTotal, banListTotal: Int
 }
 
-/*
- Suggestions
- */
+// MARK: - Suggestions
 
 nonisolated struct CardReference: Codable, Equatable {
     let card: YGOCard
@@ -416,12 +415,20 @@ struct YGOArchetypeData: Codable {
     let inheritMembers, qualifiedMembers, excludedMembers: [YGOCard]
 }
 
-/*
- Link destination types
- */
+
+// MARK: -  Link destination types
 
 struct ProductLinkDestinationValue: Hashable {
     let productID, productName: String
+}
+
+struct CardPrintingsLinkDestinationValue: Hashable {
+    let cardName: String
+    let products: [Product]
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(cardName)
+    }
 }
 
 struct CardLinkDestinationValue: Hashable {
@@ -436,9 +443,48 @@ struct YGOArchetypeCategoryLinkDestinationValue: Hashable {
     let archetype: String
     let category: YGOArchetypeCategory
     let cards: [YGOCard]
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(archetype)
+        hasher.combine(category)
+    }
 }
 
 struct RestrictedContentChangesLinkDestinationValue: Hashable {
     let effectiveDate: String
     let format: CardRestrictionFormat
+}
+
+// MARK: - Card mechanic types
+
+
+nonisolated struct TaggedText: Codable, Hashable, Sendable {
+    let text: String
+    let tags: [String]
+}
+
+nonisolated struct Effect: Codable, Hashable, Sendable {
+    let text: String
+    let zone: String?
+    let tags: [String]
+    let frequency: String?
+    let counters: [String]
+    let modes: [TaggedText]
+    let choice: String?
+}
+
+nonisolated struct CardMechanic: Codable, Hashable, Sendable {
+    let id: String
+    let name: String
+    let type: String
+    let materials: String?
+    let summonConditions: [TaggedText]
+    let effects: [Effect]
+    let metaTags: [String]
+    let flags: [String]
+    let flavor: Bool
+    let doesAll: [String]
+    let doesAny: [String]
+    let counters: [String]
+    let gates: [String]
 }

@@ -7,6 +7,38 @@
 
 import SwiftUI
 
+struct ProductListView<Label: View>: View, Equatable {
+    static func == (lhs: ProductListView, rhs: ProductListView) -> Bool {
+        lhs.products == rhs.products
+    }
+
+    let products: [Product]
+    let label: (Int) -> Label
+
+    init(products: [Product],
+         @ViewBuilder label: @escaping (Int) -> Label = { _ in EmptyView() }) {
+        self.products = products
+        self.label = label
+    }
+
+    var body: some View {
+        LazyVStack {
+            ForEach(Array(products.enumerated()), id: \.element.id) { ind, product in
+                NavigationLink(value: ProductLinkDestinationValue(productID: product.productId,
+                                                                 productName: product.productName)) {
+                    GroupBox(label: label(ind)) {
+                        ProductListItemView(product: product)
+                            .equatable()
+                    }
+                    .groupBoxStyle(.listItem)
+                }
+                .buttonStyle(.plain)
+                .transition(.opacity)
+            }
+        }
+    }
+}
+
 struct ProductListItemView: View, Equatable {
     let product: Product
     
@@ -29,7 +61,7 @@ struct ProductListItemView: View, Equatable {
                     FlowLayout(spacing: 6) {
                         ForEach(contents[0].rarities, id: \.self) { rarity in
                             Text(rarity.cardRarityShortHand())
-                                .modifier(TagModifier())
+                                .tagModifier(.neutral)
                         }
                     }
                 } else {
@@ -42,7 +74,7 @@ struct ProductListItemView: View, Equatable {
                                 Label("\(productTotal) card(s)", systemImage: "tray.full.fill")
                             }
                         }
-                        .modifier(TagModifier())
+                        .tagModifier(.neutral)
                     }
                 }
             }

@@ -11,25 +11,6 @@ struct TrendingView: View {
     @State private var path = NavigationPath()
     @State private var trendingModel =  TrendingViewModel()
     
-    @ViewBuilder
-    var trendingProducts: some View {
-        LazyVStack {
-            ForEach(Array(trendingModel.products.enumerated()), id: \.element.resource.productId) { index, m in
-                let product = m.resource
-                Button {
-                    path.append(ProductLinkDestinationValue(productID: product.productId, productName: product.productName))
-                } label: {
-                    GroupBox(label: TrendChangeView(position: index + 1, trendChange: m.change, hits: m.occurrences)) {
-                        ProductListItemView(product: product)
-                            .equatable()
-                    }
-                    .groupBoxStyle(.listItem)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-    
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
@@ -52,8 +33,13 @@ struct TrendingView: View {
                             })
                             .transition(.opacity)
                         case .product:
-                            trendingProducts
-                                .transition(.opacity)
+                            let metrics = trendingModel.products
+                            ProductListView(products: metrics.map(\.resource), label: { ind in
+                                TrendChangeView(position: ind + 1,
+                                                trendChange: metrics[ind].change,
+                                                hits: metrics[ind].occurrences)
+                            })
+                            .transition(.opacity)
                         }
                     }
                 }

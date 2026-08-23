@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct CardReleasesView: View {
-    let cardID: String
-    let cardName: String
-    let cardColor: String
-    let products: [Product]
-    let rarityDistribution: [String: Int]
+    private let cardName: String
+    private let products: [Product]
+    private let rarityDistribution: [String: Int]
     
     private let initialReleaseHeader: String
     private let initialReleaseSubHeader: String
@@ -20,10 +18,10 @@ struct CardReleasesView: View {
     private let latestReleaseHeader: String?
     private let latestReleaseSubHeader: String?
     
+    private static let MAX_RELEASES_TO_SHOW: Int = 5
+    
     init(card: YGOCard, products: [Product]) {
-        self.cardID = card.cardID
         self.cardName = card.cardName
-        self.cardColor = card.cardColor
         self.products = products
         self.rarityDistribution = products.rarityDistribution()
         
@@ -57,6 +55,60 @@ struct CardReleasesView: View {
         }
     }
     
+    @ViewBuilder
+    private var rarities: some View {
+        Label("Rarities", systemImage: "star.square.on.square")
+            .font(.headline)
+            .padding(.bottom, 5)
+        Text("All unique rarities \(cardName) was printed in")
+            .font(.callout)
+        OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
+    }
+    
+    @ViewBuilder
+    private var printedIn: some View {
+        if products.count > CardReleasesView.MAX_RELEASES_TO_SHOW {
+            SummaryBarLink("Printed In • \(products.count)",
+                           systemImage: "cart",
+                           value: CardPrintingsLinkDestinationValue(cardName: cardName, products: products))
+        } else {
+            Label("Printed In • \(products.count)", systemImage: "cart")
+                .font(.headline)
+        }
+        
+        ProductListView(products: Array(products.prefix(CardReleasesView.MAX_RELEASES_TO_SHOW)))
+            .equatable()
+    }
+    
+    @ViewBuilder
+    private var releaseSummary: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 10) {
+                CardView {
+                    Group {
+                        Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
+                            .font(.title3)
+                        Text(initialReleaseSubHeader)
+                            .font(.subheadline)
+                    }
+                }
+                if let latestReleaseHeader, let latestReleaseSubHeader {
+                    CardView {
+                        Group {
+                            Label(latestReleaseHeader, systemImage: "calendar")
+                                .font(.title3)
+                            Text(latestReleaseSubHeader)
+                                .font(.subheadline)
+                        }
+                    }
+                }
+            }
+            .padding(.bottom, 10)
+        }
+        .padding(.top)
+        .scrollIndicators(.hidden)
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("Releases")
@@ -64,61 +116,11 @@ struct CardReleasesView: View {
             if products.isEmpty {
                 ContentUnavailableView(initialReleaseSubHeader, systemImage: "tray.fill")
             } else {
-                Label("Rarities", systemImage: "star.square.on.square")
-                    .font(.headline)
-                    .padding(.bottom, 5)
-                Text("All unique rarities \(cardName) was printed in")
-                    .font(.callout)
-                OneDBarChartView(data: rarityDistribution.map { ChartData(category: $0.key, count: $0.value) } )
-                
+                rarities
                 Divider()
                     .padding(.vertical)
-                
-                Label("Products", systemImage: "cart")
-                    .font(.headline)
-                    .padding(.bottom, 4)
-                
-                RelatedContentSheetButton(format: "TCG", contentCount: products.count, contentType: .products) {
-                    RelatedContentsView(header: "Products",
-                                        subHeader: "\(cardName) was printed in \(products.count) different products.", cardID: cardID) {
-                        LazyVStack {
-                            ForEach(products, id: \.id) { product in
-                                GroupBox {
-                                    ProductListItemView(product: product)
-                                        .equatable()
-                                }
-                                .groupBoxStyle(.listItem)
-                            }
-                        }
-                    }
-                }
-                .tint(cardColorUI(cardColor: cardColor.replacing("Pendulum-", with: "")))
-                .padding(.bottom)
-                
-                ScrollView(.horizontal) {
-                    HStack(spacing: 10) {
-                        CardView {
-                            Group {
-                                Label(initialReleaseHeader, systemImage: products.isEmpty ? "exclamationmark.triangle" : "1.circle")
-                                    .font(.title3)
-                                Text(initialReleaseSubHeader)
-                                    .font(.subheadline)
-                            }
-                        }
-                        if let latestReleaseHeader, let latestReleaseSubHeader {
-                            CardView {
-                                Group {
-                                    Label(latestReleaseHeader, systemImage: "calendar")
-                                        .font(.title3)
-                                    Text(latestReleaseSubHeader)
-                                        .font(.subheadline)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.bottom, 10)
-                }
-                .scrollIndicators(.hidden)
+                printedIn
+                releaseSummary
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -279,21 +281,14 @@ private struct BanListItemViewModel: View {
     let banList: [BanList]
     
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2)) {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
             ForEach(banList, id: \.banListDate) { banListInstance in
                 GroupBox {
                     VStack(alignment: .leading) {
                         DateBadgeView(date: banListInstance.banListDate, variant: .condensed)
                             .equatable()
-                        HStack {
-                            Circle()
-                                .foregroundColor(banStatusColor(status: banListInstance.banStatus))
-                                .frame(width: 18)
-                            Text(banListInstance.banStatus)
-                                .lineLimit(1)
-                                .font(.subheadline)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(banListInstance.banStatus)
+                            .tagModifier(.status(banStatusColor(status: banListInstance.banStatus)))
                     }
                     .frame(maxWidth: .infinity)
                 }

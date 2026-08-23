@@ -47,6 +47,8 @@ struct ProductImageView: View, Equatable {
                 .backgroundDecode()
                 .downsampling(size: CGSize(width: width, height: height))
                 .scaleFactor(displayScale)
+                .cacheOriginalImage()
+                .reducePriorityOnDisappear(true)
                 .placeholder {
                     PlaceholderView(width: width, height: height, radius: 0)
                 }

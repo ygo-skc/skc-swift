@@ -35,6 +35,7 @@ struct RoundedRectImage: View, Equatable {
             .backgroundDecode()
             .downsampling(size: CGSize(width: width, height: height))
             .scaleFactor(displayScale)
+            .reducePriorityOnDisappear(true)
             .placeholder {
                 PlaceholderView(width: width, height: height, radius: cornerRadius)
             }

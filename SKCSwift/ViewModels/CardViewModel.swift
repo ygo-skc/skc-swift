@@ -54,15 +54,23 @@ final class CardViewModel {
         self.cardID = cardID
     }
     
+    // MARK: - DataTaskStatus
+    
     private(set) var cardDTS: DataTaskStatus = .pending
+    private(set) var cardMechanicDTS: DataTaskStatus = .pending
     private(set) var cardScoreDTS: DataTaskStatus = .pending
     
     private(set) var suggestionsDTS: DataTaskStatus = .pending
     private(set) var supportDTS: DataTaskStatus = .pending
     private(set) var similarCardsDTS: DataTaskStatus = .pending
     
+    // MARK: - NetworkError
+    
     @ObservationIgnored
     private(set) var cardNE: NetworkError?
+    @ObservationIgnored
+    private(set) var cardMechanicNE: NetworkError?
+    
     @ObservationIgnored
     private(set) var cardScoredNE: NetworkError?
     @ObservationIgnored
@@ -72,13 +80,18 @@ final class CardViewModel {
     @ObservationIgnored
     private(set) var similarCardsNE: NetworkError?
     
+    // MARK: - Models
+    
     @ObservationIgnored
     private(set) var card: YGOCard?
+    @ObservationIgnored
+    private(set) var cardMechanic: CardMechanic?
+    private(set) var score: CardScore?
+    
     @ObservationIgnored
     private(set) var products: [Product]?
     @ObservationIgnored
     private(set) var restrictions: BanListsForCard?
-    private(set) var score: CardScore?
     
     @ObservationIgnored
     private(set) var namedMaterials: [CardReference] = []
@@ -105,6 +118,7 @@ final class CardViewModel {
     func fetchCardInfo(forceRefresh: Bool = false) async {
         await withTaskGroup(of: Void.self) { taskGroup in
             taskGroup.addTask { await self.fetchCardData(forceRefresh: forceRefresh) }
+            taskGroup.addTask { await self.fetchCardMechanic() }
             taskGroup.addTask { await self.fetchCardScore() }
         }
     }
@@ -127,6 +141,12 @@ final class CardViewModel {
             self.restrictions = card.restrictedIn
         }
         (cardNE, cardDTS) = res.validate()
+    }
+    
+    func fetchCardMechanic() async {
+        guard cardMechanic == nil else { return }
+        (cardMechanicNE, cardMechanicDTS) = (nil, .pending)
+        (cardMechanicNE, cardMechanicDTS) = await data(cardMechanicsUrl(cardID: cardID), resType: CardMechanic.self).validate(&cardMechanic)
     }
     
     private func fetchCardScore() async {

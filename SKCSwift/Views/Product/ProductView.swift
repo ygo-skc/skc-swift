@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProductView: View {
     @State private var model: ProductViewModel
-
+    
     init(productID: String) {
         self.model = .init(productID: productID)
     }
@@ -27,17 +27,16 @@ struct ProductView: View {
             } suggestions: {
                 ProductSuggestionsButton(model: model)
             }
-        }
-                           .navigationTitle(model.product?.productName ?? "")
-                           .navigationBarTitleDisplayMode(.inline)
-                           .task {
-                               await model.fetchProductData()
-                           }
-                           .onChange(of: model.product) {
-                               Task {
-                                   await ArchiveContainer.historyActor.recordAccess(resource: .product, id: model.productID)
-                               }
-                           }
+        }.navigationTitle(model.product?.productName ?? "")
+            .navigationBarTitleDisplayMode(.inline)
+            .task {
+                await model.fetchProductData()
+            }
+            .onChange(of: model.product) {
+                Task {
+                    await ArchiveContainer.historyActor.recordAccess(resource: .product, id: model.productID)
+                }
+            }
     }
     
     private struct ProductDetailsView<Stats: View>: View {
@@ -76,7 +75,7 @@ struct ProductView: View {
                                 FlowLayout(spacing: 6) {
                                     ForEach(productContents[ind].rarities, id: \.self) { rarity in
                                         Text(rarity.cardRarityShortHand())
-                                            .modifier(TagModifier())
+                                            .tagModifier(.neutral)
                                     }
                                 }
                             }
@@ -118,7 +117,7 @@ private struct ProductTagsView: View {
                     Label(product.productSubType, systemImage: "tag")
                     Label("\(product.productTotal!) card(s)", systemImage: "tray.full.fill")
                 }
-                .modifier(TagModifier(font: .caption))
+                .tagModifier(.neutral, font: .caption)
             }
             .padding(.bottom)
         }
@@ -135,7 +134,7 @@ private struct ProductMetricsButton: View {
     private nonisolated func productData(productContents: [ProductContent]) async -> ([ChartData], [ChartData], [ChartData], [ChartData]) {
         let rarities = productContents.flatMap { $0.rarities }
         let cards = productContents.compactMap { $0.card }
-
+        
         let rarityData = rarities
             .reduce(into: [String: Int]()) { counts, rarity in
                 counts[rarity.cardRarityShortHand(), default: 0] += 1
@@ -153,20 +152,20 @@ private struct ProductMetricsButton: View {
                 }
             }
             .map { ChartData(category: $0.key, count: $0.value) }
-
+        
         let monsterColorData = monsters
             .map { $0.cardColor.replacingOccurrences(of: "-", with: " ") }
             .reduce(into: [String: Int]()) { counts, color in
                 counts[color, default: 0] += 1
             }
             .map { ChartData(category: $0.key, count: $0.value) }
-
+        
         let monsterAttributeData = monsters
             .reduce(into: [String: Int]()) { counts, card in
                 counts[card.cardAttribute!, default: 0] += 1
             }
             .map { ChartData(category: $0.key, count: $0.value) }
-
+        
         return (rarityData, mstData, monsterColorData, monsterAttributeData)
     }
     
@@ -295,9 +294,9 @@ private struct ProductSuggestionsButton: View {
                     .frame(maxWidth: .infinity)
                     .overlay {
                         SuggestionTransitionView(areSuggestionsLoaded: model.suggestionsDTS == .done,
-                                              noSuggestionsFound: !model.hasSuggestions,
-                                              networkError: model.suggestionsNE,
-                                              action: {
+                                                 noSuggestionsFound: !model.hasSuggestions,
+                                                 networkError: model.suggestionsNE,
+                                                 action: {
                             Task {
                                 await model.fetchProductSuggestions(forceRefresh: true)
                             }

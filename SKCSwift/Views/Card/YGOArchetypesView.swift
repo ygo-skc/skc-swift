@@ -20,13 +20,7 @@ struct YGOArchetypesView: View {
                         .fontWeight(.medium)
                     if showBetaBadge {
                         Text("BETA")
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 2)
-                            .background(.tint.opacity(0.12))
-                            .foregroundStyle(.tint)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .tagModifier()
                     }
                 }
                 ScrollView(.horizontal) {
@@ -68,12 +62,12 @@ struct YGOArchetypeView: View {
             }
             .parentModifier()
             .frame(maxWidth: .infinity) // needed by overlay
-            .navigationTitle(model.archetype)
-            .navigationBarTitleDisplayMode(.large)
             .task {
                 await model.fetchArchetypeData()
             }
         }
+        .navigationTitle(model.archetype)
+        .navigationBarTitleDisplayMode(.large)
         .overlay {
             if model.dataDTS == .pending {
                 LoadingView()
@@ -156,12 +150,11 @@ struct YGOArchetypeCategoryView: View {
             VStack(alignment: .leading) {
                 Label(LocalizedStringKey(categoryExplanation), systemImage: "info.circle")
                     .font(.callout)
-                    .padding(.bottom)
                 CardListView(cards: cards)
             }
             .parentModifier()
-            .navigationTitle(category.rawValue)
-            .navigationBarTitleDisplayMode(.large)
         }
+        .navigationTitle(category.rawValue)
+        .navigationBarTitleDisplayMode(.large)
     }
 }

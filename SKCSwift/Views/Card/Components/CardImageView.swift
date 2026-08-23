@@ -49,6 +49,8 @@ struct CardImageView: View, Equatable {
                 .backgroundDecode()
                 .downsampling(size: CGSize(width: length, height: length))
                 .scaleFactor(displayScale)
+                .cacheOriginalImage()
+                .reducePriorityOnDisappear(true)
                 .placeholder {
                     PlaceholderView(width: length, height: length, radius: radius)
                 }

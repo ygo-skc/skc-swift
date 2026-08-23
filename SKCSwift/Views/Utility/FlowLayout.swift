@@ -63,7 +63,7 @@ struct FlowLayout: Layout {
             Text("Ady G")
             Text("Lupe Gomez")
         }
-        .modifier(TagModifier())
+        .tagModifier()
     }
     .padding(.horizontal)
 }
