@@ -34,7 +34,11 @@ struct YGOCardView: View, Equatable {
             CardStatsView(card: card, variant: variant)
                 .equatable()
         }
-        .frame(width: width)
+        .if(variant == .normal) {
+            $0.frame(maxWidth: .infinity)
+        } else: {
+            $0.frame(width: width)
+        }
     }
 }
 
