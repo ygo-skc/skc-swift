@@ -73,29 +73,24 @@ fileprivate struct YGOClients: Sendable {
             target: .dns(host: host, port: 443),
             transportSecurity: .tls,
             config: .defaults { config in
-                config.compression = .init(
-                    algorithm: .gzip,
-                    enabledAlgorithms: [.gzip]
-                )
+                config.compression.algorithm = .gzip
+                config.compression.enabledAlgorithms = [.gzip]
 
-                config.backoff = .init(
-                    initial: .milliseconds(80),
-                    max: .seconds(1),
-                    multiplier: 1.4,
-                    jitter: 0.25
-                )
+                config.backoff.initial = .milliseconds(80)
+                config.backoff.max = .seconds(1)
+                config.backoff.multiplier = 1.4
+                config.backoff.jitter = 0.25
 
-                config.connection = .init(
-                    maxIdleTime: .seconds(60),
-                    keepalive: .init(
-                        time: .seconds(20),
-                        timeout: .seconds(3),
-                        allowWithoutCalls: false
-                    )
+                config.connection.maxIdleTime = .seconds(60)
+                config.connection.keepalive = .init(
+                    time: .seconds(20),
+                    timeout: .seconds(3),
+                    allowWithoutCalls: false
                 )
                 config.connection.flushCoalescing = .init(maxFlushDelay: .microseconds(50), maxBytes: 100 << 10)
 
-                config.http2 = .init(maxFrameSize: 20 << 10, targetWindowSize: 200 << 10, authority: nil)
+                config.http2.maxFrameSize = 20 << 10
+                config.http2.targetWindowSize = 200 << 10
             },
             serviceConfig: .init(
                 methodConfig: [
