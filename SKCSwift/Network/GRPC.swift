@@ -81,6 +81,11 @@ fileprivate struct YGOClients: Sendable {
                 config.backoff.multiplier = 1.4
                 config.backoff.jitter = 0.25
 
+                config.resolverBackoff.initial = .milliseconds(200)
+                config.resolverBackoff.max = .seconds(10)
+                config.resolverBackoff.multiplier = 1.6
+                config.resolverBackoff.jitter = 0.2
+
                 config.connection.maxIdleTime = .seconds(60)
                 config.connection.keepalive = .init(
                     time: .seconds(20),
