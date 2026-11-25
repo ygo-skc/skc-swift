@@ -72,7 +72,7 @@ extension Result where Success: Decodable, Failure: Error {
         if case let rpcError as RPCError = e {
             return NetworkError.fromRPCError(rpcError, method: method)
         } else if case let cancellationError as CancellationError = e {
-            return NetworkError.fromRPCError(RPCError(code: .deadlineExceeded, message: cancellationError.localizedDescription), method: method)
+            return NetworkError.fromRPCError(RPCError(code: .cancelled, message: cancellationError.localizedDescription), method: method)
         } else {
             return NetworkError.fromRPCError(RPCError(code: .unknown, message: e.localizedDescription), method: method)
         }

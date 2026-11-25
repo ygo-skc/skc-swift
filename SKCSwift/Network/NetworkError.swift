@@ -44,7 +44,7 @@ enum NetworkError: Error {
         case .failedPrecondition, .outOfRange:
             Logger.network.error("RPC \(method, privacy: .public) call failed due to unprocessable entity. Message: \(rpcError.message, privacy: .public)")
             return .unprocessableEntity
-        case .unimplemented, .unavailable, .internalError, .resourceExhausted:
+        case .unavailable, .internalError, .resourceExhausted:
             Logger.network.error("RPC \(method, privacy: .public) call resulted in server error. Message: \(rpcError.message, privacy: .public)")
             return .server
         default:
