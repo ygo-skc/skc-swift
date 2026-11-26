@@ -54,7 +54,7 @@ Extract and match:
 Publishing notifies watchers and is awkward to walk back; a draft costs one command to promote:
 
 ```sh
-gh release publish v1.2.3
+gh release edit v1.2.3 --draft=false
 ```
 
 Publish directly only when the repo's history shows `created` == `published`, or the user says to.
@@ -69,5 +69,6 @@ The tag push in step 3 is immediately public even while the release stays a draf
 | Writing notes from `git log --oneline` | Read the diffs; see `writing-release-notes` |
 | Tagging a stale HEAD | Re-check `git status` and `@{u}` — the tree may have moved mid-session |
 | Hand-writing the compare URL | `--generate-notes` |
+| `gh release publish` — no such subcommand | `gh release edit <tag> --draft=false`; touches only the draft flag, not the notes |
 | Annotated tag in a repo of lightweight ones | Match `git cat-file -t` |
 | Sweeping unrelated uncommitted files into the release | Tag the app state; tooling commits go separately |
